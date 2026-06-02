@@ -17,11 +17,11 @@ module.exports = async (req, res) => {
     const messages = Array.isArray(body.messages) ? body.messages : [];
     const context = typeof body.context === 'string' ? body.context : '';
     const system =
-      'Kamu adalah asisten analitik untuk dashboard SPKLU (Stasiun Pengisian Kendaraan Listrik Umum) ' +
-      'PLN UID Jawa Barat, periode data Maret 2026. Jawab SINGKAT, padat, dan dalam Bahasa Indonesia, ' +
-      'berbasis HANYA pada data ringkas di bawah. Bila perlu beri angka konkret dan satu kalimat insight. ' +
-      'Jika pertanyaan di luar cakupan data, katakan dengan jujur bahwa datanya tidak tersedia di dashboard.\n\n' +
-      'DATA RINGKAS (JSON):\n' + context;
+      'You are an analytics assistant for the public EV charging station (SPKLU) dashboard of ' +
+      'PLN UID West Java, data period March 2026. Answer CONCISELY in English, ' +
+      'based ONLY on the summarised data below. Where useful, give concrete numbers and one line of insight. ' +
+      'If a question is outside the data scope, honestly say the data is not available in the dashboard.\n\n' +
+      'SUMMARISED DATA (JSON):\n' + context;
 
     const r = await fetch('https://api.deepseek.com/chat/completions', {
       method: 'POST',
