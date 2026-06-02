@@ -183,6 +183,13 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="page" id="p-demand">
 <div class="insight" id="dmInsight"></div>
 <div class="statband" id="dmStats"></div>
+<div class="card" style="margin-bottom:15px"><h3>📊 Rasio <span>Kunci</span> <span class="sub">— infografis efisiensi & intensitas pemakaian aset SPKLU</span></h3>
+<div class="statband" id="dmRatio"></div>
+<div class="insight" id="dmRatioInsight" style="margin-bottom:0"></div></div>
+<div class="grid2">
+<div class="card"><h3>Penjualan <span>kWh per UP3/Wilayah</span> <span class="sub">(konsentrasi permintaan)</span></h3><canvas id="cUp3Kwh"></canvas></div>
+<div class="card"><h3>Rasio <span>Utilisasi — kWh per Unit SPKLU</span> <span class="sub">(tinggi = padat/underserved)</span></h3><canvas id="cUp3Util"></canvas></div></div>
+<div class="card" style="margin-bottom:15px"><h3>Infrastruktur vs Permintaan <span>per UP3</span> <span class="sub">— sumbu X: jumlah SPKLU · sumbu Y: konsumsi kWh · ukuran gelembung: transaksi · garis = rata-rata kWh/unit Jabar</span></h3><canvas id="cUp3Scatter"></canvas></div>
 <div class="card"><h3>Penjualan per <span>UP3 / Wilayah</span> <span class="sub">(konsumsi kWh, transaksi & pendapatan — Jawa Barat, Maret 2026 · klik header untuk sort)</span></h3>
 <div class="tablewrap" style="max-height:560px"><table id="tblUp3Sales"><thead><tr>
 <th data-k="up3">UP3 / Wilayah</th><th data-k="unit">SPKLU</th><th data-k="lokasi">Lokasi</th><th data-k="kwh">kWh</th><th data-k="trx">Transaksi</th><th data-k="rp">Pendapatan</th><th data-k="dur">Avg Durasi</th></tr></thead><tbody></tbody></table></div></div>
@@ -410,6 +417,52 @@ const dmTopTrx=[...D.top_spklu].sort((a,b)=>b.kwh-a.kwh)[0];
 const dmTopSh=Math.round(100*D.top_spklu.reduce((a,b)=>a+b.kwh,0)/D.kpi.total_kwh);
 const dmIntens=dmS.filter(u=>u.unit).map(u=>({up3:u.up3,r:u.kwh/u.unit})).sort((a,b)=>b.r-a.r)[0];
 $('dmInsight').innerHTML=`<b>Insight penjualan (Maret 2026):</b> total <b>${fmt(D.kpi.total_kwh)} kWh</b> / ${fmt(D.kpi.total_trx)} trx senilai <b>Rp ${fmt(D.kpi.total_rp)}</b>. Penjualan <b>terkonsentrasi</b> — 3 UP3 teratas (${dmS.slice(0,3).map(u=>u.up3).join(', ')}) menyumbang <b>${dmTop3}%</b> kWh, dipimpin <b>UP3 ${dmTop.up3}</b> (${fmt(dmTop.kwh)} kWh). Intensitas pemakaian per unit tertinggi di <b>UP3 ${dmIntens.up3}</b> (~${fmt(dmIntens.r)} kWh/unit) → prioritas penambahan unit. Pada level stasiun, 20 SPKLU teratas saja menyumbang <b>${dmTopSh}%</b> total kWh (dipimpin <b>${dmTopTrx['Nama SPKLU'].trim()}</b>) — permintaan sangat terpusat pada sedikit titik strategis (tol & hub kota).`;
+
+// DEMAND — infografis rasio & grafik
+(function(){
+ const B=D.spklu_byup3, T=D.spklu_total, K=D.kpi;
+ const kwhPerUnit=Math.round(K.total_kwh/T.unit), trxPerUnit=Math.round(K.total_trx/T.unit);
+ const rpPerKwh=Math.round(K.total_rp/K.total_kwh), kwhPerLok=Math.round(K.total_kwh/T.lokasi);
+ const trxPerDay=Math.round(K.total_trx/31);
+ $('dmRatio').innerHTML=[
+  ["kWh / unit SPKLU",fmt(kwhPerUnit),"intensitas pemakaian aset"],
+  ["kWh / lokasi",fmt(kwhPerLok),"hasil per titik"],
+  ["Transaksi / unit",fmt(trxPerUnit),"sesi per charger/bln"],
+  ["Harga rata-rata","Rp "+fmt(rpPerKwh)+"/kWh","pendapatan ÷ energi"],
+  ["Transaksi / hari",fmt(trxPerDay),"≈ "+fmt(Math.round(trxPerDay/T.lokasi*10)/10)+" /lokasi"]
+ ].map(o=>`<div class="s"><div class="n">${o[1]}</div><div class="t">${o[0]}<br>${o[2]}</div></div>`).join('');
+
+ // chart 1: kWh per UP3 (sorted desc)
+ const byK=[...B].sort((a,b)=>b.kwh-a.kwh);
+ bar('cUp3Kwh',byK.map(u=>u.up3),byK.map(u=>Math.round(u.kwh)),true,null,
+   byK.map((u,i)=>i<3?'#16305f':'#3a6ea5'));
+
+ // chart 2: rasio kWh/unit per UP3 (color-coded) + garis rata-rata
+ const byU=[...B].filter(u=>u.unit).map(u=>({up3:u.up3,r:Math.round(u.kwh/u.unit)})).sort((a,b)=>b.r-a.r);
+ bar('cUp3Util',byU.map(u=>u.up3),byU.map(u=>u.r),true,null,
+   byU.map(u=>u.r>6000?'#d6443c':u.r>4000?'#e8742c':u.r>2500?'#e0a52b':'#3a6ea5'));
+
+ // chart 3: scatter infrastruktur (unit) vs permintaan (kWh), bubble=trx
+ const avgR=K.total_kwh/T.unit, maxU=Math.max(...B.map(u=>u.unit));
+ if(C.cUp3Scatter)C.cUp3Scatter.destroy();
+ C.cUp3Scatter=new Chart($('cUp3Scatter'),{type:'bubble',
+  data:{datasets:[
+   {label:'UP3',data:B.map(u=>({x:u.unit,y:Math.round(u.kwh),r:Math.max(5,Math.sqrt(u.trx)/12),up3:u.up3})),
+    backgroundColor:B.map(u=>(u.kwh/Math.max(u.unit,1))>avgR?'rgba(214,68,60,.65)':'rgba(58,110,165,.6)'),borderColor:'#fff',borderWidth:1},
+   {type:'line',label:'rata-rata kWh/unit',data:[{x:0,y:0},{x:maxU,y:Math.round(avgR*maxU)}],
+    borderColor:'#d4af37',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+    tooltip:{callbacks:{label:c=>c.raw.up3?`UP3 ${c.raw.up3}: ${fmt(c.raw.x)} unit · ${fmt(c.raw.y)} kWh`:''}}},
+   scales:{x:{title:{display:true,text:'Jumlah SPKLU (unit)'},beginAtZero:true,grid:{color:'#eef1f6'}},
+    y:{title:{display:true,text:'Konsumsi (kWh)'},beginAtZero:true,grid:{color:'#eef1f6'}}}}});
+ $('cUp3Scatter').parentElement.style.height='360px';
+
+ // insight rasio
+ const over=B.filter(u=>u.unit&&(u.kwh/u.unit)>avgR).sort((a,b)=>(b.kwh/b.unit)-(a.kwh/a.unit));
+ const under=B.filter(u=>u.unit&&(u.kwh/u.unit)<avgR*0.4&&u.unit>=15).sort((a,b)=>a.unit-b.unit);
+ $('dmRatioInsight').innerHTML=`<b>Insight rasio:</b> rata-rata <b>${fmt(kwhPerUnit)} kWh/unit</b> & ${fmt(trxPerUnit)} trx/unit per bulan dengan harga efektif <b>Rp ${fmt(rpPerKwh)}/kWh</b>. <b>${over.length} UP3 di atas garis rata-rata</b> (titik merah pada grafik) — permintaan melampaui kapasitas, dipimpin <b>${over[0].up3}</b> (${fmt(Math.round(over[0].kwh/over[0].unit))} kWh/unit, ~${Math.round((over[0].kwh/over[0].unit)/avgR*100)}% di atas rata-rata) → prioritas <b>penambahan unit</b>. Sebaliknya wilayah dengan banyak unit namun rasio rendah${under.length?` (mis. <b>${under[0].up3}</b>)`:''} menandakan utilisasi belum optimal → fokus <b>edukasi & demand-generation</b>, bukan penambahan aset.`;
+})();
 
 // EQUITY NORMALIZED + INCOME + COMPOSITE
 const EN=D.equity_norm;
