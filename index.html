@@ -304,11 +304,17 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="card"><h3>Public <span>Chargers</span> <span class="sub">(log scale — scale gap)</span></h3><canvas id="cBmChg"></canvas></div>
 <div class="card"><h3>BEV <span>Sales Share</span> <span class="sub">(% of new cars, ~2024)</span></h3><canvas id="cBmShare"></canvas></div></div>
 <div class="card" style="margin-bottom:15px"><h3>EVs per <span>Public Charger</span> <span class="sub">(lower = more charger supply per EV)</span></h3><canvas id="cBmRatio"></canvas></div>
+<div class="card" style="margin-bottom:15px"><h3>🌏 ASEAN <span>Context</span> <span class="sub">— Indonesia vs regional peers (figures mix points/stations/connectors by source — directional)</span></h3>
+<div class="tablewrap"><table id="tblAsean"><thead><tr><th>Country</th><th>Public chargers</th><th>EV/BEV sales share</th><th>Fast (DC) share</th><th>Policy / target</th></tr></thead><tbody></tbody></table></div>
+<div style="height:300px;margin-top:14px"><canvas id="cAseanShare"></canvas></div>
+<div class="insight" id="aseanInsight" style="margin-bottom:0;margin-top:12px"></div></div>
 <div class="card" style="margin-bottom:15px"><h3>🔍 What Indonesia <span>Still Lacks</span> <span class="sub">— gaps vs international best practice, mapped to this dashboard's findings</span></h3>
 <div class="rqgrid" id="bmGaps"></div></div>
 <div class="card"><h3>🎯 Policy <span>Recommendations</span> <span class="sub">— adapted from China / EU (AFIR) / US (NEVI), tied to West Java evidence</span></h3>
-<ol class="recs" id="bmRecs"></ol>
-<div class="note" id="bmSource"></div></div>
+<ol class="recs" id="bmRecs"></ol></div>
+<div class="card"><h3>🔗 <span>References</span> <span class="sub">— per-figure sources (click to open)</span></h3>
+<ol id="bmRefs" style="font-size:11px;color:var(--mut);line-height:1.7;margin:0;padding-left:20px"></ol>
+<div class="note" id="bmSource" style="border-top:1px solid var(--line);margin-top:10px;padding-top:10px"></div></div>
 </div>
 
 <!-- SUMMARY (paper) -->
@@ -738,21 +744,35 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
 
 // ===== GLOBAL BENCHMARK =====
 (function(){
- // Indicative figures: IEA Global EV Outlook 2024/2025, ICCT (2024), PLN (2024-25)
+ const REF=[
+  {n:1,t:'IEA, Global EV Outlook 2024 — trends in EV charging',url:'https://www.iea.org/reports/global-ev-outlook-2024/trends-in-electric-vehicle-charging'},
+  {n:2,t:'IEA, Global EV Outlook 2025 — trends in electric car markets',url:'https://www.iea.org/reports/global-ev-outlook-2025/trends-in-electric-car-markets-2'},
+  {n:3,t:'ICCT, Charging Indonesia’s vehicle fleet (Feb 2024)',url:'https://theicct.org/wp-content/uploads/2024/02/ID-88-%E2%80%93-Indonesia-charging_final2.pdf'},
+  {n:4,t:'PLN SPKLU build-out, The Jakarta Post (May 2025)',url:'https://www.thejakartapost.com/adv/2025/05/22/pln-leads-the-charge-in-expanding-ev-charging-infrastructure.html'},
+  {n:5,t:'EVAT (Electric Vehicle Association of Thailand), via Bangkok Post (Dec 2024)',url:'https://www.bangkokpost.com/business/motoring/2755189/taking-a-closer-look-at-the-ev-expansion'},
+  {n:6,t:'V-Green / VinFast newsroom (2024–25)',url:'https://vinfastauto.com/vn_en/v-green-signs-mou-with-four-partners-to-deploy-over-60000-vinfast-ev-charging-ports-in-indonesia-with-a-projected-total-investment-of-usd-300-million'},
+  {n:7,t:'Ember, ASEAN emerges as a new leader in global EV adoption (2025)',url:'https://ember-energy.org/latest-updates/asean-emerges-as-a-new-leader-in-global-ev-adoption/'},
+  {n:8,t:'EU AFIR, European Commission — Alternative Fuels Infrastructure',url:'https://transport.ec.europa.eu/transport-themes/clean-transport/alternative-fuels-sustainable-mobility-europe/alternative-fuels-infrastructure_en'},
+  {n:9,t:'US NEVI Formula Program, AFDC',url:'https://afdc.energy.gov/laws/12744'},
+  {n:10,t:'China NDRC charging-infrastructure plan, gov.cn (2023)',url:'https://english.www.gov.cn/policies/latestreleases/202306/19/content_WS649057aac6d0868f4e8dcfcc.html'}
+ ];
+ const sup=ns=>ns.map(n=>`<sup><a href="#bmref${n}" title="${REF[n-1].t}" style="color:#3a6ea5;text-decoration:none">[${n}]</a></sup>`).join('');
+ const fmtChg=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n>=1e4?Math.round(n/1e3):(n/1e3).toFixed(1))+'k':n;
+
+ // ---- leading markets ----
  const BM=[
-  {region:'China',chargers:2700000,ratio:8,fast:45,share:25,hl:false,
+  {region:'China',chargers:2700000,ratio:8,fast:45,share:25,rc:[1],rs:[2],rp:[10],
    policy:'3-year plan: 28M charge points & >300 GW public capacity by 2027; subsidies steer to ultra-fast (>150 kW) hubs'},
-  {region:'European Union',chargers:630000,ratio:13,fast:14,share:14,hl:false,
+  {region:'European Union',chargers:630000,ratio:13,fast:14,share:14,rc:[1],rs:[2],rp:[8],
    policy:'AFIR (binding): charging pool every ≤60 km on TEN-T; 1.3 kW per BEV; mandatory ad-hoc card payment, price transparency & roaming'},
-  {region:'United States',chargers:180000,ratio:26,fast:22,share:8,hl:false,
+  {region:'United States',chargers:180000,ratio:26,fast:22,share:8,rc:[1],rs:[2],rp:[9],
    policy:'NEVI: DC stations ≤50 mi on corridors, ≥4×150 kW; ≥97% uptime standard'},
-  {region:'Norway',chargers:27000,ratio:28,fast:35,share:88,hl:false,
+  {region:'Norway',chargers:27000,ratio:28,fast:35,share:88,rc:[1],rs:[2],rp:[2],
    policy:'Adoption leader via tax incentives; high home-charging reliance; now densifying fast-charging'},
-  {region:'Indonesia',chargers:3233,ratio:23,fast:80,share:5,hl:true,
+  {region:'Indonesia',chargers:3233,ratio:23,fast:80,share:5,hl:true,rc:[4],rs:[3],rp:[4],
    policy:'PLN target 63,000 SPKLU by 2030; +337% charging transactions in 2024 — but no binding coverage / uptime mandate yet'}
  ];
  const idn=BM.find(b=>b.hl);
- const fmtChg=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?Math.round(n/1e3)+'k':n;
  $('bmStats').innerHTML=[
   ["Public chargers (ID)",fmtChg(idn.chargers),"vs China "+fmtChg(2700000)],
   ["BEV sales share (ID)",idn.share+"%","vs EU 14% · China 25%"],
@@ -762,14 +782,12 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  ].map(o=>`<div class="s"><div class="n">${o[1]}</div><div class="t">${o[0]}<br>${o[2]}</div></div>`).join('');
  $('bmInsight').innerHTML=`<b>Where Indonesia stands:</b> Indonesia's public network (~${fmtChg(idn.chargers)} SPKLU) is <b>~${Math.round(2700000/idn.chargers)}× smaller than China's</b> and an order of magnitude below the EU/US — yet its <b>${idn.fast}% DC-fast share is a genuine strength</b>. The binding constraint is <b>not chargers-per-EV</b> (Indonesia ~${idn.ratio}, comparable to the US) but <b>shallow adoption</b> (BEV ${idn.share}% of sales vs EU 14%, China 25%, Norway 88%) and the <b>absence of binding coverage, uptime & interoperability standards</b> that China, the EU (AFIR) and US (NEVI) now enforce. West Java's own data — under-utilised rural units, reliability as the #1 perception driver — mirrors exactly the gaps best-practice policy targets.`;
 
- // table
  $('tblBm').querySelector('tbody').innerHTML=BM.map(b=>`<tr style="${b.hl?'background:#fff7e3':''}">
   <td style="font-weight:700;color:${b.hl?'#b08400':'var(--navy)'}">${b.region}${b.hl?' ★':''}</td>
-  <td>${fmtChg(b.chargers)}</td><td>${b.ratio}</td><td>${b.fast}%</td><td>${b.share}%</td>
-  <td style="font-size:11px;line-height:1.5">${b.policy}</td></tr>`).join('');
+  <td>${fmtChg(b.chargers)}${sup(b.rc)}</td><td>${b.ratio}</td><td>${b.fast}%</td><td>${b.share}%${sup(b.rs)}</td>
+  <td style="font-size:11px;line-height:1.5">${b.policy}${sup(b.rp)}</td></tr>`).join('');
 
  const cols=BM.map(b=>b.hl?'#d4af37':'#3a6ea5');
- // chargers (log)
  if(C.cBmChg)C.cBmChg.destroy();
  C.cBmChg=new Chart($('cBmChg'),{type:'bar',data:{labels:BM.map(b=>b.region),datasets:[{data:BM.map(b=>b.chargers),backgroundColor:cols,borderRadius:5}]},
   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmtChg(c.raw)+' public chargers'}}},
@@ -778,28 +796,52 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  bar('cBmShare',BM.map(b=>b.region),BM.map(b=>b.share),true,100,cols);
  bar('cBmRatio',BM.map(b=>b.region),BM.map(b=>b.ratio),true,null,BM.map(b=>b.hl?'#d4af37':b.ratio<=13?'#2e9e5b':b.ratio<=26?'#e0a52b':'#e8742c'));
 
- // gaps (mapped to dashboard findings)
+ // ---- ASEAN ----
+ const AS=[
+  {c:'Indonesia',chargers:'3,233',share:5,fast:'80%',hl:true,rc:[4,3],rs:[3],rp:[4],
+   policy:'PLN: 63,000 SPKLU by 2030 (ICCT/IEA count ~1,582 open public chargers)'},
+  {c:'Singapore',chargers:'~7,100',share:34,fast:'~15%',rc:[7],rs:[7],rp:[7],
+   policy:'Target 60,000 points by 2030; ~1 charger per 3 EVs (region’s best); ICE registration ends 2030'},
+  {c:'Thailand',chargers:'~11,500',share:14,fast:'~50%',rc:[5],rs:[5],rp:[5],
+   policy:'EV 3.5 fiscal incentives; “30@30” (30% ZEV by 2030); 12,000 fast chargers by 2030'},
+  {c:'Vietnam',chargers:'~150,000*',share:17,fast:'—',rc:[6],rs:[2],rp:[6],
+   policy:'*Proprietary V-Green/VinFast network (mostly AC); targeting 1M ports'},
+  {c:'Malaysia',chargers:'~4,000',share:2.5,fast:'—',rc:[7],rs:[2],rp:[7],
+   policy:'NETR: 10,000 chargers by 2025, 125,000 by 2030'},
+  {c:'Philippines',chargers:'~900',share:2,fast:'—',rc:[7],rs:[7],rp:[7],
+   policy:'EVIDA: zero-tariff EV imports; network still nascent'}
+ ];
+ $('tblAsean').querySelector('tbody').innerHTML=AS.map(a=>`<tr style="${a.hl?'background:#fff7e3':''}">
+  <td style="font-weight:700;color:${a.hl?'#b08400':'var(--navy)'}">${a.c}${a.hl?' ★':''}</td>
+  <td>${a.chargers}${sup(a.rc)}</td><td>${a.share}%${sup(a.rs)}</td><td>${a.fast}</td>
+  <td style="font-size:11px;line-height:1.5">${a.policy}${sup(a.rp)}</td></tr>`).join('');
+ const asSorted=[...AS].sort((x,y)=>y.share-x.share);
+ bar('cAseanShare',asSorted.map(a=>a.c),asSorted.map(a=>a.share),true,100,asSorted.map(a=>a.hl?'#d4af37':'#2e7d6b'));
+ $('cAseanShare').parentElement.style.height='300px';
+ $('aseanInsight').innerHTML=`<b>Within ASEAN:</b> Indonesia's ~5% BEV share <b>trails Vietnam (~17%, VinFast-led), Thailand (~14%, EV 3.5 incentives) and Singapore (~34%)</b>, but leads Malaysia and the Philippines. Two regional models stand out: <b>Vietnam</b> shows infrastructure can scale fast through a single integrated player (V-Green ~150k ports), while <b>Thailand</b> pairs a balanced ~50% DC network with strong fiscal incentives — both relevant levers for Indonesia. (Charger counts mix points/stations/connectors across sources, so read the table as directional.)`;
+
+ // ---- gaps & recommendations ----
  const gaps=[
   ['Binding coverage standards','EU AFIR mandates a charging pool every ≤60 km on core corridors and 1.3 kW per BEV; US NEVI every ≤50 mi. Indonesia has expansion <i>targets</i> but no enforceable per-corridor / per-EV coverage rule — leaving rural "charging deserts" (e.g. 21 km gaps) unaddressed.'],
   ['Reliability & uptime SLAs','US NEVI requires ≥97% uptime; EU mandates real-time availability data. This dashboard finds <b>reliability & availability are the #1–2 perception drivers</b> (r≈0.84) — yet Indonesia has no uptime standard.'],
   ['Open payment & roaming','AFIR mandates ad-hoc card payment, price transparency and cross-network roaming. Indonesia is largely single-app (PLN Mobile) — and payment is a top complaint in the perception data.'],
-  ['Adoption depth','BEV is only 5% of Indonesian car sales vs 14% (EU) / 25% (China) / 88% (Norway). Thin demand drives the <b>under-utilised units</b> seen in many West Java regencies.'],
+  ['Adoption depth','BEV is only ~5% of Indonesian car sales vs 14% (EU) / 25% (China) / 88% (Norway), and within ASEAN behind Vietnam (17%) & Thailand (14%). Thin demand drives the <b>under-utilised units</b> seen in many West Java regencies.'],
   ['Smart charging & ToU tariffs','Leading markets use time-of-use pricing & managed charging to flatten peaks. West Java load peaks sharply at 17:00–22:00 — a grid-integration (RACE for 2030) gap.'],
   ['Equity-weighted siting','Indonesian deployment concentrates in Java/Sumatra and high-traffic hubs. The Equity Priority Index here flags underserved, lower-income areas that market-led siting misses.']
  ];
  $('bmGaps').innerHTML=gaps.map(g=>`<div class="rqc"><div class="t">${g[0]}</div><p>${g[1]}</p></div>`).join('');
-
  const recs=[
   '<b>Adopt corridor coverage standards</b> — an AFIR/NEVI-style rule: a DC charging hub every X km on national toll & arterial roads, plus a kW-per-EV target set per UP3/region.',
   '<b>Mandate uptime & availability SLAs</b> (e.g. ≥97% reliability, real-time status in-app) — directly addressing reliability & availability, the strongest perception drivers in this study.',
   '<b>Open payment & roaming</b> — require card/QR ad-hoc payment and cross-operator roaming beyond a single app, easing the payment friction users report.',
-  '<b>Deepen adoption</b> — sustain purchase incentives, electrify 2-wheelers and fleets, and tie charger rollout to local adoption so assets are not under-utilised.',
-  '<b>Prioritise ultra-fast (>150 kW) hubs</b> on inter-city corridors where demand concentrates (toll & city hubs in the transaction data), mirroring China\'s ultra-fast subsidy focus.',
+  '<b>Deepen adoption</b> — sustain purchase incentives (Thailand EV 3.5 model), electrify 2-wheelers and fleets, and tie charger rollout to local adoption so assets are not under-utilised.',
+  '<b>Prioritise ultra-fast (>150 kW) hubs</b> on inter-city corridors where demand concentrates, mirroring China’s ultra-fast subsidy focus — or an integrated-operator model like Vietnam’s V-Green.',
   '<b>Introduce time-of-use tariffs & managed charging</b> to flatten the 17:00–22:00 peak and integrate with the grid (RACE for 2030).',
   '<b>Use equity-weighted siting</b> — steer new units toward high-EPI, underserved and rural areas, not only high-traffic locations.'
  ];
  $('bmRecs').innerHTML=recs.map(r=>`<li>${r}</li>`).join('');
- $('bmSource').innerHTML=`<b>Sources & caveat.</b> International figures are indicative, compiled from IEA <i>Global EV Outlook 2024/2025</i>, ICCT (2024) and PLN (2024–25) public reporting; definitions and reference years vary by market, so treat cross-market comparisons as directional. China ~2.7M public chargers (2023); EU ~0.6M; US ~0.18M; Indonesia ~3,233 SPKLU (Dec 2024, four-wheel). BEV sales shares ~2024. Verify against primary sources before citing.`;
+ $('bmRefs').innerHTML=REF.map(r=>`<li id="bmref${r.n}"><a href="${r.url}" target="_blank" rel="noopener" style="color:#3a6ea5">${r.t}</a></li>`).join('');
+ $('bmSource').innerHTML=`<b>Caveat.</b> Figures are indicative and compiled from the public sources above; definitions (charging <i>points</i> vs <i>stations</i> vs <i>connectors</i>) and reference years vary by market, so cross-market and ASEAN comparisons are directional. Vietnam’s ~150k figure is a single proprietary network (V-Green). Verify against primary sources before citing.`;
 })();
 
 // ===== SOCIO-ECONOMIC CONTEXT & CORRELATIONS =====
@@ -941,7 +983,7 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    ev_per_spklu:{rata2_jabar:D.ev_access_tot.ev_per_spklu,jarak_antar_stasiun_km:D.access_nn_avg,tertinggi:D.ev_access[0]&&{kota:D.ev_access[0].kota,ev_per_spklu:D.ev_access[0].ev_per_spklu}},
    prioritas_kebijakan:D.policy_priority.slice(0,6).map(p=>({kota:p.kota,epi:p.epi,rekomendasi:p.action,alasan:p.reason})),
    socio_economic:{note:'BPS 2023 indicative per area',correlations:D.socio_corr,regions:D.socio_rows.map(r=>({area:r.kota,hdi:r.ipm,grdp_per_capita_Rpm:r.pdrb,poverty_pct:r.poverty,density:r.density,ev_per_100k:r.ev_per_100k}))},
-   international_benchmark:{note:'indicative IEA/ICCT/PLN ~2024',public_chargers:{China:'2.7M',EU:'0.63M',US:'0.18M',Indonesia:'3.2k'},bev_sales_share_pct:{Norway:88,China:25,EU:14,US:8,Indonesia:5},indonesia_gaps:['no binding coverage/uptime mandate (vs EU AFIR, US NEVI)','open payment & roaming','adoption depth','smart charging/ToU','equity-weighted & rural siting']},
+   international_benchmark:{note:'indicative IEA/ICCT/PLN ~2024',public_chargers:{China:'2.7M',EU:'0.63M',US:'0.18M',Indonesia:'3.2k'},bev_sales_share_pct:{Norway:88,China:25,EU:14,US:8,Indonesia:5},asean_bev_share_pct:{Singapore:34,Vietnam:17,Thailand:14,Indonesia:5,Malaysia:2.5,Philippines:2},asean_chargers:{Vietnam:'~150k (V-Green proprietary)',Thailand:'~11.5k',Singapore:'~7.1k',Indonesia:'~3.2k',Malaysia:'~4k',Philippines:'~0.9k'},indonesia_gaps:['no binding coverage/uptime mandate (vs EU AFIR, US NEVI)','open payment & roaming','adoption depth','smart charging/ToU','equity-weighted & rural siting']},
    persepsi:{lokasi_berskor:D.kpi.absa_n,catatan:'data persepsi ABSA mencakup Jawa Barat + luar (Jakarta/Tangerang); pada peta dapat difilter per wilayah'}
  });
  const history=[]; let busy=false; let greeted=false;
