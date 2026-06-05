@@ -327,6 +327,15 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <input type="range" id="liTarget" min="1" max="4" step="0.1" value="2" style="flex:1;min-width:160px;max-width:320px">
 <span id="liTargetVal" style="font-weight:700;color:var(--gold)">2.0</span>
 <button id="liReset" style="margin-left:auto;padding:6px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:12px">Reset weights</button></div></div>
+<div class="card" style="margin-bottom:15px"><h3>📍 Candidate <span>Sites</span> <span class="sub">— real named locations scored by distance to nearest existing SPKLU + local demand (reacts to weights above)</span></h3>
+<div id="liCandMap" style="height:460px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
+<div class="legend" style="margin-top:8px"><span><i style="background:#d6443c"></i>top candidate (≥70)</span><span><i style="background:#e0852b"></i>strong (55–70)</span><span><i style="background:#e0a52b"></i>moderate (40–55)</span><span><i style="background:#9aa6bd"></i>lower</span><span><i style="background:#1f7a3d;border-radius:50%"></i>existing SPKLU</span></div>
+<div class="rqgrid" id="liCandTop" style="margin-top:14px"></div></div>
+<div class="card" style="margin-bottom:15px"><h3>Ranked <span>Candidate Sites</span> <span class="sub">(click header to sort)</span></h3>
+<div class="tablewrap" style="max-height:520px"><table id="tblCand"><thead><tr>
+<th data-k="rank">#</th><th data-k="name">Candidate location</th><th data-k="type">Type</th><th data-k="area">Area</th><th data-k="near">Nearest SPKLU (km)</th><th data-k="score">Opportunity</th><th data-k="tag">Rationale</th></tr></thead><tbody></tbody></table></div>
+<div class="note" id="liCandNote" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
+<h3 style="margin:18px 4px 8px;color:var(--navy);font-size:15px">Area-level view</h3>
 <div class="grid2">
 <div class="card"><h3>🗺️ Opportunity <span>Map</span> <span class="sub">— bubble size & colour = Site Opportunity Score</span></h3>
 <div id="liMap" style="height:430px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
@@ -924,7 +933,7 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  const A=EN.filter(r=>SO[r.kota]).map(r=>{const s=SO[r.kota];return {kota:r.kota,pop:r.pop,unit:r.unit,ev:r.ev,upk:r.unit_per_100k,evp100:r.ev_per_100k,kwhpc:r.kwh_per_capita,sqi:r.sqi,income:r.income_tier,density:s.density,ipm:s.ipm,poverty:s.poverty,evps:r.unit?+(r.ev/r.unit).toFixed(1):0};});
  const norm=vals=>{const mn=Math.min(...vals),mx=Math.max(...vals);return v=>mx>mn?(v-mn)/(mx-mn)*100:50;};
  const nKwh=norm(A.map(a=>a.kwhpc)),nEv=norm(A.map(a=>a.evp100)),nPop=norm(A.map(a=>Math.log(a.pop))),nDen=norm(A.map(a=>a.density)),nIpm=norm(A.map(a=>a.ipm)),nUpk=norm(A.map(a=>a.upk)),nPov=norm(A.map(a=>a.poverty));
- A.forEach(a=>{a.s_demand=(nKwh(a.kwhpc)+nEv(a.evp100))/2;a.s_growth=(nPop(Math.log(a.pop))+nDen(a.density)+nIpm(a.ipm))/3;a.s_supply=nUpk(a.upk);a.s_gap=100-a.s_supply;a.s_equity=nPov(a.poverty);});
+ A.forEach(a=>{a.s_demand=(nKwh(a.kwhpc)+nEv(a.evp100))/2;a.s_growth=(nPop(Math.log(a.pop))+nDen(a.density)+nIpm(a.ipm))/3;a.s_supply=nUpk(a.upk);a.s_gap=100-a.s_supply;a.s_equity=nPov(a.poverty);});window._liAreas=A;
 
  const WCFG=[['demand','Demand & adoption',30],['growth','Growth potential',25],['gap','Supply gap',25],['equity','Equity / underserved',20]];
  const colFn=s=>s>=70?'#d6443c':s>=55?'#e0852b':s>=40?'#e0a52b':'#9aa6bd';
@@ -965,11 +974,11 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    const add=Math.max(0,Math.round((T-a.upk)*a.pop/1e5));
    return {...a,score:+score.toFixed(1),tag,add};});
   rows.sort((x,y)=>y.score-x.score);rows.forEach((r,i)=>r.rank=i+1);
-  renderTable();renderCards();renderMatrix();renderInsight();if(window.liMap)liDrawMap();}
+  renderTable();renderCards();renderMatrix();renderInsight();if(window.liMap)liDrawMap();if(window.renderCand)window.renderCand();}
 
  window.initLiMap=function(){window.liMapInit=true;window.liMap=L.map('liMap').setView([-6.95,107.6],8);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.liMap);
-  liDrawMap();setTimeout(()=>window.liMap.invalidateSize(),150);};
+  liDrawMap();setTimeout(()=>window.liMap.invalidateSize(),150);if(window.initCandMap)window.initCandMap();};
 
  renderSliders();
  $('tblLi').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='kota'||k==='tag')?1:-1;}renderTable();});
@@ -977,6 +986,73 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  $('liReset').onclick=()=>{WCFG.forEach(w=>{$('liw_'+w[0]).value=w[2];$('liwv_'+w[0]).textContent=w[2];});$('liTarget').value=2;liRecompute();};
  $('liMethod').innerHTML=`<b>Method.</b> The Site Opportunity Score is a min–max-normalised multi-criteria (MCDA) <b>weighted overlay</b> across ${A.length} analysis areas, combining <b>Demand & adoption</b> (charging kWh/capita + EV per 100k), <b>Growth potential</b> (population, density, HDI), <b>Supply gap</b> (inverse units per 100k) and <b>Equity</b> (poverty rate) — the same weighted-suitability approach location-intelligence platforms (e.g. CARTO Site Selection, Mapbox) use. Suggested additions = max(0, (target − current units/100k) × population). Map centroids are area approximations for visualisation, not exact coordinates; the model blends PLN primary data with indicative BPS indicators, so treat it as decision-support, not final siting.`;
  liRecompute();
+})();
+
+// ===== CANDIDATE SITES (point-level siting) =====
+(function(){
+ const CAND=[
+  {n:'Rest Area KM 57 Japek',t:'rest',a:'Karawang',lat:-6.412,lng:107.290},
+  {n:'Rest Area KM 72 Cipularang',t:'rest',a:'Purwakarta',lat:-6.553,lng:107.401},
+  {n:'Rest Area KM 88B Cipularang',t:'rest',a:'Purwakarta',lat:-6.623,lng:107.430},
+  {n:'Rest Area KM 97 Cipularang',t:'rest',a:'Purwakarta',lat:-6.690,lng:107.450},
+  {n:'Rest Area KM 102 Cipali',t:'rest',a:'Purwakarta',lat:-6.585,lng:107.620},
+  {n:'Rest Area KM 130 Cipali',t:'rest',a:'Subang',lat:-6.520,lng:107.840},
+  {n:'Rest Area KM 166 Cipali',t:'rest',a:'Majalengka',lat:-6.630,lng:108.200},
+  {n:'Rest Area KM 207 Cipali',t:'rest',a:'Cirebon',lat:-6.690,lng:108.440},
+  {n:'Rest Area KM 228 Palikanci',t:'rest',a:'Cirebon',lat:-6.778,lng:108.520},
+  {n:'Rest Area KM 21 Jagorawi',t:'rest',a:'Bogor',lat:-6.470,lng:106.870},
+  {n:'Rest Area KM 149 Cipali',t:'rest',a:'Majalengka',lat:-6.620,lng:108.050},
+  {n:'Paris Van Java Mall',t:'mall',a:'Bandung',lat:-6.888,lng:107.595},
+  {n:'Trans Studio Mall Bandung',t:'mall',a:'Bandung',lat:-6.926,lng:107.636},
+  {n:'Summarecon Mall Bekasi',t:'mall',a:'Bekasi',lat:-6.227,lng:106.998},
+  {n:'Cibinong City Mall',t:'mall',a:'Bogor',lat:-6.482,lng:106.854},
+  {n:'Margo City Depok',t:'mall',a:'Depok',lat:-6.369,lng:106.834},
+  {n:'CSB Mall Cirebon',t:'mall',a:'Cirebon',lat:-6.720,lng:108.552},
+  {n:'Asia Plaza Tasikmalaya',t:'mall',a:'Tasikmalaya',lat:-7.330,lng:108.220},
+  {n:'Karawang Central Plaza',t:'mall',a:'Karawang',lat:-6.308,lng:107.305},
+  {n:'Yogya Grand Kuningan',t:'mall',a:'Kuningan',lat:-6.978,lng:108.483},
+  {n:'Ramayana Garut',t:'mall',a:'Garut',lat:-7.214,lng:107.903},
+  {n:'Kertajati Intl Airport',t:'hub',a:'Majalengka',lat:-6.649,lng:108.168},
+  {n:'Husein Sastranegara Airport',t:'hub',a:'Bandung',lat:-6.900,lng:107.576},
+  {n:'Bandung Railway Station',t:'hub',a:'Bandung',lat:-6.914,lng:107.602},
+  {n:'Padalarang Whoosh Station',t:'hub',a:'Bandung Barat',lat:-6.842,lng:107.480},
+  {n:'Tegalluar Whoosh Station',t:'hub',a:'Bandung',lat:-6.962,lng:107.710},
+  {n:'Bekasi Railway Station',t:'hub',a:'Bekasi',lat:-6.236,lng:106.999},
+  {n:'Pelabuhanratu Port',t:'hub',a:'Sukabumi',lat:-6.984,lng:106.546},
+  {n:'Lembang Floating Market',t:'tour',a:'Bandung Barat',lat:-6.812,lng:107.617},
+  {n:'Pangandaran Beach',t:'tour',a:'Pangandaran',lat:-7.690,lng:108.650},
+  {n:'Jatiluhur Dam',t:'tour',a:'Purwakarta',lat:-6.535,lng:107.385},
+  {n:'Linggarjati Kuningan',t:'tour',a:'Kuningan',lat:-6.900,lng:108.470}
+ ];
+ const TYPE={rest:'Toll rest area',mall:'Mall / retail',hub:'Transport hub',tour:'Tourism'};
+ const TYPESC={rest:90,hub:85,mall:75,tour:65};
+ const SP=(D.spklu_points||[]).filter(p=>p.lat&&p.lng);
+ const hav=(a,b,c,d)=>{const R=6371,r=Math.PI/180,dLat=(c-a)*r,dLng=(d-b)*r,s1=Math.sin(dLat/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(s1));};
+ CAND.forEach(c=>{let mn=1e9;SP.forEach(p=>{const d=hav(c.lat,c.lng,p.lat,p.lng);if(d<mn)mn=d;});c.near=+mn.toFixed(1);c.distGap=Math.min(mn,12)/12*100;c.typeScore=TYPESC[c.t];});
+ const colFn=s=>s>=70?'#d6443c':s>=55?'#e0852b':s>=40?'#e0a52b':'#9aa6bd';
+ let cand=[],sortK='score',sortD=-1;
+ const host=area=>{const A=window._liAreas||[];return A.find(x=>x.kota===area)||{s_demand:50,s_growth:50,s_equity:50};};
+ function compute(){const wD=+$('liw_demand').value,wG=+$('liw_growth').value,wGap=+$('liw_gap').value,wE=+$('liw_equity').value,tot=(wD+wG+wGap+wE)||1;
+  cand=CAND.map(c=>{const h=host(c.a),base=(wD*h.s_demand+wG*h.s_growth+wGap*c.distGap+wE*h.s_equity)/tot,score=+(0.85*base+0.15*c.typeScore).toFixed(1);
+   let tag;if(c.near>=6)tag='Charging gap — nearest '+c.near+' km';else if(h.s_demand>=60)tag='High local demand';else if(c.typeScore>=85)tag='Strategic corridor / hub';else if(h.s_equity>=60)tag='Underserved area';else tag='Balanced opportunity';
+   return {...c,score,tag};});
+  cand.sort((x,y)=>y.score-x.score);cand.forEach((c,i)=>c.rank=i+1);}
+ function renderTable(){const disp=[...cand].sort((a,b)=>{let x=a[sortK],y=b[sortK];if(typeof x==='string')return sortD*(''+x).localeCompare(y);return sortD*((x??0)-(y??0));});
+  $('tblCand').querySelector('tbody').innerHTML=disp.map(c=>`<tr><td>${c.rank}</td><td style="font-weight:600;color:var(--navy)">${c.n}</td><td style="font-size:11px">${TYPE[c.t]}</td><td>${c.a}</td><td>${c.near}</td>
+   <td><span style="display:inline-block;min-width:34px;font-weight:700;color:#fff;background:${colFn(c.score)};border-radius:6px;padding:1px 6px;text-align:center">${c.score}</span></td>
+   <td style="font-size:11px">${c.tag}</td></tr>`).join('');}
+ function renderTop(){$('liCandTop').innerHTML=cand.slice(0,3).map((c,i)=>`<div class="rqc"><div class="t">#${i+1} ${c.n} · ${c.score}</div><p><b>${TYPE[c.t]}</b> in ${c.a}. Nearest existing SPKLU <b>${c.near} km</b>. ${c.tag}.</p></div>`).join('');}
+ function drawMap(){if(!window.liCandMap)return;if(window.candLayer)window.candLayer.remove();window.candLayer=L.layerGroup().addTo(window.liCandMap);
+  SP.forEach(p=>{L.circleMarker([p.lat,p.lng],{radius:2.5,color:'#1f7a3d',fillColor:'#1f7a3d',fillOpacity:.55,weight:0}).addTo(window.candLayer);});
+  cand.forEach(c=>{L.circleMarker([c.lat,c.lng],{radius:6+c.score/9,color:'#16305f',fillColor:colFn(c.score),fillOpacity:.85,weight:1})
+   .bindPopup(`<b>${c.n}</b><br>${TYPE[c.t]} · ${c.a}<br>Opportunity: <b>${c.score}</b><br>Nearest SPKLU: <b>${c.near} km</b><br><i>${c.tag}</i>`).addTo(window.candLayer);});}
+ window.renderCand=function(){compute();renderTable();renderTop();drawMap();};
+ window.initCandMap=function(){if(window.liCandMap)return;window.liCandMap=L.map('liCandMap').setView([-6.85,107.65],8);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.liCandMap);
+  drawMap();setTimeout(()=>window.liCandMap.invalidateSize(),160);};
+ $('tblCand').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='name'||k==='type'||k==='area'||k==='tag')?1:-1;}renderTable();});
+ $('liCandNote').innerHTML='<b>Candidate sites</b> are real, recognisable West Java locations (toll rest areas, malls, transport hubs, tourism nodes) with approximate coordinates, used to illustrate point-level siting. <b>Nearest SPKLU</b> = great-circle distance to the closest existing public charger in the dataset ('+SP.length+' points); <b>Opportunity</b> blends that gap with the host area’s demand/growth/equity (current weights) plus a strategic factor by site type. Decision-support only — validate grid capacity, land access & traffic counts before siting.';
+ window.renderCand();
 })();
 
 // ===== SUMMARY (paper-style synthesis) =====
