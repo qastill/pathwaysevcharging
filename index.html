@@ -367,6 +367,24 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="note" id="liMethod" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
 </div>
 
+<!-- SECTOR ANALYSIS -->
+<div class="page" id="p-sector">
+<div class="insight" id="secInsight"></div>
+<div class="card" style="margin-bottom:15px"><h3>🏷️ Which location <span>sector</span> sells best <span class="sub">— every public charging location classified by venue type, then ranked by average energy sold per site (the true “laris” signal — intensity, not just total volume)</span></h3>
+<div class="rqgrid" id="secCards"></div></div>
+<div class="grid2">
+<div class="card"><h3>📊 Energy per <span>site</span> by sector <span class="sub">— avg kWh / site (Mar 2026)</span></h3><canvas id="cSecBar"></canvas></div>
+<div class="card"><h3>⚡ Throughput <span>map</span> <span class="sub">— charger speed vs sales intensity; bubble = # sites</span></h3><canvas id="cSecScatter"></canvas>
+<div class="insight" id="secScatterNote" style="margin-top:10px;margin-bottom:0"></div></div></div>
+<div class="card" style="margin:15px 0"><h3>📈 Share of network <span>vs share of energy</span> <span class="sub">— deployment footprint vs actual demand captured</span></h3><canvas id="cSecShare"></canvas>
+<div class="insight" id="secShareNote" style="margin-top:10px;margin-bottom:0"></div></div>
+<div class="card" style="margin-bottom:15px"><h3>Comprehensive <span>sector table</span> <span class="sub">(click a header to sort)</span></h3>
+<div class="tablewrap" style="max-height:560px"><table id="tblSec"><thead><tr>
+<th data-k="type">Sector</th><th data-k="n">Sites</th><th data-k="shareLoc">% of network</th><th data-k="kwhLoc">kWh / site</th><th data-k="trxLoc">Sessions / site</th><th data-k="kwhSess">kWh / session</th><th data-k="avgKw">Avg power (kW)</th><th data-k="dur">Avg dwell (min)</th><th data-k="rpLoc">Revenue / site</th><th data-k="shareKwh">% of energy</th><th data-k="verdict">Verdict</th></tr></thead><tbody></tbody></table></div>
+<div class="note" id="secMethod" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
+<div class="card"><h3>🤖 Why these sectors <span>win — and lose</span> <span class="sub">— the demand mechanism behind the numbers</span></h3><div id="secWhy"></div></div>
+</div>
+
 <!-- SUMMARY (paper) -->
 <div class="page" id="p-summary">
 <div class="paper" id="summaryBody"></div>
@@ -396,14 +414,15 @@ const ASPLAB={keandalan:"Reliability",ketersediaan:"Availability",kejujuran_daya
 const hmc=v=>{if(v==null)return '#eef1f6';const t=(v+1)/2;return `rgb(${Math.round(214-(214-46)*t)},${Math.round(68+(158-68)*t)},${Math.round(60+(91-60)*t)})`;};
 const $=id=>document.getElementById(id);const C={};
 
-const TABS=[["overview","Overview"],["map","Map"],["equity","Spatial Equity"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["summary","Summary"]];
+const TABS=[["overview","Overview"],["map","Map"],["equity","Spatial Equity"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["sector","Sector Analysis"],["summary","Summary"]];
 $('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i==0?' active':''}" data-p="${t[0]}">${t[1]}</div>`).join('');
 document.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{
  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
  tb.classList.add('active');$('p-'+tb.dataset.p).classList.add('active');
  if(tb.dataset.p==='map'&&!C.map)setTimeout(initMap,80);
- if(tb.dataset.p==='locint')setTimeout(()=>{if(!window.liMapInit)initLiMap();else{if(window.liMap)window.liMap.invalidateSize();if(window.liCandMap)window.liCandMap.invalidateSize();if(window.srMap)window.srMap.invalidateSize();}},80);});
+ if(tb.dataset.p==='locint')setTimeout(()=>{if(!window.liMapInit)initLiMap();else{if(window.liMap)window.liMap.invalidateSize();if(window.liCandMap)window.liCandMap.invalidateSize();if(window.srMap)window.srMap.invalidateSize();}},80);
+ if(tb.dataset.p==='sector'&&window.initSector)setTimeout(window.initSector,80);});
 
 // KPIs
 const k=D.kpi;
@@ -1179,6 +1198,85 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   window.renderSiteReport();};
 
  $('srNote').innerHTML='<b>How this works.</b> The report defines a circular <b>catchment</b> around the chosen site; catchment population = host-area density × area, and EVs apply the host area\'s EV-per-capita penetration (shown as context). <b>Competitors</b> are existing SPKLU within the radius (split PLN vs private/MITRA from the master data). The <b>demand model is anchored to observed utilisation</b> — '+ANCHOR+' charging sessions per unit per month across the live network — then modulated by the host area\'s demand strength, competitor count and distance to the nearest rival, and scaled by the recommended unit count per site type. Sessions convert to kWh, net revenue (≈'+Math.round(FIN.netMargin*100)+'% net margin after energy cost & O&M) and a simple payback against indicative all-in capex by site type. <b>Commercial Viability</b> blends projected demand, competitive whitespace, payback speed and strategic site value. All figures are indicative decision-support; before committing, validate <b>grid capacity (distance to gardu/JTM, spare trafo), land status and real traffic counts</b> — the catchment circle is a proxy for a drive-time isochrone.';
+})();
+
+// ===== SECTOR ANALYSIS (which venue type sells best) =====
+(function(){
+ const SR=D.full_spklu||[];
+ function classify(n){const s=(n||'').toUpperCase();
+  if(/REST AREA|RA KM|KM \d+ ?[AB]\b|RUAS|TRAVOY| TOL |TOL$|CIPULARANG|CIPALI|PALIKANCI|JAGORAWI|KANCI|PEJAGAN|PADALARANG - CILEUNYI|JAKARTA - CIKAMPEK|CIKAMPEK - PADALARANG|ALVACHARGE|AMANAH RAHARJO/.test(s))return 'Toll rest area';
+  if(/MALL|SUMMARECON|LIPPO|PLAZA|Q SQUARE|LIFESTYLE|TRANS STUDIO|PASAR SEGAR|PVJ|PARIS VAN JAVA|CIHAMPELAS|FESTIVAL CITYLINK|\bTSM\b|\bBIP\b|CITYLINK|TRANSMART|TECHNOMART|GALUH MAS/.test(s))return 'Mall / retail';
+  if(/HOTEL|ASTON|\bINN\b|RESORT|DORMITORY|GUEST|HOSTEL|HORISON|HARRIS/.test(s))return 'Hotel / hospitality';
+  if(/BYD|ARISTA|CHERY|GEELY|WULING|HYUNDAI|TOYOTA|DEALER|SHOWROOM|MARKETING GALLERY|SALES CENTER|AVANTE|\bAUTO\b|MITSUBISHI|NETA|DFSK|\bMG \b/.test(s))return 'Auto dealer / showroom';
+  if(/COFFEE|CAFE|CAFÉ|CAR WASH|RESTO|RESTAURANT|\bKOPI\b|EATERY|FOOD PARK|\bFOOD\b|TERAS|DRUMS|AVENUE|POPI|\bRM \b|WAROENG|WARUNG|CIBIUK|SAMOLO/.test(s))return 'F&B / café / leisure retail';
+  if(/\bRS |RSUD|RUMAH SAKIT|MEDIKA|HOSPITAL|KLINIK|SILOAM|HERMINA|SENTOSA|ADVENT|AYSHA/.test(s))return 'Hospital / health';
+  if(/BALAI KOTA|SEKDA|PEMDA|PEMKOT|PEMKAB|DPRD|DISHUB|DINAS|SAMSAT|KECAMATAN|GEDUNG SATE|POLRES|POLSEK|POLDA|POSPOL|KODIM|KEJAKSAAN|PENGADILAN|BANDARA|AIRPORT|STASIUN|STATION|TERMINAL|KAMPUS|UNIVERSITAS|\bITB\b|UNPAD|SEKOLAH|ALUN-ALUN|ALUN ALUN|MASJID|MESJID|ISTANA/.test(s))return 'Public / govt / transport';
+  if(/PLN UP3|PLN ULP|PLN UID|PLN UIP|PLN UPT|CSE PLN|\bUP3\b|\bULP\b|\bUPT\b|UPDL|KANWIL|DAYA\+ PLN|DAYA\+ CENTER|DAYA\+ ULP|ICON ?HUB|ICON ?PLUS|\bPOSKO\b|\bUID\b|PLN CGE|MOBILE UID|GARDU INDUK|BISNIS CENTER|PLN 3 |SENTRA KIIC|ASTAKAIA/.test(s))return 'PLN office / service unit';
+  if(/SPBU|PERTAMINA|SHELL| BP |\bVIVO\b/.test(s))return 'SPBU / fuel station';
+  if(/GEOWISATA|WISATA|PUNCAK|PANTAI|BEACH|CURUG|FLOATING|\bDAM\b|JATILUHUR|GLAMPING|VILLA|SAFARI|GOLF|CAMPSITE|CAMP\b|FOREST|RENGGANIS|OCEAN VIEW|PARADISO|FARM/.test(s))return 'Tourism / leisure';
+  if(/KOTA BARU PARAHYANGAN|\bKBP\b|GRAND DEPOK CITY|GARDENS|BALE PARE|TOWNSHIP|RESIDENCE|\bPERUM\b|CLUSTER|CITRALAND|CITRAGRAN|CITRA |VERONA|HILLS|GRAND TARUMA|MAHATA|FAMILY PARK|PARAHYANGAN|APARTEMEN|APARTMENT|HARVEST CITY|MILLENNIUM CITY|GREENLAND|SAKURA|PANCAR GARDEN|CIANJUR ASRI|GATEWAY|\bKP \b|KAMPUNG/.test(s))return 'Residential / township';
+  if(/BTN|BANK|BSPACE|OFFICE|GEDUNG|TOWER|GRHA|GRAHA|KANTOR|TENTH AVENUE|WALKING/.test(s))return 'Office / commercial bldg';
+  return 'Other / mixed';
+ }
+ const ICON={'Toll rest area':'🛣️','Mall / retail':'🛍️','Hotel / hospitality':'🏨','Auto dealer / showroom':'🚗','F&B / café / leisure retail':'☕','Hospital / health':'🏥','Public / govt / transport':'🏛️','PLN office / service unit':'⚡','SPBU / fuel station':'⛽','Tourism / leisure':'🏖️','Residential / township':'🏘️','Office / commercial bldg':'🏢','Other / mixed':'📍'};
+ const TK=SR.reduce((s,r)=>s+r.kwh,0),TN=SR.length,TR=SR.reduce((s,r)=>s+r.rp,0);
+ const G={};SR.forEach(r=>{const t=classify(r.nama);const g=G[t]=G[t]||{n:0,kwh:0,trx:0,rp:0,kw:0,dur:0};g.n++;g.kwh+=r.kwh;g.trx+=r.trx;g.rp+=r.rp;g.kw+=r.kw;g.dur+=r.dur;});
+ let rows=Object.entries(G).map(([t,g])=>({type:t,n:g.n,shareLoc:+(100*g.n/TN).toFixed(1),kwhLoc:Math.round(g.kwh/g.n),trxLoc:Math.round(g.trx/g.n),kwhSess:+(g.kwh/g.trx).toFixed(1),avgKw:Math.round(g.kw/g.n),dur:Math.round(g.dur/g.n),rpLoc:Math.round(g.rp/g.n),shareKwh:+(100*g.kwh/TK).toFixed(1),totKwh:g.kwh}));
+ rows.sort((a,b)=>b.kwhLoc-a.kwhLoc);rows.forEach((r,i)=>r.rank=i+1);window._secRows=rows;
+ const vCol=k=>k>=15000?'#1f7a3d':k>=9000?'#e0852b':k>=5000?'#e0a52b':'#d6443c';
+ const vTxt=r=>(r.kwhLoc>=15000?'⭐ Top performer':r.kwhLoc>=9000?'Strong':r.kwhLoc>=5000?'Moderate':'Underperformer')+(r.n<5?' · small n':'');
+ const rp=n=>n>=1e9?'Rp '+(n/1e9).toFixed(1)+' M':n>=1e6?'Rp '+Math.round(n/1e6)+' jt':'Rp '+Math.round(n);
+ const num=n=>n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(0)+'k':''+n;
+ const top=rows[0],pln=rows.find(r=>r.type==='PLN office / service unit')||{},hotel=rows.find(r=>r.type==='Hotel / hospitality')||{},mall=rows.find(r=>r.type==='Mall / retail')||{},dealer=rows.find(r=>r.type==='Auto dealer / showroom')||{};
+
+ let sortK='kwhLoc',sortD=-1;
+ function renderTable(){const disp=[...rows].sort((a,b)=>{let x=a[sortK],y=b[sortK];if(typeof x==='string')return sortD*(''+x).localeCompare(y);return sortD*((x??0)-(y??0));});
+  $('tblSec').querySelector('tbody').innerHTML=disp.map(r=>`<tr><td style="font-weight:600;color:var(--navy)">${ICON[r.type]||''} ${r.type}</td>
+   <td>${r.n}</td><td>${r.shareLoc}%</td>
+   <td><span style="display:inline-block;min-width:46px;font-weight:700;color:#fff;background:${vCol(r.kwhLoc)};border-radius:6px;padding:1px 6px;text-align:center">${num(r.kwhLoc)}</span></td>
+   <td>${r.trxLoc}</td><td>${r.kwhSess}</td><td>${r.avgKw}</td><td>${r.dur}</td><td>${rp(r.rpLoc)}</td><td>${r.shareKwh}%</td>
+   <td style="font-size:11px;font-weight:600;color:${vCol(r.kwhLoc)}">${vTxt(r)}</td></tr>`).join('');}
+
+ function renderCards(){const cards=[rows[0],rows[1],rows[2],rows[rows.length-1]];
+  $('secCards').innerHTML=cards.map(r=>`<div class="rqc"><div class="t">${ICON[r.type]} ${r.type} · ${num(r.kwhLoc)} kWh/site</div><p><b>${vTxt(r).replace(' · small n','')}</b>. ${r.n} sites (${r.shareLoc}% of network) capturing ${r.shareKwh}% of all energy. ${r.trxLoc} sessions/site · ${r.avgKw} kW avg · ${r.dur} min dwell · ${rp(r.rpLoc)}/site.</p></div>`).join('');}
+
+ function renderInsight(){
+  $('secInsight').innerHTML=`<b>Where SPKLU actually sells:</b> classified across <b>${TN} charging locations</b>, the busiest sector by far is <b>${ICON[top.type]} ${top.type}</b> at <b>${num(top.kwhLoc)} kWh/site</b> — about <b>${(top.kwhLoc/(pln.kwhLoc||1)).toFixed(1)}×</b> a PLN office site and <b>${(top.kwhLoc/(hotel.kwhLoc||1)).toFixed(0)}×</b> a hotel site. Yet <b>PLN offices are the most deployed</b> (${pln.n} sites, ${pln.shareLoc}% of the network) while <b>hotels are the weakest high-count sector</b> (${hotel.n} sites averaging just ${num(hotel.kwhLoc)} kWh). The lesson for siting: <b>transit-captive, high-power, short-dwell</b> locations sell; <b>amenity</b> chargers (hotels, offices) sit idle. Build where cars must stop, not where they happen to park.`;}
+
+ function renderWhy(){const card=(r,why)=>`<div style="border-left:3px solid ${vCol(r.kwhLoc)};padding:8px 0 8px 12px;margin-bottom:12px"><div style="font-weight:700;color:var(--navy)">${ICON[r.type]} ${r.type} — ${num(r.kwhLoc)} kWh/site · ${r.avgKw} kW · ${r.dur} min dwell</div><div style="font-size:12.5px;color:var(--mut);line-height:1.6;margin-top:3px">${why}</div></div>`;
+  $('secWhy').innerHTML=
+   card(top,`<b>The clear winner.</b> Toll rest areas serve <b>captive transit demand</b>: long-distance drivers facing range anxiety with no alternative for tens of kilometres. High-power DC (${top.avgKw} kW avg) plus the shortest dwell of any sector (${top.dur} min) means <b>high turnover</b> — each charger serves many cars per day. Need is non-negotiable, so utilisation is structural, not promotional.`)
+   +card(dealer,`<b>Strong, and underrated.</b> Brand showrooms (BYD, Chery, Geely…) anchor a built-in EV audience — test drives, delivery top-ups, owner servicing — and act as de-facto fast-charging hubs for that brand's community. Decent power and moderate dwell (${dealer.dur} min) keep throughput high.`)
+   +card(mall,`<b>Solid destination charging.</b> Malls convert <b>dwell time into energy</b>: 1–3 hour visits (${mall.dur} min avg) let AC/mid-power chargers fill up while people shop. Footfall is reliable, but each session is slower and lower-power than a toll stop, so per-site energy is roughly half the toll figure.`)
+   +card(pln,`<b>Ubiquitous but under-used.</b> PLN offices host <b>${pln.n} sites — ${pln.shareLoc}% of the entire network</b> — yet average only ${num(pln.kwhLoc)} kWh/site. They were deployed for <b>coverage and mandate</b> (a charger at every service unit), not where demand concentrates: modest power (${pln.avgKw} kW), long dwell (${pln.dur} min), and office-hours/awkward access cap turnover. Great for availability, weak for revenue.`)
+   +card(hotel,`<b>The laggard.</b> Hotel chargers are an <b>amenity, not a business</b>: slow AC (${hotel.avgKw} kW) with overnight dwell (${hotel.dur} min) means a charger serves <b>roughly one car per night</b>. Lowest energy per session and lowest throughput of any sector — fine as a guest perk, poor as a standalone investment.`);}
+
+ let cBar,cScat,cShare;
+ window.initSector=function(){if(window.secInit)return;window.secInit=true;
+  renderInsight();renderCards();renderTable();renderWhy();
+  $('tblSec').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='type'||k==='verdict')?1:-1;}renderTable();});
+  $('secMethod').innerHTML=`<b>Method.</b> Each of ${TN} public charging locations (PLN primary data, Mar 2026: ${num(TK)} kWh, ${num(SR.reduce((s,r)=>s+r.trx,0))} sessions) is classified into a venue sector by keyword-matching its registered name. Metrics are per-site averages within each sector; <b>kWh/site</b> is the headline "laris" signal (sales intensity), distinct from <b>% of energy</b> (total volume, which favours high-count sectors). “Other / mixed” holds names with no clear venue cue. Classification is heuristic — a small share of sites may be mis-bucketed — but the ranking is robust to those edges.`;
+  // Bar: kWh per site
+  const order=[...rows];
+  cBar=new Chart($('cSecBar'),{type:'bar',data:{labels:order.map(r=>r.type),datasets:[{label:'kWh / site',data:order.map(r=>r.kwhLoc),backgroundColor:order.map(r=>vCol(r.kwhLoc)),borderRadius:4}]},
+   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${num(c.raw)} kWh/site · ${order[c.dataIndex].n} sites`}}},scales:{x:{title:{display:true,text:'avg kWh per site / month'},grid:{color:'#eef1f6'}},y:{ticks:{font:{size:10}}}}}});
+  $('cSecBar').parentElement.style.height='360px';
+  // Scatter: power vs intensity
+  const pts=rows.map(r=>({x:r.avgKw,y:r.kwhLoc,r:Math.max(6,Math.sqrt(r.n)*4),type:r.type,n:r.n,dur:r.dur}));
+  cScat=new Chart($('cSecScatter'),{type:'bubble',data:{datasets:[{data:pts,backgroundColor:pts.map(p=>vCol(p.y)+'cc'),borderColor:'#16305f',borderWidth:1}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.type}: ${c.raw.x} kW, ${num(c.raw.y)} kWh/site (${c.raw.n} sites, ${c.raw.dur} min dwell)`}}},
+    scales:{x:{title:{display:true,text:'avg charger power (kW) — DC fast →'},grid:{color:'#eef1f6'}},y:{title:{display:true,text:'kWh / site →'},grid:{color:'#eef1f6'}}}}});
+  $('cSecScatter').parentElement.style.height='360px';
+  $('secScatterNote').innerHTML=`<b>Read:</b> the <b>top-right cluster</b> (high power + high energy) is where the money is — toll rest areas and dealers run fast DC and turn cars over quickly. The <b>bottom-left</b> (hotels, hospitals, tourism) pairs slow AC with long dwell, so sites barely move energy. <b>Charger speed and dwell time — not footfall alone — decide sales.</b>`;
+  // Share of network vs share of energy
+  const so=[...rows].sort((a,b)=>b.shareKwh-a.shareKwh);
+  cShare=new Chart($('cSecShare'),{type:'bar',data:{labels:so.map(r=>r.type),datasets:[
+    {label:'% of sites (deployment)',data:so.map(r=>r.shareLoc),backgroundColor:'#9aa6bd'},
+    {label:'% of energy (demand)',data:so.map(r=>r.shareKwh),backgroundColor:'#d6443c'}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},tooltip:{}},scales:{x:{ticks:{font:{size:9}}},y:{title:{display:true,text:'%'},grid:{color:'#eef1f6'}}}}});
+  $('cSecShare').parentElement.style.height='340px';
+  $('secShareNote').innerHTML=`<b>Misallocation, visualised:</b> where the <b>grey bar (sites) towers over the red bar (energy)</b>, capital is deployed ahead of demand — most visibly <b>PLN offices</b> (${pln.shareLoc}% of sites, ${pln.shareKwh}% of energy) and <b>hotels</b>. Where <b>red exceeds grey</b> — <b>toll rest areas</b> (${top.shareLoc}% of sites, ${top.shareKwh}% of energy) — each site punches far above its weight. A commercial network would tilt hard toward the red-over-grey sectors.`;
+ };
 })();
 
 // ===== SUMMARY (paper-style synthesis) =====
