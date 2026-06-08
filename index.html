@@ -431,23 +431,37 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <span id="natStatusStrip" style="margin-left:auto;font-size:11px;color:var(--mut)"></span></div>
 <div id="natMap" style="height:560px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
 <div class="legend" id="natMapLegend" style="margin-top:8px"></div></div>
-<div class="card" style="margin-bottom:15px"><h3>📈 National <span>consumption growth</span> <span class="sub">— monthly kWh sold &amp; sessions, Jan 2024 → Jun 2026 (national total — not region-filtered)</span></h3><canvas id="cNatTs"></canvas>
+<div class="card" style="margin-bottom:15px"><h3>📈 National <span>consumption growth</span> <span class="sub">— monthly kWh sold &amp; sessions, Jan 2024 → Jun 2026 (national total — not region-filtered)</span></h3><div><canvas id="cNatTs"></canvas></div>
 <div class="insight" id="natTsNote" style="margin-top:10px;margin-bottom:0"></div></div>
 <div class="grid2">
-<div class="card"><h3>🏝️ SPKLU by <span>region</span> <span class="sub">— site count per island</span></h3><canvas id="cNatRegion"></canvas>
+<div class="card"><h3>🏝️ SPKLU by <span>region</span> <span class="sub">— site count per island</span></h3><div><canvas id="cNatRegion"></canvas></div>
 <div class="insight" id="natRegionNote" style="margin-top:10px;margin-bottom:0"></div></div>
-<div class="card"><h3>🔌 Charger <span>mix</span> <span class="sub">— DC fast vs AC (selected region)</span></h3><canvas id="cNatCap"></canvas></div></div>
-<div class="card" style="margin-top:15px"><h3>🟢 Operational <span>status</span> <span class="sub">— network availability / condition (selected region)</span></h3><canvas id="cNatStatus"></canvas>
+<div class="card"><h3>🔌 Charger <span>mix</span> <span class="sub">— DC fast vs AC (selected region)</span></h3><div><canvas id="cNatCap"></canvas></div></div></div>
+<div class="card" style="margin-top:15px"><h3>🟢 Operational <span>status</span> <span class="sub">— network availability / condition (selected region)</span></h3><div><canvas id="cNatStatus"></canvas></div>
 <div class="insight" id="natStatusNote" style="margin-top:10px;margin-bottom:0"></div></div>
 <div class="card" style="margin-top:15px"><h3>Provinces <span>ranked</span> <span class="sub">— SPKLU count (province estimated from coordinates; click header to sort)</span></h3>
 <div class="tablewrap" style="max-height:440px"><table id="tblNatProv"><thead><tr><th data-k="name">Province</th><th data-k="isl">Region</th><th data-k="n">SPKLU</th><th data-k="pop">Population</th><th data-k="per100k">SPKLU/100k</th><th data-k="dc">DC fast</th><th data-k="active">Active</th><th data-k="off">Offline</th><th data-k="estkwh">Est. kWh/mo</th><th data-k="eqflag">Equity</th></tr></thead><tbody></tbody></table></div></div>
 <div class="card" style="margin-top:15px"><h3>⚖️ National <span>spatial equity</span> <span class="sub">— is charging infrastructure distributed in line with population? (SPKLU vs people, by province)</span></h3>
 <div class="insight" id="natEqInsight"></div>
 <div class="grid2">
-<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>Lorenz <span>curve</span> <span class="sub">— SPKLU vs population; further from the diagonal = more unequal</span></h3><canvas id="cNatLorenz"></canvas>
+<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>Lorenz <span>curve</span> <span class="sub">— SPKLU vs population; further from the diagonal = more unequal</span></h3><div><canvas id="cNatLorenz"></canvas></div>
 <div class="note" id="natGiniNote" style="font-size:11px;color:var(--mut);margin-top:8px"></div></div>
-<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>SPKLU per <span>100k people</span> <span class="sub">— over- vs under-served provinces</span></h3><canvas id="cNatPerCap"></canvas></div></div>
+<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>SPKLU per <span>100k people</span> <span class="sub">— over- vs under-served provinces</span></h3><div><canvas id="cNatPerCap"></canvas></div></div></div>
 <div class="note" id="natEqMethod" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
+<div class="card" style="margin-top:15px"><h3>🏷️ SPKLU by <span>location type</span> <span class="sub">— what kind of places host charging (toll, mall, dealer, PLN office, hotel…), from site names · selected region</span></h3>
+<div class="grid2">
+<div><div style="height:430px"><canvas id="cNatVenue"></canvas></div></div>
+<div id="natVenuePanel"></div></div>
+<div class="note" id="natVenueNote" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
+<div class="card" style="margin-top:15px"><h3>💰 Charging vs <span>socio-economic development</span> <span class="sub">— do chargers follow money, not just people? SPKLU per 100k vs province economy</span></h3>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:8px">
+<span style="font-size:12px;font-weight:600;color:var(--navy)">Compare against</span>
+<button class="mode-btn secon active" data-x="grdp">GRDP per capita</button>
+<button class="mode-btn secon" data-x="hdi">Human Development Index</button>
+<button class="mode-btn secon" data-x="pov">Poverty rate</button></div>
+<div style="height:380px"><canvas id="cNatEcon"></canvas></div>
+<div class="insight" id="natEconNote" style="margin-top:10px;margin-bottom:0"></div>
+<div class="note" id="natEconMethod" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
 <div class="card" style="margin-top:15px"><h3>🤖 National <span>insight synthesis</span></h3><div id="natWhy"></div></div>
 </div>
 
@@ -1446,6 +1460,26 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
 
  // Province population (BPS ~2023, millions) — enables national spatial-equity (SPKLU vs people)
  const POP={'Aceh':5.41,'Sumatera Utara':15.39,'Sumatera Barat':5.70,'Riau':6.73,'Kepulauan Riau':2.18,'Jambi':3.70,'Sumatera Selatan':8.74,'Bangka Belitung':1.52,'Bengkulu':2.09,'Lampung':9.18,'Banten':12.25,'DKI Jakarta':10.67,'Jawa Barat':49.86,'Jawa Tengah':37.54,'DI Yogyakarta':3.71,'Jawa Timur':41.15,'Bali':4.42,'Nusa Tenggara Barat':5.55,'Nusa Tenggara Timur':5.62,'Kalimantan Barat':5.59,'Kalimantan Tengah':2.81,'Kalimantan Selatan':4.20,'Kalimantan Timur':3.97,'Kalimantan Utara':0.73,'Sulawesi Utara':2.66,'Gorontalo':1.20,'Sulawesi Tengah':3.13,'Sulawesi Barat':1.44,'Sulawesi Selatan':9.36,'Sulawesi Tenggara':2.78,'Maluku':1.92,'Maluku Utara':1.36,'Papua Barat':1.18,'Papua':4.32};
+ // Socio-economic context (BPS ~2023, indicative): [GRDP per capita (juta Rp/yr), HDI/IPM, poverty %]
+ const ECON={'Aceh':[40,73.0,14.4],'Sumatera Utara':[62,73.0,8.1],'Sumatera Barat':[56,74.0,5.9],'Riau':[145,74.6,6.7],'Kepulauan Riau':[135,77.3,5.6],'Jambi':[78,72.6,7.6],'Sumatera Selatan':[72,71.3,11.2],'Bangka Belitung':[70,73.0,4.5],'Bengkulu':[42,72.6,14.0],'Lampung':[53,71.4,11.1],'Banten':[55,73.8,6.2],'DKI Jakarta':[330,83.5,4.4],'Jawa Barat':[50,74.2,7.6],'Jawa Tengah':[48,73.4,10.8],'DI Yogyakarta':[40,81.6,11.0],'Jawa Timur':[73,73.4,10.3],'Bali':[60,78.0,4.3],'Nusa Tenggara Barat':[38,70.0,13.8],'Nusa Tenggara Timur':[25,66.0,19.9],'Kalimantan Barat':[55,69.0,6.7],'Kalimantan Tengah':[78,72.0,5.1],'Kalimantan Selatan':[70,72.0,4.3],'Kalimantan Timur':[270,78.2,6.1],'Kalimantan Utara':[175,72.4,6.5],'Sulawesi Utara':[60,73.8,7.4],'Gorontalo':[42,70.0,15.0],'Sulawesi Tengah':[95,71.0,12.4],'Sulawesi Barat':[42,67.0,11.5],'Sulawesi Selatan':[75,73.0,8.7],'Sulawesi Tenggara':[62,72.2,11.4],'Maluku':[33,71.0,16.0],'Maluku Utara':[50,70.0,6.4],'Papua Barat':[78,67.0,21.0],'Papua':[60,62.3,26.0]};
+ const econOf=i=>ECON[(PR[i]||{}).name]||null;
+ // venue / location-type classifier (national, from site name)
+ function venueOf(nm){const s=(nm||'').toUpperCase();
+  if(/REST AREA|RA KM|KM \d+ ?[AB]\b|RUAS|TRAVOY| TOL |TOL$|JORR|JAGORAWI|CIPULARANG|CIPALI|PALIKANCI|KANCI|PEJAGAN|CIKAMPEK|JAKARTA - |GERBANG TOL|\bGT /.test(s))return 'Toll rest area';
+  if(/MALL|SUMMARECON|LIPPO|PLAZA|SQUARE|LIFESTYLE|TRANS STUDIO|PVJ|PARIS VAN JAVA|CITYLINK|TRANSMART|TECHNOMART|GRAND INDONESIA|KASABLANKA|PONDOK INDAH|SENAYAN|CENTRAL PARK|AEON|\bPIM\b|GANDARIA|KELAPA GADING|BLOK M|MARGO|CIBINONG CITY|PARAGON|GALAXY|HARTONO|PAKUWON|TUNJUNGAN|CIPUTRA/.test(s))return 'Mall / retail';
+  if(/HOTEL|ASTON|\bINN\b|RESORT|DORMITORY|HOSTEL|HORISON|HARRIS|MERCURE|\bIBIS\b|SANTIKA|NOVOTEL|SWISS|FAVE|AMARIS/.test(s))return 'Hotel / hospitality';
+  if(/BYD|ARISTA|CHERY|GEELY|WULING|HYUNDAI|TOYOTA|DEALER|SHOWROOM|MARKETING GALLERY|SALES|AVANTE|\bAUTO\b|MITSUBISHI|NETA|DFSK|\bMG |SUZUKI|HONDA|NISSAN|DAIHATSU|ASTRA/.test(s))return 'Auto dealer / showroom';
+  if(/COFFEE|CAFE|CAF[EÉ]|CAR ?WASH|RESTO|RESTAURANT|\bKOPI\b|FOOD|TERAS|\bRM |WAROENG|WARUNG|EATERY|BAKERY/.test(s))return 'F&B / café';
+  if(/\bRS |RSUD|RUMAH SAKIT|MEDIKA|HOSPITAL|KLINIK|SILOAM|HERMINA|PUSKESMAS/.test(s))return 'Hospital / health';
+  if(/BANDARA|AIRPORT|STASIUN|STATION|TERMINAL|\bMRT\b|\bLRT\b|\bKRL\b|WHOOSH|PELABUHAN|HALTE/.test(s))return 'Transport hub';
+  if(/BALAI KOTA|SEKDA|PEMDA|PEMKOT|PEMKAB|DPRD|DISHUB|DINAS|SAMSAT|KECAMATAN|GEDUNG SATE|POLRES|POLSEK|POLDA|POSPOL|KODIM|KEJAKSAAN|PENGADILAN|KANTOR DESA|GBK|GELORA|ISTANA|MASJID|MESJID|ALUN|KAMPUS|UNIVERSITAS|\bITB\b|UNPAD|SEKOLAH/.test(s))return 'Public / govt / edu';
+  if(/PLN UP3|PLN ULP|PLN UID|PLN UIP|PLN UPT|CSE PLN|\bUP3\b|\bULP\b|\bUPT\b|UPDL|KANWIL|DAYA\+|ICON ?HUB|ICON ?PLUS|\bPOSKO\b|\bUID\b|\bUIW\b|PLN CGE|MOBILE UID|GARDU INDUK|BISNIS CENTER|UIKL/.test(s))return 'PLN office';
+  if(/SPBU|PERTAMINA|SHELL| BP |\bVIVO\b/.test(s))return 'SPBU / fuel';
+  if(/WISATA|PUNCAK|PANTAI|BEACH|ANCOL|TMII|RAGUNAN|\bGOLF\b|SAFARI|CURUG|GLAMPING|VILLA|CANDI|TAMAN|MUSEUM|KEBUN|DANAU/.test(s))return 'Tourism / leisure';
+  if(/PARAHYANGAN|\bKBP\b|GARDENS|TOWNSHIP|RESIDENCE|\bPERUM\b|CLUSTER|CITRA|VERONA|HILLS|APARTEMEN|APARTMENT|HARVEST CITY|GREENLAND|GATEWAY|SUDIRMAN|SCBD|\bBSD\b|\bPIK\b|PANTAI INDAH|KOTA WISATA|SENTUL|MEIKARTA|PERUMAHAN/.test(s))return 'Residential / township';
+  if(/\bBTN\b|BANK|BSPACE|OFFICE|GEDUNG|TOWER|GRHA|GRAHA|KANTOR|WISMA|MENARA|BUSINESS PARK|PERKANTORAN/.test(s))return 'Office / commercial';
+  return 'Other / mixed';}
+ const VICON={'Toll rest area':'🛣️','Mall / retail':'🛍️','Hotel / hospitality':'🏨','Auto dealer / showroom':'🚗','F&B / café':'☕','Hospital / health':'🏥','Transport hub':'✈️','Public / govt / edu':'🏛️','PLN office':'⚡','SPBU / fuel':'⛽','Tourism / leisure':'🏖️','Residential / township':'🏘️','Office / commercial':'🏢','Other / mixed':'📍'};
  const agById={}; AG.forEach(a=>agById[a.p]=a);
  const provPop=i=>(POP[(PR[i]||{}).name]||0)*1e6;
  // installed active capacity per province (kW) from points (status 0/1 = available/in-use) -> used to allocate national consumption
@@ -1465,7 +1499,7 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  const agg=idxs=>{const set=new Set(idxs),s={n:0,pln:0,nonpln:0,dc:0,ac:0,avail:0,inuse:0,off:0,other:0};AG.forEach(a=>{if(set.has(a.p))for(const k in s)s[k]+=a[k]||0;});return s;};
  const labelOf=sel=>sel==='all'?'Indonesia':sel.slice(0,4)==='isl:'?sel.slice(4):(PR[+sel.slice(3)]||{}).name;
 
- let cTs,cCap,cStatus,cRegion,cLorenz,cPerCap,natMap,natLayer,sortK='n',sortD=-1,curIdx=null;
+ let cTs,cCap,cStatus,cRegion,cLorenz,cPerCap,cVenue,cEcon,econX='grdp',natMap,natLayer,sortK='n',sortD=-1,curIdx=null;
 
  function kpiTiles(s,name){const t=(v,l,c)=>`<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px"><div style="font-size:20px;font-weight:800;color:${c||'var(--navy)'}">${v}</div><div style="font-size:11px;color:var(--mut);margin-top:2px">${l}</div></div>`;
   const act=s.avail+s.inuse;
@@ -1532,7 +1566,30 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   // region bar highlight
   const active=sel.slice(0,4)==='isl:'?sel.slice(4):(sel.slice(0,3)==='pr:'?(PR[+sel.slice(3)]||{}).isl:null);
   if(cRegion){cRegion.data.datasets[0].backgroundColor=ISL.map(i=>i===active?'#d6443c':(active?'#c7cedb':'#16305f'));cRegion.update();}
-  renderEquity(sel.slice(0,3)==='pr:'?+sel.slice(3):null);}
+  const hi=sel.slice(0,3)==='pr:'?+sel.slice(3):null;
+  renderEquity(hi);renderVenue(idxs);renderEcon(hi);}
+
+ function renderVenue(idxs){const set=new Set(idxs),G={};let n=0;
+  PTS.forEach(p=>{if(!set.has(p[2]))return;n++;const v=venueOf(p[8]);G[v]=(G[v]||0)+1;});
+  const rows=Object.entries(G).map(([t,c])=>({t,c})).sort((a,b)=>b.c-a.c);
+  if(cVenue)cVenue.destroy();
+  cVenue=new Chart($('cNatVenue'),{type:'bar',data:{labels:rows.map(r=>VICON[r.t]+' '+r.t),datasets:[{data:rows.map(r=>r.c),backgroundColor:rows.map(r=>r.t==='PLN office'?'#16305f':r.t==='Other / mixed'?'#9aa6bd':'#3a6ea5'),borderRadius:3}]},
+   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fmt(c.raw)+' sites ('+Math.round(100*c.raw/(n||1))+'%)'}}},scales:{x:{grid:{color:'#eef1f6'}},y:{ticks:{font:{size:10}}}}}});
+  const top=rows.filter(r=>r.t!=='Other / mixed').slice(0,5);
+  $('natVenuePanel').innerHTML=`<div style="font-size:13px;color:var(--navy);font-weight:700;margin-bottom:8px">${fmt(n)} sites classified</div>`+top.map(r=>`<div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 2px;font-size:12.5px"><span>${VICON[r.t]} ${r.t}</span><span style="font-weight:700;color:var(--navy)">${fmt(r.c)} · ${Math.round(100*r.c/(n||1))}%</span></div>`).join('')+`<div style="font-size:11px;color:var(--mut);margin-top:8px">PLN service units dominate by <b>count</b>; commercial venues (toll, dealers, malls) are where <b>utilisation</b> concentrates — see Sector Analysis.</div>`;
+  $('natVenueNote').innerHTML=`<b>Method.</b> Venue type is inferred from each station's registered name by keyword (toll/rest-area, mall, dealer, hotel, PLN office, hospital, transport hub, public/govt, residential, F&B, tourism, SPBU, office). ~22% fall to “Other/mixed” where the name gives no clear cue. Counts show <b>where chargers are placed</b>; for <b>where energy sells</b> by venue, see the Sector Analysis tab.`;}
+
+ function pearson(xs,ys){const n=xs.length;if(n<3)return 0;const mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;let sxy=0,sx=0,sy=0;for(let i=0;i<n;i++){const dx=xs[i]-mx,dy=ys[i]-my;sxy+=dx*dy;sx+=dx*dx;sy+=dy*dy;}return sx&&sy?sxy/Math.sqrt(sx*sy):0;}
+ function renderEcon(hi){const XI={grdp:0,hdi:1,pov:2}[econX],XL={grdp:'GRDP per capita (juta Rp/yr)',hdi:'Human Development Index',pov:'Poverty rate (%)'}[econX],XN={grdp:'GRDP per capita',hdi:'HDI',pov:'poverty'}[econX];
+  const rows=AG.filter(a=>econOf(a.p)&&provPop(a.p)>0).map(a=>({i:a.p,name:PR[a.p].name,x:econOf(a.p)[XI],y:per100k(a.p),pop:provPop(a.p)}));
+  const r=pearson(rows.map(d=>d.x),rows.map(d=>d.y));
+  const pts=rows.map(d=>({x:d.x,y:+d.y.toFixed(2),r:Math.max(4,Math.sqrt(d.pop/1e6)*3),name:d.name,i:d.i}));
+  if(cEcon)cEcon.destroy();
+  cEcon=new Chart($('cNatEcon'),{type:'bubble',data:{datasets:[{data:pts,backgroundColor:pts.map(p=>p.i===hi?'#d6443c':'#3a6ea5aa'),borderColor:'#16305f',borderWidth:1}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw.name}: ${c.raw.x} ${econX==='grdp'?'jt':econX==='pov'?'%':'HDI'}, ${c.raw.y}/100k`}}},scales:{x:{title:{display:true,text:XL},grid:{color:'#eef1f6'}},y:{title:{display:true,text:'SPKLU per 100k people'},grid:{color:'#eef1f6'}}}}});
+  const strength=Math.abs(r)>=.6?'strong':Math.abs(r)>=.35?'moderate':'weak';
+  $('natEconNote').innerHTML=`<b>Charging follows money, not just people.</b> Across ${rows.length} provinces, SPKLU-per-100k correlates with <b>${XN}</b> at <b>r ≈ ${r.toFixed(2)}</b> (${strength}, ${r>=0?'positive':'negative'}). ${econX==='pov'?'Higher-poverty provinces have <b>fewer</b> chargers per person':'Higher-'+(econX==='hdi'?'HDI':'income')+' provinces have <b>more</b> chargers per person'} — the roll-out <b>compounds</b> existing socio-economic advantage. At national scale this is the distributive &amp; recognition face of energy justice: low-income, high-poverty provinces fall doubly behind.`;
+  $('natEconMethod').innerHTML=`<b>Method.</b> Province GRDP/capita, HDI and poverty are indicative BPS ~2023 figures; bubble size ∝ population. Pearson r is the linear association with SPKLU per 100k across ${rows.length} provinces. Associative, not causal; province assignment estimated from coordinates.`;}
 
  function renderEquity(hi){const E=equity();
   if(cLorenz)cLorenz.destroy();
@@ -1576,6 +1633,7 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(natMap);
   window.natMap=natMap;
   document.querySelectorAll('.natmode').forEach(btn=>btn.onclick=()=>window.natSetMode(btn.dataset.mode,btn));
+  document.querySelectorAll('.secon').forEach(btn=>btn.onclick=()=>{econX=btn.dataset.x;document.querySelectorAll('.secon').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderEcon(window.RF&&window.RF.get().slice(0,3)==='pr:'?+window.RF.get().slice(3):null);});
   // table sort
   $('tblNatProv').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='name'||k==='isl')?1:-1;}renderTable(curIdx||AG.map(a=>a.p));});
   // narrative
