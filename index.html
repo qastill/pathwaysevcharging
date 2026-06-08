@@ -979,7 +979,8 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  function renderInsight(){const top=rows[0],nAdd=rows.filter(r=>r.add>0).length,totAdd=rows.reduce((s,r)=>s+r.add,0),T=(+$('liTarget').value).toFixed(1);
   $('liInsight').innerHTML=`<b>Location intelligence — where to add SPKLU next:</b> under the current weighting, <b>${top.kota}</b> is the highest-opportunity area (score <b>${top.score}</b>${top.add>0?`, suggested <b>+${top.add} units</b>`:''}). <b>${nAdd} of ${rows.length} areas</b> sit below the ${T}/100k target, implying ~<b>${totAdd} additional units</b> province-wide. Re-weight the criteria to compare <b>commercial-led</b> (demand/growth) vs <b>equity-led</b> (supply-gap/underserved) deployment — the trade-off at the heart of RACE for 2030.`;}
 
- function liDrawMap(){if(window.liLayer)window.liLayer.remove();window.liLayer=L.layerGroup().addTo(window.liMap);
+ let liMapObj=null;
+ function liDrawMap(){if(window.liLayer)window.liLayer.remove();window.liLayer=L.layerGroup().addTo(liMapObj);
   rows.forEach(r=>{const g=D.area_geo[r.kota];if(!g)return;L.circleMarker(g,{radius:8+r.score/5,color:colFn(r.score),fillColor:colFn(r.score),fillOpacity:.6,weight:1.5})
    .bindPopup(`<b>${r.kota}</b><br>Opportunity score: <b>${r.score}</b><br>Units/100k: ${r.upk} · EV/SPKLU: ${r.evps}<br>Suggested: <b>${r.add>0?'+'+r.add+' units':'maintain'}</b><br><i>${TAG[r.tag]}</i>`).addTo(window.liLayer);});}
 
@@ -991,11 +992,11 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    const add=Math.max(0,Math.round((T-a.upk)*a.pop/1e5));
    return {...a,score:+score.toFixed(1),tag,add};});
   rows.sort((x,y)=>y.score-x.score);rows.forEach((r,i)=>r.rank=i+1);
-  renderTable();renderCards();renderMatrix();renderInsight();if(window.liMap)liDrawMap();if(window.renderCand)window.renderCand();}
+  renderTable();renderCards();renderMatrix();renderInsight();if(liMapObj)liDrawMap();if(window.renderCand)window.renderCand();}
 
- window.initLiMap=function(){window.liMapInit=true;window.liMap=L.map('liMap').setView([-6.95,107.6],8);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.liMap);
-  liDrawMap();setTimeout(()=>window.liMap.invalidateSize(),150);if(window.initCandMap)window.initCandMap();};
+ window.initLiMap=function(){window.liMapInit=true;liMapObj=L.map('liMap').setView([-6.95,107.6],8);window.liMap=liMapObj;
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(liMapObj);
+  liDrawMap();setTimeout(()=>liMapObj.invalidateSize(),150);if(window.initCandMap)window.initCandMap();};
 
  renderSliders();
  $('tblLi').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='kota'||k==='tag')?1:-1;}renderTable();});
@@ -1062,14 +1063,15 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    <td><span style="display:inline-block;min-width:34px;font-weight:700;color:#fff;background:${colFn(c.score)};border-radius:6px;padding:1px 6px;text-align:center">${c.score}</span></td>
    <td style="font-size:11px">${c.tag}</td></tr>`).join('');}
  function renderTop(){$('liCandTop').innerHTML=cand.slice(0,3).map((c,i)=>`<div class="rqc"><div class="t">#${i+1} ${c.n} · ${c.score}</div><p><b>${TYPE[c.t]}</b> in ${c.a}. Nearest existing SPKLU <b>${c.near} km</b>. ${c.tag}.</p></div>`).join('');}
- function drawMap(){if(!window.liCandMap)return;if(window.candLayer)window.candLayer.remove();window.candLayer=L.layerGroup().addTo(window.liCandMap);
+ let candMap=null;
+ function drawMap(){if(!candMap)return;if(window.candLayer)window.candLayer.remove();window.candLayer=L.layerGroup().addTo(candMap);
   SP.forEach(p=>{L.circleMarker([p.lat,p.lng],{radius:2.5,color:'#1f7a3d',fillColor:'#1f7a3d',fillOpacity:.55,weight:0}).addTo(window.candLayer);});
   cand.forEach(c=>{L.circleMarker([c.lat,c.lng],{radius:6+c.score/9,color:'#16305f',fillColor:colFn(c.score),fillOpacity:.85,weight:1})
    .bindPopup(`<b>${c.n}</b><br>${TYPE[c.t]} · ${c.a}<br>Opportunity: <b>${c.score}</b><br>Nearest SPKLU: <b>${c.near} km</b><br><i>${c.tag}</i>`).addTo(window.candLayer);});}
  window.renderCand=function(){compute();renderTable();renderTop();drawMap();if(window.renderSiteReport)window.renderSiteReport();};
- window.initCandMap=function(){if(window.liCandMap)return;window.liCandMap=L.map('liCandMap').setView([-6.85,107.65],8);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.liCandMap);
-  drawMap();setTimeout(()=>window.liCandMap.invalidateSize(),160);if(window.initSiteReport)window.initSiteReport();};
+ window.initCandMap=function(){if(candMap)return;candMap=L.map('liCandMap').setView([-6.85,107.65],8);window.liCandMap=candMap;
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(candMap);
+  drawMap();setTimeout(()=>candMap.invalidateSize(),160);if(window.initSiteReport)window.initSiteReport();};
  $('tblCand').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='name'||k==='type'||k==='area'||k==='tag')?1:-1;}renderTable();});
  $('liCandNote').innerHTML='<b>Candidate sites</b> are real, recognisable West Java locations (toll rest areas, malls, transport hubs, tourism nodes) with approximate coordinates, used to illustrate point-level siting. <b>Nearest SPKLU</b> = great-circle distance to the closest existing public charger in the dataset ('+SP.length+' points); <b>Opportunity</b> blends that gap with the host area’s demand/growth/equity (current weights) plus a strategic factor by site type. Decision-support only — validate grid capacity, land access & traffic counts before siting.';
  window.renderCand();
@@ -1150,14 +1152,14 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   $('srNarr').innerHTML=`<b>🤖 AI Insight Synthesis.</b> <b>${c.n}</b> (${TYPE[c.t]}, ${c.a}) scores <b>${X.viab}/100</b> on commercial viability — ${verdict}. The ${X.R} km catchment holds ~<b>${fmtN(X.catchPop)} residents</b> and an estimated ~<b>${fmtN(X.evCatch)} EVs</b>; ${compTxt}. At a recommended <b>${X.units}× ${CHARGER[c.t]}</b> configuration the model projects ~<b>${fmtN(X.monthlySess)} sessions/month</b> (~${fmtN(X.kwhMo)} kWh, anchored to the network's observed ${ANCHOR} sessions/unit/month), implying ~<b>Rp ${fmtN(X.netMo)}</b> net monthly and a simple payback of ~<b>${paybackTxt(X.payback)}</b> against ~Rp ${fmtN(X.capex)} capex. ${c.near>=6?`The nearest existing SPKLU is <b>${c.near} km</b> away — a genuine charging gap.`:`The nearest existing SPKLU is only ${c.near} km away — confirm it isn't already absorbing this demand.`} <i>Decisive next check: grid headroom (distance to the nearest gardu/JTM and spare trafo capacity) — the factor competitors can't see and PLN can.</i>`;
  }
 
- let catchLayer;
- function drawMap(c,X){if(!window.srMap)return;if(catchLayer)catchLayer.remove();catchLayer=L.layerGroup().addTo(window.srMap);
+ let catchLayer,srMapObj=null;
+ function drawMap(c,X){if(!srMapObj)return;if(catchLayer)catchLayer.remove();catchLayer=L.layerGroup().addTo(srMapObj);
   L.circle([c.lat,c.lng],{radius:X.R*1000,color:'#2b6fe0',weight:1.5,fillColor:'#2b6fe0',fillOpacity:.10}).addTo(catchLayer);
   SP.forEach(p=>{const within=hav(c.lat,c.lng,p.lat,p.lng)<=X.R,mit=isMitra(p);
    L.circleMarker([p.lat,p.lng],{radius:within?5:2.5,color:mit?'#b08400':'#1f7a3d',fillColor:mit?'#b08400':'#1f7a3d',fillOpacity:within?.9:.4,weight:within?1:0})
     .bindPopup(`<b>${p.name}</b><br>${mit?'Private (MITRA)':'PLN'} · ${p.jenis||''}<br>${p.unit||1} unit(s)`).addTo(catchLayer);});
   L.circleMarker([c.lat,c.lng],{radius:10,color:'#16305f',fillColor:'#d6443c',fillOpacity:.95,weight:2}).bindPopup(`<b>${c.n}</b><br>${TYPE[c.t]} · ${c.a}`).addTo(catchLayer);
-  window.srMap.setView([c.lat,c.lng],12);setTimeout(()=>window.srMap.invalidateSize(),120);}
+  srMapObj.setView([c.lat,c.lng],12);setTimeout(()=>srMapObj.invalidateSize(),120);}
 
  function run(){const list=window._liCand||[];if(!list.length)return;const c=list[sel]||list[0];const R=+$('srRad').value;$('srRadVal').textContent=R.toFixed(1)+' km';
   const X=analyse(c,R);renderPanel(c,X);narrate(c,X);drawMap(c,X);}
@@ -1170,8 +1172,8 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   if(sel>=list.length)sel=0;
   cur.value=sel;run();};
 
- window.initSiteReport=function(){if(window.srMap)return;window.srMap=L.map('srCatchMap').setView([-6.85,107.65],11);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.srMap);
+ window.initSiteReport=function(){if(srMapObj)return;srMapObj=L.map('srCatchMap').setView([-6.85,107.65],11);window.srMap=srMapObj;
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(srMapObj);
   $('srSel').onchange=()=>{sel=+$('srSel').value;const list=window._liCand||[];window._srName=(list[sel]||{}).n;run();};
   $('srRad').oninput=run;
   window.renderSiteReport();};
