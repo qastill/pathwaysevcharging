@@ -117,10 +117,15 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 .aiform button:disabled{opacity:.5;cursor:default}
 </style></head><body><div class="wrap">
 <header>
-<div class="tag">PLN UID West Java · March 2026 · RACE for 2030 — Spatial Equity & Perception</div>
-<h1>West Java EV Charging (SPKLU) — <b>Comprehensive Research Dashboard</b></h1>
-<p>Integrated analysis of 636 public EV charging units (SPKLU) across 348 sites in West Java: official Master SPKLU coordinates · 101,020 real transactions (2.26M kWh, 330 active stations) · fast/slow charging analytics (AC/DC) · 1,007 registered EVs · urban–rural disparity · ABSA public perception (894 locations, 584 scored). Answering the four RACE for 2030 research questions: distributive equity, perceived reliability & accessibility, urban–rural spatial variation, and drivers of perception.</p>
+<div class="tag">PLN · Indonesia · 2024–2026 — National SPKLU Intelligence</div>
+<h1>Indonesia EV Charging (SPKLU) — <b>National Dashboard</b></h1>
+<p>National footprint of 3,212 public SPKLU across Indonesia (location · capacity · status · PLN/private) plus national consumption growth (Jan 2024 → Jun 2026). Transaction-level analytics (equity · perception · demand · utilisation) currently cover the regions with detailed data — West Java (Mar 2026) and Jakarta Raya/West Java (Jun 2026). Use the <b>region filter</b> to scope every tab; regions without deep data fall back to their real national footprint.</p>
 </header>
+<div id="rfbar" style="position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:linear-gradient(90deg,#0a1733,#16305f);color:#fff;border-radius:12px;padding:10px 16px;margin:0 0 12px;box-shadow:0 2px 10px rgba(10,23,51,.18)">
+<span style="font-weight:700;font-size:13px;letter-spacing:.3px">🔎 Region scope</span>
+<select id="globalRegion" style="padding:7px 11px;border-radius:8px;border:1px solid #2c4577;background:#fff;color:#0a1733;font-size:12px;font-weight:600;min-width:230px"></select>
+<span id="rfScopeNote" style="font-size:11px;color:#cdd8ef"></span>
+<span style="margin-left:auto;font-size:11px;color:#aebbdc">National scope · filter applies to every tab</span></div>
 <div class="tabs" id="tabs"></div>
 
 <!-- OVERVIEW -->
@@ -1475,7 +1480,8 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   // dropdown
   const provOpts=AG.map(a=>a.p).sort((x,y)=>(PR[x].name).localeCompare(PR[y].name)).map(i=>`<option value="pr:${i}">${PR[i].name}</option>`).join('');
   $('natRegion').innerHTML=`<option value="all">🇮🇩 All Indonesia</option><optgroup label="By island/region">${ISL.map(i=>`<option value="isl:${i}">${i}</option>`).join('')}</optgroup><optgroup label="By province (est.)">${provOpts}</optgroup>`;
-  $('natRegion').onchange=()=>apply($('natRegion').value);
+  window.natApply=function(sel){const g=$('natRegion');if(g)g.value=sel;apply(sel);};
+  $('natRegion').onchange=()=>window.RF?window.RF.set($('natRegion').value):apply($('natRegion').value);
   // time-series (national, built once)
   cTs=new Chart($('cNatTs'),{data:{labels:TS.map(t=>t.mo+" '"+String(t.y).slice(2)),datasets:[
     {type:'line',label:'kWh sold',data:TS.map(t=>t.kwh),borderColor:'#1f7a3d',backgroundColor:'#1f7a3d22',fill:true,tension:.3,yAxisID:'y',pointRadius:0},
@@ -1503,8 +1509,59 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    +c(`🤝 <b>The private sector is already a third of the network.</b> ${privShare}% of sites are non-PLN. The market has moved past pilot phase — commercial operators (dealers, malls, fleets) are building at scale, which is exactly the audience for the Location Intelligence tooling.`,'#b08400')
    +c(`🟢 <b>Availability is the hidden problem.</b> ${offShare}% of sites report “offline mode”. Coverage maps overstate real capacity; a national reliability push could unlock more effective charging than new builds alone. ${dcShare}% of chargers are DC fast — the network is built for quick top-ups, so downtime bites harder.`,'#d6443c')
    +c(`🌏 <b>The frontier is eastward.</b> Sulawesi, Kalimantan, Bali–Nusa and Maluku–Papua together hold a small minority of sites. As the EV fleet spreads beyond Java, these regions are the next deployment — and equity — priority. Filter to each above to see how thin (and how DC-reliant) they still are.`,'#3a6ea5');
-  apply('all');
+  const _sel=window.RF?window.RF.get():'all';$('natRegion').value=_sel;apply(_sel);
  };
+})();
+
+// ===== GLOBAL REGION FILTER (RF) — drives every tab =====
+(function(){
+ const N=D.national; if(!N)return;
+ const PR=N.provs, AG=N.prov_agg;
+ const ISL=['Sumatra','Jawa','Bali-Nusa','Kalimantan','Sulawesi','Maluku-Papua'];
+ const DEEP=['overview','map','equity','perception','demand','policy','socio','locint','sector','jraya','summary'];
+ const NEUTRAL=['benchmark'];
+ const DEEPSET=new Set(['Jawa Barat','DKI Jakarta','Banten']);
+ const idxOf=sel=>sel==='all'?AG.map(a=>a.p):sel.slice(0,4)==='isl:'?AG.filter(a=>a.isl===sel.slice(4)).map(a=>a.p):[+sel.slice(3)];
+ const agg=idxs=>{const set=new Set(idxs),s={n:0,pln:0,nonpln:0,dc:0,ac:0,avail:0,inuse:0,off:0,other:0};AG.forEach(a=>{if(set.has(a.p))for(const k in s)s[k]+=a[k]||0;});return s;};
+ const nameOf=sel=>sel==='all'?'All Indonesia':sel.slice(0,4)==='isl:'?sel.slice(4):(PR[+sel.slice(3)]||{}).name;
+ const isDeep=sel=>sel==='all'||sel==='isl:Jawa'||(sel.slice(0,3)==='pr:'&&DEEPSET.has(nameOf(sel)));
+ const F=window.fmt||(n=>Math.round(n).toLocaleString('en-US'));
+ let state='all';
+
+ function fallbackHTML(sel){const s=agg(idxOf(sel)),nm=nameOf(sel),act=s.avail+s.inuse;
+  const tile=(v,l,c)=>`<div style="background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:118px"><div style="font-size:18px;font-weight:800;color:${c||'var(--navy)'}">${v}</div><div style="font-size:11px;color:var(--mut)">${l}</div></div>`;
+  return `<div style="background:#fff7e6;border:1px solid #f0d699;border-radius:12px;padding:14px 16px;margin-bottom:14px">
+   <div style="font-weight:700;color:#8a6d1f;margin-bottom:4px">⚠️ ${nm}: transaction-level analytics for this view aren't in the dataset for this region yet.</div>
+   <div style="font-size:12px;color:var(--mut);margin-bottom:12px">Deep analytics (equity · perception · demand · utilisation) currently cover <b>West Java</b> &amp; <b>Jakarta Raya</b>. Below is <b>${nm}</b>'s real <b>national footprint</b>; the <b>🇮🇩 Indonesia</b> tab maps it in full and stays filtered to your selection.</div>
+   <div style="display:flex;gap:10px;flex-wrap:wrap">
+    ${tile(F(s.n),'SPKLU sites','#16305f')}${tile(F(s.pln)+' / '+F(s.nonpln),'PLN / private')}
+    ${tile(Math.round(100*s.dc/(s.n||1))+'%','DC fast','#d6443c')}${tile(Math.round(100*act/(s.n||1))+'%','active','#1f7a3d')}
+    ${tile(F(s.off),'offline-mode','#9aa6bd')}</div></div>`;}
+
+ function bannerDeep(sel){const nm=nameOf(sel);
+  const msg=sel==='all'?`Detailed analytics on this tab use the transaction-level dataset — <b>West Java (Mar 2026)</b> + <b>Jakarta Raya/Jabar (Jun 2026)</b>. National footprint &amp; growth are in the <b>🇮🇩 Indonesia</b> tab.`:`<b>Scope: ${nm}</b> — shown via the West Java / Jakarta transaction dataset (the regions with detailed data inside ${nm}).`;
+  return `<div style="background:#eef3ff;border:1px solid #cfe0ff;border-radius:10px;padding:9px 13px;font-size:12px;color:#27408a;margin-bottom:14px">🔎 ${msg}</div>`;}
+
+ function applyTab(id){const page=$('p-'+id);if(!page)return;
+  let ban=$('rfban-'+id);if(!ban){ban=document.createElement('div');ban.id='rfban-'+id;page.insertBefore(ban,page.firstChild);}
+  let fb=$('rffb-'+id);if(!fb){fb=document.createElement('div');fb.id='rffb-'+id;page.insertBefore(fb,ban.nextSibling);}
+  if(NEUTRAL.indexOf(id)>=0){ban.innerHTML=`<div style="background:#eef3ff;border:1px solid #cfe0ff;border-radius:10px;padding:9px 13px;font-size:12px;color:#27408a;margin-bottom:14px">🌐 National &amp; international benchmark — not region-specific.</div>`;fb.style.display='none';return;}
+  const deep=isDeep(state);
+  [...page.children].forEach(ch=>{if(ch===ban||ch===fb)return;ch.style.display=deep?'':'none';});
+  if(deep){ban.innerHTML=bannerDeep(state);fb.style.display='none';fb.innerHTML='';}
+  else{ban.innerHTML='';fb.style.display='';fb.innerHTML=fallbackHTML(state);}}
+
+ function applyAll(){DEEP.forEach(applyTab);NEUTRAL.forEach(applyTab);
+  if(window.natInit&&window.natApply)window.natApply(state);
+  const note=$('rfScopeNote');if(note)note.textContent=isDeep(state)?'· full analytics where data exists':'· footprint only for this region';}
+
+ window.RF={get:()=>state,set:sel=>{state=sel;const g=$('globalRegion');if(g)g.value=sel;applyAll();}};
+
+ const provOpts=AG.map(a=>a.p).sort((x,y)=>PR[x].name.localeCompare(PR[y].name)).map(i=>`<option value="pr:${i}">${PR[i].name}</option>`).join('');
+ $('globalRegion').innerHTML=`<option value="all">🇮🇩 All Indonesia</option><optgroup label="By island/region">${ISL.map(i=>`<option value="isl:${i}">${i}</option>`).join('')}</optgroup><optgroup label="By province (estimated)">${provOpts}</optgroup>`;
+ $('globalRegion').value='all';
+ $('globalRegion').onchange=()=>window.RF.set($('globalRegion').value);
+ applyAll();
 })();
 
 // ===== SUMMARY (paper-style synthesis) =====
