@@ -1489,15 +1489,18 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  function legendHTML(){if(colorMode==='power')return swatch('#d6443c','DC fast (&gt;22kW)')+swatch('#3a6ea5','AC (≤22kW)');
   if(colorMode==='oper')return swatch('#16305f','PLN')+swatch('#d4af37','Private (non-PLN)');
   return STAT.map((s,i)=>swatch(STCOL[i],s)).join('');}
- function drawEnergy(set){let mnLa=99,mxLa=-99,mnLo=999,mxLo=-999,cnt=0,tot=0;
-  const ests=AG.filter(a=>set.has(a.p)).map(a=>({i:a.p,est:estKwhMo(a.p)})); const mx=Math.max(1,...ests.map(e=>e.est));
-  ests.forEach(e=>{const pr=PR[e.i];if(!pr)return;cnt++;tot+=e.est;const r=6+Math.sqrt(e.est/mx)*34;
-   L.circleMarker([pr.lat,pr.lng],{radius:r,color:'#0f5a2e',fillColor:'#2e9e5b',fillOpacity:.45,weight:1})
-    .bindPopup(`<b>${pr.name}</b><br>Est. consumption: <b>${gwh(e.est)}/mo</b><br>SPKLU: ${fmt(agById[e.i].n)} · ${per100k(e.i).toFixed(1)}/100k<br>Energy access: ${(e.est/(provPop(e.i)/1e3||1)).toFixed(0)} kWh per 1k people/mo`).addTo(natLayer);
-   mnLa=Math.min(mnLa,pr.lat);mxLa=Math.max(mxLa,pr.lat);mnLo=Math.min(mnLo,pr.lng);mxLo=Math.max(mxLo,pr.lng);});
-  if(cnt>1&&mxLa>mnLa)natMap.fitBounds([[mnLa,mnLo],[mxLa,mxLo]],{padding:[30,30],maxZoom:8});else if(cnt>=1)natMap.setView([mnLa,mnLo],7);
-  const lg=$('natMapLegend');if(lg)lg.innerHTML=`<span><i style="background:#2e9e5b;border-radius:50%"></i>circle area ∝ estimated monthly energy</span> <span style="color:var(--mut)">est. = national monthly total allocated by each province's active charging capacity (not measured per-province)</span>`;
-  const strip=$('natStatusStrip');if(strip)strip.innerHTML=`<b>${gwh(tot)}</b>/mo across ${cnt} province${cnt==1?'':'s'} · estimated`;
+ function drawEnergy(set){let mnLa=99,mxLa=-99,mnLo=999,mxLo=-999,cnt=0,tot=0,idle=0;
+  const eB=[22,50,100,150].map(k=>rate26*k/totActCap);  // per-site est energy thresholds (∝ capacity)
+  const cls=e=>e<=0?{c:'#c2c8d4',r:2.2}:e<eB[0]?{c:'#3a6ea5',r:3}:e<eB[1]?{c:'#e0a52b',r:4.5}:e<eB[2]?{c:'#e0852b',r:6.5}:e<eB[3]?{c:'#d6443c',r:9}:{c:'#8a1c16',r:12};
+  PTS.forEach(p=>{if(!set.has(p[2]))return;cnt++;const active=(p[4]===0||p[4]===1);const est=active?rate26*(p[6]||0)/totActCap:0;tot+=est;if(!active)idle++;const k=cls(est);
+   L.circleMarker([p[0],p[1]],{radius:k.r,color:k.c,fillColor:k.c,fillOpacity:active?.8:.5,weight:0})
+    .bindPopup(`<b>${p[8]||'SPKLU'}</b><br>${(PR[p[2]]||{}).name||''}<br>Est. energy: <b>${active?fmt(Math.round(est))+' kWh/mo':'idle (offline) · ~0'}</b><br>${p[6]} kW · ${p[3]?'DC fast':'AC'} · ${STAT[p[4]]}`).addTo(natLayer);
+   mnLa=Math.min(mnLa,p[0]);mxLa=Math.max(mxLa,p[0]);mnLo=Math.min(mnLo,p[1]);mxLo=Math.max(mxLo,p[1]);});
+  if(cnt>1&&mxLa>mnLa)natMap.fitBounds([[mnLa,mnLo],[mxLa,mxLo]],{padding:[20,20],maxZoom:11});else if(cnt>=1)natMap.setView([mnLa,mnLo],11);
+  const dot=(c,d)=>`<i style="display:inline-block;width:${d}px;height:${d}px;background:${c};border-radius:50%;vertical-align:middle;margin:0 2px"></i>`;
+  const lg=$('natMapLegend');if(lg)lg.innerHTML=`<span style="color:var(--navy);font-weight:600;margin-right:4px">Est. energy / site / mo:</span>`+
+    dot('#3a6ea5',7)+`&lt;${fmt(Math.round(eB[0]))}`+dot('#e0a52b',11)+`${fmt(Math.round(eB[0]))}–${fmt(Math.round(eB[1]))}`+dot('#e0852b',15)+`${fmt(Math.round(eB[1]))}–${fmt(Math.round(eB[2]))}`+dot('#d6443c',19)+`${fmt(Math.round(eB[2]))}–${fmt(Math.round(eB[3]))}`+dot('#8a1c16',24)+`&gt;${fmt(Math.round(eB[3]))} kWh`+`<span style="margin-left:8px">`+dot('#c2c8d4',7)+`idle/offline (~0)</span>`;
+  const strip=$('natStatusStrip');if(strip)strip.innerHTML=`<b>${gwh(tot)}</b>/mo est · <b>${fmt(cnt-idle)}</b> active · <b style="color:#d6443c">${fmt(idle)}</b> idle — colour &amp; size ∝ estimated energy per site`;
   setTimeout(()=>natMap.invalidateSize(),120);}
  function drawMap(idxs){if(!natMap)return;const set=new Set(idxs);if(natLayer)natLayer.remove();natLayer=L.layerGroup().addTo(natMap);
   if(colorMode==='energy')return drawEnergy(set);
