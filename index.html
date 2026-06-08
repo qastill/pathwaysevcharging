@@ -427,6 +427,7 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <button class="mode-btn natmode active" data-mode="status">🟢 Condition</button>
 <button class="mode-btn natmode" data-mode="power">⚡ Power (DC/AC)</button>
 <button class="mode-btn natmode" data-mode="oper">🏢 Operator</button>
+<button class="mode-btn natmode" data-mode="energy">🔋 Energy demand (est.)</button>
 <span id="natStatusStrip" style="margin-left:auto;font-size:11px;color:var(--mut)"></span></div>
 <div id="natMap" style="height:560px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
 <div class="legend" id="natMapLegend" style="margin-top:8px"></div></div>
@@ -439,7 +440,14 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="card" style="margin-top:15px"><h3>🟢 Operational <span>status</span> <span class="sub">— network availability / condition (selected region)</span></h3><canvas id="cNatStatus"></canvas>
 <div class="insight" id="natStatusNote" style="margin-top:10px;margin-bottom:0"></div></div>
 <div class="card" style="margin-top:15px"><h3>Provinces <span>ranked</span> <span class="sub">— SPKLU count (province estimated from coordinates; click header to sort)</span></h3>
-<div class="tablewrap" style="max-height:440px"><table id="tblNatProv"><thead><tr><th data-k="name">Province</th><th data-k="isl">Region</th><th data-k="n">SPKLU</th><th data-k="pln">PLN</th><th data-k="nonpln">Private</th><th data-k="dc">DC fast</th><th data-k="pdc">% DC</th><th data-k="active">Active</th><th data-k="off">Offline</th></tr></thead><tbody></tbody></table></div></div>
+<div class="tablewrap" style="max-height:440px"><table id="tblNatProv"><thead><tr><th data-k="name">Province</th><th data-k="isl">Region</th><th data-k="n">SPKLU</th><th data-k="pop">Population</th><th data-k="per100k">SPKLU/100k</th><th data-k="dc">DC fast</th><th data-k="active">Active</th><th data-k="off">Offline</th><th data-k="estkwh">Est. kWh/mo</th><th data-k="eqflag">Equity</th></tr></thead><tbody></tbody></table></div></div>
+<div class="card" style="margin-top:15px"><h3>⚖️ National <span>spatial equity</span> <span class="sub">— is charging infrastructure distributed in line with population? (SPKLU vs people, by province)</span></h3>
+<div class="insight" id="natEqInsight"></div>
+<div class="grid2">
+<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>Lorenz <span>curve</span> <span class="sub">— SPKLU vs population; further from the diagonal = more unequal</span></h3><canvas id="cNatLorenz"></canvas>
+<div class="note" id="natGiniNote" style="font-size:11px;color:var(--mut);margin-top:8px"></div></div>
+<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>SPKLU per <span>100k people</span> <span class="sub">— over- vs under-served provinces</span></h3><canvas id="cNatPerCap"></canvas></div></div>
+<div class="note" id="natEqMethod" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
 <div class="card" style="margin-top:15px"><h3>🤖 National <span>insight synthesis</span></h3><div id="natWhy"></div></div>
 </div>
 
@@ -1436,11 +1444,28 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  const islN={}; AG.forEach(a=>islN[a.isl]=(islN[a.isl]||0)+a.n);
  const jawaShare=Math.round(100*(islN['Jawa']||0)/TOT);
 
+ // Province population (BPS ~2023, millions) — enables national spatial-equity (SPKLU vs people)
+ const POP={'Aceh':5.41,'Sumatera Utara':15.39,'Sumatera Barat':5.70,'Riau':6.73,'Kepulauan Riau':2.18,'Jambi':3.70,'Sumatera Selatan':8.74,'Bangka Belitung':1.52,'Bengkulu':2.09,'Lampung':9.18,'Banten':12.25,'DKI Jakarta':10.67,'Jawa Barat':49.86,'Jawa Tengah':37.54,'DI Yogyakarta':3.71,'Jawa Timur':41.15,'Bali':4.42,'Nusa Tenggara Barat':5.55,'Nusa Tenggara Timur':5.62,'Kalimantan Barat':5.59,'Kalimantan Tengah':2.81,'Kalimantan Selatan':4.20,'Kalimantan Timur':3.97,'Kalimantan Utara':0.73,'Sulawesi Utara':2.66,'Gorontalo':1.20,'Sulawesi Tengah':3.13,'Sulawesi Barat':1.44,'Sulawesi Selatan':9.36,'Sulawesi Tenggara':2.78,'Maluku':1.92,'Maluku Utara':1.36,'Papua Barat':1.18,'Papua':4.32};
+ const agById={}; AG.forEach(a=>agById[a.p]=a);
+ const provPop=i=>(POP[(PR[i]||{}).name]||0)*1e6;
+ // installed active capacity per province (kW) from points (status 0/1 = available/in-use) -> used to allocate national consumption
+ const capAct={}; PTS.forEach(p=>{if(p[4]===0||p[4]===1)capAct[p[2]]=(capAct[p[2]]||0)+(p[6]||0);});
+ const totActCap=Object.values(capAct).reduce((a,b)=>a+b,0)||1;
+ const estKwhMo=i=>rate26*((capAct[i]||0)/totActCap);                 // estimated monthly kWh by province (national total × active-capacity share)
+ const per100k=i=>{const pop=provPop(i),a=agById[i];return pop>0&&a?a.n/pop*1e5:0;};
+ const totPop=AG.reduce((s,a)=>s+provPop(a.p),0); const natPer100k=totPop>0?TOT/totPop*1e5:0;
+ function equity(){const rows=AG.filter(a=>provPop(a.p)>0).map(a=>({i:a.p,name:PR[a.p].name,isl:a.isl,n:a.n,pop:provPop(a.p),per:per100k(a.p),est:estKwhMo(a.p)}));
+  const srt=[...rows].sort((x,y)=>x.per-y.per); const tP=srt.reduce((s,r)=>s+r.pop,0)||1,tN=srt.reduce((s,r)=>s+r.n,0)||1;
+  let cp=0,cn=0; const lor=[{x:0,y:0}]; srt.forEach(r=>{cp+=r.pop;cn+=r.n;lor.push({x:cp/tP,y:cn/tN});});
+  let area=0; for(let k=1;k<lor.length;k++)area+=(lor[k].x-lor[k-1].x)*(lor[k].y+lor[k-1].y)/2;
+  return {rows,lor,gini:+(1-2*area).toFixed(3)};}
+ const eqFlag=i=>{const r=per100k(i)/(natPer100k||1);return r>=1.3?['🟢 Well-served','#1f7a3d']:r>=0.7?['⚖️ Average','#b08400']:['🔴 Under-served','#d6443c'];};
+
  const idxOf=sel=>sel==='all'?AG.map(a=>a.p):sel.slice(0,4)==='isl:'?AG.filter(a=>a.isl===sel.slice(4)).map(a=>a.p):[+sel.slice(3)];
  const agg=idxs=>{const set=new Set(idxs),s={n:0,pln:0,nonpln:0,dc:0,ac:0,avail:0,inuse:0,off:0,other:0};AG.forEach(a=>{if(set.has(a.p))for(const k in s)s[k]+=a[k]||0;});return s;};
  const labelOf=sel=>sel==='all'?'Indonesia':sel.slice(0,4)==='isl:'?sel.slice(4):(PR[+sel.slice(3)]||{}).name;
 
- let cTs,cCap,cStatus,cRegion,natMap,natLayer,sortK='n',sortD=-1,curIdx=null;
+ let cTs,cCap,cStatus,cRegion,cLorenz,cPerCap,natMap,natLayer,sortK='n',sortD=-1,curIdx=null;
 
  function kpiTiles(s,name){const t=(v,l,c)=>`<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px"><div style="font-size:20px;font-weight:800;color:${c||'var(--navy)'}">${v}</div><div style="font-size:11px;color:var(--mut);margin-top:2px">${l}</div></div>`;
   const act=s.avail+s.inuse;
@@ -1464,7 +1489,18 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  function legendHTML(){if(colorMode==='power')return swatch('#d6443c','DC fast (&gt;22kW)')+swatch('#3a6ea5','AC (≤22kW)');
   if(colorMode==='oper')return swatch('#16305f','PLN')+swatch('#d4af37','Private (non-PLN)');
   return STAT.map((s,i)=>swatch(STCOL[i],s)).join('');}
+ function drawEnergy(set){let mnLa=99,mxLa=-99,mnLo=999,mxLo=-999,cnt=0,tot=0;
+  const ests=AG.filter(a=>set.has(a.p)).map(a=>({i:a.p,est:estKwhMo(a.p)})); const mx=Math.max(1,...ests.map(e=>e.est));
+  ests.forEach(e=>{const pr=PR[e.i];if(!pr)return;cnt++;tot+=e.est;const r=6+Math.sqrt(e.est/mx)*34;
+   L.circleMarker([pr.lat,pr.lng],{radius:r,color:'#0f5a2e',fillColor:'#2e9e5b',fillOpacity:.45,weight:1})
+    .bindPopup(`<b>${pr.name}</b><br>Est. consumption: <b>${gwh(e.est)}/mo</b><br>SPKLU: ${fmt(agById[e.i].n)} · ${per100k(e.i).toFixed(1)}/100k<br>Energy access: ${(e.est/(provPop(e.i)/1e3||1)).toFixed(0)} kWh per 1k people/mo`).addTo(natLayer);
+   mnLa=Math.min(mnLa,pr.lat);mxLa=Math.max(mxLa,pr.lat);mnLo=Math.min(mnLo,pr.lng);mxLo=Math.max(mxLo,pr.lng);});
+  if(cnt>1&&mxLa>mnLa)natMap.fitBounds([[mnLa,mnLo],[mxLa,mxLo]],{padding:[30,30],maxZoom:8});else if(cnt>=1)natMap.setView([mnLa,mnLo],7);
+  const lg=$('natMapLegend');if(lg)lg.innerHTML=`<span><i style="background:#2e9e5b;border-radius:50%"></i>circle area ∝ estimated monthly energy</span> <span style="color:var(--mut)">est. = national monthly total allocated by each province's active charging capacity (not measured per-province)</span>`;
+  const strip=$('natStatusStrip');if(strip)strip.innerHTML=`<b>${gwh(tot)}</b>/mo across ${cnt} province${cnt==1?'':'s'} · estimated`;
+  setTimeout(()=>natMap.invalidateSize(),120);}
  function drawMap(idxs){if(!natMap)return;const set=new Set(idxs);if(natLayer)natLayer.remove();natLayer=L.layerGroup().addTo(natMap);
+  if(colorMode==='energy')return drawEnergy(set);
   let mnLa=99,mxLa=-99,mnLo=999,mxLo=-999,cnt=0,stc=[0,0,0,0,0];
   PTS.forEach(p=>{if(!set.has(p[2]))return;cnt++;stc[p[4]]=(stc[p[4]]||0)+1;const col=ptColor(p);
    L.circleMarker([p[0],p[1]],{radius:3,color:col,fillColor:col,fillOpacity:.72,weight:0})
@@ -1479,9 +1515,9 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
 
  function donut(reg,id,labels,data,colors,fmtcb){if(reg)reg.destroy();return new Chart($(id),{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right'},tooltip:{callbacks:{label:fmtcb}}}}});}
 
- function renderTable(idxs){const set=new Set(idxs);const disp=AG.filter(a=>set.has(a.p)).map(a=>({...a,pdc:Math.round(100*a.dc/(a.n||1)),active:a.avail+a.inuse}));
+ function renderTable(idxs){const set=new Set(idxs);const disp=AG.filter(a=>set.has(a.p)).map(a=>({...a,active:a.avail+a.inuse,pop:provPop(a.p),per100k:per100k(a.p),estkwh:estKwhMo(a.p),eqflag:eqFlag(a.p)[0]}));
   disp.sort((x,y)=>{let p=x[sortK],q=y[sortK];if(typeof p==='string')return sortD*(''+p).localeCompare(q);return sortD*((p??0)-(q??0));});
-  $('tblNatProv').querySelector('tbody').innerHTML=disp.map(a=>`<tr><td style="font-weight:600;color:var(--navy)">${a.name}</td><td style="font-size:11px">${a.isl}</td><td><b>${fmt(a.n)}</b></td><td>${fmt(a.pln)}</td><td>${fmt(a.nonpln)}</td><td>${fmt(a.dc)}</td><td>${a.pdc}%</td><td>${fmt(a.active)}</td><td style="color:${a.off>a.n*0.4?'#d6443c':'var(--mut)'}">${fmt(a.off)}</td></tr>`).join('');}
+  $('tblNatProv').querySelector('tbody').innerHTML=disp.map(a=>{const ef=eqFlag(a.p);return `<tr><td style="font-weight:600;color:var(--navy)">${a.name}</td><td style="font-size:11px">${a.isl}</td><td><b>${fmt(a.n)}</b></td><td>${a.pop?fmt(a.pop):'–'}</td><td><b>${a.per100k?a.per100k.toFixed(1):'–'}</b></td><td>${fmt(a.dc)}</td><td>${fmt(a.active)}</td><td style="color:${a.off>a.n*0.4?'#d6443c':'var(--mut)'}">${fmt(a.off)}</td><td>${gwh(a.estkwh)}</td><td style="font-size:11px;font-weight:600;color:${ef[1]}">${ef[0]}</td></tr>`;}).join('');}
 
  function apply(sel){const idxs=idxOf(sel);curIdx=idxs;const s=agg(idxs),nm=labelOf(sel);
   kpiTiles(s,nm);insight(sel,s);drawMap(idxs);renderTable(idxs);
@@ -1492,7 +1528,27 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   $('natStatusNote').innerHTML=`<b>${Math.round(100*s.off/(s.n||1))}% of ${nm}'s sites are in “offline mode”.</b> Availability — not just how many chargers exist, but how many actually work — is a parallel challenge to coverage. A reliable 70% beats a flaky 100%.`;
   // region bar highlight
   const active=sel.slice(0,4)==='isl:'?sel.slice(4):(sel.slice(0,3)==='pr:'?(PR[+sel.slice(3)]||{}).isl:null);
-  if(cRegion){cRegion.data.datasets[0].backgroundColor=ISL.map(i=>i===active?'#d6443c':(active?'#c7cedb':'#16305f'));cRegion.update();}}
+  if(cRegion){cRegion.data.datasets[0].backgroundColor=ISL.map(i=>i===active?'#d6443c':(active?'#c7cedb':'#16305f'));cRegion.update();}
+  renderEquity(sel.slice(0,3)==='pr:'?+sel.slice(3):null);}
+
+ function renderEquity(hi){const E=equity();
+  if(cLorenz)cLorenz.destroy();
+  cLorenz=new Chart($('cNatLorenz'),{type:'line',data:{labels:E.lor.map(p=>(p.x*100).toFixed(0)),datasets:[
+    {label:'SPKLU distribution',data:E.lor.map(p=>+(p.y*100).toFixed(2)),borderColor:'#d6443c',backgroundColor:'#d6443c18',fill:true,tension:.1,pointRadius:0},
+    {label:'Perfect equality',data:E.lor.map(p=>+(p.x*100).toFixed(2)),borderColor:'#9aa6bd',borderDash:[6,4],pointRadius:0,fill:false}]},
+   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},tooltip:{mode:'index',intersect:false}},scales:{x:{title:{display:true,text:'cumulative % of population →'},ticks:{maxTicksLimit:11}},y:{title:{display:true,text:'cumulative % of SPKLU'}}}}});
+  $('cNatLorenz').parentElement.style.height='300px';
+  $('natGiniNote').innerHTML=`<b>Gini = ${E.gini}</b> (SPKLU vs population, ${E.rows.length} provinces) — ${E.gini>=0.6?'very high':E.gini>=0.4?'high':E.gini>=0.25?'moderate':'low'} inequality. National average ≈ <b>${natPer100k.toFixed(1)} SPKLU / 100k people</b>.`;
+  const rows=[...E.rows].sort((a,b)=>b.per-a.per);
+  if(cPerCap)cPerCap.destroy();
+  cPerCap=new Chart($('cNatPerCap'),{type:'bar',data:{labels:rows.map(r=>r.name),datasets:[{data:rows.map(r=>+r.per.toFixed(2)),backgroundColor:rows.map(r=>r.i===hi?'#16305f':(r.per>=natPer100k?'#1f7a3d':'#d6443c')),borderRadius:3}]},
+   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${rows[c.dataIndex].per.toFixed(2)}/100k · ${fmt(rows[c.dataIndex].n)} SPKLU · ${(rows[c.dataIndex].pop/1e6).toFixed(1)}M people`}}},scales:{x:{title:{display:true,text:'SPKLU per 100k people'},grid:{color:'#eef1f6'}},y:{ticks:{font:{size:8}}}}}});
+  $('cNatPerCap').parentElement.style.height='520px';
+  const over=rows[0],under=rows[rows.length-1];
+  const jPop=['Banten','DKI Jakarta','Jawa Barat','Jawa Tengah','DI Yogyakarta','Jawa Timur'].reduce((s,nm)=>s+(POP[nm]||0),0)*1e6;
+  const jawaPopShare=Math.round(100*jPop/(totPop||1));
+  $('natEqInsight').innerHTML=`<b>Charging is far more concentrated than people are.</b> The SPKLU-vs-population Gini is <b>${E.gini}</b>: <b>${over.name}</b> has <b>${over.per.toFixed(1)} chargers/100k</b> while <b>${under.name}</b> has just <b>${under.per.toFixed(2)}</b> — about a <b>${Math.round(over.per/(under.per||1))}× gap</b>. Java holds ~<b>${jawaShare}% of chargers for ~${jawaPopShare}% of people</b>; even inside Java the populous provinces (Jawa Timur/Tengah/Barat) are under-served per capita versus DKI Jakarta. The real equity frontier is the <b>populous-but-underserved</b> provinces.`;
+  $('natEqMethod').innerHTML=`<b>Method.</b> Compares <b>installed SPKLU per province</b> against <b>province population</b> (BPS ~2023). The Lorenz curve sorts provinces by chargers-per-capita; Gini summarises departure from parity. <b>Est. kWh/month</b> allocates the national monthly total to provinces by their <b>active charging capacity</b> share — a transparent proxy, since per-province consumption isn't measured in the source. Province assignment is estimated from coordinates; treat outer-island figures as indicative.`;}
 
  window.initNational=function(){if(window.natInit)return;window.natInit=true;
   // dropdown
@@ -1527,7 +1583,8 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    +c(`🏝️ <b>Java is the centre of gravity.</b> ${jawaShare}% of all SPKLU sit on Java, led by the Jakarta metro. That concentration mirrors where the EVs are — but it also means the rest of the archipelago is wide-open whitespace for first-movers.`,'#16305f')
    +c(`🤝 <b>The private sector is already a third of the network.</b> ${privShare}% of sites are non-PLN. The market has moved past pilot phase — commercial operators (dealers, malls, fleets) are building at scale, which is exactly the audience for the Location Intelligence tooling.`,'#b08400')
    +c(`🟢 <b>Availability is the hidden problem.</b> ${offShare}% of sites report “offline mode”. Coverage maps overstate real capacity; a national reliability push could unlock more effective charging than new builds alone. ${dcShare}% of chargers are DC fast — the network is built for quick top-ups, so downtime bites harder.`,'#d6443c')
-   +c(`🌏 <b>The frontier is eastward.</b> Sulawesi, Kalimantan, Bali–Nusa and Maluku–Papua together hold a small minority of sites. As the EV fleet spreads beyond Java, these regions are the next deployment — and equity — priority. Filter to each above to see how thin (and how DC-reliant) they still are.`,'#3a6ea5');
+   +c(`🌏 <b>The frontier is eastward.</b> Sulawesi, Kalimantan, Bali–Nusa and Maluku–Papua together hold a small minority of sites. As the EV fleet spreads beyond Java, these regions are the next deployment — and equity — priority. Filter to each above to see how thin (and how DC-reliant) they still are.`,'#3a6ea5')
+   +c(`⚖️ <b>A national equity gap, not just a coverage gap.</b> Measured against population, the SPKLU-vs-people Gini is <b>${equity().gini}</b>: DKI Jakarta enjoys ~8 chargers per 100k people while the most populous provinces (Jawa Timur, Jawa Tengah) and the outer islands sit far below the ~${natPer100k.toFixed(1)} national average. The estimated-energy map shows the same skew — demand allocates to where capacity already is. A <b>just</b> roll-out should weight the populous-but-underserved provinces, mirroring the West-Java equity analysis at national scale.`,'#7a5fa0');
   const _sel=window.RF?window.RF.get():'all';$('natRegion').value=_sel;apply(_sel);
  };
 })();
