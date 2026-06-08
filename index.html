@@ -326,7 +326,10 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <label style="font-size:12px;color:var(--navy);font-weight:600">Target units per 100k (for suggested additions)</label>
 <input type="range" id="liTarget" min="1" max="4" step="0.1" value="2" style="flex:1;min-width:160px;max-width:320px">
 <span id="liTargetVal" style="font-weight:700;color:var(--gold)">2.0</span>
-<button id="liReset" style="margin-left:auto;padding:6px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:12px">Reset weights</button></div></div>
+<span style="margin-left:auto;font-size:11px;color:var(--mut);align-self:center;font-weight:600">Objective lens:</span>
+<button id="liPresetCom" title="Re-weights toward profitability: demand & growth up, equity off — the investor/CPO lens (Bvarta/GeoSIS-style)" style="padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:#fff7e6;cursor:pointer;font-size:12px;font-weight:600;color:#b08400">💰 Commercial (ROI)</button>
+<button id="liPresetEq" title="Re-weights toward underserved/low-income areas — the PLN/policy lens (RACE for 2030)" style="padding:6px 12px;border-radius:9px;border:1px solid var(--line);background:#eef3ff;cursor:pointer;font-size:12px;font-weight:600;color:#1f4fb0">⚖️ Equity (policy)</button>
+<button id="liReset" style="padding:6px 14px;border-radius:9px;border:1px solid var(--line);background:var(--card);cursor:pointer;font-size:12px">Reset</button></div></div>
 <div class="card" style="margin-bottom:15px"><h3>📍 Candidate <span>Sites</span> <span class="sub">— real named locations scored by distance to nearest existing SPKLU + local demand (reacts to weights above)</span></h3>
 <div id="liCandMap" style="height:460px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
 <div class="legend" style="margin-top:8px"><span><i style="background:#d6443c"></i>top candidate (≥70)</span><span><i style="background:#e0852b"></i>strong (55–70)</span><span><i style="background:#e0a52b"></i>moderate (40–55)</span><span><i style="background:#9aa6bd"></i>lower</span><span><i style="background:#1f7a3d;border-radius:50%"></i>existing SPKLU</span></div>
@@ -335,6 +338,20 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="tablewrap" style="max-height:520px"><table id="tblCand"><thead><tr>
 <th data-k="rank">#</th><th data-k="name">Candidate location</th><th data-k="type">Type</th><th data-k="area">Area</th><th data-k="near">Nearest SPKLU (km)</th><th data-k="score">Opportunity</th><th data-k="tag">Rationale</th></tr></thead><tbody></tbody></table></div>
 <div class="note" id="liCandNote" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
+<div class="card" style="margin-bottom:15px"><h3>🛰️ Site Intelligence <span>Report</span> <span class="sub">— GeoSIS / Bvarta-style catchment profiling: pick a site → demand catchment, competitor &amp; cannibalisation scan, charger-mix recommendation, financial payback model and an AI Insight Synthesis</span></h3>
+<div style="display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px">
+<label style="font-size:12px;color:var(--navy);font-weight:600">Site</label>
+<select id="srSel" style="padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px;min-width:240px;background:#fff"></select>
+<label style="font-size:12px;color:var(--navy);font-weight:600">Catchment radius</label>
+<input type="range" id="srRad" min="1" max="10" step="0.5" value="3" style="min-width:150px">
+<span id="srRadVal" style="font-weight:700;color:var(--gold)">3.0 km</span>
+<span id="srVScore" style="margin-left:auto;font-size:12px;font-weight:700;color:var(--navy)"></span></div>
+<div class="grid2">
+<div><div id="srCatchMap" style="height:380px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
+<div class="legend" style="margin-top:8px"><span><i style="background:#2b6fe0;opacity:.25"></i>catchment</span><span><i style="background:#d6443c"></i>selected site</span><span><i style="background:#1f7a3d;border-radius:50%"></i>PLN SPKLU</span><span><i style="background:#b08400;border-radius:50%"></i>private (MITRA)</span></div></div>
+<div id="srPanel"></div></div>
+<div class="insight" id="srNarr" style="margin-top:14px;margin-bottom:0"></div>
+<div class="note" id="srNote" style="font-size:11px;color:var(--mut);line-height:1.6;border-top:1px solid var(--line);margin-top:12px;padding-top:10px"></div></div>
 <h3 style="margin:18px 4px 8px;color:var(--navy);font-size:15px">Area-level view</h3>
 <div class="grid2">
 <div class="card"><h3>🗺️ Opportunity <span>Map</span> <span class="sub">— bubble size & colour = Site Opportunity Score</span></h3>
@@ -386,7 +403,7 @@ document.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
  tb.classList.add('active');$('p-'+tb.dataset.p).classList.add('active');
  if(tb.dataset.p==='map'&&!C.map)setTimeout(initMap,80);
- if(tb.dataset.p==='locint')setTimeout(()=>{if(!window.liMapInit)initLiMap();else if(window.liMap)window.liMap.invalidateSize();},80);});
+ if(tb.dataset.p==='locint')setTimeout(()=>{if(!window.liMapInit)initLiMap();else{if(window.liMap)window.liMap.invalidateSize();if(window.liCandMap)window.liCandMap.invalidateSize();if(window.srMap)window.srMap.invalidateSize();}},80);});
 
 // KPIs
 const k=D.kpi;
@@ -962,7 +979,8 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
  function renderInsight(){const top=rows[0],nAdd=rows.filter(r=>r.add>0).length,totAdd=rows.reduce((s,r)=>s+r.add,0),T=(+$('liTarget').value).toFixed(1);
   $('liInsight').innerHTML=`<b>Location intelligence — where to add SPKLU next:</b> under the current weighting, <b>${top.kota}</b> is the highest-opportunity area (score <b>${top.score}</b>${top.add>0?`, suggested <b>+${top.add} units</b>`:''}). <b>${nAdd} of ${rows.length} areas</b> sit below the ${T}/100k target, implying ~<b>${totAdd} additional units</b> province-wide. Re-weight the criteria to compare <b>commercial-led</b> (demand/growth) vs <b>equity-led</b> (supply-gap/underserved) deployment — the trade-off at the heart of RACE for 2030.`;}
 
- function liDrawMap(){if(window.liLayer)window.liLayer.remove();window.liLayer=L.layerGroup().addTo(window.liMap);
+ let liMapObj=null;
+ function liDrawMap(){if(window.liLayer)window.liLayer.remove();window.liLayer=L.layerGroup().addTo(liMapObj);
   rows.forEach(r=>{const g=D.area_geo[r.kota];if(!g)return;L.circleMarker(g,{radius:8+r.score/5,color:colFn(r.score),fillColor:colFn(r.score),fillOpacity:.6,weight:1.5})
    .bindPopup(`<b>${r.kota}</b><br>Opportunity score: <b>${r.score}</b><br>Units/100k: ${r.upk} · EV/SPKLU: ${r.evps}<br>Suggested: <b>${r.add>0?'+'+r.add+' units':'maintain'}</b><br><i>${TAG[r.tag]}</i>`).addTo(window.liLayer);});}
 
@@ -974,16 +992,19 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    const add=Math.max(0,Math.round((T-a.upk)*a.pop/1e5));
    return {...a,score:+score.toFixed(1),tag,add};});
   rows.sort((x,y)=>y.score-x.score);rows.forEach((r,i)=>r.rank=i+1);
-  renderTable();renderCards();renderMatrix();renderInsight();if(window.liMap)liDrawMap();if(window.renderCand)window.renderCand();}
+  renderTable();renderCards();renderMatrix();renderInsight();if(liMapObj)liDrawMap();if(window.renderCand)window.renderCand();}
 
- window.initLiMap=function(){window.liMapInit=true;window.liMap=L.map('liMap').setView([-6.95,107.6],8);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.liMap);
-  liDrawMap();setTimeout(()=>window.liMap.invalidateSize(),150);if(window.initCandMap)window.initCandMap();};
+ window.initLiMap=function(){window.liMapInit=true;liMapObj=L.map('liMap').setView([-6.95,107.6],8);window.liMap=liMapObj;
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(liMapObj);
+  liDrawMap();setTimeout(()=>liMapObj.invalidateSize(),150);if(window.initCandMap)window.initCandMap();};
 
  renderSliders();
  $('tblLi').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='kota'||k==='tag')?1:-1;}renderTable();});
  $('liTarget').oninput=liRecompute;
+ const applyPreset=(p,tgt)=>{Object.keys(p).forEach(k=>{$('liw_'+k).value=p[k];$('liwv_'+k).textContent=p[k];});$('liTarget').value=tgt;liRecompute();};
  $('liReset').onclick=()=>{WCFG.forEach(w=>{$('liw_'+w[0]).value=w[2];$('liwv_'+w[0]).textContent=w[2];});$('liTarget').value=2;liRecompute();};
+ $('liPresetCom').onclick=()=>applyPreset({demand:45,growth:35,gap:20,equity:0},3);
+ $('liPresetEq').onclick=()=>applyPreset({demand:10,growth:20,gap:30,equity:40},2.5);
  $('liMethod').innerHTML=`<b>Method.</b> The Site Opportunity Score is a min–max-normalised multi-criteria (MCDA) <b>weighted overlay</b> across ${A.length} analysis areas, combining <b>Demand & adoption</b> (charging kWh/capita + EV per 100k), <b>Growth potential</b> (population, density, HDI), <b>Supply gap</b> (inverse units per 100k) and <b>Equity</b> (poverty rate) — the same weighted-suitability approach location-intelligence platforms (e.g. CARTO Site Selection, Mapbox) use. Suggested additions = max(0, (target − current units/100k) × population). Map centroids are area approximations for visualisation, not exact coordinates; the model blends PLN primary data with indicative BPS indicators, so treat it as decision-support, not final siting.`;
  liRecompute();
 })();
@@ -1036,23 +1057,128 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
   cand=CAND.map(c=>{const h=host(c.a),base=(wD*h.s_demand+wG*h.s_growth+wGap*c.distGap+wE*h.s_equity)/tot,score=+(0.85*base+0.15*c.typeScore).toFixed(1);
    let tag;if(c.near>=6)tag='Charging gap — nearest '+c.near+' km';else if(h.s_demand>=60)tag='High local demand';else if(c.typeScore>=85)tag='Strategic corridor / hub';else if(h.s_equity>=60)tag='Underserved area';else tag='Balanced opportunity';
    return {...c,score,tag};});
-  cand.sort((x,y)=>y.score-x.score);cand.forEach((c,i)=>c.rank=i+1);}
+  cand.sort((x,y)=>y.score-x.score);cand.forEach((c,i)=>c.rank=i+1);window._liCand=cand;}
  function renderTable(){const disp=[...cand].sort((a,b)=>{let x=a[sortK],y=b[sortK];if(typeof x==='string')return sortD*(''+x).localeCompare(y);return sortD*((x??0)-(y??0));});
   $('tblCand').querySelector('tbody').innerHTML=disp.map(c=>`<tr><td>${c.rank}</td><td style="font-weight:600;color:var(--navy)">${c.n}</td><td style="font-size:11px">${TYPE[c.t]}</td><td>${c.a}</td><td>${c.near}</td>
    <td><span style="display:inline-block;min-width:34px;font-weight:700;color:#fff;background:${colFn(c.score)};border-radius:6px;padding:1px 6px;text-align:center">${c.score}</span></td>
    <td style="font-size:11px">${c.tag}</td></tr>`).join('');}
  function renderTop(){$('liCandTop').innerHTML=cand.slice(0,3).map((c,i)=>`<div class="rqc"><div class="t">#${i+1} ${c.n} · ${c.score}</div><p><b>${TYPE[c.t]}</b> in ${c.a}. Nearest existing SPKLU <b>${c.near} km</b>. ${c.tag}.</p></div>`).join('');}
- function drawMap(){if(!window.liCandMap)return;if(window.candLayer)window.candLayer.remove();window.candLayer=L.layerGroup().addTo(window.liCandMap);
+ let candMap=null;
+ function drawMap(){if(!candMap)return;if(window.candLayer)window.candLayer.remove();window.candLayer=L.layerGroup().addTo(candMap);
   SP.forEach(p=>{L.circleMarker([p.lat,p.lng],{radius:2.5,color:'#1f7a3d',fillColor:'#1f7a3d',fillOpacity:.55,weight:0}).addTo(window.candLayer);});
   cand.forEach(c=>{L.circleMarker([c.lat,c.lng],{radius:6+c.score/9,color:'#16305f',fillColor:colFn(c.score),fillOpacity:.85,weight:1})
    .bindPopup(`<b>${c.n}</b><br>${TYPE[c.t]} · ${c.a}<br>Opportunity: <b>${c.score}</b><br>Nearest SPKLU: <b>${c.near} km</b><br><i>${c.tag}</i>`).addTo(window.candLayer);});}
- window.renderCand=function(){compute();renderTable();renderTop();drawMap();};
- window.initCandMap=function(){if(window.liCandMap)return;window.liCandMap=L.map('liCandMap').setView([-6.85,107.65],8);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(window.liCandMap);
-  drawMap();setTimeout(()=>window.liCandMap.invalidateSize(),160);};
+ window.renderCand=function(){compute();renderTable();renderTop();drawMap();if(window.renderSiteReport)window.renderSiteReport();};
+ window.initCandMap=function(){if(candMap)return;candMap=L.map('liCandMap').setView([-6.85,107.65],8);window.liCandMap=candMap;
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(candMap);
+  drawMap();setTimeout(()=>candMap.invalidateSize(),160);if(window.initSiteReport)window.initSiteReport();};
  $('tblCand').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(!k)return;if(k===sortK)sortD*=-1;else{sortK=k;sortD=(k==='name'||k==='type'||k==='area'||k==='tag')?1:-1;}renderTable();});
  $('liCandNote').innerHTML='<b>Candidate sites</b> are real, recognisable West Java locations (toll rest areas, malls, transport hubs, tourism nodes) with approximate coordinates, used to illustrate point-level siting. <b>Nearest SPKLU</b> = great-circle distance to the closest existing public charger in the dataset ('+SP.length+' points); <b>Opportunity</b> blends that gap with the host area’s demand/growth/equity (current weights) plus a strategic factor by site type. Decision-support only — validate grid capacity, land access & traffic counts before siting.';
  window.renderCand();
+})();
+
+// ===== SITE INTELLIGENCE REPORT (GeoSIS / Bvarta-style catchment profiling) =====
+(function(){
+ const hav=(a,b,c,d)=>{const R=6371,r=Math.PI/180,dLat=(c-a)*r,dLng=(d-b)*r,s1=Math.sin(dLat/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin(dLng/2)**2;return 2*R*Math.asin(Math.sqrt(s1));};
+ const SP=(D.spklu_points||[]).filter(p=>p.lat&&p.lng);
+ const isMitra=p=>/MITRA/i.test(p.milik||'');
+ const TYPE={rest:'Toll rest area',mall:'Mall / retail',hub:'Transport hub',tour:'Tourism'};
+ // Indicative financial assumptions (IDR). Decision-support, not a quotation.
+ const FIN={capex:{rest:1500,hub:1200,mall:950,tour:780}, kwhSess:{rest:32,hub:30,mall:20,tour:22}, units:{rest:4,hub:3,mall:2,tour:2}, tariff:2466, netMargin:0.32};
+ // Utilisation anchor from real data: observed avg charging sessions per unit per month (total transactions / total units, Mar 2026)
+ const ANCHOR=(D.kpi&&D.spklu_total&&D.spklu_total.unit)?Math.round(D.kpi.total_trx/D.spklu_total.unit):160;
+ const CHARGER={rest:'DC fast (transit, short dwell)',hub:'DC fast + AC (mixed dwell)',mall:'AC destination (long dwell)',tour:'AC destination + 1 DC'};
+ const fmtN=n=>n>=1e9?(n/1e9).toFixed(2)+'B':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(n>=1e4?0:1)+'k':Math.round(n);
+ const host=area=>{const A=window._liAreas||[];return A.find(x=>x.kota===area)||{density:3000,ev:500,pop:1e6,evp100:3,s_demand:50,s_growth:50,s_equity:50,upk:1,evps:60};};
+ const colF=s=>s>=70?'#d6443c':s>=55?'#e0852b':s>=40?'#e0a52b':'#9aa6bd';
+ let sel=0;
+
+ function analyse(c,R){
+  const h=host(c.a);
+  const inR=SP.filter(p=>hav(c.lat,c.lng,p.lat,p.lng)<=R);
+  const comp=inR.length, compMitra=inR.filter(isMitra).length, compPLN=comp-compMitra;
+  const compUnits=inR.reduce((s,p)=>s+(+p.unit||1),0);
+  // catchment context: host-area density (persons/km²) over the catchment, EV penetration applied
+  const catchPop=Math.round(h.density*Math.PI*R*R);
+  const evRatio=h.pop>0?h.ev/h.pop:0;
+  const evCatch=Math.max(0,Math.round(catchPop*evRatio));
+  // demand model anchored to OBSERVED utilisation (sessions/unit/month), modulated by local demand, competition & site type
+  const units=FIN.units[c.t];
+  const demandMult=0.6+h.s_demand/100;             // 0.6 .. 1.6 by local demand strength
+  const gapBonus=Math.min(1,c.near/6);             // isolation premium; nearest rival ≥6 km → full
+  const compFactor=Math.min(1.3,(0.75+0.5*gapBonus)/(1+0.3*comp)); // fewer/farther rivals → higher capture
+  const monthlySess=Math.round(units*ANCHOR*demandMult*compFactor);
+  const kwhMo=monthlySess*FIN.kwhSess[c.t];
+  const grossMo=kwhMo*FIN.tariff;                  // Rp/month
+  const netMo=grossMo*FIN.netMargin;               // Rp/month to operator
+  const capex=FIN.capex[c.t]*1e6;                  // Rp
+  const payback=netMo>0?capex/netMo:Infinity;      // months
+  // Commercial Viability Score (0-100): demand strength, competitive whitespace, payback speed, strategic site value
+  const dDemand=Math.min(100,monthlySess/1000*100);// 1,000 sess/mo → 100
+  const dGap=c.distGap;                             // already 0..100 (far from rivals = high)
+  const dPay=isFinite(payback)?Math.max(0,100-payback/0.9):0; // 90mo→0, 0mo→100
+  const dType=c.typeScore;
+  const viab=+(0.34*dDemand+0.20*dGap+0.30*dPay+0.16*dType).toFixed(1);
+  return {h,inR,comp,compMitra,compPLN,compUnits,catchPop,evCatch,units,monthlySess,kwhMo,grossMo,netMo,capex,payback,viab,R};
+ }
+
+ function paybackTxt(m){if(!isFinite(m))return 'no positive cash flow';const y=Math.floor(m/12),mo=Math.round(m%12);return (y>0?y+'y ':'')+mo+'mo';}
+
+ function renderPanel(c,X){
+  const rows=[
+   ['Host area',c.a+' · '+TYPE[c.t]],
+   ['Catchment population','~'+fmtN(X.catchPop)+' (r '+X.R+' km)'],
+   ['Estimated EVs in catchment','~'+fmtN(X.evCatch)],
+   ['Competing SPKLU in catchment',X.comp+' station'+(X.comp===1?'':'s')+' · '+X.compUnits+' units ('+X.compPLN+' PLN / '+X.compMitra+' private)'],
+   ['Nearest existing SPKLU',c.near+' km'],
+   ['Recommended charger mix',X.units+'× '+CHARGER[c.t]],
+   ['Projected sessions / month','~'+fmtN(X.monthlySess)+' (anchor '+ANCHOR+'/unit)'],
+   ['Energy throughput / month','~'+fmtN(X.kwhMo)+' kWh'],
+   ['Est. net revenue / month','Rp '+fmtN(X.netMo)],
+   ['All-in capex (indicative)','Rp '+fmtN(X.capex)],
+   ['Simple payback','<b>'+paybackTxt(X.payback)+'</b>']
+  ];
+  const cann=X.comp===0?'<span style="color:#1f7a3d;font-weight:700">none — open white-space</span>':X.comp<=2?'<span style="color:#b08400;font-weight:700">low</span>':'<span style="color:#d6443c;font-weight:700">high — likely cannibalisation</span>';
+  $('srPanel').innerHTML=`<div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px"><div style="font-size:16px;font-weight:800;color:var(--navy)">${c.n}</div>
+   <span style="font-weight:800;color:#fff;background:${colF(X.viab)};border-radius:7px;padding:2px 9px">Viability ${X.viab}</span></div>
+   <div style="font-size:12px;color:var(--mut);margin-bottom:10px">Cannibalisation risk: ${cann}</div>
+   <table style="width:100%;border-collapse:collapse;font-size:12.5px">${rows.map((r,i)=>`<tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 4px;color:var(--mut)">${r[0]}</td><td style="padding:6px 4px;text-align:right;font-weight:600;color:var(--navy)">${r[1]}</td></tr>`).join('')}</table>`;
+  $('srVScore').innerHTML=`Commercial viability: <span style="color:${colF(X.viab)}">${X.viab}/100</span>`;
+ }
+
+ function narrate(c,X){
+  const verdict=X.viab>=70?'a strong commercial site':X.viab>=55?'a viable site with conditions':X.viab>=40?'a marginal site — proceed only if land/grid costs are low':'a weak commercial site under current assumptions';
+  const compTxt=X.comp===0?`no competing public charger sits within ${X.R} km, so the catchment is effectively uncontested`:`${X.comp} competing station${X.comp===1?'':'s'} (${X.compUnits} units) already operate within ${X.R} km, so realistic capture is throttled to ~${(100/(X.comp+1)).toFixed(0)}% before the isolation premium`;
+  $('srNarr').innerHTML=`<b>🤖 AI Insight Synthesis.</b> <b>${c.n}</b> (${TYPE[c.t]}, ${c.a}) scores <b>${X.viab}/100</b> on commercial viability — ${verdict}. The ${X.R} km catchment holds ~<b>${fmtN(X.catchPop)} residents</b> and an estimated ~<b>${fmtN(X.evCatch)} EVs</b>; ${compTxt}. At a recommended <b>${X.units}× ${CHARGER[c.t]}</b> configuration the model projects ~<b>${fmtN(X.monthlySess)} sessions/month</b> (~${fmtN(X.kwhMo)} kWh, anchored to the network's observed ${ANCHOR} sessions/unit/month), implying ~<b>Rp ${fmtN(X.netMo)}</b> net monthly and a simple payback of ~<b>${paybackTxt(X.payback)}</b> against ~Rp ${fmtN(X.capex)} capex. ${c.near>=6?`The nearest existing SPKLU is <b>${c.near} km</b> away — a genuine charging gap.`:`The nearest existing SPKLU is only ${c.near} km away — confirm it isn't already absorbing this demand.`} <i>Decisive next check: grid headroom (distance to the nearest gardu/JTM and spare trafo capacity) — the factor competitors can't see and PLN can.</i>`;
+ }
+
+ let catchLayer,srMapObj=null;
+ function drawMap(c,X){if(!srMapObj)return;if(catchLayer)catchLayer.remove();catchLayer=L.layerGroup().addTo(srMapObj);
+  L.circle([c.lat,c.lng],{radius:X.R*1000,color:'#2b6fe0',weight:1.5,fillColor:'#2b6fe0',fillOpacity:.10}).addTo(catchLayer);
+  SP.forEach(p=>{const within=hav(c.lat,c.lng,p.lat,p.lng)<=X.R,mit=isMitra(p);
+   L.circleMarker([p.lat,p.lng],{radius:within?5:2.5,color:mit?'#b08400':'#1f7a3d',fillColor:mit?'#b08400':'#1f7a3d',fillOpacity:within?.9:.4,weight:within?1:0})
+    .bindPopup(`<b>${p.name}</b><br>${mit?'Private (MITRA)':'PLN'} · ${p.jenis||''}<br>${p.unit||1} unit(s)`).addTo(catchLayer);});
+  L.circleMarker([c.lat,c.lng],{radius:10,color:'#16305f',fillColor:'#d6443c',fillOpacity:.95,weight:2}).bindPopup(`<b>${c.n}</b><br>${TYPE[c.t]} · ${c.a}`).addTo(catchLayer);
+  srMapObj.setView([c.lat,c.lng],12);setTimeout(()=>srMapObj.invalidateSize(),120);}
+
+ function run(){const list=window._liCand||[];if(!list.length)return;const c=list[sel]||list[0];const R=+$('srRad').value;$('srRadVal').textContent=R.toFixed(1)+' km';
+  const X=analyse(c,R);renderPanel(c,X);narrate(c,X);drawMap(c,X);}
+
+ window.renderSiteReport=function(){const list=window._liCand||[];if(!list.length)return;
+  const cur=$('srSel');
+  cur.innerHTML=list.map((c,i)=>`<option value="${i}">#${c.rank} · ${c.n} — ${c.a}</option>`).join('');
+  // keep selection stable by site name across re-weights / re-ranks
+  if(window._srName){const f=list.findIndex(c=>c.n===window._srName);if(f>=0)sel=f;}
+  if(sel>=list.length)sel=0;
+  cur.value=sel;run();};
+
+ window.initSiteReport=function(){if(srMapObj)return;srMapObj=L.map('srCatchMap').setView([-6.85,107.65],11);window.srMap=srMapObj;
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO',maxZoom:19}).addTo(srMapObj);
+  $('srSel').onchange=()=>{sel=+$('srSel').value;const list=window._liCand||[];window._srName=(list[sel]||{}).n;run();};
+  $('srRad').oninput=run;
+  window.renderSiteReport();};
+
+ $('srNote').innerHTML='<b>How this works.</b> The report defines a circular <b>catchment</b> around the chosen site; catchment population = host-area density × area, and EVs apply the host area\'s EV-per-capita penetration (shown as context). <b>Competitors</b> are existing SPKLU within the radius (split PLN vs private/MITRA from the master data). The <b>demand model is anchored to observed utilisation</b> — '+ANCHOR+' charging sessions per unit per month across the live network — then modulated by the host area\'s demand strength, competitor count and distance to the nearest rival, and scaled by the recommended unit count per site type. Sessions convert to kWh, net revenue (≈'+Math.round(FIN.netMargin*100)+'% net margin after energy cost & O&M) and a simple payback against indicative all-in capex by site type. <b>Commercial Viability</b> blends projected demand, competitive whitespace, payback speed and strategic site value. All figures are indicative decision-support; before committing, validate <b>grid capacity (distance to gardu/JTM, spare trafo), land status and real traffic counts</b> — the catchment circle is a proxy for a drive-time isochrone.';
 })();
 
 // ===== SUMMARY (paper-style synthesis) =====
@@ -1147,7 +1273,7 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    prioritas_kebijakan:D.policy_priority.slice(0,6).map(p=>({kota:p.kota,epi:p.epi,rekomendasi:p.action,alasan:p.reason})),
    socio_economic:{note:'BPS 2023 indicative per area',correlations:D.socio_corr,regions:D.socio_rows.map(r=>({area:r.kota,hdi:r.ipm,grdp_per_capita_Rpm:r.pdrb,poverty_pct:r.poverty,density:r.density,ev_per_100k:r.ev_per_100k}))},
    international_benchmark:{note:'indicative IEA/ICCT/PLN ~2024',public_chargers:{China:'2.7M',EU:'0.63M',US:'0.18M',Indonesia:'3.2k'},bev_sales_share_pct:{Norway:88,China:25,EU:14,US:8,Indonesia:5},asean_bev_share_pct:{Singapore:34,Vietnam:17,Thailand:14,Indonesia:5,Malaysia:2.5,Philippines:2},asean_chargers:{Vietnam:'~150k (V-Green proprietary)',Thailand:'~11.5k',Singapore:'~7.1k',Indonesia:'~3.2k',Malaysia:'~4k',Philippines:'~0.9k'},indonesia_gaps:['no binding coverage/uptime mandate (vs EU AFIR, US NEVI)','open payment & roaming','adoption depth','smart charging/ToU','equity-weighted & rural siting']},
-   location_intelligence:{note:'site-selection MCDA weighted overlay over 19 areas; criteria: demand+adoption, growth, supply gap, equity; tunable weights; suggests new SPKLU units vs a target units/100k. Default top: Depok (commercial); equity-weighted top: Kuningan'},
+   location_intelligence:{note:'two-tier site selection like GeoSIS/Bvarta. Tier-1: MCDA weighted overlay over 19 areas (demand+adoption, growth, supply gap, equity) with tunable weights and Commercial(ROI) vs Equity(policy) objective presets; suggests new SPKLU units vs a target units/100k. Tier-2: point-level candidate sites (rest areas, malls, hubs, tourism) scored by distance-to-nearest-SPKLU + host demand. Site Intelligence Report: per-site catchment profiling (radius) giving catchment population & EVs, competitor/cannibalisation scan (PLN vs private), recommended charger mix, financial payback model and Commercial Viability score, plus an AI Insight Synthesis narrative. Default commercial top: Depok; equity-weighted top: Kuningan'},
    persepsi:{lokasi_berskor:D.kpi.absa_n,catatan:'data persepsi ABSA mencakup Jawa Barat + luar (Jakarta/Tangerang); pada peta dapat difilter per wilayah'}
  });
  const history=[]; let busy=false; let greeted=false;
