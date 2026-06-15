@@ -506,6 +506,27 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 
 <!-- ===================== OPEN-SOURCE / OPEN-DATA INTEGRATIONS ===================== -->
 
+<!-- WORLD EV INSIGHT (infographic) -->
+<div class="page" id="p-insight">
+ <div class="ighero">
+  <span class="tag">Synthesis · open data + open source</span>
+  <h2>The State of EV Charging — a <b>Global Synthesis</b></h2>
+  <p id="igLede"></p>
+  <div class="igquick" id="igQuick"></div>
+ </div>
+ <div class="grid2">
+  <div class="card"><h3>⚡ The fast-charging arms race <span>· Open EV Data</span></h3><div style="height:270px"><canvas id="igDcTrend"></canvas></div><div class="sub" id="igDcNote" style="margin-top:6px"></div></div>
+  <div class="card"><h3>🔌 Connector standardization <span>· CCS vs the rest</span></h3><div style="height:270px"><canvas id="igConn"></canvas></div><div class="sub" id="igConnNote" style="margin-top:6px"></div></div>
+ </div>
+ <div class="grid2">
+  <div class="card"><h3>🌍 Global EV stock by region <span>· IEA context</span></h3><div style="height:260px"><canvas id="igStock"></canvas></div><div class="sub" style="margin-top:6px">Indicative figures · IEA Global EV Outlook (latest). Directional context only.</div></div>
+  <div class="card"><h3>🛠️ Open-source stack momentum <span>· GitHub ★</span></h3><div style="height:260px"><canvas id="igStars"></canvas></div><div class="sub" id="igStarsNote" style="margin-top:6px">Loading live GitHub stars…</div></div>
+ </div>
+ <div class="card" style="margin-top:15px"><h3>🧱 The open EV-charging stack <span>— how the pieces connect</span></h3><div class="igflow" id="igFlow"></div></div>
+ <div class="card" style="margin-top:15px"><h3>💡 Cross-source insights <span>— what the combined data is telling us</span></h3><div class="iginsights" id="igInsights"></div></div>
+ <div class="igsummary"><div class="k">Summary</div><h3>What it means for Indonesia &amp; West Java SPKLU</h3><div id="igSummary"></div></div>
+</div>
+
 <!-- OPEN CHARGE MAP -->
 <div class="page" id="p-ocm">
  <div class="insight"><b>🔌 Open Charge Map — live global charging registry.</b> Powered by the <a href="https://github.com/openchargemap/ocm-system" target="_blank" rel="noopener">openchargemap/ocm-system</a> public POI API (the world's largest open, crowd-sourced database of EV charging locations). Use it to benchmark West Java SPKLU against live global/Indonesian station data — operators, connectors, power levels and operational status. A free API key from <a href="https://openchargemap.org/site/loginprovider/beginlogin" target="_blank" rel="noopener">openchargemap.org</a> is required by OCM for API access.</div>
@@ -2054,6 +2075,30 @@ window.initPel=(function(){
 .srccard a{color:var(--blue);text-decoration:none}
 .gevrepo{display:inline-flex;flex-direction:column;gap:3px;border:1px solid var(--line);border-radius:10px;padding:11px 14px;margin:0 10px 10px 0;background:#fcfdff;vertical-align:top;min-width:230px}
 .gevrepo b{color:var(--navy);font-size:13px}.gevrepo span{font-size:11.5px;color:var(--mut)}.gevrepo a{color:var(--blue);text-decoration:none;font-size:11.5px}
+.ighero{background:linear-gradient(135deg,var(--navy),var(--navy3));color:#fff;border-radius:18px;padding:26px 30px;margin-bottom:15px;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(10,23,51,.25)}
+.ighero:before{content:"";position:absolute;right:-60px;top:-60px;width:260px;height:260px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+.ighero h2{font-size:24px;color:#fff;margin:6px 0 8px;font-family:Fraunces;font-weight:600}.ighero h2 b{color:var(--gold)}
+.ighero p{color:#cdd7ea;font-size:13px;line-height:1.7;max-width:940px;font-weight:300;position:relative;z-index:1}
+.igquick{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:11px;margin-top:18px;position:relative;z-index:1}
+.igquick .q{background:rgba(255,255,255,.06);border:1px solid rgba(212,175,55,.25);border-radius:12px;padding:12px 14px}
+.igquick .q .n{font-family:Fraunces;font-size:22px;font-weight:700;color:var(--gold);line-height:1.1}
+.igquick .q .t{font-size:10.5px;color:#aebbd6;margin-top:4px;line-height:1.35}
+.igflow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px}
+.igflow .node{flex:1;min-width:150px;border:1px solid var(--line);border-radius:12px;padding:13px;background:#fcfdff}
+.igflow .node .ln{font-size:9.5px;letter-spacing:.5px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.igflow .node .lt{font-family:Fraunces;color:var(--navy);font-size:14px;font-weight:600;margin:4px 0 5px}
+.igflow .node .ll{font-size:11px;color:var(--mut);line-height:1.5}
+.igflow .arrow{display:flex;align-items:center;color:var(--gold);font-size:20px;font-weight:700}
+.iginsights{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.iginsight{border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;padding:15px 17px;background:#fcfdff}
+.iginsight .it{font-family:Fraunces;color:var(--navy);font-size:14px;font-weight:600;margin-bottom:6px}
+.iginsight .ib{font-size:12.5px;color:#33405a;line-height:1.65}
+.iginsight .src{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-top:8px}
+.igsummary{background:linear-gradient(180deg,#fffaef,#fff7e3);border:1px solid #efe2b8;border-left:4px solid var(--gold);border-radius:14px;padding:22px 26px;margin-top:15px}
+.igsummary .k{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.igsummary h3{font-family:Fraunces;color:var(--navy);font-size:18px;margin:6px 0 10px}
+.igsummary p{font-size:13px;line-height:1.75;color:#5a4d22;margin-bottom:9px}
+@media(max-width:980px){.iginsights{grid-template-columns:1fr}}
 </style>
 <script>
 /* ===================== OPEN-SOURCE / OPEN-DATA INTEGRATIONS ===================== */
@@ -2065,7 +2110,7 @@ function mkChart(id,cfg){if(charts[id])charts[id].destroy();const el=$(id);if(!e
 const NAVY='#16305f',GOLD='#d4af37',PAL=['#16305f','#d4af37','#3a6ea5','#2e9e5b','#e0a52b','#e8742c','#d6443c','#8a6fb0','#5b937a','#b08a3c'];
 
 /* ---- tab registration (isolated, compatible with existing tab handler) ---- */
-const NEWTABS=[["ocm","🔌 Open Charge Map"],["evmodels","🚗 EV Models"],["globalev","🌍 Global EV Data"],["ecosystem","🛠️ Open-Source Stack"]];
+const NEWTABS=[["insight","📊 World EV Insight"],["ocm","🔌 Open Charge Map"],["evmodels","🚗 EV Models"],["globalev","🌍 Global EV Data"],["ecosystem","🛠️ Open-Source Stack"]];
 const done={};
 function activate(pid){
  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -2074,6 +2119,7 @@ function activate(pid){
  const pg=$('p-'+pid);if(pg)pg.classList.add('active');
 }
 function init(pid){
+ if(pid==='insight'&&!done.insight){done.insight=1;initInsight();}
  if(pid==='ocm'){if(!done.ocm){done.ocm=1;initOCM();}else if(window._ocmMap)setTimeout(()=>window._ocmMap.invalidateSize(),60);}
  if(pid==='evmodels'&&!done.ev){done.ev=1;initEV();}
  if(pid==='globalev'&&!done.gev){done.gev=1;initGEV();}
@@ -2081,6 +2127,79 @@ function init(pid){
 }
 const tabsEl=$('tabs');
 NEWTABS.forEach(t=>{const d=document.createElement('div');d.className='tab';d.dataset.p=t[0];d.textContent=t[1];d.onclick=()=>{activate(t[0]);init(t[0]);};tabsEl.appendChild(d);});
+
+/* ===== Curated EV dataset (public spec-sheet facts) — powers the infographic
+   and the offline view of the EV Models tab. [brand,model,year,batt kWh,AC kW,DC kW,connector] ===== */
+const WORLD_EVS=[
+ ['Nissan','Leaf',2011,24,3.3,50,'CHAdeMO'],['Mitsubishi','i-MiEV',2010,16,3.7,50,'CHAdeMO'],
+ ['Tesla','Model S',2012,85,11,120,'Tesla / NACS'],['Renault','Zoe',2013,22,43,0,'Type 2 (AC)'],
+ ['BMW','i3',2014,22,7.4,50,'CCS'],['Nissan','Leaf',2018,40,6.6,50,'CHAdeMO'],
+ ['Chevrolet','Bolt',2017,60,7.2,55,'CCS'],['Hyundai','Kona Electric',2018,64,7.2,77,'CCS'],
+ ['Jaguar','I-Pace',2018,90,7,100,'CCS'],['Tesla','Model 3 LR',2019,75,11,250,'Tesla / NACS'],
+ ['Audi','e-tron 55',2019,95,11,150,'CCS'],['MG','ZS EV',2019,44.5,7.4,76,'CCS'],
+ ['Porsche','Taycan',2020,93,11,270,'CCS'],['Volkswagen','ID.3',2020,58,11,100,'CCS'],
+ ['Polestar','2',2020,78,11,155,'CCS'],['Tesla','Model Y LR',2021,75,11,250,'CCS'],
+ ['Volkswagen','ID.4',2021,77,11,135,'CCS'],['Hyundai','Ioniq 5',2021,72.6,11,220,'CCS'],
+ ['Kia','EV6',2021,77.4,11,240,'CCS'],['Ford','Mustang Mach-E',2021,88,11,150,'CCS'],
+ ['Mercedes','EQS 450+',2021,108,11,200,'CCS'],['BYD','Atto 3',2022,60,7,88,'CCS'],
+ ['BYD','Seal',2022,82,11,150,'CCS'],['Wuling','Air EV',2022,26.7,6.6,0,'Type 2 (AC)'],
+ ['Hyundai','Ioniq 6',2022,77.4,11,233,'CCS'],['Lucid','Air',2022,112,19.2,300,'CCS'],
+ ['Rivian','R1T',2022,135,11,220,'CCS'],['MG','MG4',2022,64,11,135,'CCS'],
+ ['NIO','ET5',2022,75,11,140,'CCS'],['Xpeng','G9',2022,98,11,300,'CCS'],
+ ['Volvo','EX30',2023,64,11,153,'CCS'],['Tesla','Model 3 Highland',2024,75,11,250,'Tesla / NACS'],
+ ['BYD','Dolphin',2023,60,11,88,'CCS'],['Kia','EV9',2023,99.8,11,210,'CCS']
+];
+function seedNorm(e){return{brand:e[0],model:e[1],variant:'',year:e[2],batt:e[3],ac_max:e[4]||null,ac_ports:'type2',dc_max:e[5]||null,dc_ports:e[6],cons:null};}
+
+/* ============================ WORLD EV INSIGHT (infographic) ============================ */
+async function initInsight(){
+ $('igLede').innerHTML="From 2011's 24 kWh, 50 kW Nissan Leaf to today's 800-volt, 270 kW Porsche Taycan, EV charging has matured into a global, standardised, open ecosystem. Combining <b>Open EV Data</b> (what the cars can do), <b>Open Charge Map</b> (where the chargers are) and the open-source stack catalogued in <b>awesome-ev-charging</b> (how they're run), this view distils what the world's charging build-out means — and what it implies for Indonesia and West Java's SPKLU network.";
+ $('igQuick').innerHTML=[['~40 M','Global EV stock · 2023'],['~18%','Global EV sales share · 2023'],['270 kW','Top mainstream DC power'],['CCS','Dominant connector'],['OCPP','De-facto protocol'],['636','West Java SPKLU units']].map(q=>`<div class="q"><div class="n">${q[0]}</div><div class="t">${q[1]}</div></div>`).join('');
+ // fast-charging arms race
+ const buckets=[['≤2014',0,2014],['2015–16',2015,2016],['2017–18',2017,2018],['2019–20',2019,2020],['2021–22',2021,2022],['2023+',2023,3000]];
+ const yr=WORLD_EVS.filter(e=>e[2]&&e[5]);
+ const avg=buckets.map(b=>{const g=yr.filter(e=>e[2]>=b[1]&&e[2]<=b[2]);return g.length?Math.round(g.reduce((s,e)=>s+e[5],0)/g.length):null;});
+ const mx=buckets.map(b=>{const g=yr.filter(e=>e[2]>=b[1]&&e[2]<=b[2]);return g.length?Math.max(...g.map(e=>e[5])):null;});
+ mkChart('igDcTrend',{type:'line',data:{labels:buckets.map(b=>b[0]),datasets:[{label:'Peak DC (max)',data:mx,borderColor:NAVY,backgroundColor:'rgba(22,48,95,.08)',fill:true,tension:.3,pointRadius:3},{label:'Average DC',data:avg,borderColor:GOLD,backgroundColor:'transparent',tension:.3,pointRadius:3,borderDash:[5,4]}]},options:{plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12}}},maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:'#eef1f6'},title:{display:true,text:'kW'}}}}});
+ $('igDcNote').textContent='Mainstream EV DC peak power has risen ~5× since 2011 (≈50 kW → ≈270 kW). Source: Open EV Data (curated sample).';
+ // connector standardization
+ const grp={'CCS':0,'CHAdeMO':0,'Tesla / NACS':0,'AC-only / Type 2':0};
+ WORLD_EVS.forEach(e=>{const c=e[6];if(/chademo/i.test(c))grp['CHAdeMO']++;else if(/tesla|nacs/i.test(c))grp['Tesla / NACS']++;else if(/ccs/i.test(c))grp['CCS']++;else grp['AC-only / Type 2']++;});
+ mkChart('igConn',{type:'doughnut',data:{labels:Object.keys(grp),datasets:[{data:Object.values(grp),backgroundColor:[NAVY,'#d6443c','#3a6ea5','#d4af37']}]},options:{plugins:{legend:{position:'right',labels:{font:{size:11},boxWidth:12}}},maintainAspectRatio:false}});
+ $('igConnNote').textContent=Math.round(100*grp['CCS']/WORLD_EVS.length)+'% of sampled modern EVs use CCS — the global default outside China; CHAdeMO is fading and Tesla is opening NACS.';
+ // global stock
+ mkChart('igStock',{type:'bar',data:{labels:['China','Europe','United States','Rest of world'],datasets:[{data:[20,8,4,8],backgroundColor:PAL}]},options:{plugins:{legend:{display:false}},maintainAspectRatio:false,scales:{y:{beginAtZero:true,grid:{color:'#eef1f6'},title:{display:true,text:'million EVs (est.)'}}}}});
+ // stack flow
+ const FLOW=[['Vehicle','Open EV Data','Battery & charge-curve specs of the cars'],['Connector + standard','CCS · ISO 15118','Physical plug & Plug & Charge comms'],['Charge point','OpenEVSE · EVerest','Firmware that controls the hardware'],['Management (CSMS)','SteVe · CitrineOS','OCPP back-office operating the fleet'],['Roaming','OCPI','Cross-operator interoperability'],['Open data','Open Charge Map','Where every charger is, openly']];
+ $('igFlow').innerHTML=FLOW.map((n,i)=>`<div class="node"><div class="ln">Layer ${i+1}</div><div class="lt">${n[0]}</div><div class="ll"><b>${n[1]}</b><br>${n[2]}</div></div>`+(i<FLOW.length-1?'<div class="arrow">→</div>':'')).join('');
+ // cross-source insights
+ const INS=[
+  ['Fast charging got ~5× faster in a decade','Peak DC power climbed from ~50 kW (2011 Leaf, i3) to 250–300 kW (Ioniq 5, Taycan, Lucid Air). 800-volt architectures are now mainstream. New charging sites must be specced for the cars of the next decade, not the last one.','Open EV Data'],
+  ['CCS won the connector war','The vast majority of modern non-Chinese EVs charge on CCS; CHAdeMO is in decline and even Tesla is migrating to/ opening NACS. A single connector standard de-risks infrastructure investment.','Open EV Data'],
+  ['OCPP is the lingua franca','Every major open management system — SteVe, EVerest, CitrineOS, MaEVe — speaks OCPP. Standardising procurement on OCPP avoids vendor lock-in and lets hardware and software evolve independently.','awesome-ev-charging'],
+  ['The open-source stack is production-ready','High-momentum projects now cover the entire vertical for free: firmware (OpenEVSE, EVerest), back-office (SteVe, CitrineOS), energy management (evcc) and open data (Open Charge Map). Operators can build without proprietary licences.','GitHub activity'],
+  ['Open data closes the visibility gap','Open Charge Map crowd-sources the charger locations governments rarely publish openly. Contributing the SPKLU network to OCM would put Indonesia on the global research map and improve driver-facing apps.','Open Charge Map'],
+  ['Local reality mirrors the global signal','In West Java, DC fast-charging already delivers most of the energy across 636 units / 348 sites, while AC serves long-dwell, city-car use (e.g. Wuling Air EV). The global trend and the local data point the same way: invest in DC headroom.','PLN SPKLU (this study)']
+ ];
+ $('igInsights').innerHTML=INS.map(x=>`<div class="iginsight"><div class="it">${x[0]}</div><div class="ib">${x[1]}</div><div class="src">Source · ${x[2]}</div></div>`).join('');
+ // summary
+ $('igSummary').innerHTML='<p>The global signal is consistent: charging is getting <b>faster, more standardised, and more open</b>. Peak DC power has risen roughly five-fold in a decade, CCS has become the de-facto connector outside China, and OCPP underpins every major open management system (SteVe, EVerest, CitrineOS, MaEVe).</p><p>For Indonesia this lowers both cost and risk. West Java\'s <b>636 SPKLU units across 348 sites</b> can run on vendor-neutral, OCPP-based open software, standardise on <b>CCS2</b>, and be published to <b>Open Charge Map</b> for visibility and research — exactly the directions the global ecosystem has already converged on.</p><p>The strategic priority is <b>DC power headroom</b>: with mainstream EVs now charging at 150–270 kW, new West Java sites should target <b>≥150 kW DC</b> to stay future-proof, while AC remains for long-dwell locations — mirroring the consumption pattern already visible in this dashboard\'s March-2026 data.</p>';
+ loadInsightStars();
+}
+const INSIGHT_STARS=[['evcc-io/evcc','evcc',true],['EVerest/EVerest','EVerest',false],['steve-community/steve','SteVe',false],['OpenEVSE/openevse_esp32_firmware','OpenEVSE',false],['openchargemap/ocm-system','Open Charge Map',false],['citrineos/citrineos-core','CitrineOS',false]];
+async function loadInsightStars(){
+ const note=$('igStarsNote');let rate=false;const vals={};
+ let cache={};try{const c=sessionStorage.getItem('ecoStars');if(c)cache=JSON.parse(c);}catch(e){}
+ await Promise.all(INSIGHT_STARS.map(async r=>{
+  let d=cache[r[0]];
+  if(!d){try{const res=await fetch('https://api.github.com/repos/'+r[0]);if(res.status===403){rate=true;return;}if(res.ok){const j=await res.json();d={s:j.stargazers_count};cache[r[0]]=d;}}catch(e){return;}}
+  if(d)vals[r[0]]=d.s;
+ }));
+ try{sessionStorage.setItem('ecoStars',JSON.stringify(cache));}catch(e){}
+ const labs=INSIGHT_STARS.map(r=>r[1]),data=INSIGHT_STARS.map(r=>vals[r[0]]||0);
+ mkChart('igStars',{type:'bar',data:{labels:labs,datasets:[{data,backgroundColor:GOLD,borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},maintainAspectRatio:false,scales:{x:{beginAtZero:true,grid:{color:'#eef1f6'},title:{display:true,text:'GitHub stars'}},y:{ticks:{font:{size:11}}}}}});
+ note.textContent=rate?'⚠️ GitHub API rate-limited — open the tab again later for live star counts.':'Live GitHub star counts across the open EV-charging stack.';
+}
 
 /* ============================ OPEN CHARGE MAP ============================ */
 const OCM_PRESETS=[
@@ -2160,8 +2279,8 @@ function evNorm(r){
  };
 }
 function initEV(){
- EV_DATA=EV_SAMPLE.map(evNorm);
- $('evStatus').textContent='offline sample ('+EV_DATA.length+' models) · click "Load full live dataset"';
+ EV_DATA=WORLD_EVS.map(seedNorm);
+ $('evStatus').textContent='curated set ('+EV_DATA.length+' models) · click "Load full live dataset" for open-ev-data';
  $('evSearch').oninput=renderEV;$('evBrand').onchange=renderEV;$('evSort').onchange=renderEV;
  $('evLoad').onclick=loadEVFull;
  renderEV();
