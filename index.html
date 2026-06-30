@@ -185,6 +185,15 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <th data-k="unit_per_100k">Units/100k</th><th data-k="kwh_per_capita">kWh/cap</th><th data-k="ev_per_100k">EV/100k</th>
 <th data-k="income_tier">Income</th><th data-k="sqi">SQI</th><th data-k="gap">Gap (z)</th><th data-k="epi">EPI</th></tr></thead><tbody></tbody></table></div>
 <div class="legend"><span><i style="background:#d6443c"></i>High EPI = intervention priority (underserved + low income)</span><span><i style="background:#2e9e5b"></i>Low/negative EPI = relatively well-served</span></div></div>
+<div class="card" style="margin-bottom:15px"><h3>📈 Vertical Equity <span>— Concentration Curve & Index</span> <span class="sub">— does access favour the least- or most-affluent? 19 kota/kab ranked by HDI; extends the Gini/Lorenz horizontal-equity result (email idea #2)</span></h3>
+<div class="statband" id="ccStats"></div>
+<div class="grid2">
+<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>Concentration <span>Curve</span> <span class="sub">(cumulative access vs population, poorest→richest by HDI)</span></h3>
+<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:4px 0 10px"><span style="font-size:11px;color:var(--mut)">Access measure:</span><button class="ccBtn" data-m="unit">Units /100k</button><button class="ccBtn" data-m="kwh">Consumption kWh/cap</button><button class="ccBtn" data-m="ev">EV adoption /100k</button></div>
+<canvas id="cConc"></canvas></div>
+<div class="card" style="box-shadow:none;border:1px solid var(--line)"><h3>Concentration <span>Index by Measure</span> <span class="sub">(−1 pro-poor · 0 neutral · +1 pro-rich)</span></h3><canvas id="cCI"></canvas></div></div>
+<div class="insight" id="ccInsight" style="margin-bottom:0;margin-top:12px"></div>
+<div class="legend"><span><i style="background:#d6443c"></i>CI &gt; 0 → concentrates among <b>more-affluent</b> (pro-rich)</span><span><i style="background:#2e9e5b"></i>CI &lt; 0 → concentrates among <b>less-affluent</b> (pro-poor)</span><span><i style="background:#16305f"></i>Diagonal = perfect horizontal equality</span></div></div>
 <div class="card"><h3>EV Adoption vs <span>Infrastructure</span> by City</h3><canvas id="cEvInfra"></canvas></div>
 <div class="card" style="margin-top:15px"><h3>Integrated Table <span>by City/Regency</span> <span class="sub">(click header to sort)</span></h3>
 <div class="tablewrap"><table id="tblKota"><thead><tr>
@@ -510,7 +519,7 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 </div>
 
 <footer>Source: PLN UID West Java (Master SPKLU, Transaction Detail Mar-2026, KBLBB Customer Data) + ABSA Google Maps reviews.
-Gini & Lorenz computed on inter-city unit/consumption distribution — an equity proxy; full equity requires BPS socioeconomic data (population/GRDP). RACE for 2030 framework.</footer>
+Gini & Lorenz computed on inter-city unit/consumption distribution — an equity proxy; full equity requires BPS socioeconomic data (population/GRDP). Vertical equity added via the population-weighted Concentration Index (Wagstaff/O'Donnell), ranking the 19 kota/kab by BPS HDI 2023 — positive CI = access concentrates among more-affluent areas. Next step (per reviewer): r5r realistic travel-time accessibility (OSM road-network routing) to replace per-capita supply with reachable-station counts before recomputing the concentration metrics. RACE for 2030 framework.</footer>
 </div>
 <button class="aifab" id="aiFab">🤖 Ask AI</button>
 <div class="aibox" id="aiBox">
@@ -873,6 +882,67 @@ $('enStats').innerHTML=[["Access Gini",EN.gini_unit_pop,"units/capita"],["Consum
    <td style="font-weight:700;color:${r.epi>1?'#d6443c':r.epi>0?'#e8742c':'#2e9e5b'}">${r.epi>0?'+':''}${r.epi}</td></tr>`).join('');}
  document.querySelectorAll('#tblEquity th').forEach(th=>th.onclick=()=>{const kk=th.dataset.k;if(esk===kk)esd*=-1;else{esk=kk;esd=['kota','income_tier'].includes(kk)?1:-1;}tblEq();});
  tblEq();
+})();
+
+// ===== VERTICAL EQUITY: CONCENTRATION CURVE & INDEX (Wagstaff/O'Donnell) =====
+(function(){
+ const SR=D.socio_rows;
+ const MS={
+   unit:{f:r=>r.unit_per_100k, lab:'Units /100k',          short:'charging units'},
+   kwh :{f:r=>r.kwh_per_capita, lab:'Consumption kWh/cap',  short:'consumption (kWh)'},
+   ev  :{f:r=>r.ev_per_100k,    lab:'EV adoption /100k',    short:'EV adoption'}
+ };
+ // Rank kota/kab by HDI ascending (poorest→richest), population-weighted fractional rank.
+ function compute(key){
+   const f=MS[key].f;
+   const a=SR.map(r=>({kota:r.kota,w:r.pop,rank:r.ipm,y:Math.max(0,f(r))})).sort((p,q)=>p.rank-q.rank);
+   const W=a.reduce((s,r)=>s+r.w,0); a.forEach(r=>r.w/=W);
+   const mu=a.reduce((s,r)=>s+r.w*r.y,0);
+   let cum=0; a.forEach(r=>{r.R=cum+r.w/2; cum+=r.w;});            // fractional rank
+   const ci=mu>0?(2/mu)*a.reduce((s,r)=>s+r.w*r.y*r.R,0)-1:0;       // concentration index
+   let cp=0,cy=0; const curve=[{p:0,c:0}];                          // concentration curve
+   a.forEach(r=>{cp+=r.w; cy+=mu>0?r.w*r.y/mu:0; curve.push({p:cp,c:cy});});
+   return {ci:+ci.toFixed(3), curve, rows:a};
+ }
+ const R={}; Object.keys(MS).forEach(k=>R[k]=compute(k));
+ const lean=v=>Math.abs(v)<0.05?'≈ neutral':v>0?'pro-rich':'pro-poor';
+ const ciCol=v=>Math.abs(v)<0.05?'#67748c':v>0?'#d6443c':'#2e9e5b';
+ const sg=v=>(v>0?'+':'')+v.toFixed(3);
+
+ $('ccStats').innerHTML=[['unit','Units'],['kwh','Consumption'],['ev','EV adoption']]
+   .map(([k,t])=>{const v=R[k].ci;return `<div class="s"><div class="n" style="color:${ciCol(v)}">${sg(v)}</div><div class="t">CI · ${t}<br>${lean(v)}</div></div>`;}).join('')
+   +`<div class="s"><div class="n" style="font-size:15px">HDI 2023</div><div class="t">SES ranking axis<br>BPS IPM</div></div>`;
+
+ let cur='unit', chC=null;
+ const CV={unit:'#d4af37',kwh:'#e8742c',ev:'#d6443c'};
+ function drawCurve(){
+   const r=R[cur], pts=r.curve;
+   if(chC)chC.destroy();
+   chC=new Chart($('cConc'),{type:'line',data:{labels:pts.map(p=>(p.p*100).toFixed(0)+'%'),
+    datasets:[
+     {label:MS[cur].short+' — concentration curve (CI '+sg(r.ci)+')',data:pts.map(p=>p.c*100),borderColor:CV[cur],backgroundColor:'rgba(212,175,55,.12)',fill:true,tension:.1,pointRadius:0},
+     {label:'Perfect equality',data:pts.map(p=>p.p*100),borderColor:'#16305f',borderDash:[6,4],pointRadius:0,fill:false}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:10}}},
+     tooltip:{callbacks:{title:i=>'Cumulative population: '+i[0].label}}},
+     scales:{y:{title:{display:true,text:'% cumulative '+MS[cur].short}},x:{title:{display:true,text:'% cumulative population — poorest → richest (HDI)'}}}}});
+   $('cConc').parentElement.style.height='320px';
+ }
+ const order=['unit','kwh','ev'];
+ new Chart($('cCI'),{type:'bar',data:{labels:order.map(k=>MS[k].lab),datasets:[{data:order.map(k=>R[k].ci),
+   backgroundColor:order.map(k=>ciCol(R[k].ci)),borderRadius:4}]},
+   options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+    tooltip:{callbacks:{label:c=>'CI = '+sg(c.raw)+'  ('+lean(c.raw)+')'}}},
+    scales:{x:{suggestedMin:-0.5,suggestedMax:0.5,title:{display:true,text:'← pro-poor    |    pro-rich →'},grid:{color:'#eef1f6'}}}}});
+ $('cCI').parentElement.style.height='320px';
+
+ function paintBtns(){document.querySelectorAll('.ccBtn').forEach(x=>{const a=x.dataset.m===cur;x.style.background=a?'var(--navy)':'#fff';x.style.color=a?'var(--gold)':'var(--navy)';x.style.border='1px solid '+(a?'var(--navy)':'var(--line)');x.style.fontSize='11px';x.style.padding='4px 10px';});}
+ document.querySelectorAll('.ccBtn').forEach(b=>{b.onclick=()=>{cur=b.dataset.m;drawCurve();paintBtns();};});
+ paintBtns(); drawCurve();
+
+ const u=R.unit.ci,kw=R.kwh.ci,ev=R.ev.ci;
+ const evRows=R.ev.rows, richest=evRows[evRows.length-1], poorest=evRows[0];
+ $('ccInsight').innerHTML=`<b>Vertical-equity read.</b> Ranking all 19 kota/kab by HDI (poorest→richest) and weighting by population, the <b>charging-unit</b> concentration index is <b style="color:${ciCol(u)}">${sg(u)}</b> — hardware sits <b>${lean(u)}</b>, hugging the horizontal-equality diagonal and echoing the low unit-Gini. But <b>effective access tilts pro-rich</b>: <b>consumption</b> CI = <b style="color:${ciCol(kw)}">${sg(kw)}</b> and <b>EV adoption</b> CI = <b style="color:${ciCol(ev)}">${sg(ev)}</b>. The same divergence the Gini analysis flagged (units ≈ equal, usage unequal) is therefore <b>vertical, not just spatial</b>: where the network is actually used, it disproportionately serves more-affluent communities (high-HDI <b>${richest.kota}</b>) over the poorest (<b>${poorest.kota}</b>). <span style="color:var(--mut)">Method: population-weighted concentration index (Wagstaff/O'Donnell), SES axis = BPS HDI 2023, access = units / kWh / EV per capita. Idea #1 (r5r realistic travel-time accessibility) would replace the per-capita unit term with road-network reach — a documented next step requiring OSM routing, see footer.</span>`;
 })();
 
 // ===== RQ4: Pendorong Persepsi =====
