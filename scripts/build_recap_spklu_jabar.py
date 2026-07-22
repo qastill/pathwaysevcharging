@@ -49,14 +49,27 @@ agg = df.groupby(['IdSpklu','Nama SPKLU'], dropna=False).agg(
 agg['Jenis Titik Lokasi'] = agg['Nama SPKLU'].apply(classify)
 agg['Tagging SPKLU'] = agg['Jumlah_Transaksi'].apply(tagging)
 agg['Energi_Konsumsi_kWh'] = agg['Energi_Konsumsi_kWh'].round(2)
+
+# ---- Titik koordinat per SPKLU (untuk ArcGIS Online) ----
+coord = pd.read_excel("SPKLU_Indonesia_Lengkap_2026-06-08.xlsx", sheet_name="Master SPKLU Indonesia")
+coord['ID SPKLU'] = pd.to_numeric(coord['ID SPKLU'], errors='coerce')
+coord = coord.dropna(subset=['ID SPKLU']).drop_duplicates('ID SPKLU')
+coord_map = coord.set_index(coord['ID SPKLU'].astype(int))[['Latitude','Longitude']]
+agg['_id'] = pd.to_numeric(agg['IdSpklu'], errors='coerce')
+agg['Latitude']  = agg['_id'].map(coord_map['Latitude'])
+agg['Longitude'] = agg['_id'].map(coord_map['Longitude'])
+agg = agg.drop(columns='_id')
+
 agg = agg.sort_values('Energi_Konsumsi_kWh', ascending=False).reset_index(drop=True)
 agg.insert(0,'No', range(1,len(agg)+1))
 
 # reorder columns
 recap = agg[['No','IdSpklu','Nama SPKLU','Tagging SPKLU','Jenis Titik Lokasi',
-             'UP3','Kota_Kab','Jumlah_Transaksi','Energi_Konsumsi_kWh','Total_Pendapatan']].copy()
+             'UP3','Kota_Kab','Latitude','Longitude',
+             'Jumlah_Transaksi','Energi_Konsumsi_kWh','Total_Pendapatan']].copy()
 recap.columns = ['No','ID SPKLU','Nama SPKLU','Tagging SPKLU','Jenis Titik Lokasi',
-                 'UP3','Kota/Kabupaten','Jumlah Transaksi','Energi Konsumsi Total (kWh)','Total Pendapatan (Rp)']
+                 'UP3','Kota/Kabupaten','Latitude','Longitude',
+                 'Jumlah Transaksi','Energi Konsumsi Total (kWh)','Total Pendapatan (Rp)']
 
 # ---- Sheet ringkasan per jenis lokasi ----
 by_loc = agg.groupby('Jenis Titik Lokasi').agg(
@@ -136,12 +149,14 @@ for ws in wb.worksheets:
     ws.freeze_panes = ws.cell(hdr_row+1,1)
     # column widths
     widths = {'No':6,'ID SPKLU':10,'Nama SPKLU':46,'Tagging SPKLU':30,'Jenis Titik Lokasi':30,
-              'UP3':16,'Kota/Kabupaten':20,'Jumlah Transaksi':14,'Energi Konsumsi Total (kWh)':18,
-              'Total Pendapatan (Rp)':18,'Jenis Titik Lokasi ':30,'Jumlah SPKLU':13,
+              'UP3':16,'Kota/Kabupaten':20,'Latitude':13,'Longitude':13,'Jumlah Transaksi':14,
+              'Energi Konsumsi Total (kWh)':18,'Total Pendapatan (Rp)':18,'Jumlah SPKLU':13,
               'Total Energi (kWh)':16,'Total Transaksi':14,'Rata-rata kWh per SPKLU':18}
     for c in range(1,ncol+1):
         h = ws.cell(hdr_row,c).value
         ws.column_dimensions[get_column_letter(c)].width = widths.get(h,16)
+        if h in ('Latitude','Longitude'):
+            for r in range(hdr_row+1, ws.max_row+1): ws.cell(r,c).number_format='0.000000'
     ws.row_dimensions[hdr_row].height=30
 
 wb.save(OUT)
@@ -152,7 +167,9 @@ print(f"SPKLU unik      : {len(recap):,}")
 print(f"Total transaksi : {recap['Jumlah Transaksi'].sum():,}")
 print(f"Total energi    : {tot_kwh:,.1f} kWh")
 print(f"File            : {OUT}")
+miss = recap['Latitude'].isna().sum()
+print(f"SPKLU tanpa koordinat: {miss}")
 print("\nTop 5 SPKLU by kWh:")
-print(recap.head(5)[['ID SPKLU','Nama SPKLU','Tagging SPKLU','Jenis Titik Lokasi','Energi Konsumsi Total (kWh)']].to_string(index=False))
+print(recap.head(5)[['ID SPKLU','Nama SPKLU','Tagging SPKLU','Jenis Titik Lokasi','Latitude','Longitude','Energi Konsumsi Total (kWh)']].to_string(index=False))
 print("\nRingkasan per jenis lokasi:")
 print(by_loc.to_string(index=False))
