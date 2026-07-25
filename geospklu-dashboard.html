@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>GeoSPKLU — Dashboard Rekomendasi SPKLU Jawa Barat</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--teal:#01665E;--teal2:#0E8074;--dark:#072A28;--green:#0A7D3F;--amber:#C2680F;--ink:#1F2933;--gray:#5A6B72;--light:#F2F7F6;--ice:#CFE6E2;--card:#fff;--red:#B02418}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Calibri,system-ui,Arial,sans-serif;background:var(--light);color:var(--ink)}
+header{background:linear-gradient(120deg,var(--dark),var(--teal));color:#fff;padding:22px 30px}
+header .ey{font-size:12px;letter-spacing:2px;color:#8FC9BE;font-weight:700;text-transform:uppercase}
+header h1{font-size:26px;margin-top:4px;font-weight:800}
+header p{color:#CFE6E2;font-size:13.5px;margin-top:6px;max-width:900px}
+.wrap{max-width:1280px;margin:0 auto;padding:22px 24px 60px}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:-38px}
+.kpi{background:var(--card);border-radius:12px;padding:16px 16px 14px;box-shadow:0 6px 18px rgba(7,42,40,.10);border-top:3px solid var(--teal)}
+.kpi .v{font-size:27px;font-weight:800;color:var(--teal);line-height:1}
+.kpi.g .v{color:var(--green)}.kpi.a .v{color:var(--amber)}.kpi.d .v{color:var(--teal2)}.kpi.r .v{color:var(--red)}
+.kpi.g{border-top-color:var(--green)}.kpi.a{border-top-color:var(--amber)}.kpi.d{border-top-color:var(--teal2)}.kpi.r{border-top-color:var(--red)}
+.kpi .l{font-size:11.5px;color:var(--gray);margin-top:6px;line-height:1.25}
+.grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:22px}
+.panel{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 3px 12px rgba(7,42,40,.06)}
+.panel h2{font-size:15px;color:var(--teal);margin-bottom:4px}
+.panel .sub{font-size:12px;color:var(--gray);margin-bottom:12px}
+iframe{width:100%;height:440px;border:0;border-radius:10px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{background:var(--teal);color:#fff;text-align:left;padding:8px 9px;font-weight:600;position:sticky;top:0}
+td{padding:7px 9px;border-bottom:1px solid #eef3f2}
+tr:nth-child(even) td{background:#f7fbfa}
+.rank{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--amber);color:#fff;font-weight:700;font-size:11px}
+.tblwrap{max-height:420px;overflow:auto;border-radius:8px;border:1px solid #eef3f2}
+.charts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.feat{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.fcard{background:var(--card);border-radius:12px;padding:15px;box-shadow:0 3px 12px rgba(7,42,40,.06);border-left:4px solid var(--teal)}
+.fcard h3{font-size:13.5px;color:var(--ink);margin-bottom:5px}
+.fcard .w{font-size:11.5px;color:var(--gray);line-height:1.4}
+.fcard .w b{color:var(--teal)}
+.sec{font-size:18px;color:var(--teal);font-weight:800;margin:28px 0 4px}
+.sec+.subx{font-size:12.5px;color:var(--gray);margin-bottom:8px}
+.badge{display:inline-block;background:#E6F4EC;color:var(--green);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:8px}
+footer{color:var(--gray);font-size:11.5px;text-align:center;margin-top:34px;line-height:1.6}
+.loading{color:var(--gray);font-size:12px;font-style:italic}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,1fr)}.grid,.charts,.feat{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="ey">GeoSPKLU · Decision Support Dashboard</div>
+  <h1>Rekomendasi &amp; Kinerja SPKLU — Jawa Barat</h1>
+  <p>Sistem pendukung keputusan berbasis data untuk penempatan Stasiun Pengisian Kendaraan Listrik Umum (SPKLU). Data langsung dari ArcGIS Online (live), berdasarkan 101.020 sesi transaksi nyata &amp; 636 stasiun eksisting.</p>
+</header>
+<div class="wrap">
+
+  <div class="kpis">
+    <div class="kpi g"><div class="v" id="k-sites">…</div><div class="l">Titik prospek prioritas</div></div>
+    <div class="kpi a"><div class="v" id="k-rev">…</div><div class="l">Proyeksi pendapatan / tahun (Rp)</div></div>
+    <div class="kpi d"><div class="v" id="k-kwh">…</div><div class="l">Proyeksi kWh / bulan</div></div>
+    <div class="kpi"><div class="v" id="k-ses">…</div><div class="l">Sesi charging / bulan</div></div>
+    <div class="kpi r"><div class="v" id="k-sqi">…</div><div class="l">Rata-rata skor kesesuaian (SQI)</div></div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Peta Interaktif — Semua Layer <span class="badge">ArcGIS Online · publik</span></h2>
+      <div class="sub">Titik rekomendasi, keramaian eksisting, hot spot Getis-Ord, kesesuaian lahan, & gap layanan. Klik fitur untuk detail.</div>
+      <iframe src="https://www.arcgis.com/apps/instant/basic/index.html?appid=&webmap=070e82018bd94de8ae2d920893f34f0a" title="GeoSPKLU Web Map" onerror="this.src='https://www.arcgis.com/home/webmap/viewer.html?webmap=070e82018bd94de8ae2d920893f34f0a'"></iframe>
+    </div>
+    <div class="panel">
+      <h2>20 Titik Prioritas (peringkat)</h2>
+      <div class="sub">Diurutkan menurut proyeksi pendapatan tahunan. Sumber: layer <i>Titik Prospek SPKLU</i>.</div>
+      <div class="tblwrap"><table id="tbl"><thead><tr><th>#</th><th>Wilayah</th><th>UP3</th><th>SQI</th><th>Rp/tahun</th><th>kWh/bln</th></tr></thead><tbody><tr><td colspan="6" class="loading">Memuat data langsung dari ArcGIS Online…</td></tr></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="charts">
+    <div class="panel"><h2>Proyeksi Pendapatan Tahunan per UP3</h2><div class="sub">Total Rp/tahun dari titik prospek di tiap unit layanan.</div><canvas id="chartUp3" height="150"></canvas></div>
+    <div class="panel"><h2>Top 10 Titik — Proyeksi kWh/bulan</h2><div class="sub">Sepuluh lokasi dengan proyeksi konsumsi tertinggi.</div><canvas id="chartTop" height="150"></canvas></div>
+  </div>
+
+  <div class="sec">Fitur GeoSPKLU &amp; Kegunaannya</div>
+  <div class="subx">Setiap fitur analitik yang dibangun dan apa gunanya untuk pengambilan keputusan.</div>
+  <div class="feat" id="feat"></div>
+
+  <footer>
+    GeoSPKLU · Dibangun di ArcGIS Pro + ArcGIS Online · Data: Master SPKLU (Mar 2026), 101.020 transaksi, BPS SP2022, OSM.<br/>
+    Web Map publik: 070e82018bd94de8ae2d920893f34f0a · Layer prospek: GeoSPKLU_Prospek_Penjualan (FeatureServer).
+  </footer>
+</div>
+
+<script>
+const SVC="https://services-ap1.arcgis.com/wYEzTTDGwSuQQW1R/arcgis/rest/services/GeoSPKLU_Prospek_Penjualan/FeatureServer/0/query";
+const fmt=n=>new Intl.NumberFormat('id-ID').format(Math.round(n));
+const rp=n=>{if(n>=1e9)return 'Rp'+(n/1e9).toFixed(2)+' M';if(n>=1e6)return 'Rp'+(n/1e6).toFixed(1)+' jt';return 'Rp'+fmt(n);};
+const FEATURES=[
+ ["★ Titik Rekomendasi","<b>Apa:</b> 20 titik SPKLU baru + proyeksi penjualan & jumlah charger. <b>Guna:</b> memberi tahu di mana & seberapa besar membangun."],
+ ["SPKLU Eksisting — Keramaian","<b>Apa:</b> 331 stasiun diklasifikasi NORMAL/SESAK/PERLU TAMBAH dari okupansi per jam. <b>Guna:</b> right-sizing armada saat ini."],
+ ["Titik Optimal (Jaringan Jalan)","<b>Apa:</b> 20 titik optimal berbasis waktu tempuh jalan nyata. <b>Guna:</b> menunjukkan pergeseran vs jarak lurus (16/20)."],
+ ["Skenario: Balanced / Profit / Equity","<b>Apa:</b> tiga solusi location-allocation dengan tujuan berbeda. <b>Guna:</b> membandingkan trade-off cakupan vs profit vs keadilan."],
+ ["Getis-Ord Gi* Hot Spot","<b>Apa:</b> 26.289 heksagon ditandai hot spot permintaan signifikan (kWh). <b>Guna:</b> memisahkan klaster permintaan nyata dari noise."],
+ ["Kesesuaian Lokasi (SQI v3)","<b>Apa:</b> skor 0–1 per heksagon dari demand, POI, jalan, populasi. <b>Guna:</b> satu angka pemeringkat kelayakan lokasi."],
+ ["Prediksi Demand 7 Hari","<b>Apa:</b> forecast berbasis Forest untuk 7 hari ke depan. <b>Guna:</b> dari deskriptif menjadi prediktif — antisipasi beban."],
+ ["Tren Demand (Emerging Hotspot)","<b>Apa:</b> klasifikasi tren ruang-waktu (menguat, baru, sporadis). <b>Guna:</b> melihat di mana permintaan tumbuh."],
+ ["Gap Layanan (>10 menit)","<b>Apa:</b> 592 area di luar 10 menit berkendara dari SPKLU. <b>Guna:</b> menandai zona kurang terlayani (argumen keadilan)."]
+];
+document.getElementById('feat').innerHTML=FEATURES.map(f=>`<div class="fcard"><h3>${f[0]}</h3><div class="w">${f[1]}</div></div>`).join('');
+
+async function load(){
+ try{
+  const url=SVC+"?where=1%3D1&outFields=RANK,SQI3,PRED_KWH,KWH_MO,RP_MO,RP_YR,SESI_MO,WILAYAH,UP3&f=json&resultRecordCount=200";
+  const r=await fetch(url); const j=await r.json();
+  const a=(j.features||[]).map(f=>f.attributes);
+  if(!a.length){throw new Error('no rows');}
+  // KPIs
+  const revYr=a.reduce((s,x)=>s+(x.RP_YR||0),0);
+  const kwhMo=a.reduce((s,x)=>s+(x.KWH_MO||0),0);
+  const ses=a.reduce((s,x)=>s+(x.SESI_MO||0),0);
+  const sqi=a.reduce((s,x)=>s+(x.SQI3||0),0)/a.length;
+  document.getElementById('k-sites').textContent=a.length;
+  document.getElementById('k-rev').textContent=rp(revYr);
+  document.getElementById('k-kwh').textContent=fmt(kwhMo);
+  document.getElementById('k-ses').textContent=fmt(ses);
+  document.getElementById('k-sqi').textContent=sqi.toFixed(2);
+  // table (sort by RP_YR desc)
+  a.sort((x,y)=>(y.RP_YR||0)-(x.RP_YR||0));
+  document.querySelector('#tbl tbody').innerHTML=a.map((x,i)=>`<tr><td><span class="rank">${i+1}</span></td><td>${x.WILAYAH||'-'}</td><td>${x.UP3||'-'}</td><td>${(x.SQI3||0).toFixed(2)}</td><td>${rp(x.RP_YR||0)}</td><td>${fmt(x.KWH_MO||0)}</td></tr>`).join('');
+  // chart per UP3
+  const byUp3={}; a.forEach(x=>{const k=x.UP3||'—';byUp3[k]=(byUp3[k]||0)+(x.RP_YR||0);});
+  const up3k=Object.keys(byUp3).sort((p,q)=>byUp3[q]-byUp3[p]);
+  new Chart(document.getElementById('chartUp3'),{type:'bar',data:{labels:up3k,datasets:[{data:up3k.map(k=>byUp3[k]/1e9),backgroundColor:'#01665E'}]},options:{plugins:{legend:{display:false}},scales:{y:{title:{display:true,text:'Rp miliar/tahun'}}}}});
+  // top10 kWh
+  const top=[...a].sort((x,y)=>(y.KWH_MO||0)-(x.KWH_MO||0)).slice(0,10);
+  new Chart(document.getElementById('chartTop'),{type:'bar',data:{labels:top.map(x=>(x.WILAYAH||'').slice(0,16)),datasets:[{data:top.map(x=>x.KWH_MO||0),backgroundColor:'#C2680F'}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{title:{display:true,text:'kWh/bulan'}}}}});
+ }catch(e){
+  document.querySelector('#tbl tbody').innerHTML='<tr><td colspan="6" class="loading">Tidak dapat memuat data langsung. Pastikan koneksi internet & layanan ArcGIS Online publik aktif. ('+e.message+')</td></tr>';
+  ['k-sites','k-rev','k-kwh','k-ses','k-sqi'].forEach(id=>document.getElementById(id).textContent='—');
+ }
+}
+load();
+</script>
+</body>
+</html>

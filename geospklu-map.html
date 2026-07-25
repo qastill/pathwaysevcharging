@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+<title>GeoSPKLU — Peta SDK (ArcGIS Maps SDK for JavaScript)</title>
+<link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css"/>
+<style>
+html,body,#viewDiv{margin:0;padding:0;height:100%;width:100%;font-family:'Segoe UI',Calibri,Arial,sans-serif}
+#panel{position:absolute;top:14px;left:14px;z-index:20;background:rgba(255,255,255,.96);border-radius:12px;
+  padding:14px 16px;box-shadow:0 6px 20px rgba(7,42,40,.18);max-width:320px}
+#panel .ey{font-size:10.5px;letter-spacing:1.5px;color:#0E8074;font-weight:800;text-transform:uppercase}
+#panel h1{font-size:17px;color:#01665E;margin:3px 0 6px}
+#panel p{font-size:12px;color:#5A6B72;line-height:1.45;margin:0}
+#panel .legendnote{font-size:11px;color:#5A6B72;margin-top:9px;border-top:1px solid #eef3f2;padding-top:8px}
+.loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#F2F7F6;z-index:5;color:#01665E;font-size:15px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="viewDiv"></div>
+<div class="loading" id="loading">Memuat peta GeoSPKLU…</div>
+<div id="panel">
+  <div class="ey">GeoSPKLU · ArcGIS Maps SDK for JS</div>
+  <h1>Peta Interaktif SPKLU — Jawa Barat</h1>
+  <p>Semua layer keputusan: titik rekomendasi, keramaian eksisting, hot spot Getis-Ord, kesesuaian lahan (SQI), tren demand, dan gap layanan. Gunakan panel <b>Layers</b> (kanan atas) untuk menyalakan/mematikan layer; klik fitur untuk detail.</p>
+  <div class="legendnote">Panel <b>Legend</b> di kanan bawah menjelaskan simbol tiap layer. Data live dari ArcGIS Online (publik).</div>
+</div>
+<script src="https://js.arcgis.com/4.31/"></script>
+<script>
+require([
+ "esri/WebMap","esri/views/MapView",
+ "esri/widgets/LayerList","esri/widgets/Legend","esri/widgets/Home",
+ "esri/widgets/Expand","esri/widgets/Search","esri/widgets/BasemapToggle"
+],function(WebMap,MapView,LayerList,Legend,Home,Expand,Search,BasemapToggle){
+ const webmap=new WebMap({portalItem:{id:"070e82018bd94de8ae2d920893f34f0a"}});
+ const view=new MapView({container:"viewDiv",map:webmap,
+   center:[107.6,-6.9],zoom:8,
+   popup:{dockEnabled:true,dockOptions:{buttonEnabled:false,breakpoint:false,position:"bottom-right"}}});
+ view.when(function(){
+   document.getElementById("loading").style.display="none";
+   view.ui.add(new Home({view:view}),"top-left");
+   view.ui.add(new Search({view:view}),{position:"top-right",index:0});
+   const ll=new Expand({view:view,content:new LayerList({view:view}),expanded:true,expandTooltip:"Layers"});
+   view.ui.add(ll,"top-right");
+   const lg=new Expand({view:view,content:new Legend({view:view}),expanded:false,expandTooltip:"Legend"});
+   view.ui.add(lg,"bottom-right");
+   view.ui.add(new BasemapToggle({view:view,nextBasemap:"satellite"}),"bottom-left");
+ }).catch(function(e){
+   document.getElementById("loading").textContent="Gagal memuat peta: "+e.message;
+ });
+});
+</script>
+</body>
+</html>
