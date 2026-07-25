@@ -48,6 +48,7 @@ tbody tr:hover{background:#f8fafc}
 .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;color:#fff}
 .tablewrap{overflow:auto;max-height:620px}.tablewrap th{position:sticky;top:0;background:var(--card);z-index:3}
 .page{display:none}.page.active{display:block}
+.geoframe{width:100%;height:80vh;min-height:660px;border:1px solid var(--line);border-radius:12px;background:#F2F7F6;display:block}
 .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:11px}
 .legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:middle}
 .insight{background:linear-gradient(180deg,#fffaef,#fff7e3);border:1px solid #efe2b8;border-left:4px solid var(--gold);
@@ -518,6 +519,20 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="paper" id="summaryBody"></div>
 </div>
 
+<!-- GEOSPKLU MAP (ArcGIS Maps SDK) -->
+<div class="page" id="p-geopeta">
+<div class="card"><h3>GeoSPKLU <span>Peta Interaktif (ArcGIS Maps SDK)</span> <span class="sub">Titik rekomendasi · keramaian eksisting · hot spot Getis-Ord · kesesuaian lahan (SQI) · tren demand · gap layanan — live ArcGIS Online</span></h3>
+<iframe class="geoframe" src="geospklu-map.html" title="GeoSPKLU Peta Interaktif" loading="lazy"></iframe>
+</div>
+</div>
+
+<!-- GEOSPKLU DASHBOARD -->
+<div class="page" id="p-geodash">
+<div class="card"><h3>GeoSPKLU <span>Dashboard Rekomendasi SPKLU</span> <span class="sub">KPI · 20 titik prioritas · proyeksi pendapatan &amp; kWh · peta tersemat — data langsung dari ArcGIS Online</span></h3>
+<iframe class="geoframe" src="geospklu-dashboard.html" title="GeoSPKLU Dashboard" loading="lazy"></iframe>
+</div>
+</div>
+
 <footer>Source: PLN UID West Java (Master SPKLU, Transaction Detail Mar-2026, KBLBB Customer Data) + ABSA Google Maps reviews.
 Gini & Lorenz computed on inter-city unit/consumption distribution — an equity proxy; full equity requires BPS socioeconomic data (population/GRDP). Vertical equity added via the population-weighted Concentration Index (Wagstaff/O'Donnell), ranking the 19 kota/kab by BPS HDI 2023 — positive CI = access concentrates among more-affluent areas. Next step (per reviewer): r5r realistic travel-time accessibility (OSM road-network routing) to replace per-capita supply with reachable-station counts before recomputing the concentration metrics. RACE for 2030 framework.</footer>
 </div>
@@ -544,7 +559,7 @@ const ASPLAB={keandalan:"Reliability",ketersediaan:"Availability",kejujuran_daya
 const hmc=v=>{if(v==null)return '#eef1f6';const t=(v+1)/2;return `rgb(${Math.round(214-(214-46)*t)},${Math.round(68+(158-68)*t)},${Math.round(60+(91-60)*t)})`;};
 const $=id=>document.getElementById(id);const C={};
 
-const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["summary","Summary"]];
+const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["geopeta","🗺️ GeoSPKLU Peta"],["geodash","📊 GeoSPKLU Dashboard"],["summary","Summary"]];
 $('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i==0?' active':''}" data-p="${t[0]}">${t[1]}</div>`).join('');
 document.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{
  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
