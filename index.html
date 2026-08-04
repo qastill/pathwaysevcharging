@@ -519,17 +519,10 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="paper" id="summaryBody"></div>
 </div>
 
-<!-- GEOSPKLU PETA & SLIDER (self-contained ArcGIS app) -->
+<!-- GEOSPKLU (self-contained ArcGIS app: peta, dashboard, proyeksi, metodologi, tabel) -->
 <div class="page" id="p-geopeta">
-<div class="card"><h3>GeoSPKLU <span>Peta &amp; Slider</span> <span class="sub">Peta interaktif penentuan lokasi optimal SPKLU · skor kustom (bobot slider) · hot spot Getis-Ord · populasi · jarak SPKLU · demand — live ArcGIS Online</span></h3>
-<iframe class="geoframe" src="geospklu.html#peta" title="GeoSPKLU Peta & Slider" loading="lazy"></iframe>
-</div>
-</div>
-
-<!-- GEOSPKLU DASHBOARD (rincian & grafik) -->
-<div class="page" id="p-geodash">
-<div class="card"><h3>GeoSPKLU <span>Dashboard</span> <span class="sub">Rincian &amp; grafik · proyeksi kWh · detail titik prioritas · metodologi · tabel data — data langsung dari ArcGIS Online</span></h3>
-<iframe class="geoframe" src="geospklu.html#rincian" title="GeoSPKLU Dashboard" loading="lazy"></iframe>
+<div class="card"><h3>GeoSPKLU <span>Penentuan Lokasi Optimal SPKLU</span> <span class="sub">Peta &amp; slider · rincian &amp; grafik · proyeksi kWh · detail titik · metodologi · tabel data — live ArcGIS Online</span></h3>
+<iframe class="geoframe" src="geospklu.html#peta" title="GeoSPKLU" loading="lazy"></iframe>
 </div>
 </div>
 
@@ -559,7 +552,7 @@ const ASPLAB={keandalan:"Reliability",ketersediaan:"Availability",kejujuran_daya
 const hmc=v=>{if(v==null)return '#eef1f6';const t=(v+1)/2;return `rgb(${Math.round(214-(214-46)*t)},${Math.round(68+(158-68)*t)},${Math.round(60+(91-60)*t)})`;};
 const $=id=>document.getElementById(id);const C={};
 
-const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["geopeta","🗺️ GeoSPKLU Peta"],["geodash","📊 GeoSPKLU Dashboard"] /* embed geospklu.html */,["summary","Summary"]];
+const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["summary","Summary"]];
 $('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i==0?' active':''}" data-p="${t[0]}">${t[1]}</div>`).join('');
 document.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{
  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
