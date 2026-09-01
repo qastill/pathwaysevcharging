@@ -75,7 +75,15 @@
 
  // --- peta ---
  let gxMapInit=false;
+ // Grafik tab ini dibuat saat halaman masih display:none, sehingga Chart.js tidak bisa
+ // mengukur tinggi kontainernya. Ukur ulang setiap kali tab dibuka.
+ const gxResize=()=>Object.keys(C).filter(k=>k.startsWith('cGx')).forEach(k=>{
+   try{
+     const box=C[k].canvas.parentElement;
+     if(box.clientHeight>0) C[k].resize(box.clientWidth, box.clientHeight);
+   }catch(e){} });
  window.initGx=function(){
+  gxResize();
   if(gxMapInit){if(window.gxMap)window.gxMap.invalidateSize();return;}
   gxMapInit=true;
   const map=L.map('gxMap',{scrollWheelZoom:false}).setView([-6.75,107.4],9);
@@ -88,17 +96,51 @@
     weight:0,fillOpacity:e[2]?.85:.55}).bindPopup('Pelanggan EV rumah<br>'+(e[2]===1?'⛔ gardu terdekat <b>overload</b>':e[2]===2?'⚠️ gardu terdekat <b>waspada</b>':'✅ gardu terdekat normal')).addTo(lEV));
   X.mapSP.forEach(s=>L.circleMarker([s[0],s[1]],{radius:Math.min(9,3+Math.sqrt(s[2])/4),color:'#8a6b12',weight:1,
     fillColor:'#d4af37',fillOpacity:.8}).bindPopup('<b>Situs SPKLU</b><br>Kapasitas terpasang: <b>'+s[2]+' kW</b>').addTo(lSP));
-  lHot.addTo(map); lEV.addTo(map); lSP.addTo(map);
-  const layers={'Gardu ≥80%':lHot,'Pelanggan EV':lEV,'Situs SPKLU':lSP};
-  $('gxToolbar').innerHTML=Object.keys(layers).map(k=>`<button class="mode-btn" data-l="${k}" style="border-color:var(--navy);color:var(--navy)">✓ ${k}</button>`).join('');
-  $('gxToolbar').querySelectorAll('.mode-btn').forEach(b=>b.onclick=()=>{
-    const g=layers[b.dataset.l], on=map.hasLayer(g);
-    if(on){map.removeLayer(g);b.textContent='  '+b.dataset.l;b.style.color='var(--mut)';b.style.borderColor='var(--line)';}
-    else{map.addLayer(g);b.textContent='✓ '+b.dataset.l;b.style.color='var(--navy)';b.style.borderColor='var(--navy)';}});
+  // --- lapisan jaringan hulu: transmisi, gardu induk, pembangkit (data/grid-id) ---
+  const G2=(D.grid2&&D.grid2.map)||null;
+  const lTx=L.layerGroup(), lGI=L.layerGroup(), lGen=L.layerGroup();
+  if(G2){
+   const kvStyle=kv=>kv>=500?{color:'#b02a20',weight:2.2,opacity:.75}
+                    :kv>=275?{color:'#d97706',weight:1.8,opacity:.7}
+                    :kv>=150?{color:'#2f6fb0',weight:1.3,opacity:.6}
+                            :{color:'#7f8c9b',weight:1,opacity:.5};
+   G2.lines.forEach(([kv,pts])=>L.polyline(pts,kvStyle(kv))
+     .bindPopup(`<b>Transmisi ${kv} kV</b>`).addTo(lTx));
+   G2.subs.forEach(([lat,lon,mva,nm,volt])=>L.circleMarker([lat,lon],
+     {radius:Math.min(9,3.2+Math.sqrt(Math.max(mva,1))/7),color:'#134e4a',weight:1.1,
+      fillColor:'#14b8a6',fillOpacity:.75})
+     .bindPopup(`<b>GI ${nm}</b><br>${volt||'–'} kV · <b>${mva||'–'} MVA</b>`).addTo(lGI));
+   const FOSSIL=new Set(['PLTU','PLTGU','PLTG','PLTMG','PLTD','PLTSA']);
+   G2.gens.forEach(([lat,lon,type,mw,nm,st])=>{
+     const fos=FOSSIL.has(type);
+     L.circleMarker([lat,lon],{radius:Math.min(16,4+Math.sqrt(Math.max(mw,1))/3.4),
+       color:fos?'#3d3a37':'#166534',weight:1.2,
+       fillColor:fos?'#6b6560':'#22c55e',fillOpacity:.72})
+      .bindPopup(`<b>${nm}</b><br>${type} · <b>${mw.toLocaleString('id-ID')} MW</b>${st?'<br>status: '+st:''}`)
+      .addTo(lGen);
+   });
+  }
+
+  const layers={
+   'Gardu ≥80%':{g:lHot,on:true},'Pelanggan EV':{g:lEV,on:true},'Situs SPKLU':{g:lSP,on:true},
+   'Transmisi':{g:lTx,on:!!G2},'Pembangkit':{g:lGen,on:!!G2},'Gardu Induk':{g:lGI,on:false}};
+  Object.values(layers).forEach(o=>{if(o.on)o.g.addTo(map);});
+  const paint=(b,on)=>{b.textContent=(on?'✓ ':'   ')+b.dataset.l;
+    b.style.color=on?'var(--navy)':'var(--mut)';b.style.borderColor=on?'var(--navy)':'var(--line)';};
+  $('gxToolbar').innerHTML=Object.keys(layers).map(k=>`<button class="mode-btn" data-l="${k}"></button>`).join('');
+  $('gxToolbar').querySelectorAll('.mode-btn').forEach(b=>{
+    paint(b,layers[b.dataset.l].on);
+    b.onclick=()=>{const o=layers[b.dataset.l], on=map.hasLayer(o.g);
+      if(on)map.removeLayer(o.g); else map.addLayer(o.g);
+      paint(b,!on);};});
   setTimeout(()=>map.invalidateSize(),120);
  };
  const ed=X.evSpDist;
- $('gxMapNote').innerHTML=`Peta ini menyatukan tiga lapisan yang selama ini dianalisis terpisah. Pola yang muncul: <b>koridor Bodebek–Bekasi</b> memusatkan hampir seluruh titik biru (pelanggan EV) sementara <b>koridor Pantura Cirebon–Indramayu</b> memusatkan titik merah (gardu tertekan) hampir tanpa EV. Keduanya menuntut kebijakan yang berlawanan: Bodebek butuh <b>manajemen beban & percepatan SPKLU</b>, Pantura butuh <b>rehabilitasi jaringan lebih dulu</b> sebelum EV masuk. Sebagai konteks perilaku: median jarak pelanggan EV ke SPKLU terdekat hanya <b>${ed.med} km</b> dan <b>${f1(p1(ed.w5,M.nEVjoin))}%</b> berada dalam 5 km — pemilik EV Jabar praktis <b>tidak kekurangan SPKLU</b>; mereka memilih mengisi di rumah, sehingga tekanan jatuh ke jaringan tegangan rendah, bukan ke SPKLU.`;
+ const G2n=(D.grid2&&D.grid2.map)||null;
+ const genMW=G2n?G2n.gens.reduce((a,g)=>a+g[3],0):0;
+ const giMVA=G2n?G2n.subs.reduce((a,x)=>a+x[2],0):0;
+ $('gxMapNote').innerHTML=`Peta ini menyatukan enam lapisan yang selama ini dianalisis terpisah — dari pembangkit sampai gardu di depan rumah. Pola yang muncul: <b>koridor Bodebek–Bekasi</b> memusatkan hampir seluruh titik biru (pelanggan EV) sementara <b>koridor Pantura Cirebon–Indramayu</b> memusatkan titik merah (gardu tertekan) hampir tanpa EV. Keduanya menuntut kebijakan yang berlawanan: Bodebek butuh <b>manajemen beban & percepatan SPKLU</b>, Pantura butuh <b>rehabilitasi jaringan lebih dulu</b> sebelum EV masuk. Sebagai konteks perilaku: median jarak pelanggan EV ke SPKLU terdekat hanya <b>${ed.med} km</b> dan <b>${f1(p1(ed.w5,M.nEVjoin))}%</b> berada dalam 5 km — pemilik EV Jabar praktis <b>tidak kekurangan SPKLU</b>; mereka memilih mengisi di rumah, sehingga tekanan jatuh ke jaringan tegangan rendah, bukan ke SPKLU.${G2n?`<br><br>
+ <b>Lapisan hulu menjelaskan sisa ceritanya.</b> Dalam bidang peta ini terdapat <b>${fmt(G2n.gens.length)} pembangkit</b> berkapasitas <b>${fmt(genMW)} MW</b>, <b>${fmt(G2n.subs.length)} gardu induk</b> (<b>${fmt(giMVA)} MVA</b>), dan <b>${fmt(G2n.lines.length)} ruas transmisi</b> 70–500 kV. Pembangkit terbesar — Suralaya, Priok, Muara Tawar — berjajar di pesisir utara dan teluk Jakarta, dirangkai tulang punggung <b>500 kV</b> yang terlihat membelah peta dari barat ke timur. Kantong adopsi EV di Bodebek berada di dekat sebagian pembangkit itu, tetapi listriknya tetap datang dari kolam yang sama: <b>pada jaringan sinkron, tidak ada listrik "lokal"</b>. Karena itu pertanyaan karbon di bawah dijawab pada level sistem, bukan per gardu.`:''}`;
 
  // --- kuadran ---
  const U=X.up3, mxEV=Math.max(...U.map(u=>u.evPer1k)), medEV=[...U.map(u=>u.evPer1k)].sort((a,b)=>a-b)[Math.floor(U.length/2)];

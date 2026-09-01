@@ -1,4 +1,6 @@
 <div class="page" id="p-jaringan">
+<style>/* dashboard memberi canvas{max-height:330px}; dua grafik ini perlu lebih tinggi */
+#p-jaringan canvas.gx-tall{max-height:none}</style>
 <div style="background:#fff4e8;border:1px solid #f3d4ae;border-radius:10px;padding:9px 13px;font-size:12px;color:#8a5316;margin-bottom:14px">⚡ <b>Menghubungkan kondisi EV dengan kondisi jaringan distribusi</b> — 53.797 gardu distribusi Jawa Barat (koordinat + pengukuran arus siang/malam) di-<i>spatial join</i> dengan 3.694 pelanggan EV rumah (KBLBB) dan 636 unit SPKLU. Pertanyaannya bukan lagi <i>"berapa banyak EV"</i>, tapi <b>"apakah trafo tempat EV itu berada masih sanggup"</b>. <span style="opacity:.75">Cakupan tab ini <b>Jawa Barat saja</b> — data gardu distribusi hanya tersedia untuk UID Jawa Barat, sehingga filter <i>region scope</i> nasional tidak berlaku di sini.</span></div>
 
 <div class="insight" id="gxInsight"></div>
@@ -16,13 +18,13 @@
 <div class="card"><h3>🏠 Daya tampung <span>gardu terhadap EV baru</span> <span class="sub">— berapa charger 7,7 kVA masih bisa ditanggung tiap gardu (batas aman 80%)</span></h3><div><canvas id="cGxHost"></canvas></div>
 <div class="insight" id="gxHostNote" style="margin-top:10px;margin-bottom:0"></div></div></div>
 
-<div class="card" style="margin-bottom:15px"><h3>🗺️ Peta <span>tumpang-tindih EV × jaringan</span> <span class="sub">— gardu tertekan (≥80%), lokasi pelanggan EV, dan situs SPKLU dalam satu bidang</span></h3>
+<div class="card" style="margin-bottom:15px"><h3>🗺️ Peta <span>tumpang-tindih EV × jaringan</span> <span class="sub">— enam lapisan dalam satu bidang: gardu distribusi tertekan, pelanggan EV, situs SPKLU, gardu induk, pembangkit, dan jalur transmisi 70–500 kV. Klik tombol untuk menyalakan/mematikan lapisan.</span></h3>
 <div class="toolbar" id="gxToolbar"></div>
 <div id="gxMap" style="height:560px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
-<div class="legend"><span><span style="color:#d6443c">●</span> gardu ≥80% (waspada/overload)</span><span><span style="color:#3a6ea5">●</span> pelanggan EV rumah</span><span><span style="color:#d4af37">●</span> situs SPKLU</span><span>Zona merah + titik biru rapat = kantong risiko.</span></div>
+<div class="legend"><span><span style="color:#d6443c">●</span> gardu distribusi ≥80%</span><span><span style="color:#3a6ea5">●</span> pelanggan EV rumah</span><span><span style="color:#d4af37">●</span> situs SPKLU</span><span><span style="color:#14b8a6">●</span> gardu induk</span><span><span style="color:#6b6560">●</span> pembangkit fosil</span><span><span style="color:#22c55e">●</span> pembangkit EBT</span><span><span style="color:#b02a20">▬</span> 500 kV <span style="color:#d97706">▬</span> 275 kV <span style="color:#2f6fb0">▬</span> 150 kV <span style="color:#7f8c9b">▬</span> 70 kV</span><span>Ukuran titik ∝ kapasitas. Zona merah + titik biru rapat = kantong risiko.</span></div>
 <div class="insight" id="gxMapNote" style="margin-top:11px;margin-bottom:0"></div></div>
 
-<div class="card" style="margin-bottom:15px"><h3>🎯 Matriks <span>adopsi EV vs kesiapan jaringan</span> <span class="sub">— sumbu X: EV per 1.000 gardu · sumbu Y: skor kesiapan jaringan · ukuran: jumlah situs SPKLU</span></h3><div><canvas id="cGxQuad"></canvas></div>
+<div class="card" style="margin-bottom:15px"><h3>🎯 Matriks <span>adopsi EV vs kesiapan jaringan</span> <span class="sub">— sumbu X: EV per 1.000 gardu · sumbu Y: skor kesiapan jaringan · ukuran: jumlah situs SPKLU</span></h3><div><canvas id="cGxQuad" class="gx-tall"></canvas></div>
 <div class="insight" id="gxQuadNote" style="margin-top:11px;margin-bottom:0"></div></div>
 
 <div class="card" style="margin-bottom:15px"><h3>📋 Kesiapan <span>jaringan per UP3</span> <span class="sub">— urut skor; dasar prioritas program penguatan jaringan</span></h3>
@@ -39,6 +41,35 @@
 <div class="tablewrap" style="max-height:400px"><table id="tGxFeeder"></table></div></div>
 <div class="card"><h3>📍 Kecamatan <span>paling terekspos</span> <span class="sub">— % pelanggan EV yang bertumpu pada gardu ≥80%</span></h3>
 <div class="tablewrap" style="max-height:400px"><table id="tGxKec"></table></div></div></div>
+
+
+<div class="card" style="margin-bottom:15px"><h3>🌱 Bauran <span>pembangkit &amp; jejak karbon listrik EV</span> <span class="sub">— dari pembangkit mana listrik EV sebenarnya berasal, dan seberapa besar penurunan emisinya</span></h3>
+<div id="gxCarbKpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:15px"></div>
+<div class="grid2" style="margin-bottom:0">
+<div><h4 style="font-size:12.5px;color:var(--mut);margin-bottom:9px;font-weight:600">Bauran energi tahunan (estimasi) — sistem Jamali</h4><div><canvas id="cGxMix"></canvas></div></div>
+<div><h4 style="font-size:12.5px;color:var(--mut);margin-bottom:9px;font-weight:600">Emisi per kilometer — EV vs mobil bensin</h4><div><canvas id="cGxCO2"></canvas></div></div>
+</div>
+<div class="insight" id="gxCarbNote" style="margin-top:13px;margin-bottom:0"></div>
+</div>
+
+<div class="card" style="margin-bottom:15px"><h3>💰 Struktur <span>harga pengisian</span> <span class="sub">— dibedah dari 100.782 transaksi SPKLU nyata, Maret 2026</span></h3>
+<div id="gxPriceKpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:15px"></div>
+<div class="grid2" style="margin-bottom:0">
+<div><h4 style="font-size:12.5px;color:var(--mut);margin-bottom:9px;font-weight:600">Biaya menempuh 100 km</h4><div><canvas id="cGxCost"></canvas></div></div>
+<div><h4 style="font-size:12.5px;color:var(--mut);margin-bottom:9px;font-weight:600">Harga all-in per kWh menurut pemda (PPJ)</h4><div><canvas id="cGxPPJ" class="gx-tall"></canvas></div></div>
+</div>
+<div class="insight" id="gxPriceNote" style="margin-top:13px;margin-bottom:0"></div>
+</div>
+
+<div class="grid2">
+<div class="card"><h3>🕐 Kapan <span>orang mengisi</span> <span class="sub">— SPKLU publik vs pengisian rumah, dua puncak yang berlawanan</span></h3><div><canvas id="cGxHour"></canvas></div>
+<div class="insight" id="gxHourNote" style="margin-top:10px;margin-bottom:0"></div></div>
+<div class="card"><h3>⚡ Harga &amp; <span>perilaku per kelas daya</span> <span class="sub">— apakah pengisian cepat dijual lebih mahal?</span></h3><div><canvas id="cGxTier"></canvas></div>
+<div class="insight" id="gxTierNote" style="margin-top:10px;margin-bottom:0"></div></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>🔬 Asumsi <span>karbon &amp; harga</span> <span class="sub">— seluruh angka di dua bagian di atas berasal dari parameter ini; ubah parameter, berubah kesimpulannya</span></h3>
+<div class="tablewrap" style="max-height:360px"><table id="tGxAssume"></table></div>
+<div id="gxCarbCaveat" style="font-size:12.5px;line-height:1.75;color:var(--mut);margin-top:13px"></div></div>
 
 <div class="card" style="margin-top:15px"><h3>🧭 Rekomendasi <span>operasional</span></h3><div id="gxRecs"></div></div>
 
