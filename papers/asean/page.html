@@ -1,0 +1,127 @@
+<div class="page" id="p-asean">
+<style>
+#p-asean .paper{max-width:1000px}
+#p-asean .fig{margin:20px 0 24px}
+#p-asean .fig img{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;display:block}
+#p-asean .fig .cap{font-size:11.5px;color:var(--mut);line-height:1.6;margin-top:8px;text-align:justify}
+#p-asean .tbl{overflow-x:auto;margin:14px 0 6px;border:1px solid var(--line);border-radius:10px}
+#p-asean .tbl table{font-size:11.5px;min-width:640px}
+#p-asean .tbl th{background:var(--navy);color:var(--gold2);text-align:left;padding:9px 10px;font-size:10.5px;
+ text-transform:uppercase;letter-spacing:.5px;position:static}
+#p-asean .tbl td{padding:8px 10px;vertical-align:top;line-height:1.55;color:#33405a}
+#p-asean .tbl tr:nth-child(even) td{background:#fbfcfe}
+#p-asean .tcap{font-size:11.5px;color:var(--mut);margin-bottom:16px;line-height:1.6}
+#p-asean .kw{font-size:12px;color:var(--mut);margin-top:12px}
+#p-asean details{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:16px;background:#fcfdff}
+#p-asean details summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--navy)}
+#p-asean .refs{font-size:11.5px;line-height:1.7;color:#4a5670;margin-top:12px}
+#p-asean .refs div{margin-bottom:7px;padding-left:26px;text-indent:-26px;word-break:break-word}
+#p-asean ol.imp{margin:8px 0 8px 20px}
+#p-asean ol.imp li{font-size:13.5px;line-height:1.75;color:#33405a;margin-bottom:9px}
+#p-asean .dl{display:inline-block;margin-top:6px;font-size:12px;padding:7px 14px;border-radius:9px;
+ background:var(--navy);color:var(--gold);text-decoration:none;font-weight:600}
+</style>
+
+<div class="paper">
+
+<div class="ph">
+<div class="k">Working Paper · September 2026</div>
+<h2>Comparative Analysis of Electric Vehicle Markets, Charging Tariffs, and Charge-Point-Operator Business Models in ASEAN</h2>
+<div style="font-size:14px;color:var(--mut);font-style:italic;margin-bottom:10px">Market Structures, Investment Attractiveness, and Indonesia's Position (2025–2026)</div>
+<div class="au"><b style="color:var(--navy)">Qashtalani Haramaini</b><br>
+Department of Urban Planning and Design / RACE for 2030 Program, Monash University Indonesia<br>
+Department of Electrical Engineering, Universitas Indonesia</div>
+<a class="dl" href="ASEAN_EV_Comparative_Paper.docx" download>⬇ Unduh naskah lengkap (.docx)</a>
+</div>
+
+<h3>Abstract</h3>
+<div class="abs">The ten ASEAN economies are frequently analysed as a single electric vehicle (EV) market, yet their charging-infrastructure businesses operate under structurally incompatible rules. This paper compares EV adoption, retail charging tariffs, charge-point-operator (CPO) economics, and market/regulatory structures across the six major ASEAN markets — Indonesia, Thailand, Vietnam, Malaysia, Singapore, and the Philippines — using 2025–2026 data drawn from regulators, utilities, operator rate cards, and reputable secondary research. We document a five-fold spread in retail DC fast-charging prices (from ≈US$0.15/kWh in Vietnam's captive V-Green network and Indonesia's regulated SPKLU tariff to ≈US$0.70/kWh in Singapore) and classify national market structures into five archetypes: captive vertical integration (Vietnam), open multi-CPO competition (Thailand), utility-anchored partnership (Indonesia), licensed-tender regulation (Singapore), and government-linked-company-led deployment (Malaysia), with a mandate-driven early market in the Philippines. No leadership verdict holds across all investment segments: Thailand leads vehicle manufacturing, Indonesia leads battery/upstream integration, Vietnam leads volume adoption and build-out speed, and Singapore leads per-station profitability. Indonesia holds the region's largest deployment pipeline (4,655 public SPKLU units in 2025 against a 31,859-unit 2030 target) and doubled BEV sales, home-charging subscriptions, and public-charger growth in a single year, but capped per-session service fees, low utilization outside Java, and an archipelagic geography compress private CPO unit economics. We conclude with segment-specific investment guidance and policy options — including utilization-linked incentives and cross-subsidy mechanisms — that would reconcile Indonesia's efficiency–spatial-equity trade-off in charger deployment.</div>
+<div class="kw"><b>Keywords:</b> electric vehicles; charging infrastructure; SPKLU; charge point operator; ASEAN; tariff regulation; market structure; Indonesia</div>
+
+<div class="kfacts" id="aseanFacts"></div>
+
+<h3>1. Introduction</h3>
+<p>Southeast Asia has become one of the fastest-scaling EV regions in the world. Battery-electric vehicles (BEVs) reached 21% of new passenger-car sales across the six major ASEAN economies in the first half of 2026, up from 12% a year earlier [1], and Ember reports that ASEAN adoption levels in Singapore, Vietnam, Thailand, and Indonesia now exceed those of legacy automotive markets including the United States and the European Union [2]. Regional vehicle-market data likewise show EV sales growing 74.3% year-on-year in H1 2026, led by Vietnam (48.4% of regional EV volume) and Indonesia (22.2%) [3].</p>
+<p>Behind this aggregate boom, however, the region is not one market. The commercial logic of building and operating charging infrastructure — who may sell electricity to vehicles, at what price, under which licence, and with what returns — differs so sharply between neighbouring countries that investment strategies transfer poorly across borders. <b>A charge-point operator (CPO) model that is profitable in Bangkok may be legally impossible in Hanoi and financially unattractive in Surabaya.</b></p>
+<p>This paper makes three contributions. First, it assembles a verifiable, source-dated comparison of retail charging tariffs, adoption figures, infrastructure counts, and CPO economics across the six major ASEAN markets for 2025–2026. Second, it proposes a five-archetype typology of ASEAN charging-market structures and uses it to explain observed price and deployment differences from first principles. Third, it locates Indonesia within this landscape and derives implications for investors and for Indonesian policy, with particular attention to the tension between deployment efficiency and spatial equity that arises under Indonesia's regulated-tariff, utility-anchored model.</p>
+
+<h3>2. Data and Methodology</h3>
+<p>The study is a comparative desk-research analysis covering Indonesia, Thailand, Vietnam, Malaysia, Singapore, and the Philippines, with Brunei, Cambodia, Laos, and Myanmar excluded from quantitative comparison due to the absence of reliable data (an acknowledged gap; these four markets remain at very early stages of adoption). Data were collected between mid-2025 and September 2026 and prioritized in the following order: (i) primary regulatory and utility sources — Kementerian ESDM and PT PLN (Persero) for Indonesia [4–6], Thailand's Board of Investment and Department of Energy Business [20, 22], Singapore's Ministry of Transport and LTA [11, 12], Malaysia's MEVnet census [14], and the Philippine Department of Energy accreditation framework [16]; (ii) operator-published rate cards (V-Green, PEA Volta, EA Anywhere, EV Station PluZ, Gentari, JomCharge, SP Mobility, Shell Recharge) [7, 10, 11, 13]; and (iii) reputable secondary research (Maybank Research, Ember, ICCT, Nikkei/KrASIA, USGS) [1, 2, 24, 25, 31].</p>
+<p>Three methodological cautions govern the comparisons. First, currency conversion uses indicative mid-2026 rates (USD 1 ≈ IDR 16,300; THB 33; VND 26,000; MYR 4.2; SGD 1.28; PHP 57); converted figures are approximations. Second, <b>charger counts are not unit-comparable across countries</b>: Indonesia reports SPKLU machines, Singapore reports charging points, and Vietnam's V-Green reports "ports" that include two-wheeler outlets and partly planned capacity; we therefore avoid cross-country charger-density league tables and flag definitional differences wherever counts are juxtaposed. Third, where sources conflict — notably ASEAN market-size projections (Mordor Intelligence US$5.99 billion for 2026 [27] versus MarkWide Research US$18.7 billion [28]) and Indonesian 2025 sales totals (Gaikindo/Just Auto 106,644 BEV units [23] versus Focus2move 99,755 [3]) — both figures are reported and treated as vendor estimates rather than settled facts.</p>
+
+<h3>3. Results</h3>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">3.1 Adoption: a three-tier region</h4>
+<p>Figure 1 summarizes BEV penetration of new passenger-car sales in H1 2026. The region divides into three tiers: a high-adoption tier (Singapore ≈62%, Vietnam ≈35%), a mid tier (Thailand and Indonesia, each reported in a 22–30% band), and an early tier (Philippines ≈10%, Malaysia ≈6%) [1]. Outside Vietnam — whose transition is driven by the domestic champion VinFast, which sold 175,099 EVs domestically in 2025 — Chinese manufacturers account for an estimated 80–90% of ASEAN EV sales [1]. In Indonesia, BYD-group brands alone captured 51% of the 106,644 BEV units wholesaled in 2025 [23].</p>
+<div class="fig"><img src="papers/asean/fig1_bev_share.png" alt="BEV share of new passenger-car sales by ASEAN country, H1 2026" loading="lazy">
+<div class="cap"><b>Figure 1.</b> BEV share of new passenger-car sales by country, H1 2026. Thailand and Indonesia are reported by the source as a 22–30% band; the midpoint is plotted. Source: Maybank Research via TNGlobal [1].</div></div>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">3.2 Charging tariffs: a five-fold price spread</h4>
+<p>Retail DC fast-charging prices span roughly a factor of five across the region (Figure 2, Table 1). Vietnam's V-Green charges a flat 3,858 VND/kWh (≈US$0.148, VAT-inclusive) — but exclusively to VinFast vehicles [7]. Indonesia's regulated SPKLU tariff is comparably low on the energy component (Rp2,466–2,475/kWh ≈ US$0.15) but adds a per-session service fee capped by ministerial decree at Rp25,000 for fast charging and Rp57,000 for ultra-fast charging, exclusive of VAT [4, 5]. Thailand's open multi-CPO market prices between 5.30 and 9.50 THB/kWh with time-of-use differentiation [10]; Malaysia's unregulated market spans RM0.85–1.80/kWh with location-based pricing and annual subscription discounts [13]; Philippine operators charge ₱20–38/kWh [17]; and Singapore's licensed operators command S$0.55–0.89/kWh — the region's highest — supported by high utilization and willingness to pay [11].</p>
+<p><b>The structural insight is that price levels track market structure more than cost:</b> the two cheapest markets are precisely the two where price is set administratively (Indonesia) or strategically below cost as an ecosystem subsidy to vehicle sales (Vietnam), while the highest prices occur where scarce, licensed capacity meets constrained supply (Singapore).</p>
+<div class="fig"><img src="papers/asean/fig2_dc_price.png" alt="Retail DC fast-charging prices by ASEAN market, USD per kWh" loading="lazy">
+<div class="cap"><b>Figure 2.</b> Retail DC fast-charging prices by market, USD/kWh at indicative mid-2026 rates. Indonesia's bar shows the energy tariff only; a capped per-session service fee applies additionally. Sources: [4, 5, 7, 10, 11, 13, 17].</div></div>
+<div class="tbl" id="aseanT1"></div>
+<div class="tcap"><b>Table 1.</b> Public DC fast-charging retail tariffs and structures, 2025–2026. Sources: [4, 5, 7, 10, 11, 13, 16, 17].</div>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">3.3 Market structures: five archetypes</h4>
+<p>Table 2 summarizes the five structural archetypes. Vietnam operates a <b>captive vertically integrated</b> model: VinFast (manufacturer) → V-Green (infrastructure, 90% owned by VinFast's founder) → VinFast vehicles only; independent CPO entry is effectively foreclosed except as V-Green franchisees, who invest in equipment and receive a fixed 750 VND/kWh revenue share guaranteed for at least ten years [8, 9]. Thailand operates an <b>open multi-CPO</b> market in which charging is licensed as an energy business under the Energy Industry Act B.E. 2550 (stations ≥1,000 kVA require a distribution licence; smaller stations notify the ERC), reinforced by EV3.0/EV3.5 demand subsidies and BOI supply-side incentives; new Department of Energy Business technical regulations effective April 2026 raise certification requirements, including mandatory emergency disconnection switches [20–22]. Indonesia operates a <b>utility-anchored partnership</b> model: PLN anchors deployment and retail, private partners join through the Partnership SPKLU scheme (published revenue split: 25% landowner / 73% charger provider / 2% PLN application services) and are exempted from holding their own IUPTL licences [19]. Singapore is a <b>licensed-tender</b> market — operators must hold an LTA licence with uptime, insurance, and data-sharing obligations — and Malaysia is <b>GLC-led</b>, with Petronas' Gentari and TNB deploying alongside private CPOs who face equipment import duties and must surrender compact substations to TNB even when privately financed [12–15]. The Philippines' EVIDA statute mandates 5% EV shares in government and corporate fleets, requires DOE accreditation for every commercial charging site, and obliges fuel stations to install chargers [16].</p>
+<div class="tbl" id="aseanT2"></div>
+<div class="tcap"><b>Table 2.</b> Market-structure archetypes and legal entry conditions for charging businesses. Sources: [8, 9, 12–16, 19–22].</div>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">3.4 Infrastructure deployment: installed base versus targets</h4>
+<p>Figure 3 contrasts installed public charging with national 2030 targets. Indonesia shows the region's largest absolute gap: 4,655 PLN-network SPKLU units at end-2025 (up 44% from 3,223 in 2024; 633 ultra-fast, 482 fast, 2,681 medium, 859 standard, across 3,007 locations) against a 31,859-unit BKPM target [4, 6, 18]. Singapore has installed 30,500 points (March 2026) toward its 60,000-point target, with every HDB town already EV-ready [12]. Thailand reports roughly 11,500 public points against a 12,000 DC-point 2030 target, while Malaysia's 5,839 units (March 2026) trail a 10,000-unit target that has been publicly delayed [10, 14, 15]. Vietnam is excluded from the chart because V-Green's reported &gt;150,000 "ports" (63 provinces, targeting 500,000 by 2028, including two-wheeler outlets and partly planned capacity) are not unit-comparable [29].</p>
+<div class="fig"><img src="papers/asean/fig3_installed_vs_target.png" alt="Installed public charging versus national 2030 targets" loading="lazy">
+<div class="cap"><b>Figure 3.</b> Installed public charging versus national targets. Definitions differ by country (units vs points); see Section 2. Sources: [4, 10, 12, 14, 15, 18].</div></div>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">3.5 CPO business economics</h4>
+<p>Hardware capital costs are broadly uniform across the region because equipment is globally traded: AC Level-2 units install at US$3,500–15,000 per port; 50 kW DC hardware costs US$20,000–50,000; 120–180 kW units US$65,000–90,000; and 350 kW-class ultra-fast units US$100,000–175,000, with ultra-fast hardware prices having fallen roughly 20% between 2022 and 2024 [32]. <b>Grid-connection costs can exceed 40% of total investment where a new transformer or substation is required.</b> Recurring operating costs include network fees (US$15–50/charger/month), payment processing (2.5–4.5% plus per-transaction fees), software and connectivity (US$25–60/charger/month combined), and preventive maintenance (US$200–500/charger/year) [32].</p>
+<p>What differs across countries is the revenue side. In Indonesia, BKPM cites Rp300–500 million (≈US$18,000–31,000) investment per SPKLU point [18], and an Indonesian feasibility study of a PLN service unit in Makassar found fast charging financially viable (NPV Rp108 million; IRR 45%) while ultra-fast charging failed to reach payback within five years — <b>identifying utilization, not hardware cost, as the binding constraint</b> [30]. Indonesia's Partnership SPKLU scheme lowers entry barriers (partners need no IUPTL; minimum 6×7 m site; four cooperation models including investor-own–investor-operate) but the capped per-session service fee bounds the revenue ceiling [19]. In Vietnam, the V-Green franchise transfers utilization risk to the franchisor via a fixed 750 VND/kWh fee guaranteed ≥10 years, backed by a 10-trillion-VND (≈US$385 million) two-year investment commitment — an attractive yield instrument, but one that caps upside and serves VinFast vehicles only [8, 9, 29].</p>
+
+<h3>4. Discussion</h3>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">4.1 Market leadership is segment-specific</h4>
+<p>No single country "leads ASEAN" once the question is disaggregated by investment segment. <b>Thailand leads vehicle manufacturing:</b> the Board of Investment reports over US$4.1 billion (≈137 billion baht) in pledges across 198 EV supply-chain projects, including US$1.18 billion in 18 BEV projects establishing domestic production capacity above 370,000 units per year [20]. <b>Indonesia leads battery and upstream integration</b>, mining roughly 2.6 of the world's 3.9 million tonnes of nickel in 2025 (≈67%) [25] and hosting the near-US$6 billion CATL–IBC–Antam Indonesia Battery Integration Project (first-phase 6.9 GWh, groundbreaking July 2025) alongside the operational 10 GWh Hyundai–LGES cell plant — although the April 2025 cancellation of the LG-led US$7.7 billion "Grand Package" increased dependence on Chinese partners [24, 26]. <b>Vietnam leads adoption velocity and build-out speed</b> through its captive model, and <b>Singapore leads per-station profitability</b> through the region's highest tariffs and utilization. For independent CPO investment specifically, Thailand and Malaysia are the most open and therefore most attractive markets; Indonesia offers scale within PLN's framework; Vietnam is effectively closed.</p>
+<p>Figure 4 positions the six markets on two axes — CPO market openness (authors' qualitative coding of the Section 3.3 evidence) and BEV penetration — with bubble size proportional to installed public charging. <b>The striking feature is the empty upper-right quadrant: no ASEAN market yet combines full openness with high adoption.</b> Vietnam bought speed with captivity; Singapore bought quality with licensing; Thailand and Malaysia are open but must still grow demand; Indonesia sits deliberately mid-spectrum, trading private-margin freedom for regulated affordability.</p>
+<div class="fig"><img src="papers/asean/fig4_openness_vs_adoption.png" alt="CPO market openness versus BEV adoption across ASEAN, H1 2026" loading="lazy">
+<div class="cap"><b>Figure 4.</b> CPO market openness versus BEV adoption, H1 2026. Openness scores are the authors' qualitative assessment; bubble sizes indicate installed public chargers (Vietnam nominal). Sources: [1] and Section 3 evidence.</div></div>
+<p>Market-size projections should be read with caution: Mordor Intelligence estimates the ASEAN EV market at US$5.99 billion in 2026 growing to US$23.58 billion by 2031 (CAGR 31.55%, with DC fast charging at 32.85%) [27], while MarkWide Research estimates US$18.7 billion in 2026 reaching US$135.36 billion by 2035 (CAGR 24.60%) [28]. The three-fold divergence for the same base year reflects differing scope definitions; both are vendor estimates.</p>
+
+<h4 style="font-size:14px;color:var(--navy);margin:20px 0 6px;font-family:'Fraunces'">4.2 Indonesia's position: structural strength, unit-economic fragility</h4>
+<p>Indonesia's 2025 performance was unambiguous on the demand side: BEV sales more than doubled to 106,644 units [23], the public SPKLU network grew 44%, and PLN home-charging subscriptions more than doubled to 70,250 customers, stimulated by a 30% night-tariff discount [4] (Figure 5). Ember places Indonesia's 2025 BEV share at ≈15%, surpassing the United States for the first time [2].</p>
+<div class="fig"><img src="papers/asean/fig5_indonesia_growth.png" alt="Indonesia 2024 to 2025 growth in public charging, home charging and BEV sales" loading="lazy">
+<div class="cap"><b>Figure 5.</b> Indonesia's 2024→2025 growth across public charging, home charging, and BEV sales. 2024 BEV sales shown at ≈52,500 units (2025 reported as "more than double" 2024). Sources: [4, 23].</div></div>
+<p>Table 3 synthesizes Indonesia's position. <b>The core tension is that the same regulatory choices that make charging affordable and deployment coordinated — regulated energy tariffs, capped session fees, PLN anchoring — also compress the margins that would draw independent capital to low-utilization locations.</b> The Makassar feasibility evidence [30] implies that under current caps, ultra-fast stations outside high-traffic Java corridors are not privately bankable; deployment there will remain PLN-led or subsidy-dependent. This creates a direct efficiency–equity trade-off: building where utilization is high maximizes returns but concentrates access in Jabodetabek and Java, while building where access is lowest requires accepting sub-commercial returns — the central spatial-equity problem for SPKLU policy.</p>
+<div class="tbl" id="aseanT3"></div>
+<div class="tcap"><b>Table 3.</b> Indonesia's competitive position: synthesis. Sources: [2, 4, 18, 19, 23–26, 30].</div>
+
+<h3>5. Policy and Investment Implications</h3>
+<p>For investors, the segment-specific reading yields four operational rules:</p>
+<ol class="imp">
+<li><b>Independent CPO entry:</b> prioritize Thailand and Malaysia (market pricing, open licensing); in Indonesia, enter via the PLN Partnership scheme (investor-own–investor-operate) in high-utilization Java corridors; avoid standalone ultra-fast stations outside Java absent subsidy.</li>
+<li><b>Vietnam:</b> treat V-Green franchising as a fixed-income-like instrument (750 VND/kWh, ≥10-year guarantee) rather than a growth equity play; do not attempt independent network build-out.</li>
+<li><b>Manufacturing and upstream:</b> vehicle assembly and export — Thailand (BOI/EEC); battery value chain — Indonesia (CATL ecosystem, IBC joint ventures).</li>
+<li><b>Re-rating triggers to monitor:</b> relaxation of Indonesia's session-fee caps or utilization rising above ≈8–10% outside Java; realization of Malaysia's delayed 10,000-charger target; resolution of Vietnam's EV electricity-tariff debate; implementation of Thailand's April 2026 DOEB technical rules (which raise certification bars and favour internationally documented hardware in tenders).</li>
+</ol>
+<p>For Indonesian policymakers, three options follow directly from the evidence. First, <b>utilization-linked incentives or cross-subsidy mechanisms</b> for ex-Java locations would reconcile the efficiency–equity trade-off without abandoning tariff protection for consumers. Second, <b>differentiating the service-fee cap by location class</b> (or converting it to a per-kWh margin with a consumer-price ceiling) would restore private bankability at the margin while preserving affordability. Third, <b>accelerating interoperability</b> — CCS2 hardware standards with OCPP-based roaming across PLN and partner networks — would raise effective utilization of the existing asset base before new capital is deployed.</p>
+
+<h3>6. Conclusion</h3>
+<p>ASEAN's EV boom is real but structurally heterogeneous: five distinct market architectures produce a five-fold spread in charging prices and sharply different investment propositions. Leadership is segment-specific — Thailand in vehicles, Indonesia in batteries, Vietnam in adoption speed, Singapore in per-station economics — and no market yet combines openness with high adoption. Indonesia enters 2026 with the region's strongest upstream position and largest deployment pipeline, but its regulated, utility-anchored charging model trades private margin for affordability, leaving spatial equity of access dependent on policy design rather than market forces. The utilization-linked and location-differentiated instruments outlined above offer a path to close that gap without sacrificing the consumer protection that has underpinned Indonesia's rapid adoption.</p>
+
+<h3>Limitations</h3>
+<ol class="imp">
+<li>H1 2026 penetration figures derive from a single research house (Maybank via TNGlobal) and should be treated as estimates pending official statistics.</li>
+<li>Charger counts are definitionally incompatible across countries (units vs points vs ports); cross-country density comparisons are deliberately avoided.</li>
+<li>Hardware CAPEX benchmarks are largely global rather than ASEAN-specific; local taxes (e.g., Malaysian SST ≥10%) and archipelagic logistics shift landed costs.</li>
+<li>Market-size projections conflict three-fold between vendors for the same base year; neither figure is official.</li>
+<li>Thailand's April 2026 technical rules are issued by DOEB while energy licensing sits with the ERC; some secondary sources conflate the two regulators.</li>
+<li>Brunei, Cambodia, Laos, and Myanmar are excluded for lack of reliable data.</li>
+</ol>
+
+<details>
+<summary>References (32)</summary>
+<div class="refs" id="aseanRefs"></div>
+</details>
+
+</div>
+</div>
