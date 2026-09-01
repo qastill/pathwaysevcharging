@@ -1,0 +1,46 @@
+<div class="page" id="p-jaringan">
+<div style="background:#fff4e8;border:1px solid #f3d4ae;border-radius:10px;padding:9px 13px;font-size:12px;color:#8a5316;margin-bottom:14px">⚡ <b>Menghubungkan kondisi EV dengan kondisi jaringan distribusi</b> — 53.797 gardu distribusi Jawa Barat (koordinat + pengukuran arus siang/malam) di-<i>spatial join</i> dengan 3.694 pelanggan EV rumah (KBLBB) dan 636 unit SPKLU. Pertanyaannya bukan lagi <i>"berapa banyak EV"</i>, tapi <b>"apakah trafo tempat EV itu berada masih sanggup"</b>. <span style="opacity:.75">Cakupan tab ini <b>Jawa Barat saja</b> — data gardu distribusi hanya tersedia untuk UID Jawa Barat, sehingga filter <i>region scope</i> nasional tidak berlaku di sini.</span></div>
+
+<div class="insight" id="gxInsight"></div>
+<div id="gxKpis" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:15px"></div>
+
+<div class="grid2">
+<div class="card"><h3>🔌 Kondisi gardu: <span>seluruh Jabar vs titik EV vs titik SPKLU</span> <span class="sub">— apakah EV menumpuk di jaringan yang sudah sesak?</span></h3><div><canvas id="cGxCat"></canvas></div>
+<div class="insight" id="gxCatNote" style="margin-top:10px;margin-bottom:0"></div></div>
+<div class="card"><h3>🌙 Beban <span>siang vs malam</span> <span class="sub">— pengisian rumah terjadi tepat di jam beban puncak trafo</span></h3><div><canvas id="cGxDiurnal"></canvas></div>
+<div class="insight" id="gxDiuNote" style="margin-top:10px;margin-bottom:0"></div></div></div>
+
+<div class="grid2">
+<div class="card"><h3>📈 Skenario <span>beban tambahan EV</span> <span class="sub">— berapa gardu berubah status jika charger EV existing menyala bersamaan</span></h3><div><canvas id="cGxScen"></canvas></div>
+<div class="insight" id="gxScenNote" style="margin-top:10px;margin-bottom:0"></div></div>
+<div class="card"><h3>🏠 Daya tampung <span>gardu terhadap EV baru</span> <span class="sub">— berapa charger 7,7 kVA masih bisa ditanggung tiap gardu (batas aman 80%)</span></h3><div><canvas id="cGxHost"></canvas></div>
+<div class="insight" id="gxHostNote" style="margin-top:10px;margin-bottom:0"></div></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>🗺️ Peta <span>tumpang-tindih EV × jaringan</span> <span class="sub">— gardu tertekan (≥80%), lokasi pelanggan EV, dan situs SPKLU dalam satu bidang</span></h3>
+<div class="toolbar" id="gxToolbar"></div>
+<div id="gxMap" style="height:560px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
+<div class="legend"><span><span style="color:#d6443c">●</span> gardu ≥80% (waspada/overload)</span><span><span style="color:#3a6ea5">●</span> pelanggan EV rumah</span><span><span style="color:#d4af37">●</span> situs SPKLU</span><span>Zona merah + titik biru rapat = kantong risiko.</span></div>
+<div class="insight" id="gxMapNote" style="margin-top:11px;margin-bottom:0"></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>🎯 Matriks <span>adopsi EV vs kesiapan jaringan</span> <span class="sub">— sumbu X: EV per 1.000 gardu · sumbu Y: skor kesiapan jaringan · ukuran: jumlah situs SPKLU</span></h3><div><canvas id="cGxQuad"></canvas></div>
+<div class="insight" id="gxQuadNote" style="margin-top:11px;margin-bottom:0"></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>📋 Kesiapan <span>jaringan per UP3</span> <span class="sub">— urut skor; dasar prioritas program penguatan jaringan</span></h3>
+<div class="tablewrap"><table id="tGxUp3"></table></div></div>
+
+<div class="grid2">
+<div class="card"><h3>🔥 Gardu <span>titik panas EV</span> <span class="sub">— proyeksi %beban setelah charger EV existing (CF 0,6)</span></h3>
+<div class="tablewrap" style="max-height:430px"><table id="tGxGardu"></table></div></div>
+<div class="card"><h3>🏭 Gardu Induk: <span>kritis vs peluang</span> <span class="sub">— GI pemasok yang sudah sesak, dan GI berkapasitas lega untuk ekspansi SPKLU</span></h3>
+<div class="tablewrap" style="max-height:430px"><table id="tGxGI"></table></div></div></div>
+
+<div class="grid2">
+<div class="card"><h3>🔗 Penyulang <span>dengan porsi beban EV+SPKLU terbesar</span> <span class="sub">— (kVA SPKLU + kVA EV) ÷ kapasitas trafo terpasang di penyulang</span></h3>
+<div class="tablewrap" style="max-height:400px"><table id="tGxFeeder"></table></div></div>
+<div class="card"><h3>📍 Kecamatan <span>paling terekspos</span> <span class="sub">— % pelanggan EV yang bertumpu pada gardu ≥80%</span></h3>
+<div class="tablewrap" style="max-height:400px"><table id="tGxKec"></table></div></div></div>
+
+<div class="card" style="margin-top:15px"><h3>🧭 Rekomendasi <span>operasional</span></h3><div id="gxRecs"></div></div>
+
+<div class="card" style="margin-top:15px"><h3>🔬 Metodologi &amp; <span>keterbatasan</span></h3><div id="gxMethod" style="font-size:12.5px;line-height:1.75;color:var(--mut)"></div></div>
+</div>
