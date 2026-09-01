@@ -1,0 +1,1274 @@
+{
+  "generated_at": "2026-09-01",
+  "assumptions": {
+    "hours_per_year": 8760,
+    "tech": {
+      "PLTU": {
+        "ef": 1,
+        "cf": 0.7,
+        "derate": 1,
+        "label": "Batu bara (uap)",
+        "renew": false
+      },
+      "PLTGU": {
+        "ef": 0.4,
+        "cf": 0.5,
+        "derate": 1,
+        "label": "Gas siklus kombinasi",
+        "renew": false
+      },
+      "PLTG": {
+        "ef": 0.58,
+        "cf": 0.15,
+        "derate": 1,
+        "label": "Gas siklus terbuka",
+        "renew": false
+      },
+      "PLTMG": {
+        "ef": 0.55,
+        "cf": 0.4,
+        "derate": 1,
+        "label": "Mesin gas",
+        "renew": false
+      },
+      "PLTD": {
+        "ef": 0.75,
+        "cf": 0.2,
+        "derate": 1,
+        "label": "Diesel",
+        "renew": false
+      },
+      "PLTA": {
+        "ef": 0,
+        "cf": 0.35,
+        "derate": 1,
+        "label": "Air (besar)",
+        "renew": true
+      },
+      "PLTM": {
+        "ef": 0,
+        "cf": 0.45,
+        "derate": 1,
+        "label": "Air (mini)",
+        "renew": true
+      },
+      "PLTMH": {
+        "ef": 0,
+        "cf": 0.45,
+        "derate": 1,
+        "label": "Air (mikro)",
+        "renew": true
+      },
+      "PLTP": {
+        "ef": 0.05,
+        "cf": 0.85,
+        "derate": 1,
+        "label": "Panas bumi",
+        "renew": true
+      },
+      "PLTS": {
+        "ef": 0,
+        "cf": 0.16,
+        "derate": 0.83,
+        "label": "Surya",
+        "renew": true
+      },
+      "PLTB": {
+        "ef": 0,
+        "cf": 0.25,
+        "derate": 1,
+        "label": "Bayu",
+        "renew": true
+      },
+      "PLTSA": {
+        "ef": 0.4,
+        "cf": 0.7,
+        "derate": 1,
+        "label": "Sampah",
+        "renew": false
+      },
+      "PLTBG": {
+        "ef": 0,
+        "cf": 0.7,
+        "derate": 1,
+        "label": "Biogas",
+        "renew": true
+      },
+      "PLT BIOMASS": {
+        "ef": 0,
+        "cf": 0.7,
+        "derate": 1,
+        "label": "Biomassa",
+        "renew": true
+      }
+    }
+  },
+  "national": {
+    "rows": [
+      {
+        "type": "PLTU",
+        "label": "Batu bara (uap)",
+        "renew": false,
+        "units": 118,
+        "mw": 53452,
+        "gwh": 327768,
+        "tco2": 327767664,
+        "share_mw": 61.3,
+        "share_gwh": 71.3
+      },
+      {
+        "type": "PLTGU",
+        "label": "Gas siklus kombinasi",
+        "renew": false,
+        "units": 23,
+        "mw": 18205,
+        "gwh": 79736,
+        "tco2": 31894564,
+        "share_mw": 20.9,
+        "share_gwh": 17.3
+      },
+      {
+        "type": "PLTA",
+        "label": "Air (besar)",
+        "renew": true,
+        "units": 80,
+        "mw": 6856,
+        "gwh": 21020,
+        "tco2": 0,
+        "share_mw": 7.9,
+        "share_gwh": 4.6
+      },
+      {
+        "type": "PLTP",
+        "label": "Panas bumi",
+        "renew": true,
+        "units": 46,
+        "mw": 2670,
+        "gwh": 19882,
+        "tco2": 994112,
+        "share_mw": 3.1,
+        "share_gwh": 4.3
+      },
+      {
+        "type": "PLTMG",
+        "label": "Mesin gas",
+        "renew": false,
+        "units": 24,
+        "mw": 1182,
+        "gwh": 4142,
+        "tco2": 2277950,
+        "share_mw": 1.4,
+        "share_gwh": 0.9
+      },
+      {
+        "type": "PLTG",
+        "label": "Gas siklus terbuka",
+        "renew": false,
+        "units": 30,
+        "mw": 3071,
+        "gwh": 4036,
+        "tco2": 2340775,
+        "share_mw": 3.5,
+        "share_gwh": 0.9
+      },
+      {
+        "type": "PLTD",
+        "label": "Diesel",
+        "renew": false,
+        "units": 58,
+        "mw": 1140,
+        "gwh": 1997,
+        "tco2": 1498052,
+        "share_mw": 1.3,
+        "share_gwh": 0.4
+      },
+      {
+        "type": "PLTS",
+        "label": "Surya",
+        "renew": true,
+        "units": 124,
+        "mw": 473,
+        "gwh": 663,
+        "tco2": 0,
+        "share_mw": 0.5,
+        "share_gwh": 0.1
+      },
+      {
+        "type": "PLTB",
+        "label": "Bayu",
+        "renew": true,
+        "units": 11,
+        "mw": 153,
+        "gwh": 335,
+        "tco2": 0,
+        "share_mw": 0.2,
+        "share_gwh": 0.1
+      },
+      {
+        "type": "PLTSA",
+        "label": "Sampah",
+        "renew": false,
+        "units": 4,
+        "mw": 36,
+        "gwh": 218,
+        "tco2": 87320,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLTM",
+        "label": "Air (mini)",
+        "renew": true,
+        "units": 2,
+        "mw": 14,
+        "gwh": 55,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLTMH",
+        "label": "Air (mikro)",
+        "renew": true,
+        "units": 6,
+        "mw": 11,
+        "gwh": 43,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLTBG",
+        "label": "Biogas",
+        "renew": true,
+        "units": 1,
+        "mw": 2,
+        "gwh": 15,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLT BIOMASS",
+        "label": "Biomassa",
+        "renew": true,
+        "units": 1,
+        "mw": 0,
+        "gwh": 0,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      }
+    ],
+    "total_mw": 87265,
+    "total_gwh": 459910,
+    "total_tco2": 366860437,
+    "ef_kg_per_kwh": 0.7977,
+    "renew_share_gwh": 9.1,
+    "renew_share_mw": 11.7
+  },
+  "jamali": {
+    "rows": [
+      {
+        "type": "PLTU",
+        "label": "Batu bara (uap)",
+        "renew": false,
+        "units": 32,
+        "mw": 29944,
+        "gwh": 183617,
+        "tco2": 183616608,
+        "share_mw": 57.7,
+        "share_gwh": 66.6
+      },
+      {
+        "type": "PLTGU",
+        "label": "Gas siklus kombinasi",
+        "renew": false,
+        "units": 12,
+        "mw": 16157,
+        "gwh": 70770,
+        "tco2": 28307870,
+        "share_mw": 31.1,
+        "share_gwh": 25.7
+      },
+      {
+        "type": "PLTP",
+        "label": "Panas bumi",
+        "renew": true,
+        "units": 33,
+        "mw": 1369,
+        "gwh": 10195,
+        "tco2": 509749,
+        "share_mw": 2.6,
+        "share_gwh": 3.7
+      },
+      {
+        "type": "PLTA",
+        "label": "Air (besar)",
+        "renew": true,
+        "units": 42,
+        "mw": 2836,
+        "gwh": 8696,
+        "tco2": 0,
+        "share_mw": 5.5,
+        "share_gwh": 3.2
+      },
+      {
+        "type": "PLTG",
+        "label": "Gas siklus terbuka",
+        "renew": false,
+        "units": 12,
+        "mw": 1126,
+        "gwh": 1480,
+        "tco2": 858452,
+        "share_mw": 2.2,
+        "share_gwh": 0.5
+      },
+      {
+        "type": "PLTS",
+        "label": "Surya",
+        "renew": true,
+        "units": 17,
+        "mw": 298,
+        "gwh": 418,
+        "tco2": 0,
+        "share_mw": 0.6,
+        "share_gwh": 0.2
+      },
+      {
+        "type": "PLTSA",
+        "label": "Sampah",
+        "renew": false,
+        "units": 4,
+        "mw": 36,
+        "gwh": 218,
+        "tco2": 87320,
+        "share_mw": 0.1,
+        "share_gwh": 0.1
+      },
+      {
+        "type": "PLTD",
+        "label": "Diesel",
+        "renew": false,
+        "units": 6,
+        "mw": 117,
+        "gwh": 205,
+        "tco2": 153843,
+        "share_mw": 0.2,
+        "share_gwh": 0.1
+      },
+      {
+        "type": "PLTM",
+        "label": "Air (mini)",
+        "renew": true,
+        "units": 1,
+        "mw": 8,
+        "gwh": 31,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLTMH",
+        "label": "Air (mikro)",
+        "renew": true,
+        "units": 2,
+        "mw": 6,
+        "gwh": 24,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLTB",
+        "label": "Bayu",
+        "renew": true,
+        "units": 9,
+        "mw": 6,
+        "gwh": 13,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      },
+      {
+        "type": "PLTMG",
+        "label": "Mesin gas",
+        "renew": false,
+        "units": 1,
+        "mw": 3,
+        "gwh": 11,
+        "tco2": 5782,
+        "share_mw": 0,
+        "share_gwh": 0
+      }
+    ],
+    "total_mw": 51907,
+    "total_gwh": 275677,
+    "total_tco2": 213539624,
+    "ef_kg_per_kwh": 0.7746,
+    "renew_share_gwh": 7,
+    "renew_share_mw": 8.7
+  },
+  "jamali_west": {
+    "rows": [
+      {
+        "type": "PLTU",
+        "label": "Batu bara (uap)",
+        "renew": false,
+        "units": 21,
+        "mw": 13395,
+        "gwh": 82138,
+        "tco2": 82138140,
+        "share_mw": 47.3,
+        "share_gwh": 56.2
+      },
+      {
+        "type": "PLTGU",
+        "label": "Gas siklus kombinasi",
+        "renew": false,
+        "units": 9,
+        "mw": 10795,
+        "gwh": 47281,
+        "tco2": 18912490,
+        "share_mw": 38.2,
+        "share_gwh": 32.3
+      },
+      {
+        "type": "PLTP",
+        "label": "Panas bumi",
+        "renew": true,
+        "units": 26,
+        "mw": 1189,
+        "gwh": 8855,
+        "tco2": 442735,
+        "share_mw": 4.2,
+        "share_gwh": 6.1
+      },
+      {
+        "type": "PLTA",
+        "label": "Air (besar)",
+        "renew": true,
+        "units": 19,
+        "mw": 2241,
+        "gwh": 6872,
+        "tco2": 0,
+        "share_mw": 7.9,
+        "share_gwh": 4.7
+      },
+      {
+        "type": "PLTS",
+        "label": "Surya",
+        "renew": true,
+        "units": 5,
+        "mw": 270,
+        "gwh": 379,
+        "tco2": 0,
+        "share_mw": 1,
+        "share_gwh": 0.3
+      },
+      {
+        "type": "PLTG",
+        "label": "Gas siklus terbuka",
+        "renew": false,
+        "units": 5,
+        "mw": 281,
+        "gwh": 369,
+        "tco2": 214156,
+        "share_mw": 1,
+        "share_gwh": 0.3
+      },
+      {
+        "type": "PLTD",
+        "label": "Diesel",
+        "renew": false,
+        "units": 2,
+        "mw": 101,
+        "gwh": 177,
+        "tco2": 132688,
+        "share_mw": 0.4,
+        "share_gwh": 0.1
+      },
+      {
+        "type": "PLTSA",
+        "label": "Sampah",
+        "renew": false,
+        "units": 2,
+        "mw": 16,
+        "gwh": 96,
+        "tco2": 38264,
+        "share_mw": 0.1,
+        "share_gwh": 0.1
+      },
+      {
+        "type": "PLTMH",
+        "label": "Air (mikro)",
+        "renew": true,
+        "units": 2,
+        "mw": 6,
+        "gwh": 24,
+        "tco2": 0,
+        "share_mw": 0,
+        "share_gwh": 0
+      }
+    ],
+    "total_mw": 28294,
+    "total_gwh": 146190,
+    "total_tco2": 101878472,
+    "ef_kg_per_kwh": 0.6969,
+    "renew_share_gwh": 11,
+    "renew_share_mw": 13.1
+  },
+  "by_system": {
+    "Jamali": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 32,
+          "mw": 29944,
+          "gwh": 183617,
+          "tco2": 183616608,
+          "share_mw": 57.7,
+          "share_gwh": 66.6
+        },
+        {
+          "type": "PLTGU",
+          "label": "Gas siklus kombinasi",
+          "renew": false,
+          "units": 12,
+          "mw": 16157,
+          "gwh": 70770,
+          "tco2": 28307870,
+          "share_mw": 31.1,
+          "share_gwh": 25.7
+        },
+        {
+          "type": "PLTP",
+          "label": "Panas bumi",
+          "renew": true,
+          "units": 33,
+          "mw": 1369,
+          "gwh": 10195,
+          "tco2": 509749,
+          "share_mw": 2.6,
+          "share_gwh": 3.7
+        },
+        {
+          "type": "PLTA",
+          "label": "Air (besar)",
+          "renew": true,
+          "units": 42,
+          "mw": 2836,
+          "gwh": 8696,
+          "tco2": 0,
+          "share_mw": 5.5,
+          "share_gwh": 3.2
+        },
+        {
+          "type": "PLTG",
+          "label": "Gas siklus terbuka",
+          "renew": false,
+          "units": 12,
+          "mw": 1126,
+          "gwh": 1480,
+          "tco2": 858452,
+          "share_mw": 2.2,
+          "share_gwh": 0.5
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 17,
+          "mw": 298,
+          "gwh": 418,
+          "tco2": 0,
+          "share_mw": 0.6,
+          "share_gwh": 0.2
+        },
+        {
+          "type": "PLTSA",
+          "label": "Sampah",
+          "renew": false,
+          "units": 4,
+          "mw": 36,
+          "gwh": 218,
+          "tco2": 87320,
+          "share_mw": 0.1,
+          "share_gwh": 0.1
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 6,
+          "mw": 117,
+          "gwh": 205,
+          "tco2": 153843,
+          "share_mw": 0.2,
+          "share_gwh": 0.1
+        },
+        {
+          "type": "PLTM",
+          "label": "Air (mini)",
+          "renew": true,
+          "units": 1,
+          "mw": 8,
+          "gwh": 31,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        },
+        {
+          "type": "PLTMH",
+          "label": "Air (mikro)",
+          "renew": true,
+          "units": 2,
+          "mw": 6,
+          "gwh": 24,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        },
+        {
+          "type": "PLTB",
+          "label": "Bayu",
+          "renew": true,
+          "units": 9,
+          "mw": 6,
+          "gwh": 13,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 1,
+          "mw": 3,
+          "gwh": 11,
+          "tco2": 5782,
+          "share_mw": 0,
+          "share_gwh": 0
+        }
+      ],
+      "total_mw": 51907,
+      "total_gwh": 275677,
+      "total_tco2": 213539624,
+      "ef_kg_per_kwh": 0.7746,
+      "renew_share_gwh": 7,
+      "renew_share_mw": 8.7
+    },
+    "Khatulistiwa": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 20,
+          "mw": 2266,
+          "gwh": 13895,
+          "tco2": 13895112,
+          "share_mw": 71.1,
+          "share_gwh": 85.6
+        },
+        {
+          "type": "PLTGU",
+          "label": "Gas siklus kombinasi",
+          "renew": false,
+          "units": 2,
+          "mw": 177,
+          "gwh": 775,
+          "tco2": 310104,
+          "share_mw": 5.6,
+          "share_gwh": 4.8
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 18,
+          "mw": 343,
+          "gwh": 602,
+          "tco2": 451254,
+          "share_mw": 10.8,
+          "share_gwh": 3.7
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 2,
+          "mw": 170,
+          "gwh": 596,
+          "tco2": 327624,
+          "share_mw": 5.3,
+          "share_gwh": 3.7
+        },
+        {
+          "type": "PLTG",
+          "label": "Gas siklus terbuka",
+          "renew": false,
+          "units": 2,
+          "mw": 140,
+          "gwh": 184,
+          "tco2": 106697,
+          "share_mw": 4.4,
+          "share_gwh": 1.1
+        },
+        {
+          "type": "PLTA",
+          "label": "Air (besar)",
+          "renew": true,
+          "units": 1,
+          "mw": 30,
+          "gwh": 92,
+          "tco2": 0,
+          "share_mw": 0.9,
+          "share_gwh": 0.6
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 23,
+          "mw": 60,
+          "gwh": 84,
+          "tco2": 0,
+          "share_mw": 1.9,
+          "share_gwh": 0.5
+        }
+      ],
+      "total_mw": 3186,
+      "total_gwh": 16228,
+      "total_tco2": 15090791,
+      "ef_kg_per_kwh": 0.9299,
+      "renew_share_gwh": 1.1,
+      "renew_share_mw": 2.8
+    },
+    "Maluku": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 3,
+          "mw": 4044,
+          "gwh": 24798,
+          "tco2": 24797808,
+          "share_mw": 97.7,
+          "share_gwh": 98.8
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 3,
+          "mw": 70,
+          "gwh": 245,
+          "tco2": 134904,
+          "share_mw": 1.7,
+          "share_gwh": 1
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 1,
+          "mw": 25,
+          "gwh": 44,
+          "tco2": 32850,
+          "share_mw": 0.6,
+          "share_gwh": 0.2
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 5,
+          "mw": 1,
+          "gwh": 2,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        }
+      ],
+      "total_mw": 4140,
+      "total_gwh": 25088,
+      "total_tco2": 24965562,
+      "ef_kg_per_kwh": 0.9951,
+      "renew_share_gwh": 0,
+      "renew_share_mw": 0
+    },
+    "NTB": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 5,
+          "mw": 366,
+          "gwh": 2244,
+          "tco2": 2244312,
+          "share_mw": 50.3,
+          "share_gwh": 74
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 2,
+          "mw": 130,
+          "gwh": 456,
+          "tco2": 250536,
+          "share_mw": 17.8,
+          "share_gwh": 15
+        },
+        {
+          "type": "PLTG",
+          "label": "Gas siklus terbuka",
+          "renew": false,
+          "units": 1,
+          "mw": 136,
+          "gwh": 179,
+          "tco2": 103648,
+          "share_mw": 18.7,
+          "share_gwh": 5.9
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 2,
+          "mw": 57,
+          "gwh": 100,
+          "tco2": 74635,
+          "share_mw": 7.8,
+          "share_gwh": 3.3
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 8,
+          "mw": 40,
+          "gwh": 55,
+          "tco2": 0,
+          "share_mw": 5.4,
+          "share_gwh": 1.8
+        }
+      ],
+      "total_mw": 728,
+      "total_gwh": 3033,
+      "total_tco2": 2673132,
+      "ef_kg_per_kwh": 0.8812,
+      "renew_share_gwh": 1.8,
+      "renew_share_mw": 5.4
+    },
+    "NTT": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 4,
+          "mw": 171,
+          "gwh": 1049,
+          "tco2": 1048572,
+          "share_mw": 55,
+          "share_gwh": 66.8
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 3,
+          "mw": 100,
+          "gwh": 350,
+          "tco2": 192720,
+          "share_mw": 32.1,
+          "share_gwh": 22.3
+        },
+        {
+          "type": "PLTP",
+          "label": "Panas bumi",
+          "renew": true,
+          "units": 2,
+          "mw": 18,
+          "gwh": 134,
+          "tco2": 6701,
+          "share_mw": 5.8,
+          "share_gwh": 8.5
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 2,
+          "mw": 9,
+          "gwh": 16,
+          "tco2": 12352,
+          "share_mw": 3,
+          "share_gwh": 1
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 26,
+          "mw": 12,
+          "gwh": 16,
+          "tco2": 0,
+          "share_mw": 3.7,
+          "share_gwh": 1
+        },
+        {
+          "type": "PLTMH",
+          "label": "Air (mikro)",
+          "renew": true,
+          "units": 2,
+          "mw": 1,
+          "gwh": 4,
+          "tco2": 0,
+          "share_mw": 0.3,
+          "share_gwh": 0.3
+        }
+      ],
+      "total_mw": 311,
+      "total_gwh": 1570,
+      "total_tco2": 1260345,
+      "ef_kg_per_kwh": 0.8028,
+      "renew_share_gwh": 9.8,
+      "renew_share_mw": 9.9
+    },
+    "Papua": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 2,
+          "mw": 279,
+          "gwh": 1711,
+          "tco2": 1710828,
+          "share_mw": 51.1,
+          "share_gwh": 68.1
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 5,
+          "mw": 170,
+          "gwh": 596,
+          "tco2": 327624,
+          "share_mw": 31.1,
+          "share_gwh": 23.7
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 5,
+          "mw": 71,
+          "gwh": 125,
+          "tco2": 93912,
+          "share_mw": 13.1,
+          "share_gwh": 5
+        },
+        {
+          "type": "PLTA",
+          "label": "Air (besar)",
+          "renew": true,
+          "units": 1,
+          "mw": 20,
+          "gwh": 61,
+          "tco2": 0,
+          "share_mw": 3.7,
+          "share_gwh": 2.4
+        },
+        {
+          "type": "PLTMH",
+          "label": "Air (mikro)",
+          "renew": true,
+          "units": 1,
+          "mw": 4,
+          "gwh": 15,
+          "tco2": 0,
+          "share_mw": 0.7,
+          "share_gwh": 0.6
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 6,
+          "mw": 2,
+          "gwh": 2,
+          "tco2": 0,
+          "share_mw": 0.3,
+          "share_gwh": 0.1
+        }
+      ],
+      "total_mw": 546,
+      "total_gwh": 2511,
+      "total_tco2": 2132364,
+      "ef_kg_per_kwh": 0.8493,
+      "renew_share_gwh": 3.1,
+      "renew_share_mw": 4.7
+    },
+    "Sulselrabar": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 22,
+          "mw": 9334,
+          "gwh": 57236,
+          "tco2": 57236088,
+          "share_mw": 82.2,
+          "share_gwh": 90
+        },
+        {
+          "type": "PLTA",
+          "label": "Air (besar)",
+          "renew": true,
+          "units": 11,
+          "mw": 1167,
+          "gwh": 3577,
+          "tco2": 0,
+          "share_mw": 10.3,
+          "share_gwh": 5.6
+        },
+        {
+          "type": "PLTP",
+          "label": "Panas bumi",
+          "renew": true,
+          "units": 3,
+          "mw": 120,
+          "gwh": 894,
+          "tco2": 44676,
+          "share_mw": 1.1,
+          "share_gwh": 1.4
+        },
+        {
+          "type": "PLTGU",
+          "label": "Gas siklus kombinasi",
+          "renew": false,
+          "units": 1,
+          "mw": 180,
+          "gwh": 788,
+          "tco2": 315360,
+          "share_mw": 1.6,
+          "share_gwh": 1.2
+        },
+        {
+          "type": "PLTB",
+          "label": "Bayu",
+          "renew": true,
+          "units": 2,
+          "mw": 147,
+          "gwh": 322,
+          "tco2": 0,
+          "share_mw": 1.3,
+          "share_gwh": 0.5
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 2,
+          "mw": 88,
+          "gwh": 308,
+          "tco2": 169594,
+          "share_mw": 0.8,
+          "share_gwh": 0.5
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 8,
+          "mw": 171,
+          "gwh": 299,
+          "tco2": 224037,
+          "share_mw": 1.5,
+          "share_gwh": 0.5
+        },
+        {
+          "type": "PLTG",
+          "label": "Gas siklus terbuka",
+          "renew": false,
+          "units": 2,
+          "mw": 100,
+          "gwh": 131,
+          "tco2": 76212,
+          "share_mw": 0.9,
+          "share_gwh": 0.2
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 32,
+          "mw": 50,
+          "gwh": 70,
+          "tco2": 0,
+          "share_mw": 0.4,
+          "share_gwh": 0.1
+        },
+        {
+          "type": "PLTMH",
+          "label": "Air (mikro)",
+          "renew": true,
+          "units": 1,
+          "mw": 0,
+          "gwh": 0,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        }
+      ],
+      "total_mw": 11356,
+      "total_gwh": 63626,
+      "total_tco2": 58065967,
+      "ef_kg_per_kwh": 0.9126,
+      "renew_share_gwh": 7.6,
+      "renew_share_mw": 13.1
+    },
+    "Sumatra": {
+      "rows": [
+        {
+          "type": "PLTU",
+          "label": "Batu bara (uap)",
+          "renew": false,
+          "units": 30,
+          "mw": 7048,
+          "gwh": 43218,
+          "tco2": 43218336,
+          "share_mw": 46.7,
+          "share_gwh": 59.9
+        },
+        {
+          "type": "PLTP",
+          "label": "Panas bumi",
+          "renew": true,
+          "units": 8,
+          "mw": 1163,
+          "gwh": 8660,
+          "tco2": 432985,
+          "share_mw": 7.7,
+          "share_gwh": 12
+        },
+        {
+          "type": "PLTA",
+          "label": "Air (besar)",
+          "renew": true,
+          "units": 25,
+          "mw": 2803,
+          "gwh": 8594,
+          "tco2": 0,
+          "share_mw": 18.6,
+          "share_gwh": 11.9
+        },
+        {
+          "type": "PLTGU",
+          "label": "Gas siklus kombinasi",
+          "renew": false,
+          "units": 8,
+          "mw": 1690,
+          "gwh": 7403,
+          "tco2": 2961230,
+          "share_mw": 11.2,
+          "share_gwh": 10.3
+        },
+        {
+          "type": "PLTG",
+          "label": "Gas siklus terbuka",
+          "renew": false,
+          "units": 13,
+          "mw": 1569,
+          "gwh": 2062,
+          "tco2": 1195766,
+          "share_mw": 10.4,
+          "share_gwh": 2.9
+        },
+        {
+          "type": "PLTMG",
+          "label": "Mesin gas",
+          "renew": false,
+          "units": 6,
+          "mw": 451,
+          "gwh": 1580,
+          "tco2": 869167,
+          "share_mw": 3,
+          "share_gwh": 2.2
+        },
+        {
+          "type": "PLTD",
+          "label": "Diesel",
+          "renew": false,
+          "units": 16,
+          "mw": 346,
+          "gwh": 607,
+          "tco2": 455170,
+          "share_mw": 2.3,
+          "share_gwh": 0.8
+        },
+        {
+          "type": "PLTM",
+          "label": "Air (mini)",
+          "renew": true,
+          "units": 1,
+          "mw": 6,
+          "gwh": 24,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        },
+        {
+          "type": "PLTS",
+          "label": "Surya",
+          "renew": true,
+          "units": 7,
+          "mw": 11,
+          "gwh": 15,
+          "tco2": 0,
+          "share_mw": 0.1,
+          "share_gwh": 0
+        },
+        {
+          "type": "PLTBG",
+          "label": "Biogas",
+          "renew": true,
+          "units": 1,
+          "mw": 2,
+          "gwh": 15,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        },
+        {
+          "type": "PLT BIOMASS",
+          "label": "Biomassa",
+          "renew": true,
+          "units": 1,
+          "mw": 0,
+          "gwh": 0,
+          "tco2": 0,
+          "share_mw": 0,
+          "share_gwh": 0
+        }
+      ],
+      "total_mw": 15090,
+      "total_gwh": 72177,
+      "total_tco2": 49132654,
+      "ef_kg_per_kwh": 0.6807,
+      "renew_share_gwh": 24,
+      "renew_share_mw": 26.4
+    }
+  }
+}
