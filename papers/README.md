@@ -1,0 +1,79 @@
+# Naskah & perpustakaan
+
+Dua tab dashboard dibangun dari folder ini:
+
+| Tab | Sumber | Payload |
+|---|---|---|
+| 🔌 **Capacity Maps** | `papers/capacity/` | `capacity.json` → `D.cap` |
+| 📚 **Perpustakaan** | `papers/library/` | `library.json` → `D.lib` |
+| 🌏 ASEAN Paper | `papers/asean/` | — (statis, lihat `papers/asean/inject.py`) |
+
+## Urutan jalan
+
+```bash
+pip install openpyxl
+
+python3 papers/capacity/prepare.py   # data mentah PLN -> papers/capacity/capacity.json
+python3 papers/library/build.py      # naskah md/docx -> papers/library/library.json
+python3 papers/inject_papers.py      # sisipkan/perbarui kedua tab di index.html
+```
+
+`inject_papers.py` **idempoten**: blok lama dicopot lebih dulu, jadi aman dijalankan
+berkali-kali tanpa `git checkout index.html`. Batas blok ditandai
+`<!-- CAP:BEGIN/END -->`, `<!-- LIB:BEGIN/END -->` (markup) dan
+`/* CAP:BEGIN/END */`, `/* LIB:BEGIN/END */` (skrip).
+
+## papers/capacity — CIRED 2027
+
+`prepare.py` mereproduksi seluruh metode makalah dari berkas mentah di akar repositori
+(`Gardu_Beban_Lokasi_JABAR.xlsx`, `Data pelanggan EV.txt`, `Rekap_SPKLU_Jabar_ArcGIS.csv`):
+
+- headroom trafo & Gardu Induk pada batas pembebanan 80 %: `H = max(0, S·(0,8 − λ))`;
+- koreksi pertumbuhan beban ke Maret 2026: `λ(2026) = λ(t)·(1+g)^(2026,2−t)`,
+  dengan `g` = 0 / 3,0 / 5,9 / 9,7 %/tahun;
+- agregasi ke sel 0,045° (≈5 km) dan klasifikasi permintaan × headroom;
+- tiga aturan penempatan 50 situs baru (headroom-only, demand-only, demand-within-headroom);
+- audit kesiapan publikasi atas 53.797 catatan survei.
+
+Peta dan grafik di tab dihitung **dari payload ini**, bukan dari gambar naskah, jadi
+angkanya bisa berbeda tipis dari yang tercetak. Tabel 2 di halaman menampilkan kedua
+versi berdampingan, dan panel "Gambar asli naskah" merinci selisih yang diketahui.
+
+Reproduksi terhadap angka naskah:
+
+| Angka | Naskah | Hitung ulang |
+|---|---|---|
+| Catatan trafo / layak pakai | 53.797 / 41.129 | 53.797 / 41.129 |
+| Trafo Gardu Induk / MVA | 182 / 9.790 | 182 / 9.790 |
+| Umur survei median / tertua | 2,3 / 6,2 tahun | 2,3 / 6,2 tahun |
+| Pelanggan EV tergeokode | 3.687 | 3.687 |
+| ρ energi ~ headroom absolut / relatif | +0,42 / −0,06 | +0,42 / −0,06 |
+| Headroom trafo, apa adanya → 3 %/th | 2.624 → 2.392 MVA | 2.624 → 2.392 MVA |
+| Pemilik terjangkau (headroom / demand / DwH) | 694 / 807 / 789 | 694 / 809 / 789 |
+| Situs terlantar | 15 / 0 / 0 | 15 / 0 / 0 |
+| Cakupan baseline | 75,5 % | 75,4 % |
+
+Yang **belum** cocok: nilai Gini (naskah 0,692 → 0,600; hitung ulang 0,493 → 0,360) karena
+definisi Gini di naskah tidak dirinci — urutan antar-aturan tetap sama; dan headroom GI
+setelah koreksi (naskah 1.912 MVA, hitung ulang 2.099 MVA) karena umur survei GI tidak
+tersedia sehingga dipakai umur median trafo.
+
+## papers/library — perpustakaan naskah
+
+`build.py` mengubah `papers/*.md` dan berkas `.docx` menjadi HTML siap baca, memberi
+indeks stabil `data-b` pada tiap blok, lalu menulis katalog + isi ke `library.json`.
+Metadata tiap naskah (sasaran jurnal, status, persentase kesiapan, data, metode, daftar
+kerja sebelum submit) ada pada konstanta `PAPERS` di dalam `build.py`; rencana submisi
+per kuartal ada pada `PLAN`. **Perbarui keduanya di sana**, bukan di `library.json`.
+
+Fitur tinjauan pembimbing di tab: sorot kalimat → **Komentari** (komentar tertambat ke
+blok) atau **Tandai** (penanda kuning); komentar tampil di rel kanan, bisa ditandai
+selesai atau dihapus; tombol **⬇ Unduh** menghasilkan `.json` (untuk dimuat balik) dan
+`.md` (untuk dibaca manusia); tombol **⬆ Muat** menggabungkan berkas komentar dari
+peninjau lain.
+
+Halaman ini statis, jadi komentar disimpan di `localStorage` peramban masing-masing
+peninjau (kunci `spklu.review.<id naskah>`) — tidak terkirim ke server dan tidak terlihat
+peninjau lain sampai berkas komentarnya dipertukarkan. Bila kelak ingin komentar
+tersimpan bersama, ganti fungsi `load`/`save` pada `papers/library/render.js` dengan
+panggilan ke backend.
