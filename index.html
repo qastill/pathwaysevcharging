@@ -654,7 +654,7 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
   <canvas id="capQuadBar"></canvas>
   <div class="qbox" id="capQuadBox"></div></div>
 </div>
-<div class="cap"><b>Fig. 2</b> — Kuadran permintaan × headroom untuk sel yang memiliki pemilik EV terdaftar (median putus-putus; biru = sudah ada charger, ukuran mengikuti energi).</div>
+<div class="cap"><b>Fig. 2</b> — Kuadran permintaan × headroom untuk sel yang memiliki pemilik EV terdaftar. Garis putus-putus = median permintaan dan median headroom; warna = kuadran; lingkaran berisi = sel yang sudah punya SPKLU, dengan ukuran mengikuti energi Maret 2026; lingkaran kosong = sel yang belum terlayani.</div>
 
 <h4>5.3 The published layer changes the portfolio <span class="live">peta langsung</span></h4>
 <p>Table 2 and Fig. 3 compare the three siting rules. The headroom-only rule reaches 694 of the 901 owners in unserved cells and places 15 of 50 sites in cells with below-median demand. The demand-only rule reaches 807 owners but places 2 sites below the feasibility threshold and is the most geographically concentrated (15 regencies). The demand-within-headroom rule strands no site, reaches 789 owners (+12 % on headroom-only), spreads over 17 regencies and lowers the between-regency coverage Gini from 0.69 today to 0.60. The result is stable across growth scenarios (789, 789 and 788 owners reached at 3.0, 5.9 and 9.7 %/yr).</p>
@@ -3254,13 +3254,21 @@ window.initPel=(function(){
  let quadCh,ruleCh,discCh,auditCh,scenCh;
  function initQuad(){
   if(quadCh) return;
-  const ds=Object.keys(QCOL).map(q=>({label:QLAB[q],
-    data:EVC.filter(c=>c.q===q).map(c=>({x:Math.max(c.h,1),y:c.ev,r:c.chg?4+Math.sqrt(c.kwh)/40:3,c:c})),
-    backgroundColor:QCOL[q]+'cc',borderColor:QCOL[q],pointRadius:ctx=>ctx.raw.r,
-    pointStyle:ctx=>ctx.raw.c.chg?'rectRot':'circle'}));
-  quadCh=new Chart($('capQuad'),{type:'scatter',data:{datasets:ds},options:{responsive:true,
-   plugins:{legend:{labels:{boxWidth:9,font:{size:10}}},tooltip:{callbacks:{label:i=>{
-     const c=i.raw.c; return `${c.kab||''} — ${c.ev} pemilik · ${nf(c.h)} kVA · ${c.chg} SPKLU`;}}}},
+  // Dipetakan sebagai bubble (pola yang sudah dipakai grafik lain di dashboard ini):
+  // warna = kuadran, ukuran = energi SPKLU, isi penuh = sel yang sudah punya charger.
+  const mxk=Math.max(...EVC.map(c=>c.kwh))||1;
+  const pt=c=>({x:Math.max(c.h,1),y:c.ev,r:c.chg?5+9*Math.sqrt(c.kwh/mxk):3.2,c:c});
+  const ds=[];
+  Object.keys(QCOL).forEach(q=>{
+   const has=EVC.filter(c=>c.q===q&&c.chg>0), non=EVC.filter(c=>c.q===q&&!c.chg);
+   if(non.length) ds.push({label:QLAB[q]+' — belum ada charger',data:non.map(pt),
+     backgroundColor:'transparent',borderColor:QCOL[q],borderWidth:1.4});
+   if(has.length) ds.push({label:QLAB[q]+' — sudah ada charger',data:has.map(pt),
+     backgroundColor:QCOL[q]+'cc',borderColor:QCOL[q],borderWidth:1});
+  });
+  quadCh=new Chart($('capQuad'),{type:'bubble',data:{datasets:ds},options:{responsive:true,
+   plugins:{legend:{labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:i=>{
+     const c=i.raw.c; return `${c.kab||''} — ${c.ev} pemilik · ${nf(c.h)} kVA · ${c.chg} SPKLU · ${nf(c.kwh)} kWh`;}}}},
    scales:{x:{type:'logarithmic',title:{display:true,text:'Headroom trafo 2026 (kVA, log)',font:{size:10}},
               ticks:{font:{size:9}}},
            y:{type:'logarithmic',title:{display:true,text:'Pemilik EV terdaftar (log)',font:{size:10}},

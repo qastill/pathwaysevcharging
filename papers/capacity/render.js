@@ -154,13 +154,21 @@
  let quadCh,ruleCh,discCh,auditCh,scenCh;
  function initQuad(){
   if(quadCh) return;
-  const ds=Object.keys(QCOL).map(q=>({label:QLAB[q],
-    data:EVC.filter(c=>c.q===q).map(c=>({x:Math.max(c.h,1),y:c.ev,r:c.chg?4+Math.sqrt(c.kwh)/40:3,c:c})),
-    backgroundColor:QCOL[q]+'cc',borderColor:QCOL[q],pointRadius:ctx=>ctx.raw.r,
-    pointStyle:ctx=>ctx.raw.c.chg?'rectRot':'circle'}));
-  quadCh=new Chart($('capQuad'),{type:'scatter',data:{datasets:ds},options:{responsive:true,
-   plugins:{legend:{labels:{boxWidth:9,font:{size:10}}},tooltip:{callbacks:{label:i=>{
-     const c=i.raw.c; return `${c.kab||''} — ${c.ev} pemilik · ${nf(c.h)} kVA · ${c.chg} SPKLU`;}}}},
+  // Dipetakan sebagai bubble (pola yang sudah dipakai grafik lain di dashboard ini):
+  // warna = kuadran, ukuran = energi SPKLU, isi penuh = sel yang sudah punya charger.
+  const mxk=Math.max(...EVC.map(c=>c.kwh))||1;
+  const pt=c=>({x:Math.max(c.h,1),y:c.ev,r:c.chg?5+9*Math.sqrt(c.kwh/mxk):3.2,c:c});
+  const ds=[];
+  Object.keys(QCOL).forEach(q=>{
+   const has=EVC.filter(c=>c.q===q&&c.chg>0), non=EVC.filter(c=>c.q===q&&!c.chg);
+   if(non.length) ds.push({label:QLAB[q]+' — belum ada charger',data:non.map(pt),
+     backgroundColor:'transparent',borderColor:QCOL[q],borderWidth:1.4});
+   if(has.length) ds.push({label:QLAB[q]+' — sudah ada charger',data:has.map(pt),
+     backgroundColor:QCOL[q]+'cc',borderColor:QCOL[q],borderWidth:1});
+  });
+  quadCh=new Chart($('capQuad'),{type:'bubble',data:{datasets:ds},options:{responsive:true,
+   plugins:{legend:{labels:{boxWidth:9,font:{size:9}}},tooltip:{callbacks:{label:i=>{
+     const c=i.raw.c; return `${c.kab||''} — ${c.ev} pemilik · ${nf(c.h)} kVA · ${c.chg} SPKLU · ${nf(c.kwh)} kWh`;}}}},
    scales:{x:{type:'logarithmic',title:{display:true,text:'Headroom trafo 2026 (kVA, log)',font:{size:10}},
               ticks:{font:{size:9}}},
            y:{type:'logarithmic',title:{display:true,text:'Pemilik EV terdaftar (log)',font:{size:10}},
