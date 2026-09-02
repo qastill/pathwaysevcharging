@@ -3,47 +3,91 @@
 (function(){
  const LIB=(typeof D!=='undefined'&&D.lib)||null; if(!LIB) return;
  const $=id=>document.getElementById(id);
- const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
  const KEY=p=>'spklu.review.'+p;
  const TAGS={mayor:['Mayor','#d6443c'],minor:['Minor','#e0a52b'],
              tanya:['Pertanyaan','#3a6ea5'],setuju:['Setuju','#2e9e5b']};
  const STL={draft:'Draft',review:'Siap ditinjau',plan:'Rencana',submitted:'Sudah disubmit'};
+ const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36).slice(-4);
 
- /* ---------- penyimpanan komentar (per peramban peninjau) ---------- */
- const load=id=>{try{return JSON.parse(localStorage.getItem(KEY(id))||'[]')}catch(e){return[]}};
- const save=(id,v)=>{try{localStorage.setItem(KEY(id),JSON.stringify(v))}catch(e){
+ /* ---------- backend: Supabase lewat /api/papers, atau mode lokal ---------- */
+ // SB = {url,key,upload} bila env Vercel sudah diatur; null = semua tersimpan di peramban ini.
+ let SB=null, remotePapers=[];
+ async function loadConfig(){
+  try{ const r=await fetch('/api/papers',{cache:'no-store'}); if(!r.ok) return;
+   const c=await r.json(); if(c&&c.configured&&c.url&&c.anonKey) SB={url:c.url,key:c.anonKey,upload:!!c.upload};
+  }catch(e){}
+ }
+ const sbH=()=>({apikey:SB.key,Authorization:'Bearer '+SB.key,'Content-Type':'application/json'});
+ async function sb(path,opt){
+  const r=await fetch(SB.url+'/rest/v1/'+path,Object.assign({headers:sbH()},opt||{}));
+  if(!r.ok) throw new Error('Supabase '+r.status+': '+(await r.text()).slice(0,200));
+  return r.status===204?null:r.json();
+ }
+ async function loadRemotePapers(){
+  if(!SB){ remotePapers=localPapers(); return; }
+  try{ remotePapers=(await sb('papers?select=id,n,title,short,kind,venue,alt,status,stage,pct,target,lead,data,method,todo,tabs,words,file_name,file_path,created_at&order=n.asc.nullslast,created_at.asc'))
+        .map(p=>Object.assign(p,{remote:true,files:p.file_path?[[ 'Berkas asli ('+(p.file_name||'').split('.').pop()+')',SB.url+'/storage/v1/object/public/papers/'+p.file_path]]:[]}));
+  }catch(e){ console.warn('naskah jarak jauh gagal dimuat:',e.message); remotePapers=[]; }
+ }
+ // mode lokal: naskah unggahan disimpan di localStorage (indeks + isi terpisah supaya ringan)
+ const localPapers=()=>{try{return JSON.parse(localStorage.getItem('spklu.papers')||'[]').map(p=>Object.assign(p,{local:true,files:[]}))}catch(e){return[]}};
+ const localHtml=id=>{try{return localStorage.getItem('spklu.paper.'+id)||''}catch(e){return''}};
+
+ // komentar
+ const loadLocal=id=>{try{return JSON.parse(localStorage.getItem(KEY(id))||'[]')}catch(e){return[]}};
+ const saveLocal=(id,v)=>{try{localStorage.setItem(KEY(id),JSON.stringify(v))}catch(e){
    alert('Komentar tidak bisa disimpan di peramban ini. Unduh berkas komentar agar tidak hilang.');}};
+ async function loadNotes(id){
+  if(!SB) return loadLocal(id);
+  try{ return await sb('paper_comments?paper_id=eq.'+encodeURIComponent(id)+'&order=b.asc,ts.asc'); }
+  catch(e){ console.warn(e.message); return loadLocal(id); }
+ }
+ async function persist(op,n){
+  if(!SB){ saveLocal(cur.id,notes); return; }
+  try{
+   if(op==='delete') await sb('paper_comments?id=eq.'+encodeURIComponent(n.id),{method:'DELETE'});
+   else await sb('paper_comments?on_conflict=id',{method:'POST',
+     headers:Object.assign(sbH(),{Prefer:'resolution=merge-duplicates'}),
+     body:JSON.stringify({id:n.id,paper_id:cur.id,b:n.b,quote:n.quote,text:n.text,tag:n.tag,who:n.who,resolved:!!n.resolved,ts:n.ts})});
+  }catch(e){ alert('Gagal menyimpan ke server: '+e.message+'\nKomentar disalin ke penyimpanan lokal.'); saveLocal(cur.id,notes); }
+ }
  const who=()=>localStorage.getItem('spklu.review.who')||'';
+ const allPapers=()=>LIB.papers.concat(remotePapers);
 
  /* ---------- beranda ---------- */
  function home(){
-  const tot=LIB.papers.length, rev=LIB.papers.filter(p=>p.status==='review').length;
-  const cm=LIB.papers.reduce((a,p)=>a+load(p.id).filter(c=>!c.resolved).length,0);
-  const words=LIB.papers.reduce((a,p)=>a+p.words,0);
+  const P=allPapers();
+  const tot=P.length, rev=P.filter(p=>p.status==='review').length;
+  const words=P.reduce((a,p)=>a+(p.words||0),0);
   $('libKpi').innerHTML=[['Naskah dalam proyek',tot,'draft, working paper, dan conference paper'],
    ['Siap ditinjau pembimbing',rev,'status "review"'],
    ['Total panjang naskah',words.toLocaleString('id-ID')+' kata','gabungan seluruh naskah'],
-   ['Komentar terbuka',cm,'tersimpan di peramban ini']]
+   ['Naskah unggahan',remotePapers.length,SB?'tersimpan di Supabase':'tersimpan di peramban ini']]
    .map(k=>`<div class="kpi"><div class="l">${k[0]}</div><div class="v">${k[1]}</div><div class="s">${k[2]}</div></div>`).join('');
+  $('libMode').innerHTML=SB
+   ?`<b>Mode bersama.</b> Naskah unggahan dan komentar tersimpan di Supabase — terlihat oleh semua pembimbing.${SB.upload?'':' <i>(kunci unggah belum diatur di Vercel; unggah belum aktif)</i>'}`
+   :`<b>Mode lokal.</b> Backend belum disetel, jadi naskah unggahan dan komentar tersimpan di peramban ini saja. Lihat <code>papers/README.md</code> untuk mengaktifkan penyimpanan bersama.`;
+  $('libStoreNote').innerHTML=SB
+   ?`<b>Penyimpanan bersama aktif.</b> Komentar langsung tersimpan di server dan terlihat oleh semua peninjau; tombol unduh/muat tetap tersedia sebagai cadangan.`
+   :`<b>Catatan penyimpanan.</b> Backend belum disetel, jadi komentar disimpan di <i>localStorage</i> peramban masing-masing peninjau — tidak terkirim ke server dan tidak terlihat oleh peninjau lain sampai berkas komentarnya dipertukarkan lewat tombol unduh/muat.`;
 
-  $('libCards').innerHTML=LIB.papers.map(p=>{
-   const n=load(p.id), open=n.filter(c=>!c.resolved).length;
-   return `<div class="pc">
-    <div class="no">Naskah ${p.n} · ${esc(p.kind)}</div>
+  $('libCards').innerHTML=P.map(p=>`<div class="pc">
+    <div class="no">Naskah ${p.n||'–'} · ${esc(p.kind)}${p.remote?'<span class="src">● unggahan</span>':p.local?'<span class="src" style="color:#e0a52b">● lokal</span>':''}</div>
     <h3>${esc(p.title)}</h3>
-    <div class="ven">🎯 ${esc(p.venue)}</div>
-    <div class="alt">Alternatif: ${esc(p.alt)}</div>
+    <div class="ven">🎯 ${esc(p.venue||'—')}</div>
+    <div class="alt">Alternatif: ${esc(p.alt||'—')}</div>
     <div><span class="st ${p.status}">${STL[p.status]||p.status}</span>
-     ${open?`<span class="cbadge" style="margin-left:6px">${open} komentar terbuka</span>`:''}</div>
-    <div class="bar"><i style="width:${p.pct}%"></i></div>
-    <div class="meta"><b>${p.pct}%</b> · ${esc(p.stage)}<br>Target: <b>${esc(p.target)}</b> ·
-     ${p.words.toLocaleString('id-ID')} kata</div>
-    <div class="chips">${p.data.slice(0,4).map(d=>`<span class="chip">${esc(d)}</span>`).join('')}</div>
+     <span class="cbadge" style="margin-left:6px" data-libcnt="${p.id}" hidden></span></div>
+    <div class="bar"><i style="width:${p.pct||0}%"></i></div>
+    <div class="meta"><b>${p.pct||0}%</b> · ${esc(p.stage||'')}<br>Target: <b>${esc(p.target||'—')}</b> ·
+     ${(p.words||0).toLocaleString('id-ID')} kata</div>
+    <div class="chips">${(p.data||[]).slice(0,4).map(d=>`<span class="chip">${esc(d)}</span>`).join('')}</div>
     <div class="btns">
      <button class="btn pri" data-libopen="${p.id}">Baca &amp; komentari</button>
-     ${p.files.map(f=>`<a class="btn" href="${f[1]}" download>⬇ ${esc(f[0])}</a>`).join('')}
+     ${(p.files||[]).map(f=>`<a class="btn" href="${f[1]}" download>⬇ ${esc(f[0])}</a>`).join('')}
      ${p.tabs&&p.tabs.length?`<button class="btn" data-libtab="${p.tabs[0]}">📊 Data di dashboard</button>`:''}
-    </div></div>`;}).join('');
+    </div></div>`).join('');
 
   $('libPlan').innerHTML=LIB.plan.map(r=>`<tr><td class="q">${esc(r[0])}</td>
    <td><b>${esc(r[1])}</b><div style="font-size:11px;color:var(--mut);margin-top:2px">${esc(r[2])}</div></td>
@@ -52,36 +96,47 @@
   document.querySelectorAll('#p-library [data-libopen]').forEach(b=>b.onclick=()=>open_(b.dataset.libopen));
   document.querySelectorAll('#p-library [data-libtab]').forEach(b=>b.onclick=()=>{
    const t=document.querySelector('.tab[data-p="'+b.dataset.libtab+'"]'); if(t)t.click();});
+  // lencana komentar terbuka per naskah (lokal langsung; jarak jauh diambil ringkas)
+  P.forEach(async p=>{const el=document.querySelector('[data-libcnt="'+p.id+'"]'); if(!el) return;
+   let open=0;
+   if(SB){try{open=(await sb('paper_comments?select=id&paper_id=eq.'+encodeURIComponent(p.id)+'&resolved=eq.false')).length}catch(e){}}
+   else open=loadLocal(p.id).filter(c=>!c.resolved).length;
+   if(open){el.textContent=open+' komentar terbuka';el.hidden=false;}});
  }
 
  /* ---------- pembaca ---------- */
  let cur=null, notes=[], showDone=false;
 
- function open_(id){
-  cur=LIB.papers.find(p=>p.id===id); if(!cur) return;
-  notes=load(id); showDone=false; $('libShowDone').checked=false;
+ async function open_(id){
+  cur=allPapers().find(p=>p.id===id); if(!cur) return;
+  showDone=false; $('libShowDone').checked=false;
   $('libHome').style.display='none'; $('libReader').classList.add('on');
-  $('libToc').innerHTML=cur.toc.map(t=>
-   `<a href="#" class="l${t.lv}" data-libgo="${t.b}">${esc(t.t)}</a>`).join('');
-  $('libBar').innerHTML=`<b style="font-size:13px;color:var(--navy)">Naskah ${cur.n}</b>
+  $('libDoc').innerHTML='<p class="empty">Memuat naskah…</p>'; $('libRail').innerHTML='';
+  let html=cur.html;
+  if(cur.remote&&!html){ try{ html=(await sb('papers?select=html&id=eq.'+encodeURIComponent(id)))[0].html; }catch(e){ html='<p>Gagal memuat isi: '+esc(e.message)+'</p>'; } cur.html=html; }
+  if(cur.local&&!html){ html=localHtml(id); cur.html=html; }
+  if(!cur.toc) cur.toc=tocOf(html);
+  $('libToc').innerHTML=cur.toc.map(t=>`<a href="#" class="l${t.lv}" data-libgo="${t.b}">${esc(t.t)}</a>`).join('');
+  $('libBar').innerHTML=`<b style="font-size:13px;color:var(--navy)">Naskah ${cur.n||'–'}</b>
    <span class="st ${cur.status}">${STL[cur.status]||cur.status}</span>
-   <span style="font-size:11.5px;color:var(--mut)">🎯 ${esc(cur.venue)} · target ${esc(cur.target)} ·
-   ${cur.words.toLocaleString('id-ID')} kata</span>
-   ${cur.files.map(f=>`<a class="btn" href="${f[1]}" download>⬇ ${esc(f[0])}</a>`).join('')}`;
-  $('libDoc').innerHTML=cur.html+todoBlock(cur);
+   <span style="font-size:11.5px;color:var(--mut)">🎯 ${esc(cur.venue||'—')} · target ${esc(cur.target||'—')} ·
+   ${(cur.words||0).toLocaleString('id-ID')} kata</span>
+   ${(cur.files||[]).map(f=>`<a class="btn" href="${f[1]}" download>⬇ ${esc(f[0])}</a>`).join('')}`;
+  $('libDoc').innerHTML=html+todoBlock(cur);
   $('libWho').value=who();
   document.querySelectorAll('#libToc [data-libgo]').forEach(a=>a.onclick=e=>{e.preventDefault();
    const el=$('libDoc').querySelector('[data-b="'+a.dataset.libgo+'"]');
    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});});
+  notes=await loadNotes(id);
   paint();
   window.scrollTo({top:0,behavior:'smooth'});
  }
 
  function todoBlock(p){
-  return `<hr><h3>Daftar kerja sebelum submit</h3><ul>`+
-   p.todo.map(t=>`<li>${esc(t)}</li>`).join('')+`</ul>
-   <h4>Data yang dipakai</h4><ul>${p.data.map(d=>`<li>${esc(d)}</li>`).join('')}</ul>
-   <h4>Metode</h4><ul>${p.method.map(d=>`<li>${esc(d)}</li>`).join('')}</ul>`;
+  const li=a=>(a||[]).map(t=>`<li>${esc(t)}</li>`).join('');
+  return `<hr><h3>Daftar kerja sebelum submit</h3><ul>${li(p.todo)||'<li><i>belum diisi</i></li>'}</ul>
+   <h4>Data yang dipakai</h4><ul>${li(p.data)||'<li><i>belum diisi</i></li>'}</ul>
+   <h4>Metode</h4><ul>${li(p.method)||'<li><i>belum diisi</i></li>'}</ul>`;
  }
 
  $('libBack').onclick=()=>{$('libReader').classList.remove('on');$('libHome').style.display='';home();};
@@ -100,14 +155,14 @@
    if(n.quote) hilite(el,n.quote);
   });
   $('libCount').textContent=notes.filter(n=>!n.resolved).length;
-  $('libRail').innerHTML=vis.length?vis.map((n,i)=>{
+  $('libRail').innerHTML=vis.length?vis.map(n=>{
    const t=TAGS[n.tag]||TAGS.tanya;
    return `<div class="cm${n.resolved?' done':''}" data-libjump="${n.b}">
     <span class="who">${esc(n.who||'Peninjau')}</span>
     <span class="tg" style="background:${t[1]}">${t[0]}</span>
     ${n.quote?`<div class="q">“${esc(n.quote.slice(0,150))}${n.quote.length>150?'…':''}”</div>`:''}
     <div class="tx">${esc(n.text)}</div>
-    <div class="ft"><span>${new Date(n.ts).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'})}</span>
+    <div class="ft"><span>${new Date(Number(n.ts)||Date.now()).toLocaleString('id-ID',{dateStyle:'short',timeStyle:'short'})}</span>
      <button data-libdone="${n.id}">${n.resolved?'buka lagi':'tandai selesai'}</button>
      <button data-libdel="${n.id}" style="color:#d6443c">hapus</button></div></div>`;}).join('')
    : `<div class="empty">Belum ada komentar. Sorot kalimat pada naskah lalu pilih <b>Komentari</b>.</div>`;
@@ -117,11 +172,12 @@
    const el=doc.querySelector('[data-b="'+c.dataset.libjump+'"]');
    if(el){el.scrollIntoView({behavior:'smooth',block:'center'});
     el.classList.add('sel');setTimeout(()=>el.classList.remove('sel'),1200);}});
-  $('libRail').querySelectorAll('[data-libdone]').forEach(b=>b.onclick=()=>{
-   const n=notes.find(x=>x.id===b.dataset.libdone); if(n){n.resolved=!n.resolved;save(cur.id,notes);paint();}});
-  $('libRail').querySelectorAll('[data-libdel]').forEach(b=>b.onclick=()=>{
+  $('libRail').querySelectorAll('[data-libdone]').forEach(b=>b.onclick=async()=>{
+   const n=notes.find(x=>x.id===b.dataset.libdone); if(n){n.resolved=!n.resolved;await persist('upsert',n);paint();}});
+  $('libRail').querySelectorAll('[data-libdel]').forEach(b=>b.onclick=async()=>{
    if(!confirm('Hapus komentar ini?'))return;
-   notes=notes.filter(x=>x.id!==b.dataset.libdel);save(cur.id,notes);paint();});
+   const n=notes.find(x=>x.id===b.dataset.libdel);
+   notes=notes.filter(x=>x.id!==b.dataset.libdel); await persist('delete',n); paint();});
  }
 
  function hilite(el,q){
@@ -170,13 +226,12 @@
   if(m){tag=m[1].toLowerCase();tx=tx.slice(m[0].length);}
   add(b_,q,tx,tag);
  });
- function add(b,quote,text,tag){
+ async function add(b,quote,text,tag){
   const nm=$('libWho').value.trim()||who()||'Peninjau';
   localStorage.setItem('spklu.review.who',nm);
-  notes.push({id:Math.random().toString(36).slice(2,10),b:+b,quote,text,tag,who:nm,
-              ts:Date.now(),resolved:false});
-  notes.sort((a,b2)=>a.b-b2.b);
-  save(cur.id,notes); paint();
+  const n={id:uid(),b:+b,quote,text,tag,who:nm,ts:Date.now(),resolved:false};
+  notes.push(n); notes.sort((a,b2)=>a.b-b2.b);
+  await persist('upsert',n); paint();
   window.getSelection().removeAllRanges();
  }
 
@@ -201,17 +256,131 @@
  $('libFile').onchange=e=>{
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload=()=>{try{
+  r.onload=async()=>{try{
     const d=JSON.parse(r.result); const inc=Array.isArray(d)?d:d.notes;
     if(!Array.isArray(inc)) throw 0;
     if(d.paper&&d.paper!==cur.id&&!confirm(`Berkas ini untuk naskah "${d.paper}", bukan "${cur.id}". Tetap muat?`)) return;
     const have=new Set(notes.map(n=>n.id));
-    let n0=0; inc.forEach(n=>{if(n&&n.text&&!have.has(n.id)){notes.push(n);n0++;}});
-    notes.sort((a,b)=>a.b-b.b); save(cur.id,notes); paint();
+    let n0=0; for(const n of inc){ if(n&&n.text&&!have.has(n.id)){ notes.push(n); n0++; await persist('upsert',n);} }
+    notes.sort((a,b)=>a.b-b.b); if(!SB) saveLocal(cur.id,notes); paint();
     alert(n0+' komentar dimuat ('+(inc.length-n0)+' sudah ada).');
   }catch(err){alert('Berkas tidak terbaca sebagai komentar.');}};
   r.readAsText(f); e.target.value='';
  };
 
- window.initLibrary=function(){ if($('libReader').classList.contains('on')) return; home(); };
+ /* ---------- unggah naskah: parse di peramban ---------- */
+ // Padanan JS dari papers/library/build.py (md_to_html + number_blocks + toc_of), supaya
+ // naskah unggahan mendapat struktur dan indeks blok yang sama dengan naskah bawaan.
+ const inline=s=>esc(s).replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>')
+   .replace(/(^|[^*\w])\*([^*]+)\*(?!\*)/g,'$1<i>$2</i>')
+   .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+   .replace(/\[VERIFY([^\]]*)\]/g,'<span class="verify">[VERIFY$1]</span>');
+ function mdToHtml(text){
+  const L=text.replace(/\r/g,'').split('\n'), out=[]; let i=0;
+  const isList=l=>/^\s*([-*+]|\d+\.)\s+/.test(l||'');
+  while(i<L.length){
+   const ln=L[i].replace(/\s+$/,'');
+   if(!ln.trim()){i++;continue;}
+   if(ln.startsWith('|')&&i+1<L.length&&/^[\s|:-]+$/.test(L[i+1])){
+    const head=ln.replace(/^\||\|$/g,'').split('|').map(c=>c.trim()); i+=2; const body=[];
+    while(i<L.length&&L[i].trim().startsWith('|')){body.push(L[i].trim().replace(/^\||\|$/g,'').split('|').map(c=>c.trim()));i++;}
+    out.push('<div class="tw"><table><thead><tr>'+head.map(h=>`<th>${inline(h)}</th>`).join('')+'</tr></thead><tbody>'+
+     body.map(r=>'<tr>'+r.map(c=>`<td>${inline(c)}</td>`).join('')+'</tr>').join('')+'</tbody></table></div>'); continue;}
+   let m=ln.match(/^(#{1,6})\s+(.*)$/);
+   if(m){const lv=Math.min(m[1].length+1,6);out.push(`<h${lv}>${inline(m[2])}</h${lv}>`);i++;continue;}
+   if(/^(---|\*\*\*|___)$/.test(ln.trim())){out.push('<hr>');i++;continue;}
+   if(ln.startsWith('>')){const buf=[];while(i<L.length&&L[i].startsWith('>')){buf.push(L[i].replace(/^>\s?/,''));i++;}
+    out.push('<blockquote>'+inline(buf.join(' '))+'</blockquote>');continue;}
+   if(isList(ln)){const ord=/^\s*\d+\./.test(ln);const items=[];
+    while(i<L.length&&isList(L[i])){let c=L[i].replace(/^\s*([-*+]|\d+\.)\s+/,'');i++;
+     while(i<L.length&&/^ {4}/.test(L[i])&&!isList(L[i])){c+=' '+L[i].trim();i++;} items.push(c);}
+    out.push(`<${ord?'ol':'ul'}>`+items.map(x=>`<li>${inline(x)}</li>`).join('')+`</${ord?'ol':'ul'}>`);continue;}
+   const buf=[];
+   while(i<L.length&&L[i].trim()&&!/^(#{1,6}\s|\||>)/.test(L[i])&&!isList(L[i])&&!/^(---|\*\*\*|___)$/.test(L[i].trim())){buf.push(L[i].trim());i++;}
+   if(buf.length) out.push('<p>'+inline(buf.join(' '))+'</p>');
+  }
+  return out.join('\n');
+ }
+ function numberBlocks(h){
+  let n=0; h=h.replace(/<(h[2-6]|p|ul|ol|blockquote|hr)(?=[ >])/g,(m,t)=>`<${t} data-b="${++n}"`);
+  const parts=h.split('<div class="tw">');
+  return parts[0]+parts.slice(1).map(q=>`<div class="tw" data-b="${++n}">`+q).join('');
+ }
+ const tocOf=h=>Array.from(h.matchAll(/<(h[3-4]) data-b="(\d+)">(.*?)<\/h[3-4]>/gs))
+   .map(m=>({b:+m[2],lv:+m[1][1],t:m[3].replace(/<[^>]+>/g,'').trim()}));
+ const wordsOf=h=>h.replace(/<[^>]+>/g,' ').split(/\s+/).filter(Boolean).length;
+ function normaliseDocx(h){
+  // mammoth memberi h1..h6/p/ul/ol/table polos; samakan dengan konvensi naskah bawaan
+  h=h.replace(/<h1>/g,'<h2>').replace(/<\/h1>/g,'</h2>')
+     .replace(/<table>/g,'<div class="tw"><table>').replace(/<\/table>/g,'</table></div>')
+     .replace(/<p>\s*<\/p>/g,'').replace(/<p>(Fig\.|Table)\s/g,'<p class="figcap">$1 ')
+     .replace(/<p>(\[\d+\])/g,'<p class="ref">$1');
+  return h;
+ }
+ let mammothP=null;
+ const loadMammoth=()=>mammothP||(mammothP=new Promise((ok,no)=>{ if(window.mammoth) return ok();
+  const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js';
+  s.onload=()=>ok(); s.onerror=()=>no(new Error('pustaka pembaca .docx gagal dimuat')); document.head.appendChild(s);}));
+ async function parseFile(f){
+  const name=f.name.toLowerCase();
+  if(/\.(md|markdown|txt)$/.test(name)) return mdToHtml(await f.text());
+  if(name.endsWith('.docx')){ await loadMammoth();
+   const r=await window.mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()},{styleMap:['p[style-name="Caption"] => p.figcap']});
+   return normaliseDocx(r.value); }
+  throw new Error('Format belum didukung: unggah .docx, .md, atau .txt');
+ }
+ const lines=id=>$(id).value.split('\n').map(s=>s.trim()).filter(Boolean);
+ const slug=s=>s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60);
+ const b64=f=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(String(r.result).split(',')[1]);r.onerror=no;r.readAsDataURL(f);});
+
+ $('libUpBtn').onclick=()=>{$('libUpForm').hidden=!$('libUpForm').hidden; if(!$('libUpForm').hidden) $('libUpForm').scrollIntoView({behavior:'smooth'});};
+ $('upCancel').onclick=()=>{$('libUpForm').hidden=true;};
+ $('upFile').onchange=()=>{const f=$('upFile').files[0]; if(!f) return;
+  if(!$('upTitle').value) $('upTitle').value=f.name.replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ');
+  if(!$('upId').value) $('upId').value=slug($('upTitle').value);};
+ $('upTitle').oninput=()=>{if(!$('upId').dataset.touched) $('upId').value=slug($('upTitle').value);};
+ $('upId').oninput=()=>{$('upId').dataset.touched='1';};
+
+ $('upGo').onclick=async()=>{
+  const msg=$('upMsg'); const f=$('upFile').files[0];
+  const id=$('upId').value.trim(), title=$('upTitle').value.trim();
+  if(!f){msg.textContent='Pilih berkas naskah dulu.';return;}
+  if(!/^[a-z0-9][a-z0-9-]{1,60}$/.test(id)){msg.textContent='Slug/id tidak valid.';return;}
+  if(!title){msg.textContent='Judul wajib diisi.';return;}
+  if(allPapers().some(p=>p.id===id)&&!confirm('Naskah dengan id "'+id+'" sudah ada. Timpa?')) return;
+  try{
+   msg.textContent='Mem-parse '+f.name+' …';
+   const html=numberBlocks(await parseFile(f));
+   $('upPreview').innerHTML=html;
+   const paper={id,title,short:$('upShort').value.trim(),kind:$('upKind').value,venue:$('upVenue').value.trim(),
+    alt:$('upAlt').value.trim(),status:$('upStatus').value,stage:$('upStage').value.trim(),pct:+$('upPct').value||0,
+    target:$('upTarget').value.trim(),lead:$('upLead').value.trim(),data:lines('upData'),method:lines('upMethod'),
+    todo:lines('upTodo'),tabs:[],html,words:wordsOf(html),uploaded_by:$('upBy').value.trim(),
+    n:allPapers().length+1};
+   if(SB&&SB.upload){
+    msg.textContent='Mengunggah ke server …';
+    const r=await fetch('/api/papers',{method:'POST',headers:{'Content-Type':'application/json'},
+     body:JSON.stringify({key:$('upKey').value,paper,file:{name:f.name,type:f.type,base64:await b64(f)}})});
+    const j=await r.json(); if(!r.ok) throw new Error(j.error||('HTTP '+r.status));
+    msg.textContent='Tersimpan di server ✔';
+   }else{
+    // mode lokal: simpan indeks ringan + isi terpisah
+    const idx=localPapers().filter(p=>p.id!==id); const {html:_h,...meta}=paper;
+    idx.push(meta); localStorage.setItem('spklu.papers',JSON.stringify(idx));
+    localStorage.setItem('spklu.paper.'+id,html);
+    msg.textContent=SB?'Kunci unggah belum diatur di Vercel — disimpan di peramban ini saja.':'Tersimpan di peramban ini (mode lokal) ✔';
+   }
+   await loadRemotePapers(); home(); $('libUpForm').hidden=true;
+   setTimeout(()=>open_(id),150);
+  }catch(e){ msg.textContent='Gagal: '+e.message; }
+ };
+
+ let booted=false;
+ window.initLibrary=async function(){
+  if($('libReader').classList.contains('on')) return;
+  if(!booted){ booted=true; await loadConfig(); await loadRemotePapers();
+   if(SB&&!SB.upload){$('upKey').placeholder='kunci unggah belum diatur';} }
+  home();
+ };
 })();

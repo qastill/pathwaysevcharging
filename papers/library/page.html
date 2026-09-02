@@ -93,6 +93,15 @@
 #p-library .plan{width:100%;font-size:12px}
 #p-library .plan td{padding:9px 10px;border-bottom:1px solid #f1f3f7;vertical-align:top}
 #p-library .plan td.q{font-weight:700;color:var(--navy);white-space:nowrap;font-family:'Fraunces'}
+#p-library .upform .ufg{display:grid;grid-template-columns:1fr 1fr;gap:9px 14px}
+#p-library .upform label{font-size:11.5px;color:var(--mut);display:flex;flex-direction:column;gap:4px}
+#p-library .upform label.w2{grid-column:1/-1}
+#p-library .upform input,#p-library .upform select,#p-library .upform textarea{font-family:'Outfit';font-size:12.5px;
+ padding:7px 9px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:#fff}
+#p-library .upform textarea{min-height:58px;resize:vertical}
+#p-library .upform small{font-weight:400;color:#9aa7bd}
+#p-library .pc .src{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#2e9e5b;margin-left:6px}
+@media(max-width:820px){#p-library .upform .ufg{grid-template-columns:1fr}}
 @media(max-width:1100px){#p-library .reader.on{grid-template-columns:1fr}
  #p-library .rcol{position:static;max-height:none}#p-library .doc{padding:20px}}
 </style>
@@ -108,6 +117,41 @@
   berkas komentarnya untuk dikirim balik.</p>
  </div>
  <div class="kpis" id="libKpi"></div>
+ <div class="rbar" style="justify-content:space-between">
+  <div id="libMode" class="empty" style="padding:8px 12px"></div>
+  <button class="btn pri" id="libUpBtn">📤 Unggah naskah baru</button>
+ </div>
+ <div class="card upform" id="libUpForm" hidden>
+  <h3>Unggah naskah <span class="sub">.docx / .md / .txt · diparse di peramban, lalu disimpan ke perpustakaan</span></h3>
+  <div class="ufg">
+   <label>Berkas naskah <input type="file" id="upFile" accept=".docx,.md,.txt,.markdown"></label>
+   <label>Slug / id <input id="upId" placeholder="mis. paper5-feeder-level (huruf kecil, angka, tanda hubung)"></label>
+   <label class="w2">Judul <input id="upTitle" placeholder="Judul lengkap naskah"></label>
+   <label>Judul pendek <input id="upShort" placeholder="mis. Analisis tingkat penyulang"></label>
+   <label>Jenis <select id="upKind"><option>Journal article</option><option>Conference full paper</option>
+     <option>Working paper</option><option>Book chapter</option><option>Policy brief</option></select></label>
+   <label>Sasaran jurnal / konferensi <input id="upVenue" placeholder="mis. Applied Energy (Q1)"></label>
+   <label>Alternatif <input id="upAlt" placeholder="mis. Energy Policy · eTransportation"></label>
+   <label>Status <select id="upStatus"><option value="plan">Rencana</option><option value="draft" selected>Draft</option>
+     <option value="review">Siap ditinjau</option><option value="submitted">Sudah disubmit</option></select></label>
+   <label>Kesiapan (%) <input id="upPct" type="number" min="0" max="100" value="30"></label>
+   <label>Target waktu <input id="upTarget" placeholder="mis. Q2 2027"></label>
+   <label>Penulis <input id="upLead" placeholder="mis. Qashtalani Haramaini"></label>
+   <label class="w2">Tahap saat ini <input id="upStage" placeholder="mis. Draft awal — hasil belum lengkap"></label>
+   <label>Data yang dipakai <small>(satu per baris)</small><textarea id="upData"></textarea></label>
+   <label>Metode <small>(satu per baris)</small><textarea id="upMethod"></textarea></label>
+   <label class="w2">Daftar kerja sebelum submit <small>(satu per baris)</small><textarea id="upTodo"></textarea></label>
+   <label>Kata sandi unggah <input id="upKey" type="password" placeholder="PAPERS_UPLOAD_KEY"></label>
+   <label>Nama pengunggah <input id="upBy" placeholder="opsional"></label>
+  </div>
+  <div class="rbar" style="margin:12px 0 0">
+   <button class="btn pri" id="upGo">Parse &amp; simpan</button>
+   <button class="btn" id="upCancel">Batal</button>
+   <span id="upMsg" style="font-size:12px;color:var(--mut)"></span>
+  </div>
+  <details style="margin-top:12px"><summary>Pratinjau hasil parse</summary>
+   <div class="doc" id="upPreview" style="margin-top:10px;max-height:380px;overflow:auto;padding:18px 22px"></div></details>
+ </div>
  <div class="cards" id="libCards"></div>
 
  <div class="card" style="margin-top:16px">
@@ -126,9 +170,7 @@
    <code>.json</code> + ringkasan <code>.md</code> yang bisa dikirim balik lewat surel/WhatsApp.</li>
    <li>Penulis menekan <b>⬆ Muat komentar</b> untuk memasukkan berkas itu dan melihat seluruh catatan pada posisinya.</li>
   </ol>
-  <div class="empty" style="margin-top:10px"><b>Catatan penyimpanan.</b> Halaman ini statis, jadi komentar disimpan di
-  <i>localStorage</i> peramban masing-masing peninjau — tidak terkirim ke server dan tidak terlihat oleh peninjau lain
-  sampai berkas komentarnya dipertukarkan. Karena itu tombol unduh/muat komentar adalah jalur resmi pertukarannya.</div>
+  <div class="empty" style="margin-top:10px" id="libStoreNote"></div>
  </div>
 </div>
 

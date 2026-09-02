@@ -85,8 +85,38 @@ selesai atau dihapus; tombol **⬇ Unduh** menghasilkan `.json` (untuk dimuat ba
 `.md` (untuk dibaca manusia); tombol **⬆ Muat** menggabungkan berkas komentar dari
 peninjau lain.
 
-Halaman ini statis, jadi komentar disimpan di `localStorage` peramban masing-masing
-peninjau (kunci `spklu.review.<id naskah>`) — tidak terkirim ke server dan tidak terlihat
-peninjau lain sampai berkas komentarnya dipertukarkan. Bila kelak ingin komentar
-tersimpan bersama, ganti fungsi `load`/`save` pada `papers/library/render.js` dengan
-panggilan ke backend.
+### Unggah naskah & penyimpanan bersama
+
+Tombol **📤 Unggah naskah baru** menerima `.docx` / `.md` / `.txt`. Berkas diparse **di
+peramban** (docx lewat mammoth.js, markdown lewat padanan JS dari `build.py`), diberi
+indeks blok `data-b` yang sama dengan naskah bawaan, lalu disimpan.
+
+Tab bekerja dalam dua mode, dipilih otomatis lewat `GET /api/papers`:
+
+| Mode | Kapan | Naskah unggahan | Komentar |
+|---|---|---|---|
+| **Lokal** | env Vercel belum diatur | `localStorage` peramban pengunggah | `localStorage` peramban peninjau |
+| **Bersama** | env Vercel sudah diatur | tabel `papers` + bucket `papers` di Supabase | tabel `paper_comments` — terlihat semua peninjau |
+
+Mengaktifkan mode bersama:
+
+1. Jalankan `papers/library/schema.sql` pada proyek Supabase yang dipilih (SQL Editor).
+   Skema membuat `papers`, `paper_comments`, bucket publik `papers`, dan kebijakan RLS:
+   anon boleh **baca** semua serta **tulis komentar**; **unggah naskah hanya lewat kunci
+   layanan** di `api/papers.js`.
+2. Atur env var di Vercel (Project → Settings → Environment Variables), lalu redeploy:
+
+   | Var | Isi |
+   |---|---|
+   | `SUPABASE_URL` | `https://<ref>.supabase.co` |
+   | `SUPABASE_ANON_KEY` | kunci publik (anon / `sb_publishable_…`) — dikirim ke klien |
+   | `SUPABASE_SERVICE_KEY` | kunci `service_role` — hanya dipakai server-side untuk unggah |
+   | `PAPERS_UPLOAD_KEY` | kata sandi yang diketik pengunggah di form |
+
+`api/papers.js` mengikuti pola `api/chat.js`: kunci hanya hidup di env server, tidak
+pernah masuk repositori atau ke peramban (kecuali kunci anon, yang memang publik dan
+dibatasi RLS). Unggahan dibatasi 20 MB per berkas; `id` naskah harus slug
+(`^[a-z0-9][a-z0-9-]{1,60}$`) dan unggahan dengan `id` sama akan menimpa.
+
+Naskah bawaan (empat di `build.py`) tetap statis dan selalu tampil; naskah unggahan
+digabung setelahnya.
