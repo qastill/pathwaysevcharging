@@ -57,6 +57,8 @@ module.exports = async (req, res) => {
       pct: Number(p.pct) || 0, target: p.target || null, lead: p.lead || null,
       data: Array.isArray(p.data) ? p.data : [], method: Array.isArray(p.method) ? p.method : [],
       todo: Array.isArray(p.todo) ? p.todo : [], tabs: Array.isArray(p.tabs) ? p.tabs : [],
+      category: p.category || null, abstract: p.abstract ? String(p.abstract).slice(0, 8000) : null,
+      goal: p.goal ? String(p.goal).slice(0, 2000) : null, finding: p.finding ? String(p.finding).slice(0, 4000) : null,
       html: String(p.html).slice(0, 4 * 1024 * 1024), words: Number(p.words) || 0,
       file_name: f && f.name ? f.name : null, file_path: filePath, file_size: fileSize,
       uploaded_by: p.uploaded_by || null, updated_at: new Date().toISOString()

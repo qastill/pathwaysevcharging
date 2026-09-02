@@ -75,9 +75,44 @@ Yang **belum** cocok, dan tidak bisa diselesaikan tanpa skrip asli penulis:
 
 `build.py` mengubah `papers/*.md` dan berkas `.docx` menjadi HTML siap baca, memberi
 indeks stabil `data-b` pada tiap blok, lalu menulis katalog + isi ke `library.json`.
-Metadata tiap naskah (sasaran jurnal, status, persentase kesiapan, data, metode, daftar
-kerja sebelum submit) ada pada konstanta `PAPERS` di dalam `build.py`; rencana submisi
-per kuartal ada pada `PLAN`. **Perbarui keduanya di sana**, bukan di `library.json`.
+Metadata tiap naskah ada pada konstanta `PAPERS` di dalam `build.py`. **Perbarui di sana**,
+bukan di `library.json`. Konstanta lain di berkas yang sama:
+
+| Konstanta | Isi |
+|---|---|
+| `CATEGORIES` | kategori tema + warnanya |
+| `PLANNED_PAPERS` | naskah rencana yang belum punya manuskrip — halaman bacanya dibangun dari brief oleh `brief_html()` |
+| `POSTER_HTML` | isi poster, ditulis ulang (lihat catatan poster di bawah) |
+| `PHD` | judul disertasi, program, pembimbing, argumen, tulang punggung data |
+| `PARTS` | empat bagian disertasi (RQ1–RQ4) dan naskah yang dipetakan ke tiap bagian |
+| `SIDE_STREAM` | naskah di luar keempat bagian |
+| `MILESTONES` | linimasa milestone; kolom terakhir = tautan opsional |
+| `OUTPUTS` | luaran yang diproduksi selama PhD |
+| `PLAN` | rencana submisi per kuartal |
+
+Persentase bagian **dihitung**, bukan diketik: `PARTS[i]["pct"]` adalah rata-rata `pct`
+naskah yang dipetakan ke bagian itu, dan cincin progres di panel atas adalah rata-rata
+`pct` seluruh naskah dalam pipeline. Memperbarui `pct` satu naskah otomatis menggerakkan
+progres bagian dan progres keseluruhan.
+
+Dua belas naskah (sembilan bernaskah, tiga masih brief rencana), empat kategori:
+
+| Kategori | Naskah |
+|---|---|
+| Akses & keadilan infrastruktur pengisian | Paper 1 (equity & perception) · Paper 2 (coverage to capability) |
+| Jaringan distribusi & perencanaan | CIRED 2027 Capacity maps · CIRED 2027 Energy forecast → network load |
+| Emisi & dekarbonisasi | Tailpipe to smokestack · Captive generation & CBAM |
+| Model bisnis, pasar & kebijakan | ASEAN comparative · Balance sheet problem (battery swapping) |
+
+Tiap naskah membawa **brief riset** yang tampil di kartu dan di kepala pembaca: `goal`
+(tujuan), `finding` (temuan kunci), `method`, `data`, dan `abstract`. Abstrak **tidak
+ditulis tangan** — `abstract_of()` mengambil paragraf setelah heading *Abstract* /
+*Summary of Research* dari naskahnya sendiri, dan build gagal bila tidak ketemu.
+
+Kolom `venue` adalah rencana publikasi; `venue_src` mencatat asalnya. Dua naskah
+(*Tailpipe to smokestack*, *Captive generation & CBAM*) tidak menyebut sasaran di
+naskahnya, jadi sasarannya **usulan** — ditandai lencana merah pada kartu dan tabel
+"Rencana publikasi", dan tinggal diganti di `build.py`.
 
 Fitur tinjauan pembimbing di tab: sorot kalimat → **Komentari** (komentar tertambat ke
 blok) atau **Tandai** (penanda kuning); komentar tampil di rel kanan, bisa ditandai
@@ -118,5 +153,18 @@ pernah masuk repositori atau ke peramban (kecuali kunci anon, yang memang publik
 dibatasi RLS). Unggahan dibatasi 20 MB per berkas; `id` naskah harus slug
 (`^[a-z0-9][a-z0-9-]{1,60}$`) dan unggahan dengan `id` sama akan menimpa.
 
-Naskah bawaan (empat di `build.py`) tetap statis dan selalu tampil; naskah unggahan
-digabung setelahnya.
+Naskah bawaan di `build.py` tetap statis dan selalu tampil; naskah unggahan digabung
+setelahnya. Mengunggah manuskrip dengan `id` yang sama dengan naskah rencana
+(mis. `rq3-causal`) akan menimpanya, sehingga brief-nya berganti menjadi naskah sungguhan.
+
+### Poster
+
+Poster tidak diparse otomatis: tata letak PDF-nya berkolom dengan tracking huruf lebar,
+sehingga ekstraksi teks tidak terbaca andal. Isinya ditulis ulang sebagai konstanta
+`POSTER_HTML`, dan halaman PNG hasil render disertakan supaya pembaca selalu bisa
+memeriksa sumber aslinya. Bila posternya berubah, render ulang PNG-nya:
+
+```bash
+python3 -c "import pymupdf; d=pymupdf.open('papers/library/files/Poster_Bayesian_Spatial_Equity_BAM2026.pdf'); \
+  d[0].get_pixmap(dpi=150).save('papers/library/files/poster_bayesian_2026.png')"
+```
