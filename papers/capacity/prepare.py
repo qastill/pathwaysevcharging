@@ -23,6 +23,7 @@ LIMIT      = 0.80          # batas pembebanan perencanaan
 REF_YEAR   = 2026.2        # Maret 2026
 GROWTH     = [0.0, 0.030, 0.059, 0.097]   # 0 = apa adanya, 3,0 % = kasus dasar
 BASE_G     = 0.030
+GI_YEAR    = 2022.3        # register beban GI/penyulang bertanggal April 2022 (Tabel 1 naskah)
 CELL       = 0.045         # ~5 km
 N_SITES    = 50
 FEASIBLE   = 240.0         # kVA -- satu situs 4 x 60 kW
@@ -140,10 +141,10 @@ for g in GROWTH:
         if l2 > LIMIT:
             over += 1
         h_tot += max(0.0, kva * (LIMIT - l2))
-    # GI: umur survei GI tidak tersedia -> pakai umur median trafo
+    # GI: register GI bertanggal April 2022 -> dituakan (REF_YEAR - GI_YEAR) tahun
     gh = 0.0
     for mva, lam in gi_raw.values():
-        l2 = lam * (1 + g) ** med_age if g else lam
+        l2 = lam * (1 + g) ** (REF_YEAR - GI_YEAR) if g else lam
         gh += max(0.0, mva * (LIMIT - l2))
     scen.append(dict(g=round(g * 100, 1), trafo=round(h_tot / 1000, 1), gi=round(gh, 1), over=over))
     print(f"  g={g*100:4.1f}%/th -> trafo {h_tot/1000:7.1f} MVA | GI {gh:7.1f} MVA | lewat 80 %: {over:,}")
@@ -153,7 +154,8 @@ cells = collections.defaultdict(lambda: dict(h=0.0, hraw=0.0, kva=0.0, n=0,
                                              gis=set(), ev=0, chg=0, kwh=0.0,
                                              sites=0, kab=collections.Counter(),
                                              evkab=collections.Counter()))
-gi_head = {k: max(0.0, mva * (LIMIT - lam * (1 + BASE_G) ** med_age)) for k, (mva, lam) in gi_raw.items()}
+gi_head = {k: max(0.0, mva * (LIMIT - lam * (1 + BASE_G) ** (REF_YEAR - GI_YEAR)))
+           for k, (mva, lam) in gi_raw.items()}
 gi_by_code = collections.defaultdict(float)
 for (code, _tr), h in gi_head.items():
     gi_by_code[code] += h
@@ -360,7 +362,7 @@ payload = dict(
     meta=dict(total=total, usable=len(T), ev=nev, sites=len(sites), sites_reg=n_reg, sites_nocoord=n_nocoord,
               cells=len(CL), cells_ev=len(evc), cells_chg=sum(1 for c in CL if c["chg"]),
               gi_trafo=len(gi_raw), gi_mva=round(sum(v[0] for v in gi_raw.values())),
-              med_age=round(med_age, 1), max_age=round(max(ages), 1),
+              med_age=round(med_age, 1), max_age=round(max(ages), 1), gi_year=GI_YEAR,
               limit=LIMIT, cell_deg=CELL, ref=REF_YEAR, base_g=BASE_G, feasible=FEASIBLE),
     cells=[[c["lat"], c["lon"], c["h"], c["hraw"], c["kva"], c["n"], c["gi"],
             c["ev"], c["chg"], c["kwh"], c.get("q", ""), c["kab"]] for c in CL],

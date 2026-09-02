@@ -53,10 +53,23 @@ Reproduksi terhadap angka naskah:
 | Situs terlantar | 15 / 0 / 0 | 15 / 0 / 0 |
 | Cakupan baseline | 75,5 % | 75,4 % |
 
-Yang **belum** cocok: nilai Gini (naskah 0,692 → 0,600; hitung ulang 0,493 → 0,360) karena
-definisi Gini di naskah tidak dirinci — urutan antar-aturan tetap sama; dan headroom GI
-setelah koreksi (naskah 1.912 MVA, hitung ulang 2.099 MVA) karena umur survei GI tidak
-tersedia sehingga dipakai umur median trafo.
+| Headroom GI, apa adanya → 3 % → 9,7 %/th | 2.377 → 1.912 MVA → −52 % | 2.377 → 1.912 MVA → −52 % |
+
+Headroom GI baru cocok setelah beban GI dituakan dari **April 2022** (tanggal register
+GI/penyulang di Tabel 1 naskah) — umur 3,9 tahun ke Maret 2026 adalah satu-satunya nilai
+yang mereproduksi 1.912 MVA pada 3 %/th *dan* −52 % pada 9,7 %/th sekaligus; konstanta
+`GI_YEAR` di `prepare.py`.
+
+Yang **belum** cocok, dan tidak bisa diselesaikan tanpa skrip asli penulis:
+
+- **Gini antar-kabupaten** (naskah 0,692 → 0,600; hitung ulang 0,493 → 0,360). Lima
+  definisi dicoba — Gini pangsa cakupan per kabupaten, sama dengan 27 kabupaten, Gini
+  pemilik tercakup, Gini pemilik tak tercakup, dan versi tertimbang pemilik — tidak ada
+  yang mereproduksi keempat angka naskah. Urutan antar-aturan tetap sama.
+- **Jumlah sel** (naskah 1.292 sel / 235 sel EV / 129 belum terlayani / 901 pemilik;
+  hitung ulang 1.295 / 238 / 132 / 908). Empat jangkar grid dicoba (`floor`, `round`,
+  sudut bbox, titik minimum); jumlah sel EV selalu 238, jadi selisihnya ada pada himpunan
+  titik pelanggan yang dipakai naskah, bukan pada grid.
 
 ## papers/library — perpustakaan naskah
 

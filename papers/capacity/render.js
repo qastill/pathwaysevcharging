@@ -43,15 +43,16 @@
  tbl('capT2',['Siting rule (50 sites)','Owners','Stranded','Infeas.','Regen.','Cover.','Gini'],rows);
 
  tbl('capT3',['Angka','Naskah','Hitung ulang','Catatan'],[
-  ['Sel 5 km terisi','1.292',nf(C.meta.cells),'titik jangkar grid & saringan bounding box sedikit berbeda'],
+  ['Sel 5 km terisi','1.292',nf(C.meta.cells),'empat jangkar grid dicoba (floor/round/bbox/min); tidak ada yang mereproduksi 235 sel EV & 901 pemilik — perlu skrip asli'],
   ['Sel dengan pemilik EV','235',nf(C.meta.cells_ev),'idem'],
   ['Sel dengan SPKLU','174',nf(C.meta.cells_chg),'sama'],
   ['Pemilik di sel belum terlayani','901',nf(C.pool.ev),'idem'],
   ['Kuadran permintaan tinggi / headroom rendah','12,8 % pemilik · 7,2 % charger',
    C.quad.HL.evp+' % pemilik · '+C.quad.HL.chgp+' % charger','median dihitung ulang atas 238 sel'],
   ['Gini cakupan antar-kabupaten','0,692 → 0,600',C.baseline.gini.toFixed(3)+' → '+byKey('dwh').gini.toFixed(3),
-   'definisi Gini di naskah tidak dirinci; urutan antar-aturan tetap sama'],
-  ['Headroom GI, g = 3 %/th','1.912 MVA',nf(C.scen[1].gi)+' MVA','umur survei GI tidak tersedia; dipakai umur median trafo ('+C.meta.med_age+' th)'],
+   'lima definisi Gini antar-kabupaten dicoba (pangsa cakupan, 27 kabupaten, pemilik tercakup, tak tercakup, tertimbang); tidak ada yang cocok — definisi harus dirinci penulis'],
+  ['Headroom GI, g = 3 %/th → 9,7 %/th','1.912 → −52 %',nf(C.scen[1].gi)+' MVA → −'+Math.round(100*(1-C.scen[3].gi/C.scen[0].gi))+' %',
+   'cocok setelah beban GI dituakan dari April 2022 (tanggal register GI/penyulang, Tabel 1) — bukan dari umur median trafo'],
  ]);
 
  /* ---------- warna ---------- */
