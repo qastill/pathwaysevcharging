@@ -75,9 +75,28 @@ Yang **belum** cocok, dan tidak bisa diselesaikan tanpa skrip asli penulis:
 
 `build.py` mengubah `papers/*.md` dan berkas `.docx` menjadi HTML siap baca, memberi
 indeks stabil `data-b` pada tiap blok, lalu menulis katalog + isi ke `library.json`.
-Metadata tiap naskah (sasaran jurnal, status, persentase kesiapan, data, metode, daftar
-kerja sebelum submit) ada pada konstanta `PAPERS` di dalam `build.py`; rencana submisi
-per kuartal ada pada `PLAN`. **Perbarui keduanya di sana**, bukan di `library.json`.
+Metadata tiap naskah ada pada konstanta `PAPERS` di dalam `build.py`; rencana submisi per
+kuartal pada `PLAN`; daftar kategori pada `CATEGORIES`. **Perbarui di sana**, bukan di
+`library.json`.
+
+Delapan naskah, empat kategori:
+
+| Kategori | Naskah |
+|---|---|
+| Akses & keadilan infrastruktur pengisian | Paper 1 (equity & perception) · Paper 2 (coverage to capability) |
+| Jaringan distribusi & perencanaan | CIRED 2027 Capacity maps · CIRED 2027 Energy forecast → network load |
+| Emisi & dekarbonisasi | Tailpipe to smokestack · Captive generation & CBAM |
+| Model bisnis, pasar & kebijakan | ASEAN comparative · Balance sheet problem (battery swapping) |
+
+Tiap naskah membawa **brief riset** yang tampil di kartu dan di kepala pembaca: `goal`
+(tujuan), `finding` (temuan kunci), `method`, `data`, dan `abstract`. Abstrak **tidak
+ditulis tangan** — `abstract_of()` mengambil paragraf setelah heading *Abstract* /
+*Summary of Research* dari naskahnya sendiri, dan build gagal bila tidak ketemu.
+
+Kolom `venue` adalah rencana publikasi; `venue_src` mencatat asalnya. Dua naskah
+(*Tailpipe to smokestack*, *Captive generation & CBAM*) tidak menyebut sasaran di
+naskahnya, jadi sasarannya **usulan** — ditandai lencana merah pada kartu dan tabel
+"Rencana publikasi", dan tinggal diganti di `build.py`.
 
 Fitur tinjauan pembimbing di tab: sorot kalimat → **Komentari** (komentar tertambat ke
 blok) atau **Tandai** (penanda kuning); komentar tampil di rel kanan, bisa ditandai

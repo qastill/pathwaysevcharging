@@ -100,6 +100,22 @@
  padding:7px 9px;border:1px solid var(--line);border-radius:8px;color:var(--ink);background:#fff}
 #p-library .upform textarea{min-height:58px;resize:vertical}
 #p-library .upform small{font-weight:400;color:#9aa7bd}
+#p-library .catbar{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 14px;align-items:center}
+#p-library .catbar .cb{font-size:11.5px;font-weight:600;padding:6px 13px;border-radius:20px;border:1.5px solid var(--line);
+ background:#fff;cursor:pointer;color:#4a5670;font-family:'Outfit'}
+#p-library .catbar .cb.on{color:#fff;border-color:transparent}
+#p-library .catbar .cb b{font-weight:700;margin-left:4px;opacity:.8}
+#p-library .pc .cat{display:inline-block;font-size:9.5px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
+ color:#fff;border-radius:5px;padding:2px 7px;margin-bottom:6px}
+#p-library .brief{display:grid;grid-template-columns:auto 1fr;gap:4px 8px;font-size:11.5px;line-height:1.55;color:#33405a;margin:8px 0 10px}
+#p-library .brief b{font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--mut);padding-top:2px;white-space:nowrap}
+#p-library .pc details{border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin-bottom:10px;background:#fbfcfe}
+#p-library .pc details summary{font-size:11px;font-weight:600;color:var(--navy);cursor:pointer}
+#p-library .pc details p{font-size:11.5px;line-height:1.65;color:#33405a;margin-top:6px;text-align:justify}
+#p-library table.pub{font-size:11.5px}
+#p-library table.pub th{position:static;font-size:9.5px}
+#p-library table.pub td{padding:8px 7px;vertical-align:top;line-height:1.5}
+#p-library table.pub .usul{font-size:9.5px;color:#a8322a;background:#fdecea;border-radius:4px;padding:1px 5px;margin-left:4px;white-space:nowrap}
 #p-library .pc .src{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:#2e9e5b;margin-left:6px}
 @media(max-width:820px){#p-library .upform .ufg{grid-template-columns:1fr}}
 @media(max-width:1100px){#p-library .reader.on{grid-template-columns:1fr}
@@ -128,6 +144,7 @@
    <label>Slug / id <input id="upId" placeholder="mis. paper5-feeder-level (huruf kecil, angka, tanda hubung)"></label>
    <label class="w2">Judul <input id="upTitle" placeholder="Judul lengkap naskah"></label>
    <label>Judul pendek <input id="upShort" placeholder="mis. Analisis tingkat penyulang"></label>
+   <label>Kategori <select id="upCat"></select></label>
    <label>Jenis <select id="upKind"><option>Journal article</option><option>Conference full paper</option>
      <option>Working paper</option><option>Book chapter</option><option>Policy brief</option></select></label>
    <label>Sasaran jurnal / konferensi <input id="upVenue" placeholder="mis. Applied Energy (Q1)"></label>
@@ -138,6 +155,9 @@
    <label>Target waktu <input id="upTarget" placeholder="mis. Q2 2027"></label>
    <label>Penulis <input id="upLead" placeholder="mis. Qashtalani Haramaini"></label>
    <label class="w2">Tahap saat ini <input id="upStage" placeholder="mis. Draft awal — hasil belum lengkap"></label>
+   <label class="w2">Abstrak <small>(kosongkan untuk diambil otomatis dari naskah)</small><textarea id="upAbs"></textarea></label>
+   <label class="w2">Tujuan riset <small>(1–2 kalimat, tampil di kartu)</small><textarea id="upGoal" style="min-height:44px"></textarea></label>
+   <label class="w2">Temuan kunci <small>(1–3 kalimat)</small><textarea id="upFind" style="min-height:44px"></textarea></label>
    <label>Data yang dipakai <small>(satu per baris)</small><textarea id="upData"></textarea></label>
    <label>Metode <small>(satu per baris)</small><textarea id="upMethod"></textarea></label>
    <label class="w2">Daftar kerja sebelum submit <small>(satu per baris)</small><textarea id="upTodo"></textarea></label>
@@ -152,7 +172,14 @@
   <details style="margin-top:12px"><summary>Pratinjau hasil parse</summary>
    <div class="doc" id="upPreview" style="margin-top:10px;max-height:380px;overflow:auto;padding:18px 22px"></div></details>
  </div>
+ <div class="catbar" id="libCats"></div>
  <div class="cards" id="libCards"></div>
+
+ <div class="card" style="margin-top:16px">
+  <h3>Rencana publikasi <span class="sub">semua naskah · di mana akan disubmit</span></h3>
+  <div class="tablewrap" style="max-height:none"><table class="pub" id="libPub"></table></div>
+  <div class="cap" style="margin-top:8px">Sasaran bertanda <i>usulan</i> belum dinyatakan di naskahnya — diusulkan dari corak naskah (gaya sitasi, cakupan, literatur yang diajak bicara) dan tinggal diganti di <code>papers/library/build.py</code> atau saat mengunggah.</div>
+ </div>
 
  <div class="card" style="margin-top:16px">
   <h3>Rencana submisi <span class="sub">urutan target per kuartal</span></h3>

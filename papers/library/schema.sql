@@ -27,6 +27,10 @@ create table if not exists public.papers (
   method      jsonb default '[]'::jsonb,
   todo        jsonb default '[]'::jsonb,
   tabs        jsonb default '[]'::jsonb,
+  category    text,                             -- akses | jaringan | emisi | bisnis
+  abstract    text,                             -- abstrak apa adanya
+  goal        text,                             -- tujuan riset (brief)
+  finding     text,                             -- temuan kunci (brief)
   html        text not null,                    -- isi naskah, blok bernomor data-b
   words       int  default 0,
   file_name   text,
