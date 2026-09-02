@@ -1,0 +1,204 @@
+<div class="page" id="p-capacity">
+<style>
+#p-capacity .paper{max-width:1060px}
+#p-capacity .ph{border-bottom:2px solid var(--line);padding-bottom:18px;margin-bottom:22px}
+#p-capacity .ph .k{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);
+ border:1px solid rgba(212,175,55,.45);display:inline-block;padding:4px 12px;border-radius:30px;margin-bottom:12px}
+#p-capacity .ph h2{font-size:25px;line-height:1.3;color:var(--navy);margin-bottom:10px}
+#p-capacity .au{font-size:12.5px;color:var(--mut);line-height:1.7}
+#p-capacity .abs{background:#f7f9fc;border-left:4px solid var(--navy);border-radius:0 10px 10px 0;
+ padding:16px 20px;font-size:13px;line-height:1.75;color:#33405a;text-align:justify}
+#p-capacity h3{font-size:16px;color:var(--navy);margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+#p-capacity h4{font-size:13.5px;color:var(--navy3);margin:18px 0 7px;font-family:'Outfit';font-weight:600}
+#p-capacity p{font-size:13.5px;line-height:1.8;color:#33405a;margin-bottom:11px;text-align:justify}
+#p-capacity .tbl{overflow-x:auto;margin:14px 0 6px;border:1px solid var(--line);border-radius:10px}
+#p-capacity .tbl table{font-size:11.5px;min-width:620px}
+#p-capacity .tbl th{background:var(--navy);color:var(--gold2);text-align:left;padding:9px 10px;font-size:10.5px;
+ text-transform:uppercase;letter-spacing:.5px;position:static}
+#p-capacity .tbl td{padding:8px 10px;vertical-align:top;line-height:1.55;color:#33405a}
+#p-capacity .tbl tr:nth-child(even) td{background:#fbfcfe}
+#p-capacity .tcap{font-size:11.5px;color:var(--mut);margin:8px 0 16px;line-height:1.6}
+#p-capacity .kw{font-size:12px;color:var(--mut);margin-top:12px}
+#p-capacity .dl{display:inline-block;margin:8px 8px 0 0;font-size:12px;padding:7px 14px;border-radius:9px;
+ background:var(--navy);color:var(--gold);text-decoration:none;font-weight:600}
+#p-capacity .dl.alt{background:#fff;color:var(--navy);border:1px solid var(--line)}
+#p-capacity .refs{font-size:11.5px;line-height:1.7;color:#4a5670;margin-top:12px}
+#p-capacity .refs div{margin-bottom:7px;padding-left:26px;text-indent:-26px;word-break:break-word}
+#p-capacity details{border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin-top:16px;background:#fcfdff}
+#p-capacity details summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--navy)}
+#p-capacity .kfacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:11px;margin:18px 0}
+#p-capacity .kfacts .f{background:#fff;border:1px solid var(--line);border-top:3px solid var(--gold);
+ border-radius:12px;padding:13px 15px}
+#p-capacity .kfacts .n{font-family:'Fraunces';font-size:21px;font-weight:700;color:var(--navy);line-height:1.05}
+#p-capacity .kfacts .l{font-size:10.5px;color:var(--mut);margin-top:5px;line-height:1.45}
+#p-capacity #capMap{height:560px;border-radius:12px;border:1px solid var(--line);z-index:1}
+#p-capacity #capRuleMap{height:470px;border-radius:12px;border:1px solid var(--line);z-index:1}
+#p-capacity .mlegend{display:flex;gap:15px;flex-wrap:wrap;font-size:11px;color:var(--mut);margin-top:11px;align-items:center}
+#p-capacity .mlegend i{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:5px;vertical-align:middle}
+#p-capacity .ramp{display:inline-flex;height:13px;width:120px;border-radius:3px;overflow:hidden;vertical-align:middle;margin:0 6px}
+#p-capacity .ramp span{flex:1}
+#p-capacity .fig{margin:18px 0 8px}
+#p-capacity .fig img{width:100%;border:1px solid var(--line);border-radius:10px;background:#fff;display:block}
+#p-capacity .cap{font-size:11.5px;color:var(--mut);line-height:1.6;margin-top:8px;text-align:justify}
+#p-capacity .live{display:inline-block;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;
+ background:#e8f6ed;color:#1d7a44;border:1px solid #b7e2c8;border-radius:20px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+#p-capacity ol.imp{margin:8px 0 8px 20px}
+#p-capacity ol.imp li{font-size:13.5px;line-height:1.75;color:#33405a;margin-bottom:9px}
+#p-capacity .qbox{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#p-capacity .qb{border:1px solid var(--line);border-radius:11px;padding:12px 14px}
+#p-capacity .qb b{font-size:12px;color:var(--navy);display:block;margin-bottom:5px}
+#p-capacity .qb .s{font-size:11px;color:var(--mut);line-height:1.55}
+#p-capacity .qb.gapq{border-color:#e8b4b0;background:#fdf6f5}
+@media(max-width:820px){#p-capacity .qbox{grid-template-columns:1fr}}
+</style>
+
+<div class="paper">
+
+<div class="ph">
+<div class="k">Conference full paper · CIRED 2027 · draft</div>
+<h2>Capacity maps as an equity instrument: publishing charging demand and network headroom as open data in a vertically integrated DSO</h2>
+<div class="au">
+<b style="color:var(--navy)">Qashtalani Haramaini</b> — Monash University Indonesia / PT PLN (Persero) UID Jawa Barat · qashtalani.haramaini@monash.edu<br>
+<b>Alyas Widita</b> — Monash University Indonesia · alyas.widita@monash.edu<br>
+<b>Liz Taylor</b> — Monash University, MADA (Australia) · liz.taylor@monash.edu
+</div>
+<a class="dl" href="papers/capacity/CIRED2027_capacity_maps_equity.docx" download>⬇ Naskah lengkap (.docx)</a>
+<a class="dl alt" href="papers/capacity/capacity.json" download>⬇ Payload peta (capacity.json)</a>
+<a class="dl alt" href="#" id="capToLib">📚 Buka di perpustakaan &amp; beri komentar</a>
+</div>
+
+<h3>Abstract</h3>
+<div class="abs">Distribution system operators (DSOs) increasingly publish hosting-capacity maps to steer connection applicants towards grid nodes with spare capacity. This paper argues that, in a fast-growing network with low electric-vehicle (EV) penetration, such a map is not neutral information but an allocation instrument: what the DSO chooses to publish determines where public charging is built and who is served. West Java, Indonesia, provides a rare test case because PT PLN is simultaneously the DSO and the dominant charge-point operator (CPO) and therefore holds both surfaces that are institutionally separated in Europe: transformer-level load and session-level charging demand. Fusing 53,797 distribution-transformer load surveys with primary-substation linkage, 101,020 charging sessions from 636 public chargers, and 3,687 geocoded registered EV customers on a 5 km grid, we show that (i) the existing charger roll-out tracks grid density rather than spare capacity; (ii) high-demand/low-headroom cells hold 12.8 % of EV owners but only 7.2 % of chargers; (iii) a headroom-only siting rule strands 30 % of a 50-site portfolio in low-demand cells and reaches 12 % fewer owners than a demand-within-headroom rule; (iv) transformer-level and substation-level headroom disagree in 51 % of served cells; and (v) the DSO's load register is not publication-ready without cleaning, growth correction and aggregation. We propose a minimum standard for publishable two-surface capacity maps and argue that, where the DSO is also the CPO, publication is the functional substitute for unbundling.</div>
+<div class="kw"><b>Keywords:</b> hosting-capacity map; network headroom; EV charging; energy justice; open data; vertically integrated DSO; Indonesia</div>
+
+<div class="kfacts" id="capFacts"></div>
+
+<h3>1. Introduction</h3>
+<p>Grid connection has become the binding constraint on public charging deployment in many jurisdictions [1,3]. In response, European regulation now requires system operators to publish available hosting capacity [1], and DSO associations treat capacity maps as a building block of a customer-oriented grid [2]. The maps are framed as transparency: they inform developers and shorten connection lead times.</p>
+<p>This paper starts from a different premise. A capacity map is a ranking of locations, and any ranking that drives investment is also a distribution of benefits. If the only published layer is network headroom, capital flows to where the grid is strong. In mature networks this is largely where load already is; in fast-growing, low-penetration networks it is where the last generation of investment went — typically urban cores and industrial corridors — which is also where charging demand is already served. A headroom-only map therefore tends to densify rather than to fill gaps. This is an energy-justice problem in the sense of Sovacool and Dworkin [6]: a distributive outcome produced by a procedural choice about what to disclose.</p>
+<p>Testing this claim empirically requires two surfaces that are rarely held by one organisation: network headroom (a DSO asset) and charging demand (a CPO asset). West Java offers both. PT PLN (Persero) is the vertically integrated utility; its distribution unit UID Jawa Barat operates the 20 kV and low-voltage network for 18.1 million customers, and PLN also operates most of the province's public charging stations (SPKLU). The authors had access to the transformer load register, the charging transaction log and the EV customer register. To our knowledge this is the first study to overlay all three at province scale.</p>
+<p>The contributions are: (1) an empirical test of whether the existing roll-out responds to spare capacity; (2) a demand × headroom classification that isolates the locational equity gap; (3) a counterfactual comparison of three siting rules a DSO could implement through what it publishes; (4) evidence that single-level headroom misclassifies half of the served cells; and (5) a data-readiness audit that translates into a minimum disclosure standard.</p>
+
+<h3>2. Background and research gap</h3>
+<h4>2.1 Hosting-capacity maps in Europe</h4>
+<p>Hosting capacity is the amount of load or generation that can be connected without violating operational limits [8]. Its calculation is sensitive to method: Lennerhag et al. showed at CIRED 2017 that five methods yield widely different values and that measurement-based approaches raise usable capacity without added risk [4]. Since the 2024 electricity market reform, EU system operators must publish available capacity and the criteria used [1]; ENTSO-E and the EU DSO Entity were tasked with harmonised definitions and a pan-European overview. E.DSO's survey of its members concludes that the priority is not full harmonisation but clearer definitions, stronger links to connection processes and a balanced approach to transparency [2]. ICCT's 2025 inventory finds public grid-capacity maps for charging in only part of the EU, with uneven voltage coverage [3]. None of these documents treats the map as a distributive instrument.</p>
+<h4>2.2 Charging-access equity</h4>
+<p>A separate literature documents that public charger access is unequally distributed across income and ethnicity [5] and clusters with commercial land use [9]. These studies treat the grid as exogenous. Work on EV hosting capacity [10,11] treats demand as exogenous. The two literatures meet only in optimisation models that co-locate chargers with grid capacity [12], which assume a single planner holding both datasets — precisely the situation in a vertically integrated utility.</p>
+<h4>2.3 Indonesia</h4>
+<p>Presidential Regulation 55/2019 launched Indonesia's battery-EV programme; ministerial rules set a 50 kW threshold for public fast charging and tariff structures for SPKLU [7]. PLN reports 3 % electricity sales growth and 5.9 % connected-capacity growth in West Java in 2025 [13]. EV penetration remains below 1 % of the vehicle stock, so the charging network is being built ahead of demand — the regime in which the published layer matters most.</p>
+
+<h3>3. Case and data</h3>
+<p>Three datasets were assembled (Table 1). The transformer register is a field-survey database: two spot readings (day and night) of phase currents per distribution transformer, with rated kVA, feeder, primary substation (GI) and coordinates from two sources (survey and asset register). The charging log contains every session at PLN's public chargers in March 2026 with energy, duration and revenue. The EV customer register lists households that applied for the home-charging tariff, geocoded at the service point; it is used as a latent-demand proxy that is independent of where public chargers were built.</p>
+<div class="tbl" id="capT1"></div>
+<div class="tcap"><b>Table 1</b> — Datasets used. All are internal PLN UID Jawa Barat data; the aggregated outputs are published on this dashboard.</div>
+
+<h3>4. Method</h3>
+<h4>4.1 Two-level headroom</h4>
+<p>For each transformer <i>i</i> with rated capacity <i>S<sub>i</sub></i> and measured loading <i>λ<sub>i</sub></i> (share of nominal current, maximum of day and night), headroom at the 80 % planning limit is <i>H<sub>i</sub></i> = max(0, <i>S<sub>i</sub></i>·(0.8 − <i>λ<sub>i</sub></i>)). Records failing basic plausibility (invalid coordinates, <i>S</i> outside 5–3,000 kVA, <i>λ</i> outside 0–200 %) were dropped, leaving 41,129. Primary-substation headroom is computed identically from GI transformer MVA and loading (182 GI transformers, 9,790 MVA). Each 5 km cell receives the sum of transformer headroom and the mean headroom of the GI(s) supplying it.</p>
+<h4>4.2 Growth correction</h4>
+<p>Surveys are dated; the median reading is 2.3 years old and the oldest 6.2 years. Loading was compounded to March 2026 as <i>λ</i>(2026) = <i>λ</i>(<i>t</i>)·(1+<i>g</i>)<sup>2026.2−<i>t</i></sup>. The base case uses <i>g</i> = 3.0 %/yr, the DSO's reported 2025 sales growth [13]; sensitivities use 5.9 %/yr (connected-capacity growth) and 9.7 %/yr (the median cross-sectional slope of loading on survey date within UP3 units, which is an upper bound because 2020 readings were COVID-depressed).</p>
+<h4>4.3 Grid, classification and siting rules</h4>
+<p>All layers were aggregated to a 0.045° (≈5 km) grid of 1,292 cells; 235 contain registered EV owners and 174 contain a public charger. Cells with EV owners were classified by median demand (EV owners) × median headroom. Three siting rules were then applied to the 129 unserved cells with EV owners, each selecting 50 cells: <b>headroom-only</b> (rank by <i>H</i>), <b>demand-only</b> (rank by EV owners), and <b>demand-within-headroom</b> (rank by EV owners subject to <i>H</i> ≥ 240 kVA, i.e. one 4×60 kW site). Outcomes: owners newly reached, sites in below-median-demand cells (stranded capital), sites below the feasibility threshold, regencies covered, and the between-regency Gini of the share of EV owners living in a cell with a charger.</p>
+
+<h3>5. Results</h3>
+
+<h4>5.1 The roll-out follows grid density, not spare capacity <span class="live">peta langsung</span></h4>
+<p>Across served cells, charging energy correlates with absolute headroom (Spearman ρ = 0.42, p &lt; 10<sup>−8</sup>) but not with headroom as a share of installed capacity (ρ = −0.06, p = 0.43). Absolute headroom scales with the number of transformers, i.e. with urbanisation; relative headroom measures spare capacity. Chargers were therefore placed where the grid is dense, blind to whether it is loaded. Fig. 1 shows the resulting pattern: 42 % of the province's growth-adjusted headroom lies in cells with no public charger, and a quarter of registered EV owners live in those cells.</p>
+
+<div class="card" style="margin:14px 0">
+<h3 style="border:none;margin:0 0 12px">Fig. 1 — Peta headroom &amp; sebaran SPKLU per sel 5 km <span class="sub">interaktif · dihitung ulang dari data mentah</span></h3>
+<div class="toolbar">
+ <label style="font-size:12px;color:var(--mut)">Lapisan sel</label>
+ <select id="capLayer">
+  <option value="h">Headroom trafo (2026, kVA)</option>
+  <option value="hrel">Headroom relatif (% kapasitas terpasang)</option>
+  <option value="gi">Headroom Gardu Induk (MVA)</option>
+  <option value="ev">Pemilik EV terdaftar</option>
+  <option value="kwh">Energi SPKLU Maret 2026 (kWh)</option>
+  <option value="q">Kuadran permintaan × headroom</option>
+ </select>
+ <label style="font-size:12px;color:var(--mut)">Tampilkan</label>
+ <button class="mode-btn active" data-caplyr="spklu">SPKLU</button>
+ <button class="mode-btn active" data-caplyr="gap">Sel rawan (tinggi/rendah, tanpa charger)</button>
+ <button class="mode-btn" data-caplyr="ev">Titik pelanggan EV</button>
+</div>
+<div id="capMap"></div>
+<div class="mlegend" id="capLegend"></div>
+</div>
+<div class="cap"><b>Fig. 1</b> — Headroom trafo per sel 5 km yang sudah dikoreksi pertumbuhan ke 2026 (makin gelap = makin sedikit sisa kapasitas), situs SPKLU berukuran sesuai energi Maret 2026, dan sel permintaan-tinggi/headroom-rendah tanpa charger (merah). Klik sel untuk rincian; ganti lapisan pada pemilih di atas peta.</div>
+
+<h4>5.2 The equity gap is locational <span class="live">grafik langsung</span></h4>
+<p>Fig. 2 classifies the 235 cells with EV owners. The high-demand/high-headroom quadrant holds 84.9 % of owners and 79.9 % of chargers — the roll-out is broadly rational. The gap is the high-demand/low-headroom quadrant: 12.8 % of owners, 7.2 % of chargers, and 37 cells with 270 owners and no charger at all. These are the cells a headroom-only map would rank last and a demand-only map would rank first without warning the developer of the connection cost.</p>
+<div class="grid2">
+ <div class="card"><h3>Kuadran permintaan × headroom <span class="sub">sumbu log · garis putus = median</span></h3>
+  <canvas id="capQuad"></canvas></div>
+ <div class="card"><h3>Isi tiap kuadran <span class="sub">pangsa pemilik EV vs pangsa charger</span></h3>
+  <canvas id="capQuadBar"></canvas>
+  <div class="qbox" id="capQuadBox"></div></div>
+</div>
+<div class="cap"><b>Fig. 2</b> — Kuadran permintaan × headroom untuk sel yang memiliki pemilik EV terdaftar. Garis putus-putus = median permintaan dan median headroom; warna = kuadran; lingkaran berisi = sel yang sudah punya SPKLU, dengan ukuran mengikuti energi Maret 2026; lingkaran kosong = sel yang belum terlayani.</div>
+
+<h4>5.3 The published layer changes the portfolio <span class="live">peta langsung</span></h4>
+<p>Table 2 and Fig. 3 compare the three siting rules. The headroom-only rule reaches 694 of the 901 owners in unserved cells and places 15 of 50 sites in cells with below-median demand. The demand-only rule reaches 807 owners but places 2 sites below the feasibility threshold and is the most geographically concentrated (15 regencies). The demand-within-headroom rule strands no site, reaches 789 owners (+12 % on headroom-only), spreads over 17 regencies and lowers the between-regency coverage Gini from 0.69 today to 0.60. The result is stable across growth scenarios (789, 789 and 788 owners reached at 3.0, 5.9 and 9.7 %/yr).</p>
+<div class="tbl" id="capT2"></div>
+<div class="tcap"><b>Table 2</b> — Penempatan tandingan 50 situs baru di sel belum terlayani yang punya pemilik EV terdaftar. Baris <i>naskah</i> adalah angka yang tercetak di makalah; baris <i>hitung ulang</i> adalah hasil pipeline terbuka <code>papers/capacity/prepare.py</code> atas data mentah yang sama.</div>
+
+<div class="card" style="margin:14px 0">
+<h3 style="border:none;margin:0 0 12px">Fig. 3 — Portofolio 50 situs menurut aturan yang dipublikasikan <span class="sub">peta + rekap</span></h3>
+<div class="toolbar" id="capRuleBtns"></div>
+<div class="grid2" style="margin:0">
+ <div><div id="capRuleMap"></div>
+  <div class="mlegend"><span><i style="background:#d6443c"></i>situs terpilih (ukuran = pemilik EV)</span>
+  <span><i style="background:#9aa7bd"></i>sel kandidat lain</span><span><i style="background:#2e9e5b"></i>SPKLU eksisting</span></div></div>
+ <div><canvas id="capRuleChart"></canvas>
+  <div id="capRuleStat" style="margin-top:12px"></div></div>
+</div>
+</div>
+<div class="cap"><b>Fig. 3</b> — Pemilik EV terjangkau, situs terlantar, dan Gini cakupan antar-kabupaten untuk ketiga aturan. Pilih aturan pada tombol di atas untuk melihat sebaran situsnya di peta.</div>
+
+<h4>5.4 One level is not enough</h4>
+<p>Of the 174 served cells, 42 have tight transformer headroom but ample GI headroom and 46 the reverse — 51 % discordant. A map showing only the low-voltage level would tell a developer to avoid cells where a new dedicated transformer on a lightly loaded feeder is cheap; a map showing only the substation level would hide that the last 400 m of network is saturated. Both levels must be published, and the full paper adds the intermediate feeder level (2,574 feeders, Table 1).</p>
+<div class="card"><h3>Ketidaksesuaian dua tingkat jaringan <span class="sub">sel terlayani · trafo vs Gardu Induk (relatif median)</span></h3>
+<canvas id="capDisc"></canvas><div id="capDiscNote" class="cap"></div></div>
+
+<h4>5.5 Ageing and data readiness <span class="live">grafik langsung</span></h4>
+<p>Growth correction at 3.0 %/yr moves 7,088 transformers (17 % of usable records) past the 80 % limit and reduces province-wide headroom from 2,624 to 2,392 MVA at transformer level and from 2,377 to 1,912 MVA at GI level; at 9.7 %/yr the reductions are 26 % and 52 % (Fig. 4, right). The underlying register is not publication-ready (Fig. 4, left): 44 % of records are not linked to a primary substation, 38 % have survey coordinates more than 1 km from the asset register, 23 % have no load reading and 22 % no rated capacity. The register also contains field-staff names and customer-identifying transformer labels that must be removed before disclosure.</p>
+<div class="grid2">
+ <div class="card"><h3>Audit kesiapan publikasi <span class="sub">% catatan yang gagal tiap uji (n = 53.797)</span></h3><canvas id="capAudit"></canvas></div>
+ <div class="card"><h3>Headroom provinsi menurut asumsi pertumbuhan <span class="sub">batas 80 %</span></h3><canvas id="capScen"></canvas></div>
+</div>
+<div class="cap"><b>Fig. 4</b> — Kiri: pangsa catatan trafo yang gagal tiap uji kesiapan. Kanan: headroom se-provinsi pada batas 80 % di bawah empat asumsi pertumbuhan beban.</div>
+
+<h3>6. Discussion</h3>
+<h4>6.1 A minimum standard for publishable capacity maps</h4>
+<p>The results translate into five requirements.</p>
+<ol class="imp">
+<li><b>Two levels at least</b> — transformer and primary substation — with the feeder level where available.</li>
+<li><b>Growth correction</b> with a stated rate and survey date, since a static snapshot overstates headroom within two years.</li>
+<li><b>A demand layer alongside headroom</b>: registered EV customers, predicted energy, or both.</li>
+<li><b>Spatial aggregation</b> (here 5 km cells; 2 km hexagons in the companion siting tool) to protect customer and staff privacy and critical-infrastructure detail, consistent with E.DSO's call for balanced transparency [2].</li>
+<li><b>Versioning and a published data-quality score</b>, so that a map that misdirects private capital can be corrected rather than trusted.</li>
+</ol>
+<h4>6.2 Publication as a substitute for unbundling</h4>
+<p>EU DSOs are generally barred from owning charging points precisely because of the information advantage documented here. Indonesia has chosen the opposite structure. In that structure the incumbent can, in principle, site its own chargers on its own knowledge of headroom and demand while third-party CPOs cannot. Publishing the two-surface map removes that asymmetry without changing ownership: it is the functional substitute for unbundling, and it steers all capital — public and private — towards gap-filling rather than densification.</p>
+<h4>6.3 Limitations</h4>
+<p>Headroom is derived from two spot readings per transformer, not continuous metering; it is a planning proxy, not a hosting-capacity calculation in the sense of [4,8]. At 5 km resolution aggregate headroom is rarely binding (only 2 of 50 demand-only sites fall below 240 kVA); the binding constraint is locational, at the transformer and feeder, which the full analysis will resolve. Registered EV customers are a proxy for latent demand and under-represent households without a home charger. The growth rate is province-wide; unit-level rates would sharpen the correction. Finally, the counterfactual assumes 50 equal sites; a capacity-weighted portfolio may change the magnitudes but not the ordering.</p>
+
+<h3>7. Conclusions</h3>
+<p>In a vertically integrated DSO building charging ahead of demand, the capacity map is a planning decision disguised as a data product. Publishing headroom alone reproduces the geography of the existing grid; publishing headroom and demand together, at two network levels, with growth correction and a data-quality score, redirects a fixed budget towards the cells where EV owners are already waiting. The West Java evidence — 12 % more owners reached, no stranded sites, a broader regional spread and a lower coverage Gini for the same 50 sites — is modest in magnitude but unambiguous in direction, and it is obtainable from data every DSO already holds.</p>
+
+<details>
+<summary>Gambar asli naskah (statis) &amp; catatan reproduksi</summary>
+<p style="margin-top:10px">Peta dan grafik di atas dihitung ulang langsung dari data mentah oleh <code>papers/capacity/prepare.py</code>, jadi angkanya bisa berbeda tipis dari gambar yang tercetak di naskah. Selisih yang diketahui dan sebabnya dirinci pada tabel di bawah gambar.</p>
+<div class="fig"><img src="papers/capacity/fig1_headroom_map.png" alt="Fig 1 naskah"><div class="cap"><b>Fig. 1 (naskah)</b></div></div>
+<div class="fig"><img src="papers/capacity/fig2_quadrant.png" alt="Fig 2 naskah"><div class="cap"><b>Fig. 2 (naskah)</b></div></div>
+<div class="fig"><img src="papers/capacity/fig3_rules.png" alt="Fig 3 naskah"><div class="cap"><b>Fig. 3 (naskah)</b></div></div>
+<div class="fig"><img src="papers/capacity/fig4_readiness.png" alt="Fig 4 naskah"><div class="cap"><b>Fig. 4 (naskah)</b></div></div>
+<div class="tbl" id="capT3"></div>
+</details>
+
+<h3>References</h3>
+<div class="refs" id="capRefs"></div>
+
+</div>
+</div>
