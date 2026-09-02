@@ -29,7 +29,7 @@
  }
  async function loadRemotePapers(){
   if(!SB){ remotePapers=localPapers(); return; }
-  try{ remotePapers=(await sb('papers?select=id,n,title,short,kind,venue,alt,status,stage,pct,target,lead,data,method,todo,tabs,words,category,abstract,goal,finding,file_name,file_path,created_at&order=n.asc.nullslast,created_at.asc'))
+  try{ remotePapers=(await sb('papers?select=id,n,title,short,kind,venue,alt,status,stage,pct,target,lead,data,method,todo,tabs,words,category,abstract,goal,finding,manuscript,file_name,file_path,created_at&order=n.asc.nullslast,created_at.asc'))
         .map(p=>Object.assign(p,{remote:true,files:p.file_path?[[ 'Berkas asli ('+(p.file_name||'').split('.').pop()+')',SB.url+'/storage/v1/object/public/papers/'+p.file_path]]:[]}));
   }catch(e){ console.warn('naskah jarak jauh gagal dimuat:',e.message); remotePapers=[]; }
  }
@@ -58,6 +58,56 @@
  const who=()=>localStorage.getItem('spklu.review.who')||'';
  const allPapers=()=>LIB.papers.concat(remotePapers);
 
+
+ /* ---------- panel progres PhD ---------- */
+ const KIND={Predictive:'#3a6ea5',Evaluative:'#2e9e5b',Causal:'#e0a52b',Synthesis:'#8b5cf6'};
+ function ring(pct){
+  const r=40,c=2*Math.PI*r,off=c*(1-pct/100);
+  return `<svg width="100" height="100" viewBox="0 0 100 100">
+   <circle cx="50" cy="50" r="${r}" fill="none" stroke="#eef1f6" stroke-width="9"/>
+   <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--gold)" stroke-width="9" stroke-linecap="round"
+     stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 50 50)"/>
+   <text class="rv" x="50" y="57" text-anchor="middle">${pct}%</text></svg>`;
+ }
+ function phdPanel(P){
+  const H=LIB.phd, PT=LIB.parts||[], SD=LIB.side;
+  if(!H||!PT.length){ $('libPhdCard').hidden=true; return; }
+  // Progres keseluruhan = rata-rata kesiapan seluruh naskah dalam pipeline (termasuk yang masih rencana).
+  const all=P.filter(p=>typeof p.pct==='number');
+  const overall=all.length?Math.round(all.reduce((a,p)=>a+p.pct,0)/all.length):0;
+  $('libPhdTitle').textContent=H.title;
+  $('libPhdMeta').innerHTML=`${esc(H.program)}<br>${esc(H.lead)} · pembimbing ${H.supervisors.map(esc).join(' · ')}
+   <br>${esc(H.shape)} · ${esc(H.year1)}`;
+  $('libRing').innerHTML=ring(overall)+`<div class="rl">rata-rata kesiapan<br>${all.length} naskah</div>`;
+  $('libPhdArg').textContent='“'+H.argument+'”';
+
+  const plist=t=>t.map(x=>`<a data-libopen="${x[0]}"><i>${x[2]}%</i>${esc(x[1])}</a>`).join('');
+  $('libParts').innerHTML=PT.map(pt=>`<div class="pt">
+   <div class="n"><b>PART ${pt.no}</b>
+    <span class="kind" style="background:${KIND[pt.kind]||'#9aa7bd'}">${esc(pt.kind)}</span></div>
+   <h4>${esc(pt.name)}</h4>
+   <div class="sx">${esc(pt.subtitle)}</div>
+   <div class="bar"><i style="width:${pt.pct}%"></i></div>
+   <div class="sx" style="margin:4px 0 8px"><b>${pt.pct}%</b> · ${esc(pt.stage)}</div>
+   <div class="rq">${esc(pt.rq)}</div>
+   <div class="pl">${plist(pt.titles)}</div></div>`).join('');
+
+  $('libSide').innerHTML=SD?`<h4>${esc(SD.name)} — ${SD.pct}%</h4>
+   <div class="sx" style="font-size:10.5px;color:var(--mut);line-height:1.55">${esc(SD.subtitle)}</div>
+   <div class="pl">${SD.titles.map(x=>`<a data-libopen="${x[0]}">${esc(x[1])} · ${x[2]}%</a>`).join('')}</div>`:'';
+
+  $('libMiles').innerHTML=(LIB.milestones||[]).map(m=>`<div class="m">
+   <div class="dot${m[3]==='upcoming'?' up':''}"></div>
+   <div class="w">${esc(m[0])}</div>
+   <div class="b">${m[4]?`<a href="${m[4]}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none">${esc(m[1])} ↗</a>`:esc(m[1])}
+    <s>${esc(m[2])}</s></div></div>`).join('');
+
+  $('libOuts').innerHTML=(LIB.outputs||[]).map(o=>`<div class="o">
+   <div class="t">${esc(o[0])}</div>
+   <div class="b">${o[3]?`<a href="${o[3]}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none">${esc(o[1])} ↗</a>`:`<b>${esc(o[1])}</b>`}
+    <s>${esc(o[2])}</s></div></div>`).join('');
+ }
+
  /* ---------- beranda ---------- */
  function home(){
   const P=allPapers();
@@ -84,7 +134,7 @@
 
   const shown=P.filter(p=>filter==='all'||p.category===filter);
   $('libCards').innerHTML=shown.map(p=>`<div class="pc" style="border-top-color:${catCol(p.category)}">
-    <div class="no">Naskah ${p.n||'–'} · ${esc(p.kind)}${p.remote?'<span class="src">● unggahan</span>':p.local?'<span class="src" style="color:#e0a52b">● lokal</span>':''}</div>
+    <div class="no">Naskah ${p.n||'–'} · ${esc(p.kind)}${p.manuscript===false?'<span class="nom">brief · belum ada naskah</span>':''}${p.remote?'<span class="src">● unggahan</span>':p.local?'<span class="src" style="color:#e0a52b">● lokal</span>':''}</div>
     <div class="cat" style="background:${catCol(p.category)}">${esc(catLab(p.category))}</div>
     <h3>${esc(p.title)}</h3>
     <div class="ven">🎯 ${esc(p.venue||'—')}${p.venue_src&&/usulan/.test(p.venue_src)?' <span class="usul">usulan</span>':''}</div>
@@ -122,6 +172,7 @@
    <td style="text-align:right"><button class="btn" data-libopen="${r[3]}">buka</button></td></tr>`).join('');
 
   document.querySelectorAll('#libCats [data-libcat]').forEach(b=>b.onclick=()=>{filter=b.dataset.libcat;home();});
+  phdPanel(P);
   document.querySelectorAll('#p-library [data-libopen]').forEach(b=>b.onclick=()=>open_(b.dataset.libopen));
   document.querySelectorAll('#p-library [data-libtab]').forEach(b=>b.onclick=()=>{
    const t=document.querySelector('.tab[data-p="'+b.dataset.libtab+'"]'); if(t)t.click();});
