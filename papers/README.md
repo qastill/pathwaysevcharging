@@ -95,19 +95,30 @@ naskah yang dipetakan ke bagian itu, dan cincin progres di panel atas adalah rat
 `pct` seluruh naskah dalam pipeline. Memperbarui `pct` satu naskah otomatis menggerakkan
 progres bagian dan progres keseluruhan.
 
-Dua belas naskah (sembilan bernaskah, tiga masih brief rencana), empat kategori:
+Lima belas naskah (dua belas bernaskah, tiga masih brief rencana), empat kategori:
 
 | Kategori | Naskah |
 |---|---|
-| Akses & keadilan infrastruktur pengisian | Paper 1 (equity & perception) · Paper 2 (coverage to capability) |
+| Akses & keadilan infrastruktur pengisian | Paper 1 (equity & perception) · Paper 2 (coverage to capability) · CUPUM 2027 Bab 1–3 |
 | Jaringan distribusi & perencanaan | CIRED 2027 Capacity maps · CIRED 2027 Energy forecast → network load |
 | Emisi & dekarbonisasi | Tailpipe to smokestack · Captive generation & CBAM |
 | Model bisnis, pasar & kebijakan | ASEAN comparative · Balance sheet problem (battery swapping) |
 
+Tiga bab buku **CUPUM 2027 — Future Cities in the Era of AI** (`cupum-objective`,
+`cupum-sparsity`, `cupum-participation`) dibangun oleh `chapter_html()`, bukan langsung oleh
+`docx_to_html()`: ketiganya berbagi bentuk kepala yang sama (baris 1 seri buku, baris 2 judul,
+baris 3–5 penulis) yang dijadikan `<h2>` + blok penulis, dan **empat gambarnya diekstrak** ke
+`papers/library/media/<id>/fig1..4.png` lalu ditampilkan sebagai `<img>` (klik untuk memperbesar).
+
+Ekstraksi gambar itu opsional dan berlaku untuk `.docx` mana pun: berikan
+`docx_to_html(path, media=(dir_tujuan, prefiks_url))`. Naskah `.docx` lain masih memakai
+placeholder teks `[gambar: …]` — tinggal diberi argumen `media` bila gambarnya ingin ikut tampil.
+
 Tiap naskah membawa **brief riset** yang tampil di kartu dan di kepala pembaca: `goal`
 (tujuan), `finding` (temuan kunci), `method`, `data`, dan `abstract`. Abstrak **tidak
 ditulis tangan** — `abstract_of()` mengambil paragraf setelah heading *Abstract* /
-*Summary of Research* dari naskahnya sendiri, dan build gagal bila tidak ketemu.
+*Summary of Research* dari naskahnya sendiri (baris *Keywords* dibuang), dan build gagal bila
+tidak ketemu.
 
 Kolom `venue` adalah rencana publikasi; `venue_src` mencatat asalnya. Dua naskah
 (*Tailpipe to smokestack*, *Captive generation & CBAM*) tidak menyebut sasaran di

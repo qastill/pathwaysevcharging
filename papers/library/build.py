@@ -92,7 +92,26 @@ def md_to_html(text):
 
 
 # --------------------------------------------------------------------- docx
-def docx_to_html(path):
+def img_html(z, target, no, media):
+    """Satu gambar tertanam: diekstrak bila media diminta, selain itu placeholder."""
+    if not media:
+        return f'<p class="imgph">[gambar: {html.escape(os.path.basename(target))}]</p>'
+    dest, url = media
+    ext = os.path.splitext(target)[1].lower() or ".png"
+    name = f"fig{no}{ext}"
+    d = os.path.join(ROOT, dest)
+    os.makedirs(d, exist_ok=True)
+    open(os.path.join(d, name), "wb").write(z.read("word/" + target))
+    return f'<p class="fig"><img src="{url}/{name}" alt="Gambar {no}" loading="lazy"></p>'
+
+
+def docx_to_html(path, media=None):
+    """Ubah .docx menjadi HTML siap baca.
+
+    media=(dir_tujuan, prefiks_url) mengekstrak gambar tertanam ke berkas
+    fig1.png, fig2.png, ... menurut urutan kemunculan dan menyisipkannya
+    sebagai <img>. Tanpa media, gambar tetap menjadi placeholder teks.
+    """
     z = zipfile.ZipFile(path)
     rels = {e.get("Id"): e.get("Target") for e in ET.fromstring(z.read("word/_rels/document.xml.rels"))}
     body = ET.fromstring(z.read("word/document.xml")).find(W + "body")
@@ -119,7 +138,7 @@ def docx_to_html(path):
             if "\x00" in s:
                 for part in s.split("\x00")[1:]:
                     imgs.append(part)
-                    out.append(f'<p class="imgph">[gambar: {html.escape(os.path.basename(part))}]</p>')
+                    out.append(img_html(z, part, len(imgs), media))
                 s = s.split("\x00")[0]
             if not s.strip():
                 continue
@@ -138,7 +157,9 @@ def docx_to_html(path):
                 out.append(f"<h3>{html.escape(up)}</h3>")
             elif style.lower().startswith("heading"):
                 out.append(f"<h4>{html.escape(up)}</h4>")
-            elif re.match(r"^(Fig\.|Table)\s", up):
+            # keterangan gambar/tabel selalu "Fig. …", "Figure 1. …", "Table 2 – …";
+            # prosa seperti "Figure 2(a) shows …" atau "Table 1 ranks …" bukan keterangan.
+            elif re.match(r"^(Fig\.\s|(Figure|Table)\s+\d+\s*[.:\u2013\u2014-]\s)", up):
                 out.append(f'<p class="figcap">{html.escape(up)}</p>')
             elif re.match(r"^\[\d+\]", up):
                 out.append(f'<p class="ref">{html.escape(up)}</p>')
@@ -207,12 +228,34 @@ def abstract_of(html):
                   html, re.S | re.I)
     if not m:
         return ""
-    paras = re.findall(r"<p[^>]*>(.*?)</p>", m.group(2), re.S)
-    txt = " ".join(re.sub(r"<[^>]+>", "", x).strip() for x in paras if x.strip())
+    paras = [re.sub(r"<[^>]+>", "", x).strip() for x in re.findall(r"<p[^>]*>(.*?)</p>", m.group(2), re.S)]
+    # baris kata kunci mengekor abstrak di beberapa naskah — bukan bagian abstraknya
+    txt = " ".join(x for x in paras if x and not re.match(r"^Keywords?\s*[:.]", x, re.I))
     return re.sub(r"\s+", " ", txt).strip()
 
 
 FILES = "papers/library/files/"
+MEDIA = "papers/library/media/"
+
+
+def chapter_html(fname, slug):
+    """Naskah bab CUPUM 2027.
+
+    Ketiganya berbagi bentuk kepala yang sama — baris 1 seri buku, baris 2 judul,
+    baris 3–5 penulis — yang keluar dari docx_to_html sebagai <p> biasa. Di sini
+    kepala itu dijadikan judul + blok penulis, dan keempat gambarnya diekstrak.
+    """
+    h = docx_to_html(os.path.join(ROOT, FILES + fname),
+                     media=(MEDIA + slug, MEDIA + slug))
+    head = re.findall(r"<p>(.*?)</p>", h, re.S)[:5]
+    assert len(head) == 5 and head[0].startswith("CUPUM"), "kepala naskah tak seperti dugaan: " + fname
+    for blk in head:
+        h = h.replace(f"<p>{blk}</p>\n", "", 1)
+    series, title, *authors = head
+    return (f"<h2>{title}</h2>\n"
+            f'<p class="authors">{" · ".join(authors)}</p>\n'
+            f'<blockquote>{series}</blockquote>\n') + h
+
 
 # Isi poster ditulis ulang dari poster yang dirender (teks PDF-nya berkolom dan
 # ber-tracking lebar, sehingga ekstraksi otomatis tidak terbaca andal). Gambar
@@ -584,6 +627,93 @@ PAPERS = [
               "Kembangkan menjadi Paper 1 (IEEE) sesuai rencana RQ1 — target submit Mar 2027",
               "Uji asumsi exclusion restriction (headroom jaringan & ketersediaan lahan) sebagai instrumen"],
     ),
+    dict(
+        id="cupum-objective", n=10, category="akses", tags=["akses", "bisnis"],
+        title="One model, two cities: the objective function as an unaccountable planning decision in algorithmic EV charging deployment",
+        short="Satu model, dua provinsi — fungsi tujuan sebagai keputusan perencanaan",
+        kind="Book chapter (CUPUM 2027)",
+        venue="CUPUM 2027 — Future Cities in the Era of AI (bab buku)",
+        alt="—", venue_src="dinyatakan di naskah",
+        status="review", stage="Naskah utuh (5.522 kata) — siap ditinjau pembimbing", pct=75,
+        target="CUPUM 2027 (tenggat: cek panggilan bab buku)",
+        lead="Qashtalani Haramaini, Alyas Widita, Liz Taylor",
+        goal="Memperlakukan model penempatan SPKLU di dalam utilitas terintegrasi vertikal sebagai objek kajian perencanaan: di Indonesia bukan otoritas perencanaan yang mengalokasikan pengisian publik, melainkan fungsi tujuan sebuah model — sehingga bobot di dalamnya sudah menjadi kebijakan tata guna lahan.",
+        finding="Bukti dan anggaran yang sama (50 situs baru dari 111 sel layak) menghasilkan dua provinsi berbeda. Portofolio komersial memusat di 9 kabupaten/kota, menaruh 20 % situs di kabupaten berpendapatan rendah, menjangkau 577 pemilik yang kini tak terlayani; portofolio keadilan menyebar ke 14 kabupaten/kota, 54 % situs di kabupaten berpendapatan rendah, menjangkau 723 pemilik — dengan ongkos 42 % energi prediksi model. Hanya 21 situs muncul di kedua daftar (berbeda di 29 dari 50). Sapuan bobot keadilan λ = 0 → 1 menunjukkan trade-off yang mulus dan monoton: pilihan politik yang menyamar sebagai parameter.",
+        data=["101.020 sesi pengisian Maret 2026 · 636 unit / 348 situs (330 tergeokode)",
+              "3.687 rumah tangga pelanggan EV tergeokode (tarif home charging)",
+              "53.797 catatan trafo distribusi (41.129 layak pakai)",
+              "BPS 2022/2023 + tipologi Klassen: populasi, IPM, tingkat pendapatan (19 kelompok kota/kabupaten)"],
+        method=["Random forest atas energi teramati per situs pada grid 5 km",
+                "Model paparan Bayesian atas pemilik EV terdaftar",
+                "Saringan kelayakan headroom trafo ≥ 240 kVA",
+                "Dua fungsi tujuan: komersial (maksimum energi) vs keadilan (pemilik tak terlayani, jarak ke charger, pendapatan kabupaten)",
+                "Sapuan bobot keadilan λ = 0 → 1 dan perbandingan portofolio 50 situs",
+                "Standar akuntabilitas minimum: terbitkan tujuan, bobot, portofolio tandingan, dan versi model"],
+        tabs=["locint", "capacity", "equity"],
+        html=chapter_html("CUPUM2027_Ch1_One_Model_Two_Cities.docx", "cupum-objective"),
+        files=[["Naskah (.docx)", FILES + "CUPUM2027_Ch1_One_Model_Two_Cities.docx"]],
+        todo=["Konfirmasi tenggat dan templat panggilan bab buku CUPUM 2027",
+              "Selaraskan jumlah situs dengan Bab 2 dan naskah CIRED (330 vs 331 situs tergeokode)",
+              "Terbitkan portofolio tandingan beserta bobotnya di repositori terbuka seperti yang naskah usulkan",
+              "Isi versi model dan tanggal snapshot pada pernyataan akuntabilitas"],
+    ),
+    dict(
+        id="cupum-sparsity", n=11, category="akses", tags=["akses", "jaringan"],
+        title="Training on the past: feedback loops, latent demand and the politics of sparse data in charging networks",
+        short="Melatih model pada masa lalu — umpan balik & permintaan laten",
+        kind="Book chapter (CUPUM 2027)",
+        venue="CUPUM 2027 — Future Cities in the Era of AI (bab buku)",
+        alt="—", venue_src="dinyatakan di naskah",
+        status="review", stage="Naskah utuh (4.607 kata) — siap ditinjau pembimbing", pct=75,
+        target="CUPUM 2027 (tenggat: cek panggilan bab buku)",
+        lead="Qashtalani Haramaini, Alyas Widita, Liz Taylor",
+        goal="Menunjukkan bahwa pada jaringan yang dibangun mendahului permintaan, rekaman transaksi yang dipelajari model penempatan bukanlah sampel permintaan melainkan catatan keputusan alokasi sebelumnya — sehingga pipeline siting berbasis data mengandung umpan balik yang berkonsekuensi distributif, secara struktural sama dengan predictive policing.",
+        finding="Transaksi hanya ada di 174 dari 1.295 sel 5 km; 132 sel memuat 908 pemilik EV terdaftar tanpa satu pun charger. Random forest atas data teramati dan model hierarkis Gamma–Poisson atas permintaan laten hanya sepakat lemah tentang lokasi berikutnya (Spearman ρ = 0,30; 26 dari 50 sel teratas beririsan), dan ketidakpastian posterior paling lebar justru di tempat tanpa infrastruktur maupun observasi. Simulasi deployment sepuluh putaran menutup lingkarannya: permintaan dari sel tak terlayani dikreditkan ke situs terdekat, model dilatih ulang atas rekaman itu dan terus merekomendasikan pemadatan — menyisakan 19 % permintaan laten di kabupaten berpendapatan rendah tak terlayani, melawan 7 % untuk aturan permintaan laten.",
+        data=["101.020 sesi pengisian Maret 2026 — hanya di 174 dari 1.295 sel 5 km",
+              "3.687 rumah tangga terdaftar tarif home charging sebagai sinyal paparan bebas-penempatan",
+              "53.797 survei beban trafo distribusi (headroom terkoreksi pertumbuhan)",
+              "Populasi, IPM & tingkat pendapatan kabupaten/kota (BPS)"],
+        method=["Model A — random forest atas transaksi teramati (kovariat jaringan & geografi)",
+                "Model B — hierarkis Gamma–Poisson dengan partial pooling atas paparan pemilik terdaftar",
+                "Perbandingan peringkat 50 sel teratas (Spearman ρ, ukuran irisan)",
+                "Simulasi deployment 10 putaran: permintaan tak terlayani dikreditkan ke situs terdekat, model dilatih ulang",
+                "Pelaporan ketidakpastian posterior sebagai keluaran kelas satu planning support system"],
+        tabs=["locint", "capacity", "equity"],
+        html=chapter_html("CUPUM2027_Ch2_Training_on_the_Past.docx", "cupum-sparsity"),
+        files=[["Naskah (.docx)", FILES + "CUPUM2027_Ch2_Training_on_the_Past.docx"]],
+        todo=["Konfirmasi tenggat dan templat panggilan bab buku CUPUM 2027",
+              "Rujuk silang model Gamma–Poisson di sini dengan model N-mixture BYM2 pada poster BAM 2026",
+              "Uji ketahanan simulasi 10 putaran terhadap aturan pengalihan permintaan yang berbeda",
+              "Sinkronkan jumlah sel (1.295 / 238 / 132) dengan angka naskah CIRED (1.292 / 235 / 129)"],
+    ),
+    dict(
+        id="cupum-participation", n=12, category="akses", tags=["akses"],
+        title="From access to use: large language models as a participation surface for charging infrastructure, and the class filter they inherit",
+        short="Dari akses ke penggunaan — LLM sebagai permukaan partisipasi",
+        kind="Book chapter (CUPUM 2027)",
+        venue="CUPUM 2027 — Future Cities in the Era of AI (bab buku)",
+        alt="—", venue_src="dinyatakan di naskah",
+        status="review", stage="Naskah utuh (4.512 kata) — siap ditinjau pembimbing", pct=75,
+        target="CUPUM 2027 (tenggat: cek panggilan bab buku)",
+        lead="Qashtalani Haramaini, Alyas Widita, Liz Taylor",
+        goal="Menghitung charger mengukur keberadaan, bukan kebergunaan. Di tempat tanpa kanal partisipasi formal, satu-satunya rekaman sistematis tentang bagaimana pengisian dialami adalah teks ulasan pengguna; naskah ini memperlakukannya sebagai permukaan partisipasi lalu menanyakan dua hal sekaligus — apa yang diungkapnya, dan siapa yang tidak terdengar olehnya.",
+        finding="Reliabilitas dan ketersediaan mendominasi kualitas yang dirasakan; tujuh aspek menjelaskan 63 % ragam SQI. Perangkat keras tersebar hampir netral (CI = +0,06) sementara penggunaan sangat pro-kaya (energi per kapita CI = +0,34; kepemilikan EV CI = +0,45), dan kualitas yang dirasakan datar sepanjang gradien pendapatan (CI = −0,02) — masalah reliabilitas bersifat jaringan-luas, bukan pinggiran. Namun permukaan yang melaporkannya miring: situs PLN di tercile IPM tertinggi menarik 8,3 ulasan per situs melawan 4,0 di tercile terendah, dan hanya 38 % situs IPM rendah punya cukup ulasan untuk diskor. Umpan balik yang dimediasi LLM mereproduksi saringan kelas sambil tampil sebagai suara publik.",
+        data=["Korpus ulasan publik 894 lokasi; 584 lokasi cukup volume untuk diskor (244 Jawa Barat, 340 luar)",
+              "Master SPKLU (636 unit / 348 situs) + 101.020 transaksi Maret 2026",
+              "BPS & tipologi Klassen: populasi, IPM, tingkat pendapatan 19 kota/kabupaten"],
+        method=["ABSA dengan large language model: tujuh aspek layanan per ulasan → Station Quality Index",
+                "Dampak aspek (selisih rerata SQI positif vs negatif) + OLS SQI ~ tujuh aspek (R² = 0,63)",
+                "Indeks konsentrasi tertimbang populasi atas peringkat IPM (unit, energi, kepemilikan, SQI)",
+                "Audit cakupan: lokasi terskor & ulasan per situs menurut tercile IPM",
+                "Kerangka keadilan dua dimensi — akses × pengalaman"],
+        tabs=["perception", "equity", "socio"],
+        html=chapter_html("CUPUM2027_Ch3_From_Access_to_Use.docx", "cupum-participation"),
+        files=[["Naskah (.docx)", FILES + "CUPUM2027_Ch3_From_Access_to_Use.docx"]],
+        todo=["Konfirmasi tenggat dan templat panggilan bab buku CUPUM 2027",
+              "Selaraskan definisi SQI dan korpus ulasan dengan Paper 1 (equity & perception)",
+              "Uji ketahanan audit cakupan bila situs operator swasta dimasukkan",
+              "Jadikan audit cakupan prosedur baku sebelum sentimen hasil scraping dipakai dalam perencanaan"],
+    ),
 ]
 
 PLAN = [
@@ -592,6 +722,9 @@ PLAN = [
     ["2026 Q4", "Paper 1 — Spatial equity & perception", "Verifikasi angka · sitasi · submit ERSS", "equity"],
     ["2026 Q4", "ASEAN working paper", "Finalisasi & pilih jurnal sasaran", "asean"],
     ["2026 Q4", "IAEE 2027 — Balance sheet problem (abstrak)", "Kalibrasi fsQCA · submit abstrak", "swap"],
+    ["2026 Q4", "CUPUM 2027 — Bab 1: One model, two cities", "Tinjauan pembimbing · konfirmasi tenggat bab buku", "cupum-objective"],
+    ["2026 Q4", "CUPUM 2027 — Bab 2: Training on the past", "Tinjauan pembimbing · konfirmasi tenggat bab buku", "cupum-sparsity"],
+    ["2026 Q4", "CUPUM 2027 — Bab 3: From access to use", "Tinjauan pembimbing · konfirmasi tenggat bab buku", "cupum-participation"],
     ["2027 Q1", "Tailpipe to smokestack", "Tetapkan jurnal · submit", "tailpipe"],
     ["2027 Q1", "Captive generation & CBAM", "Tetapkan jurnal · submit", "cbam"],
     ["2027 Q1", "Paper 2 — Coverage to capability", "Validasi model siting · submit SCS", "siting"],
@@ -620,7 +753,7 @@ def brief_html(p):
 
 PLANNED_PAPERS = [
     dict(
-        id="rq1-exante", n=10, category="akses", tags=["akses"], part="P1",
+        id="rq1-exante", n=13, category="akses", tags=["akses"], part="P1",
         part_label="Part 1 — From Latent Demand to Right-Sized Supply",
         title="Ex-ante prediction of station-level energy sales",
         short="Prediksi ex-ante penjualan energi per stasiun (RQ1)",
@@ -645,7 +778,7 @@ PLANNED_PAPERS = [
               "Unggah manuskripnya ke perpustakaan ini begitu siap ditinjau"],
     ),
     dict(
-        id="rq3-causal", n=11, category="akses", tags=["akses", "bisnis"], part="P3",
+        id="rq3-causal", n=14, category="akses", tags=["akses", "bisnis"], part="P3",
         part_label="Part 3 — Create or Redistribute Demand?",
         title="Does building more charging create or redistribute demand?",
         short="Menciptakan atau memindahkan permintaan? (RQ3)",
@@ -672,7 +805,7 @@ PLANNED_PAPERS = [
               "Tunggu panel pasca-ekspansi cukup panjang sebelum estimasi"],
     ),
     dict(
-        id="rq4-synthesis", n=12, category="akses", tags=["akses"], part="P4",
+        id="rq4-synthesis", n=15, category="akses", tags=["akses"], part="P4",
         part_label="Part 4 — Inequity & Inequality",
         title="Inequity and inequality in charging access: horizontal vs vertical equity",
         short="Ketidakadilan vs ketimpangan — sintesis & kerangka kebijakan (RQ4)",
@@ -729,12 +862,12 @@ PARTS = [
          subtitle="Kerangka penempatan pengisian EV yang terkoreksi bias dan berbasis jaringan",
          rq="RQ1 — Berapa besar permintaan laten di tiap lokasi, dan bagaimana pasokan ditakar tepat — mengoreksi bias seleksi sampel karena permintaan hanya teramati di tempat stasiun sudah ada?",
          stage="Full draft sudah ada — fokus Tahun 1 mengetatkan validasi dan submit jurnal. Memberi baseline permintaan yang dipakai Bagian 2–4.",
-         papers=["rq1-exante", "poster-bayes"]),
+         papers=["rq1-exante", "poster-bayes", "cupum-sparsity", "cupum-objective"]),
     dict(id="P2", no=2, kind="Evaluative", name="Spatial Equity × User-Perceived Performance",
          subtitle="Menilai bersama keadilan distributif dan keandalan serta aksesibilitas yang dirasakan",
          rq="RQ2 — Sejauh mana distribusi SPKLU adil relatif terhadap kondisi sosial-ekonomi, dan bagaimana pengguna mempersepsikan keandalan serta aksesibilitasnya?",
          stage="Full draft sudah ada. Tugas kunci: menyelaraskan jendela data dengan Paper 1 dan memfinalkan kerangka gabungan keadilan–persepsi.",
-         papers=["equity", "siting"]),
+         papers=["equity", "siting", "cupum-participation"]),
     dict(id="P3", no=3, kind="Causal", name="Create or Redistribute Demand?",
          subtitle="Efek kausal pembangunan infrastruktur pengisian baru",
          rq="RQ3 — Apakah stasiun baru menghasilkan permintaan tambahan (pertumbuhan pasar), atau memindahkan permintaan dari stasiun terdekat (redistribusi)?",
@@ -761,13 +894,14 @@ MILESTONES = [
     ["Okt 2026", "Proposal riset bersih disubmit", "Struktur empat bagian dikunci bersama pembimbing.", "upcoming", ""],
     ["Nov 2026", "Persetujuan etik (MUHREC)", "Mencakup pengumpulan & penanganan data ulasan pengguna.", "upcoming", ""],
     ["18–19 Nov 2026", "BAM 2026 — PhD Poster Prize", "Poster 'Bayesian Models for Spatial Equity', Monash Caulfield.", "upcoming", ""],
+    ["2026 Q4", "CUPUM 2027 — tiga bab buku", "Naskah utuh Bab 1–3 (Future Cities in the Era of AI) selesai; tinjauan pembimbing lalu submit — tenggat menunggu panggilan bab buku.", "upcoming", ""],
     ["Mar 2027", "Paper 1 disubmit — jurnal Q1", "Prediksi ex-ante kWh tingkat stasiun (IEEE).", "upcoming", ""],
     ["Jun–Jul 2027", "Confirmation of Candidature", "Paper 2 draft lanjut; desain Bagian 3 selesai.", "upcoming", ""],
     ["Jul–Agu 2027", "Mobility — Monash Melbourne", "Penempatan 6 bulan berdana, RACE for 2030.", "upcoming", ""],
 ]
 
 OUTPUTS = [
-    ["Naskah", "12 naskah dalam pipeline", "4 draft jurnal, 3 conference paper, 1 working paper, 1 poster, 3 rencana", ""],
+    ["Naskah", "15 naskah dalam pipeline", "4 draft jurnal, 3 conference paper, 3 bab buku CUPUM 2027, 1 working paper, 1 poster, 3 rencana", ""],
     ["Dasbor", "jabar-ev.vercel.app", "17 tab: peta, keadilan, persepsi, permintaan, jaringan, karbon, perpustakaan naskah", "https://jabar-ev.vercel.app"],
     ["Peta", "GeoSPKLU", "Peta geospasial SPKLU dengan status dan kapasitas, tertanam di dasbor", ""],
     ["Peta", "Peta web ArcGIS", "Publikasi peta daring — buka tautan untuk melihat petanya", "https://arcg.is/1LKWDv4"],

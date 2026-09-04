@@ -476,6 +476,12 @@
   }catch(e){ msg.textContent='Gagal: '+e.message; }
  };
 
+ /* ---------- gambar naskah: klik untuk memperbesar ---------- */
+ $('libDoc').addEventListener('click',e=>{
+  const img=e.target.closest('.fig img'); if(!img) return;
+  img.classList.toggle('zoom');
+ });
+
  let booted=false;
  window.initLibrary=async function(){
   if($('libReader').classList.contains('on')) return;
