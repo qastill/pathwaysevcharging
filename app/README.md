@@ -63,8 +63,8 @@ VITE_SUPABASE_ANON_KEY=...
 
 Dua cara:
 
-1. **Ikut proyek Vercel dashboard yang sudah ada** — `vercel.json` di akar repo menjalankan
-   `npm run build:root`, yang membangun aplikasi ke folder `ngecas/` (base `/ngecas/`), sehingga
+1. **Ikut proyek Vercel dashboard yang sudah ada** — `vercel.json` + `build.sh` di akar repo menyalin
+   situs statis ke `public/` dan membangun aplikasi ke `public/ngecas/` (base `/ngecas/`), sehingga
    tersedia di `https://<domain-dashboard>/ngecas/` tanpa proyek baru.
 2. **Proyek Vercel terpisah** — *Root Directory* = `app`, framework Vite (auto). Routing memakai hash (`/#/...`) sehingga
 tidak butuh rewrite khusus dan berjalan sama di `file://` (Capacitor).
