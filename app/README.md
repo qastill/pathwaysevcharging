@@ -61,7 +61,12 @@ VITE_SUPABASE_ANON_KEY=...
 
 ## Deploy web
 
-Vercel: *Root Directory* = `app`, framework Vite (auto). Routing memakai hash (`/#/...`) sehingga
+Dua cara:
+
+1. **Ikut proyek Vercel dashboard yang sudah ada** — `vercel.json` di akar repo menjalankan
+   `npm run build:root`, yang membangun aplikasi ke folder `ngecas/` (base `/ngecas/`), sehingga
+   tersedia di `https://<domain-dashboard>/ngecas/` tanpa proyek baru.
+2. **Proyek Vercel terpisah** — *Root Directory* = `app`, framework Vite (auto). Routing memakai hash (`/#/...`) sehingga
 tidak butuh rewrite khusus dan berjalan sama di `file://` (Capacitor).
 
 ## Struktur
