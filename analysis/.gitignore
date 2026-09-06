@@ -1,0 +1,8 @@
+# berkas antara yang bisa dibuat ulang dari xlsx sumber di root repo
+*.pkl
+gardu.csv
+spklu.csv
+out3.json
+up3.json
+trx.csv
+maplayers.json

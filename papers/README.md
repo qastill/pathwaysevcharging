@@ -1,0 +1,214 @@
+# Naskah & perpustakaan
+
+Tiga tab dashboard dibangun dari folder ini:
+
+| Tab | Sumber | Payload |
+|---|---|---|
+| 🔌 **Capacity Maps** | `papers/capacity/` | `capacity.json` → `D.cap` |
+| 🤝 **P2P Charging** | `papers/p2p/` | `p2p.json` → `D.p2p` |
+| 📚 **Perpustakaan** | `papers/library/` | `library.json` → `D.lib` |
+| 🌏 ASEAN Paper | `papers/asean/` | — (statis, lihat `papers/asean/inject.py`) |
+
+## Urutan jalan
+
+```bash
+pip install openpyxl
+
+python3 papers/capacity/prepare.py   # data mentah PLN -> papers/capacity/capacity.json
+python3 papers/p2p/prepare.py        # data mentah PLN -> papers/p2p/p2p.json
+python3 papers/library/build.py      # naskah md/docx -> papers/library/library.json
+python3 papers/inject_papers.py      # sisipkan/perbarui ketiga tab di index.html
+```
+
+`inject_papers.py` **idempoten**: blok lama dicopot lebih dulu, jadi aman dijalankan
+berkali-kali tanpa `git checkout index.html`. Batas blok ditandai
+`<!-- CAP:BEGIN/END -->`, `<!-- P2P:BEGIN/END -->`, `<!-- LIB:BEGIN/END -->` (markup) dan
+`/* CAP:BEGIN/END */`, `/* P2P:BEGIN/END */`, `/* LIB:BEGIN/END */` (skrip).
+
+## papers/p2p — Charging without selling electricity
+
+Naskah: `papers/paper3_p2p_charging.md`. `prepare.py` menghasilkan seluruh angkanya dari
+berkas mentah di akar repositori (`Detail Transaksi SPKLU Jawa Barat - Maret 2026.csv`,
+`Data pelanggan EV.txt`, `analysis/price.json`) dalam tujuh blok:
+
+| Blok | Isi |
+|---|---|
+| A | pasar dasar — 100.782 sesi, harga all-in Rp 2.608,39/kWh, profil jam |
+| B | pasokan host — 3.694 permohonan home charging, kapasitas malam menganggur |
+| C | permintaan tersubstitusi — corong tiga penyaring + uji kedekatan 1/2/3/5/10 km |
+| D | arsitektur tarif — pita sewa layak, lantai harga, dwell impas, risiko daya |
+| E | finansial empat sisi — host, pengemudi, platform, PLN/DSO |
+| F | jaringan — pergeseran beban puncak 17.00–22.00 ke jendela diskon malam |
+| G | keadilan — Gini & Lorenz situs vs energi vs host terhadap populasi |
+
+**Premis yang membedakannya:** di Indonesia penyediaan tenaga listrik untuk umum adalah
+kegiatan berizin, sehingga host tidak boleh menjual kWh. Transaksinya karena itu dialihkan
+ke **sewa parkir (Rp/jam) + jasa (Rp/sesi)**, dan seluruh sifat ekonominya —
+lantai harga, dwell impas, insentif keterisian alih-alih perputaran — mengikuti dari
+pengalihan itu.
+
+Dua kuantitas energi sengaja dipisah dan tidak boleh dicampur:
+
+* **kWh termeter** `E_m = P·t` — yang dicatat meter host dan dibayar host ke PLN;
+* **kWh baterai** `E_b = P·t·η` — yang diterima dan dinilai pengemudi.
+
+Parameter yang bertanda `[VERIFY]` di kepala `prepare.py` (tarif rumah, diskon malam,
+tolok ukur modal SPKLU dan wallbox, BPP Jawa-Bali, populasi BPS) menggerakkan tabel PLN
+dan tabel host — ubah di satu tempat itu, lalu jalankan ulang, dan seluruh tab ikut berubah.
+
+## papers/capacity — CIRED 2027
+
+`prepare.py` mereproduksi seluruh metode makalah dari berkas mentah di akar repositori
+(`Gardu_Beban_Lokasi_JABAR.xlsx`, `Data pelanggan EV.txt`, `Rekap_SPKLU_Jabar_ArcGIS.csv`):
+
+- headroom trafo & Gardu Induk pada batas pembebanan 80 %: `H = max(0, S·(0,8 − λ))`;
+- koreksi pertumbuhan beban ke Maret 2026: `λ(2026) = λ(t)·(1+g)^(2026,2−t)`,
+  dengan `g` = 0 / 3,0 / 5,9 / 9,7 %/tahun;
+- agregasi ke sel 0,045° (≈5 km) dan klasifikasi permintaan × headroom;
+- tiga aturan penempatan 50 situs baru (headroom-only, demand-only, demand-within-headroom);
+- audit kesiapan publikasi atas 53.797 catatan survei.
+
+Peta dan grafik di tab dihitung **dari payload ini**, bukan dari gambar naskah, jadi
+angkanya bisa berbeda tipis dari yang tercetak. Tabel 2 di halaman menampilkan kedua
+versi berdampingan, dan panel "Gambar asli naskah" merinci selisih yang diketahui.
+
+Reproduksi terhadap angka naskah:
+
+| Angka | Naskah | Hitung ulang |
+|---|---|---|
+| Catatan trafo / layak pakai | 53.797 / 41.129 | 53.797 / 41.129 |
+| Trafo Gardu Induk / MVA | 182 / 9.790 | 182 / 9.790 |
+| Umur survei median / tertua | 2,3 / 6,2 tahun | 2,3 / 6,2 tahun |
+| Pelanggan EV tergeokode | 3.687 | 3.687 |
+| ρ energi ~ headroom absolut / relatif | +0,42 / −0,06 | +0,42 / −0,06 |
+| Headroom trafo, apa adanya → 3 %/th | 2.624 → 2.392 MVA | 2.624 → 2.392 MVA |
+| Pemilik terjangkau (headroom / demand / DwH) | 694 / 807 / 789 | 694 / 809 / 789 |
+| Situs terlantar | 15 / 0 / 0 | 15 / 0 / 0 |
+| Cakupan baseline | 75,5 % | 75,4 % |
+
+| Headroom GI, apa adanya → 3 % → 9,7 %/th | 2.377 → 1.912 MVA → −52 % | 2.377 → 1.912 MVA → −52 % |
+
+Headroom GI baru cocok setelah beban GI dituakan dari **April 2022** (tanggal register
+GI/penyulang di Tabel 1 naskah) — umur 3,9 tahun ke Maret 2026 adalah satu-satunya nilai
+yang mereproduksi 1.912 MVA pada 3 %/th *dan* −52 % pada 9,7 %/th sekaligus; konstanta
+`GI_YEAR` di `prepare.py`.
+
+Yang **belum** cocok, dan tidak bisa diselesaikan tanpa skrip asli penulis:
+
+- **Gini antar-kabupaten** (naskah 0,692 → 0,600; hitung ulang 0,493 → 0,360). Lima
+  definisi dicoba — Gini pangsa cakupan per kabupaten, sama dengan 27 kabupaten, Gini
+  pemilik tercakup, Gini pemilik tak tercakup, dan versi tertimbang pemilik — tidak ada
+  yang mereproduksi keempat angka naskah. Urutan antar-aturan tetap sama.
+- **Jumlah sel** (naskah 1.292 sel / 235 sel EV / 129 belum terlayani / 901 pemilik;
+  hitung ulang 1.295 / 238 / 132 / 908). Empat jangkar grid dicoba (`floor`, `round`,
+  sudut bbox, titik minimum); jumlah sel EV selalu 238, jadi selisihnya ada pada himpunan
+  titik pelanggan yang dipakai naskah, bukan pada grid.
+
+## papers/library — perpustakaan naskah
+
+`build.py` mengubah `papers/*.md` dan berkas `.docx` menjadi HTML siap baca, memberi
+indeks stabil `data-b` pada tiap blok, lalu menulis katalog + isi ke `library.json`.
+Metadata tiap naskah ada pada konstanta `PAPERS` di dalam `build.py`. **Perbarui di sana**,
+bukan di `library.json`. Konstanta lain di berkas yang sama:
+
+| Konstanta | Isi |
+|---|---|
+| `CATEGORIES` | kategori tema + warnanya |
+| `PLANNED_PAPERS` | naskah rencana yang belum punya manuskrip — halaman bacanya dibangun dari brief oleh `brief_html()` |
+| `POSTER_HTML` | isi poster, ditulis ulang (lihat catatan poster di bawah) |
+| `PHD` | judul disertasi, program, pembimbing, argumen, tulang punggung data |
+| `PARTS` | empat bagian disertasi (RQ1–RQ4) dan naskah yang dipetakan ke tiap bagian |
+| `SIDE_STREAM` | naskah di luar keempat bagian |
+| `MILESTONES` | linimasa milestone; kolom terakhir = tautan opsional |
+| `OUTPUTS` | luaran yang diproduksi selama PhD |
+| `PLAN` | rencana submisi per kuartal |
+
+Persentase bagian **dihitung**, bukan diketik: `PARTS[i]["pct"]` adalah rata-rata `pct`
+naskah yang dipetakan ke bagian itu, dan cincin progres di panel atas adalah rata-rata
+`pct` seluruh naskah dalam pipeline. Memperbarui `pct` satu naskah otomatis menggerakkan
+progres bagian dan progres keseluruhan.
+
+Lima belas naskah (dua belas bernaskah, tiga masih brief rencana), empat kategori:
+
+| Kategori | Naskah |
+|---|---|
+| Akses & keadilan infrastruktur pengisian | Paper 1 (equity & perception) · Paper 2 (coverage to capability) · CUPUM 2027 Bab 1–3 |
+| Jaringan distribusi & perencanaan | CIRED 2027 Capacity maps · CIRED 2027 Energy forecast → network load |
+| Emisi & dekarbonisasi | Tailpipe to smokestack · Captive generation & CBAM |
+| Model bisnis, pasar & kebijakan | ASEAN comparative · Balance sheet problem (battery swapping) |
+
+Tiga bab buku **CUPUM 2027 — Future Cities in the Era of AI** (`cupum-objective`,
+`cupum-sparsity`, `cupum-participation`) dibangun oleh `chapter_html()`, bukan langsung oleh
+`docx_to_html()`: ketiganya berbagi bentuk kepala yang sama (baris 1 seri buku, baris 2 judul,
+baris 3–5 penulis) yang dijadikan `<h2>` + blok penulis, dan **empat gambarnya diekstrak** ke
+`papers/library/media/<id>/fig1..4.png` lalu ditampilkan sebagai `<img>` (klik untuk memperbesar).
+
+Ekstraksi gambar itu opsional dan berlaku untuk `.docx` mana pun: berikan
+`docx_to_html(path, media=(dir_tujuan, prefiks_url))`. Naskah `.docx` lain masih memakai
+placeholder teks `[gambar: …]` — tinggal diberi argumen `media` bila gambarnya ingin ikut tampil.
+
+Tiap naskah membawa **brief riset** yang tampil di kartu dan di kepala pembaca: `goal`
+(tujuan), `finding` (temuan kunci), `method`, `data`, dan `abstract`. Abstrak **tidak
+ditulis tangan** — `abstract_of()` mengambil paragraf setelah heading *Abstract* /
+*Summary of Research* dari naskahnya sendiri (baris *Keywords* dibuang), dan build gagal bila
+tidak ketemu.
+
+Kolom `venue` adalah rencana publikasi; `venue_src` mencatat asalnya. Dua naskah
+(*Tailpipe to smokestack*, *Captive generation & CBAM*) tidak menyebut sasaran di
+naskahnya, jadi sasarannya **usulan** — ditandai lencana merah pada kartu dan tabel
+"Rencana publikasi", dan tinggal diganti di `build.py`.
+
+Fitur tinjauan pembimbing di tab: sorot kalimat → **Komentari** (komentar tertambat ke
+blok) atau **Tandai** (penanda kuning); komentar tampil di rel kanan, bisa ditandai
+selesai atau dihapus; tombol **⬇ Unduh** menghasilkan `.json` (untuk dimuat balik) dan
+`.md` (untuk dibaca manusia); tombol **⬆ Muat** menggabungkan berkas komentar dari
+peninjau lain.
+
+### Unggah naskah & penyimpanan bersama
+
+Tombol **📤 Unggah naskah baru** menerima `.docx` / `.md` / `.txt`. Berkas diparse **di
+peramban** (docx lewat mammoth.js, markdown lewat padanan JS dari `build.py`), diberi
+indeks blok `data-b` yang sama dengan naskah bawaan, lalu disimpan.
+
+Tab bekerja dalam dua mode, dipilih otomatis lewat `GET /api/papers`:
+
+| Mode | Kapan | Naskah unggahan | Komentar |
+|---|---|---|---|
+| **Lokal** | env Vercel belum diatur | `localStorage` peramban pengunggah | `localStorage` peramban peninjau |
+| **Bersama** | env Vercel sudah diatur | tabel `papers` + bucket `papers` di Supabase | tabel `paper_comments` — terlihat semua peninjau |
+
+Mengaktifkan mode bersama:
+
+1. Jalankan `papers/library/schema.sql` pada proyek Supabase yang dipilih (SQL Editor).
+   Skema membuat `papers`, `paper_comments`, bucket publik `papers`, dan kebijakan RLS:
+   anon boleh **baca** semua serta **tulis komentar**; **unggah naskah hanya lewat kunci
+   layanan** di `api/papers.js`.
+2. Atur env var di Vercel (Project → Settings → Environment Variables), lalu redeploy:
+
+   | Var | Isi |
+   |---|---|
+   | `SUPABASE_URL` | `https://<ref>.supabase.co` |
+   | `SUPABASE_ANON_KEY` | kunci publik (anon / `sb_publishable_…`) — dikirim ke klien |
+   | `SUPABASE_SERVICE_KEY` | kunci `service_role` — hanya dipakai server-side untuk unggah |
+   | `PAPERS_UPLOAD_KEY` | kata sandi yang diketik pengunggah di form |
+
+`api/papers.js` mengikuti pola `api/chat.js`: kunci hanya hidup di env server, tidak
+pernah masuk repositori atau ke peramban (kecuali kunci anon, yang memang publik dan
+dibatasi RLS). Unggahan dibatasi 20 MB per berkas; `id` naskah harus slug
+(`^[a-z0-9][a-z0-9-]{1,60}$`) dan unggahan dengan `id` sama akan menimpa.
+
+Naskah bawaan di `build.py` tetap statis dan selalu tampil; naskah unggahan digabung
+setelahnya. Mengunggah manuskrip dengan `id` yang sama dengan naskah rencana
+(mis. `rq3-causal`) akan menimpanya, sehingga brief-nya berganti menjadi naskah sungguhan.
+
+### Poster
+
+Poster tidak diparse otomatis: tata letak PDF-nya berkolom dengan tracking huruf lebar,
+sehingga ekstraksi teks tidak terbaca andal. Isinya ditulis ulang sebagai konstanta
+`POSTER_HTML`, dan halaman PNG hasil render disertakan supaya pembaca selalu bisa
+memeriksa sumber aslinya. Bila posternya berubah, render ulang PNG-nya:
+
+```bash
+python3 -c "import pymupdf; d=pymupdf.open('papers/library/files/Poster_Bayesian_Spatial_Equity_BAM2026.pdf'); \
+  d[0].get_pixmap(dpi=150).save('papers/library/files/poster_bayesian_2026.png')"
+```
