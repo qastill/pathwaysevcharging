@@ -73,7 +73,9 @@ def md_to_html(text):
             while i < len(lines) and re.match(r"^\s*([-*+]|\d+\.)\s+", lines[i] or ""):
                 cur = re.sub(r"^\s*([-*+]|\d+\.)\s+", "", lines[i].rstrip())
                 i += 1
-                while i < len(lines) and lines[i].startswith("    ") and \
+                # sambungan butir: markdown memperlakukan baris terindentasi berapa pun
+                # sebagai lanjutan butir sebelumnya, bukan sebagai paragraf baru
+                while i < len(lines) and re.match(r"^ +\S", lines[i] or "") and \
                         not re.match(r"^\s*([-*+]|\d+\.)\s+", lines[i]):
                     cur += " " + lines[i].strip()
                     i += 1
@@ -222,16 +224,20 @@ CATEGORIES = {
 }
 
 
-def abstract_of(html):
+def abstract_of(doc):
     """Ambil paragraf abstrak apa adanya dari HTML naskah (sampai heading berikutnya)."""
-    m = re.search(r"<h[2-6][^>]*>\s*(Abstract|Structured abstract[^<]*|Summary of Research)\s*</h[2-6]>(.*?)(?=<h[2-6]|$)",
-                  html, re.S | re.I)
+    m = re.search(r"<h[2-6][^>]*>\s*(Abstract|Structured abstract[^<]*|Summary of Research|"
+                  r"Ringkasan eksekutif[^<]*)\s*</h[2-6]>(.*?)(?=<h[2-6]|$)",
+                  doc, re.S | re.I)
     if not m:
         return ""
-    paras = [re.sub(r"<[^>]+>", "", x).strip() for x in re.findall(r"<p[^>]*>(.*?)</p>", m.group(2), re.S)]
+    # butir daftar ikut diambil: pada ringkasan yang berstruktur, isinya justru ada di sana
+    paras = [re.sub(r"<[^>]+>", "", x).strip()
+             for x in re.findall(r"<(?:p|li)[^>]*>(.*?)</(?:p|li)>", m.group(2), re.S)]
     # baris kata kunci mengekor abstrak di beberapa naskah — bukan bagian abstraknya
     txt = " ".join(x for x in paras if x and not re.match(r"^Keywords?\s*[:.]", x, re.I))
-    return re.sub(r"\s+", " ", txt).strip()
+    # abstrak dipakai sebagai teks polos di kartu perpustakaan -- entitas HTML dikembalikan
+    return html.unescape(re.sub(r"\s+", " ", txt).strip())
 
 
 FILES = "papers/library/files/"
@@ -747,6 +753,38 @@ PAPERS = [
               "Tambahkan discrete-choice experiment untuk kesediaan host dan pengemudi",
               "Sitasi nyata untuk literatur platform P2P charting dan desain tarif dua bagian"],
     ),
+    dict(
+        id="dipcom-id", n=14, category="akses", tags=["akses", "jaringan", "bisnis"],
+        title="DiPCOM-ID — Digital and data-driven planning and management of parking and modular charging for shared light-electric mobility in Indonesia: a twinning proposal",
+        short="DiPCOM-ID — proposal proyek kembar mikromobilitas berbagi",
+        kind="Project proposal", venue="Belum ditetapkan — skema riset kolaboratif 36 bulan",
+        alt="Matching fund nasional · kemitraan riset Australia–Indonesia · kemitraan inovasi mobilitas perkotaan Eropa",
+        venue_src="belum ditetapkan",
+        status="draft", stage="Draft proposal lengkap — tidak ada mitra yang sudah dihubungi; seluruh peran konsorsium masih usulan", pct=40,
+        target="Kunci call & mitra dulu (2027)", lead="Qashtalani Haramaini",
+        goal="Menggeneralisasikan metode DiPCOM (Chalmers / Drive Sweden) menjadi formulasi dua-rezim untuk Indonesia: mikromobilitas sewa bebas-parkir yang tempat berhentinya DIBENTUK oleh letak modul, dan armada motor listrik yang tempat istirahatnya sudah ditentukan rumah pengemudi dan tidak tercatat di mana pun — lalu menguji apakah satu instrumen perencanaan dapat melayani keduanya.",
+        finding="Tujuan optimasi yang sama menghasilkan logika penempatan yang berlawanan: Rezim A adalah facility location dengan permintaan terinduksi (penempatan membentuk sebarannya sendiri — masalah titik tetap), Rezim B adalah penutupan wilayah atas medan permintaan laten yang harus diestimasi lebih dulu. Metode DiPCOM berpindah, masalah DiPCOM tidak: kekacauan trotoar adalah persoalan enklave di sini karena Permenhub 45/2020 mengurung skuter listrik pada lajur khusus dan kawasan tertentu, sementara persoalan Indonesia yang sebenarnya adalah beban pengisian armada yang tak terlihat mendarat di jaringan tegangan rendah perumahan. Satu perangkat keras 'modular charging' duduk di tiga kotak hukum berbeda tergantung siapa pemilik kendaraan dan siapa pemilik elektronnya. Lapisan jaringan sudah dipegang tim (41.129 trafo, 100.782 sesi, 3.694 sambungan rumah); yang hilang persis satu lapisan — permintaan mikromobilitas.",
+        data=["Sudah dipegang: 41.129 catatan pembebanan trafo distribusi layak pakai + 182 trafo GI / 9.790 MVA",
+              "Sudah dipegang: 100.782 sesi pengisian bermeter, 329 stasiun, Maret 2026",
+              "Sudah dipegang: 3.694 sambungan home charging tergeokode ke 231 kecamatan / 695 kelurahan",
+              "BELUM ADA (WP1): telemetri perjalanan & baterai operator untuk kedua rezim",
+              "BELUM ADA (WP1): register tempat istirahat armada roda dua"],
+        method=["Formulasi dua-rezim: facility location dengan permintaan terinduksi (A) vs penutupan atas permintaan laten (B)",
+                "Estimasi permintaan laten dengan koreksi capture, perluasan model hierarkis tim dari stasiun ke armada",
+                "Optimasi penempatan sadar-jaringan dengan headroom sebagai kendala keras berharga kWh/bulan",
+                "Pemetaan tiga kotak hukum + transposisi arsitektur tarif ruang-waktu ke mikromobilitas",
+                "Dua pilot kota, satu per rezim; penilaian keadilan atas populasi, bukan atas pengguna yang tercatat"],
+        tabs=["capacity", "p2p", "jaringan"],
+        html=md_to_html(rd("papers/paper4_dipcom_id_proposal.md")),
+        files=[["Proposal (.md)", "papers/paper4_dipcom_id_proposal.md"]],
+        todo=["Kunci dua kota pilot dan minta surat minat dari masing-masing",
+              "Amankan minimal satu perjanjian berbagi data operator per rezim SEBELUM submit, bukan sesudah",
+              "Hubungi tim DiPCOM (Chalmers) — apakah ada minat kembaran, dan dengan syarat apa",
+              "Pilih call pendanaan dan periksa apakah koordinator non-Eropa diizinkan",
+              "Verifikasi seluruh rujukan regulasi §5 (UU 30/2009, Permen ESDM 1/2023, Permenhub 45/2020, UU 27/2022) terhadap naskah aslinya",
+              "Bangun anggaran dari bawah bersama mitra — angka sekarang hanya bentuk, belum dihitung",
+              "Putuskan: apakah proposal tetap berdiri bila Rezim A dibuang seluruhnya (jadi proposal armada saja)"],
+    ),
 ]
 
 PLAN = [
@@ -760,6 +798,7 @@ PLAN = [
     ["2026 Q4", "CUPUM 2027 — Bab 3: From access to use", "Tinjauan pembimbing · konfirmasi tenggat bab buku", "cupum-participation"],
     ["2027 Q1", "Tailpipe to smokestack", "Tetapkan jurnal · submit", "tailpipe"],
     ["2027 Q1", "Captive generation & CBAM", "Tetapkan jurnal · submit", "cbam"],
+    ["2027 Q1", "DiPCOM-ID — proposal proyek kembar", "Kunci kota pilot, operator & call pendanaan", "dipcom-id"],
     ["2027 Q1", "Paper 3 — P2P tanpa jual-beli listrik", "Verifikasi rujukan hukum & tolok ukur modal · submit Energy Policy", "p2p"],
     ["2027 Q1", "Paper 2 — Coverage to capability", "Validasi model siting · submit SCS", "siting"],
     ["2027 Q2", "CIRED 2027 — presentasi (2 makalah)", "Perbaikan pasca-tinjauan", "cired2027"],
@@ -787,7 +826,7 @@ def brief_html(p):
 
 PLANNED_PAPERS = [
     dict(
-        id="rq1-exante", n=14, category="akses", tags=["akses"], part="P1",
+        id="rq1-exante", n=15, category="akses", tags=["akses"], part="P1",
         part_label="Part 1 — From Latent Demand to Right-Sized Supply",
         title="Ex-ante prediction of station-level energy sales",
         short="Prediksi ex-ante penjualan energi per stasiun (RQ1)",
@@ -812,7 +851,7 @@ PLANNED_PAPERS = [
               "Unggah manuskripnya ke perpustakaan ini begitu siap ditinjau"],
     ),
     dict(
-        id="rq3-causal", n=15, category="akses", tags=["akses", "bisnis"], part="P3",
+        id="rq3-causal", n=16, category="akses", tags=["akses", "bisnis"], part="P3",
         part_label="Part 3 — Create or Redistribute Demand?",
         title="Does building more charging create or redistribute demand?",
         short="Menciptakan atau memindahkan permintaan? (RQ3)",
@@ -839,7 +878,7 @@ PLANNED_PAPERS = [
               "Tunggu panel pasca-ekspansi cukup panjang sebelum estimasi"],
     ),
     dict(
-        id="rq4-synthesis", n=16, category="akses", tags=["akses"], part="P4",
+        id="rq4-synthesis", n=17, category="akses", tags=["akses"], part="P4",
         part_label="Part 4 — Inequity & Inequality",
         title="Inequity and inequality in charging access: horizontal vs vertical equity",
         short="Ketidakadilan vs ketimpangan — sintesis & kerangka kebijakan (RQ4)",
