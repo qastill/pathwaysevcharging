@@ -714,6 +714,39 @@ PAPERS = [
               "Uji ketahanan audit cakupan bila situs operator swasta dimasukkan",
               "Jadikan audit cakupan prosedur baku sebelum sentimen hasil scraping dipakai dalam perencanaan"],
     ),
+    dict(
+        id="p2p", n=13, category="bisnis", tags=["bisnis", "akses", "jaringan"],
+        title="Charging without selling electricity: a parking-and-service fee architecture for peer-to-peer EV charging under a single-buyer electricity regime",
+        short="P2P tanpa jual-beli listrik — arsitektur biaya parkir & jasa",
+        kind="Journal article", venue="Energy Policy (Q1)",
+        alt="Energy Research & Social Science · Utilities Policy · Transport Policy",
+        venue_src="dinyatakan di naskah",
+        status="draft", stage="Draft lengkap — rujukan hukum & tolok ukur modal perlu verifikasi", pct=60,
+        target="Q2 2027", lead="Qashtalani Haramaini",
+        goal="Menguji apakah pasar pengisian peer-to-peer dapat dibangun di Indonesia tanpa jual-beli energi — karena penyediaan tenaga listrik untuk umum adalah kegiatan berizin — lalu mengukur akibatnya pada harga, pendapatan host, ekonomi platform, pendapatan PLN, beban puncak jaringan, dan keadilan spasial.",
+        finding="Seluruh bisnisnya hidup dalam pita sewa Rp 8.328–16.981/jam pada 7 kW yang kedua tepinya ditetapkan tarif di luar kendali pasar; harga berbasis waktu punya lantai sehingga baru mengalahkan SPKLU di atas dwell impas 1,44 jam (9,3 kWh) — struktural produk menginap, bukan isi cepat. Karena pendapatan host per jam dan bukan per kWh, insentifnya keterisian bukan perputaran: kendala hukumnya justru menyelaraskan kepentingan pribadi dengan kepentingan sistem. 2.181 charger rumah terpasang menyimpan 2,96 GWh/bulan kapasitas malam menganggur — 1,31× keluaran seluruh jaringan publik — dan 56,8 % energi SPKLU tersubstitusi. PLN untung (pada 20 % penetrasi, modal & O&M terhindar Rp 8,08 M/th melawan dilusi Rp 3,66 M/th). Tetapi host lebih terkonsentrasi daripada jaringan publik (Gini 0,599 vs 0,264; ρ = 0,73): P2P instrumen efisiensi, bukan instrumen keadilan.",
+        data=["100.782 sesi bermeter / 2,26 GWh / Rp 5,89 M / 329 SPKLU, Maret 2026",
+              "3.694 permohonan home charging (2.181 selesai) tergeokode ke 695 kelurahan, Nov 2025–Jun 2026",
+              "Dekomposisi tarif: komponen energi Rp 2.466,75 + PPJ per pemda",
+              "Katalog 25 EV pasar Indonesia: daya onboard charger AC per merek",
+              "BPS: populasi 27 kota/kabupaten"],
+        method=["Turunan tertutup arsitektur biaya: lantai harga, dwell impas, pita sewa yang layak",
+                "Uji kedekatan situs–host (1/2/3/5/10 km) + corong substitusi tiga penyaring",
+                "Model finansial empat sisi: host, pengemudi, platform, PLN/DSO",
+                "Pergeseran beban puncak 17.00–22.00 ke jendela diskon malam",
+                "Gini & Lorenz terhadap populasi untuk situs, energi, dan host; korelasi peringkat Spearman"],
+        tabs=["p2p", "equity", "locint"],
+        html=md_to_html(rd("papers/paper3_p2p_charging.md")),
+        files=[["Naskah (.md)", "papers/paper3_p2p_charging.md"],
+               ["Payload analisis (.json)", "papers/p2p/p2p.json"],
+               ["Pipeline analisis (.py)", "papers/p2p/prepare.py"]],
+        todo=["Periksa seluruh rujukan pasal (UU 30/2009, UU 6/2023, PP 5/2021, Permen ESDM 1/2023) terhadap naskah aslinya",
+              "Kunci status diskon home charging 30 % — promosi bertanggal atau tarif struktural",
+              "Ganti tolok ukur modal indikatif (Rp 1,2 M/situs, Rp 96 jt/th O&M, Rp 18 jt/wallbox) dengan angka terverifikasi",
+              "Koreksi penilaian situs terhindar dari keluaran rata-rata ke keluaran marginal",
+              "Tambahkan discrete-choice experiment untuk kesediaan host dan pengemudi",
+              "Sitasi nyata untuk literatur platform P2P charting dan desain tarif dua bagian"],
+    ),
 ]
 
 PLAN = [
@@ -727,6 +760,7 @@ PLAN = [
     ["2026 Q4", "CUPUM 2027 — Bab 3: From access to use", "Tinjauan pembimbing · konfirmasi tenggat bab buku", "cupum-participation"],
     ["2027 Q1", "Tailpipe to smokestack", "Tetapkan jurnal · submit", "tailpipe"],
     ["2027 Q1", "Captive generation & CBAM", "Tetapkan jurnal · submit", "cbam"],
+    ["2027 Q1", "Paper 3 — P2P tanpa jual-beli listrik", "Verifikasi rujukan hukum & tolok ukur modal · submit Energy Policy", "p2p"],
     ["2027 Q1", "Paper 2 — Coverage to capability", "Validasi model siting · submit SCS", "siting"],
     ["2027 Q2", "CIRED 2027 — presentasi (2 makalah)", "Perbaikan pasca-tinjauan", "cired2027"],
 ]
@@ -753,7 +787,7 @@ def brief_html(p):
 
 PLANNED_PAPERS = [
     dict(
-        id="rq1-exante", n=13, category="akses", tags=["akses"], part="P1",
+        id="rq1-exante", n=14, category="akses", tags=["akses"], part="P1",
         part_label="Part 1 — From Latent Demand to Right-Sized Supply",
         title="Ex-ante prediction of station-level energy sales",
         short="Prediksi ex-ante penjualan energi per stasiun (RQ1)",
@@ -778,7 +812,7 @@ PLANNED_PAPERS = [
               "Unggah manuskripnya ke perpustakaan ini begitu siap ditinjau"],
     ),
     dict(
-        id="rq3-causal", n=14, category="akses", tags=["akses", "bisnis"], part="P3",
+        id="rq3-causal", n=15, category="akses", tags=["akses", "bisnis"], part="P3",
         part_label="Part 3 — Create or Redistribute Demand?",
         title="Does building more charging create or redistribute demand?",
         short="Menciptakan atau memindahkan permintaan? (RQ3)",
@@ -805,7 +839,7 @@ PLANNED_PAPERS = [
               "Tunggu panel pasca-ekspansi cukup panjang sebelum estimasi"],
     ),
     dict(
-        id="rq4-synthesis", n=15, category="akses", tags=["akses"], part="P4",
+        id="rq4-synthesis", n=16, category="akses", tags=["akses"], part="P4",
         part_label="Part 4 — Inequity & Inequality",
         title="Inequity and inequality in charging access: horizontal vs vertical equity",
         short="Ketidakadilan vs ketimpangan — sintesis & kerangka kebijakan (RQ4)",

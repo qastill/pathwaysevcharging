@@ -1,10 +1,11 @@
 # Naskah & perpustakaan
 
-Dua tab dashboard dibangun dari folder ini:
+Tiga tab dashboard dibangun dari folder ini:
 
 | Tab | Sumber | Payload |
 |---|---|---|
 | 🔌 **Capacity Maps** | `papers/capacity/` | `capacity.json` → `D.cap` |
+| 🤝 **P2P Charging** | `papers/p2p/` | `p2p.json` → `D.p2p` |
 | 📚 **Perpustakaan** | `papers/library/` | `library.json` → `D.lib` |
 | 🌏 ASEAN Paper | `papers/asean/` | — (statis, lihat `papers/asean/inject.py`) |
 
@@ -14,14 +15,46 @@ Dua tab dashboard dibangun dari folder ini:
 pip install openpyxl
 
 python3 papers/capacity/prepare.py   # data mentah PLN -> papers/capacity/capacity.json
+python3 papers/p2p/prepare.py        # data mentah PLN -> papers/p2p/p2p.json
 python3 papers/library/build.py      # naskah md/docx -> papers/library/library.json
-python3 papers/inject_papers.py      # sisipkan/perbarui kedua tab di index.html
+python3 papers/inject_papers.py      # sisipkan/perbarui ketiga tab di index.html
 ```
 
 `inject_papers.py` **idempoten**: blok lama dicopot lebih dulu, jadi aman dijalankan
 berkali-kali tanpa `git checkout index.html`. Batas blok ditandai
-`<!-- CAP:BEGIN/END -->`, `<!-- LIB:BEGIN/END -->` (markup) dan
-`/* CAP:BEGIN/END */`, `/* LIB:BEGIN/END */` (skrip).
+`<!-- CAP:BEGIN/END -->`, `<!-- P2P:BEGIN/END -->`, `<!-- LIB:BEGIN/END -->` (markup) dan
+`/* CAP:BEGIN/END */`, `/* P2P:BEGIN/END */`, `/* LIB:BEGIN/END */` (skrip).
+
+## papers/p2p — Charging without selling electricity
+
+Naskah: `papers/paper3_p2p_charging.md`. `prepare.py` menghasilkan seluruh angkanya dari
+berkas mentah di akar repositori (`Detail Transaksi SPKLU Jawa Barat - Maret 2026.csv`,
+`Data pelanggan EV.txt`, `analysis/price.json`) dalam tujuh blok:
+
+| Blok | Isi |
+|---|---|
+| A | pasar dasar — 100.782 sesi, harga all-in Rp 2.608,39/kWh, profil jam |
+| B | pasokan host — 3.694 permohonan home charging, kapasitas malam menganggur |
+| C | permintaan tersubstitusi — corong tiga penyaring + uji kedekatan 1/2/3/5/10 km |
+| D | arsitektur tarif — pita sewa layak, lantai harga, dwell impas, risiko daya |
+| E | finansial empat sisi — host, pengemudi, platform, PLN/DSO |
+| F | jaringan — pergeseran beban puncak 17.00–22.00 ke jendela diskon malam |
+| G | keadilan — Gini & Lorenz situs vs energi vs host terhadap populasi |
+
+**Premis yang membedakannya:** di Indonesia penyediaan tenaga listrik untuk umum adalah
+kegiatan berizin, sehingga host tidak boleh menjual kWh. Transaksinya karena itu dialihkan
+ke **sewa parkir (Rp/jam) + jasa (Rp/sesi)**, dan seluruh sifat ekonominya —
+lantai harga, dwell impas, insentif keterisian alih-alih perputaran — mengikuti dari
+pengalihan itu.
+
+Dua kuantitas energi sengaja dipisah dan tidak boleh dicampur:
+
+* **kWh termeter** `E_m = P·t` — yang dicatat meter host dan dibayar host ke PLN;
+* **kWh baterai** `E_b = P·t·η` — yang diterima dan dinilai pengemudi.
+
+Parameter yang bertanda `[VERIFY]` di kepala `prepare.py` (tarif rumah, diskon malam,
+tolok ukur modal SPKLU dan wallbox, BPP Jawa-Bali, populasi BPS) menggerakkan tabel PLN
+dan tabel host — ubah di satu tempat itu, lalu jalankan ulang, dan seluruh tab ikut berubah.
 
 ## papers/capacity — CIRED 2027
 

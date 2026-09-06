@@ -1,4 +1,4 @@
-"""Sisipkan (atau perbarui) tab '🔌 Capacity Maps' dan '📚 Perpustakaan' di index.html.
+"""Sisipkan (atau perbarui) tab '🔌 Capacity Maps', '🤝 P2P Charging' dan '📚 Perpustakaan' di index.html.
 
 Idempoten: blok lama dicopot lebih dulu, jadi aman dijalankan berkali-kali
 tanpa `git checkout index.html`.
@@ -17,6 +17,12 @@ BLOCKS = [
          page="papers/capacity/page.html", js="papers/capacity/render.js",
          data=[("cap", "papers/capacity/capacity.json")],
          hook="\n if(tb.dataset.p==='capacity'&&window.initCapacity)setTimeout(window.initCapacity,80);"),
+    dict(key="p2p", tab='["p2p","\U0001f91d P2P Charging"]',
+         beg="<!-- P2P:BEGIN -->", end="<!-- P2P:END -->",
+         jsbeg="/* P2P:BEGIN */", jsend="/* P2P:END */",
+         page="papers/p2p/page.html", js="papers/p2p/render.js",
+         data=[("p2p", "papers/p2p/p2p.json")],
+         hook="\n if(tb.dataset.p==='p2p'&&window.initP2p)setTimeout(window.initP2p,80);"),
     dict(key="library", tab='["library","📚 Perpustakaan"]',
          beg="<!-- LIB:BEGIN -->", end="<!-- LIB:END -->",
          jsbeg="/* LIB:BEGIN */", jsend="/* LIB:END */",
@@ -46,13 +52,12 @@ def once(hay, needle):
 # ------------------------------------------------------------- 1) daftar tab
 anchor_tab = '["asean","🌏 ASEAN Paper"]'
 once(src, anchor_tab)
-src = src.replace(anchor_tab,
-                  anchor_tab + "," + BLOCKS[0]["tab"] + "," + BLOCKS[1]["tab"], 1)
+src = src.replace(anchor_tab, anchor_tab + "".join("," + b["tab"] for b in BLOCKS), 1)
 
 # --------------------------------------------------- 2) pemicu init saat tab dibuka
 hook_anchor = "if(tb.dataset.p==='jaringan'&&window.initGx)setTimeout(window.initGx,80);"
 once(src, hook_anchor)
-src = src.replace(hook_anchor, hook_anchor + BLOCKS[0]["hook"] + BLOCKS[1]["hook"], 1)
+src = src.replace(hook_anchor, hook_anchor + "".join(b["hook"] for b in BLOCKS), 1)
 
 # ------------------------------------------------------------- 3) markup halaman
 anchor_page = '<div class="page" id="p-summary">'
