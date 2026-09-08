@@ -219,6 +219,21 @@ def main():
                                    venue=("Jenis Titik Lokasi", "first")).reset_index()
     sp = sp[sp.lat.notna() & sp.lon.notna()].copy()
     geo = [e for e in ev if e["lat"] and e["lon"] and -8 < e["lat"] < -5 and 105 < e["lon"] < 109]
+
+    # --- bersihkan pin default geocoder sebelum apa pun dihitung --------------
+    # Rumah tangga berbeda tidak pernah berbagi koordinat enam desimal yang sama. Satu titik yang
+    # dipakai banyak pemohon dari banyak kabupaten berbeda adalah pin bawaan peta, bukan alamat.
+    PIN_MIN_N, PIN_MIN_KAB = 5, 3
+    byxy = {}
+    for e in geo:
+        byxy.setdefault((e["lat"], e["lon"]), []).append(e["kab"])
+    pins = {k: v for k, v in byxy.items()
+            if len(v) >= PIN_MIN_N and len(set(v)) >= PIN_MIN_KAB}
+    pinned = sum(len(v) for v in pins.values())
+    pinrows = [dict(lat=round(k[0], 6), lon=round(k[1], 6), n=len(v), kab=len(set(v)))
+               for k, v in sorted(pins.items(), key=lambda x: -len(x[1]))]
+    clean = [e for e in geo if (e["lat"], e["lon"]) not in pins]
+
     RES, KR = 7, 2
     edge = h3.average_hexagon_edge_length(RES, unit="km")
     reach = edge * (1 + 1.5 * KR)
@@ -226,49 +241,63 @@ def main():
     served = set()
     for c in cells:
         served |= set(h3.grid_disk(c, KR))
-    hev = {}
-    for e in geo:
-        c = h3.latlng_to_cell(e["lat"], e["lon"], RES)
-        hev[c] = hev.get(c, 0) + 1
-    uns = {c: n for c, n in hev.items() if c not in served}
+
+    def deserts_of(pop):
+        hev = {}
+        for e in pop:
+            c = h3.latlng_to_cell(e["lat"], e["lon"], RES)
+            hev[c] = hev.get(c, 0) + 1
+        uns = {c: n for c, n in hev.items() if c not in served}
+        return hev, uns
+
+    hev_raw, uns_raw = deserts_of(geo)
+    hev, uns = deserts_of(clean)
+    out_raw = 100 * sum(uns_raw.values()) / len(geo)
+    out = 100 * sum(uns.values()) / len(clean)
     S = np.array([[r.lat, r.lon] for r in sp.itertuples()])
     desert = []
     for c, n in sorted(uns.items(), key=lambda x: -x[1])[:12]:
         la, lo = h3.cell_to_latlng(c)
-        km = float(hav(la, lo, S[:, 0], S[:, 1]).min())
-        dki = la > -6.35 and 106.7 < lo < 107.0        # di luar wilayah kerja UID Jawa Barat
         desert.append(dict(cell=c, lat=round(la, 4), lon=round(lo, 4), owners=int(n),
-                           km=round(km, 1), boundary=bool(dki)))
-    own_uns = sum(uns.values())
-    own_uns_real = sum(n for c, n in uns.items()
-                       if not (h3.cell_to_latlng(c)[0] > -6.35 and 106.7 < h3.cell_to_latlng(c)[1] < 107.0))
+                           km=round(float(hav(la, lo, S[:, 0], S[:, 1]).min()), 1)))
     combos.append(dict(
         id="gurun", icon="🕳️", title="Gurun pengisian — heksagon yang punya mobil tetapi tidak punya charger",
-        question="Di mana pemilik EV tinggal terlalu jauh dari SPKLU mana pun?",
+        question="Di mana pemilik EV tinggal terlalu jauh dari SPKLU mana pun — dan berapa banyak "
+                 "\"gurun\" itu yang sebenarnya cuma alamat yang salah dipetakan?",
         sources=[dict(t="repo", id="kblbb", label="%d rumah pemilik EV tergeokode" % len(geo)),
                  dict(t="repo", id="spklu", label="%d situs SPKLU dengan koordinat" % len(sp)),
                  dict(t="cat", id="uber/h3", label="H3 — grid heksagonal hierarkis, resolusi %d" % RES),
                  dict(t="cat", id="aumvats/chargegap", label="ChargeGap — metode skor gurun pengisian")],
-        method="Rumah pemilik dan situs SPKLU di-indeks ke heksagon H3 resolusi %d (rusuk %.2f km). Sebuah "
-               "heksagon disebut terlayani bila ada SPKLU di dalam cincin k=%d (≈ %.1f km). Heksagon yang "
-               "memuat pemilik tetapi tidak terlayani adalah gurun pengisian." % (RES, edge, KR, reach),
-        kpi=[dict(v="%d" % len(hev), t="heksagon berpenghuni EV"),
-             dict(v="%d" % len(uns), t="heksagon gurun"),
-             dict(v="%.1f%%" % (100 * own_uns / len(geo)), t="pemilik di luar jangkauan"),
-             dict(v="%.1f%%" % (100 * own_uns_real / len(geo)), t="setelah batas wilayah dikoreksi")],
-        res=RES, edge=round(edge, 2), reach=round(reach, 1), deserts=desert,
-        insight="Cakupan Jawa Barat sudah rapat: hanya **%.1f%% pemilik EV** tinggal lebih dari %.1f km dari SPKLU. "
-                "Gurun terbesar dalam daftar mentah adalah artefak batas — %d pemilik di sana beralamat di DKI "
-                "Jakarta, yang stasiunnya tidak ada dalam berkas UID Jawa Barat. Setelah dikoreksi, gurun yang "
-                "sungguh-sungguh tersisa mengecil ke **%.1f%%**, dan letaknya bukan di pinggiran miskin melainkan di "
-                "**Cirebon timur, Majalengka dan Sukabumi selatan** — koridor antar-kota, bukan kantong perkotaan."
-                % (100 * own_uns / len(geo), reach, own_uns - own_uns_real, 100 * own_uns_real / len(geo)),
-        action="Masalah akses Jawa Barat sudah bukan *jarak ke charger terdekat*. Karena itu ukuran keadilan yang "
-               "mengikat bergeser dari cakupan ke **kualitas dan keterisian** — persis pergeseran yang diusulkan "
-               "Naskah 2 (dari cakupan ke kapabilitas).",
-        caveat="Rumah pemilik EV adalah proksi permintaan laten yang bias: ia hanya memuat pemohon home charging "
-               "PLN, bukan seluruh pemilik kendaraan listrik. Daftar SPKLU terbatas pada UID Jawa Barat, sehingga "
-               "heksagon di perbatasan DKI dan Banten tampak kosong padahal tidak.",
+        method="Pin default dibuang lebih dulu: satu koordinat yang dipakai ≥%d pemohon dari ≥%d kabupaten "
+               "berbeda bukan alamat rumah. Sisanya di-indeks ke heksagon H3 resolusi %d (rusuk %.2f km); "
+               "heksagon disebut terlayani bila ada SPKLU dalam cincin k=%d (≈ %.1f km), dan heksagon "
+               "berpenghuni yang tidak terlayani adalah gurun pengisian."
+               % (PIN_MIN_N, PIN_MIN_KAB, RES, edge, KR, reach),
+        kpi=[dict(v="%.1f%%" % out, t="pemilik di luar jangkauan %.1f km" % reach),
+             dict(v="%.1f%%" % out_raw, t="sebelum pin dibersihkan"),
+             dict(v="%d" % pinned, t="pemohon pada pin default"),
+             dict(v="%d" % len(uns), t="heksagon gurun")],
+        res=RES, edge=round(edge, 2), reach=round(reach, 1), deserts=desert, pins=pinrows,
+        pinned=pinned, hexes=len(hev), out=round(out, 2), out_raw=round(out_raw, 2),
+        insight="Gurun terbesar dalam data mentah ternyata bukan gurun. **%d pemohon** duduk persis di "
+                "%d koordinat yang sama di sekitar Monas, Jakarta Pusat — satu titik dipakai bersama oleh "
+                "pemohon dari **%d kabupaten berbeda**, yang alamat tertulisnya tersebar di Bogor, Depok, "
+                "Bandung dan Bekasi. Itu pin bawaan peta, bukan rumah. Setelah dibuang, pemilik yang benar-benar "
+                "di luar jangkauan %.1f km turun dari %.1f%% ke **%.1f%%**, dan sisanya terletak di "
+                "**koridor antar-kota Cirebon timur, Majalengka dan Sukabumi selatan** — bukan di kantong "
+                "perkotaan yang miskin."
+                % (pinned, len(pins), max(r["kab"] for r in pinrows), reach, out_raw, out),
+        action="Dua konsekuensi. Pertama, cakupan Jawa Barat sudah rapat, sehingga ukuran keadilan yang "
+               "mengikat bergeser dari cakupan ke **kualitas dan keterisian** — persis pergeseran yang "
+               "diusulkan Naskah 2. Kedua, **setiap analisis yang memakai koordinat KBLBB harus menyaring "
+               "pin ini lebih dulu**, termasuk Capacity Maps yang memakai 3.687 titik yang sama; tanpa itu "
+               "sebuah gurun palsu muncul di tengah Jakarta dan ikut menarik rekomendasi penempatan.",
+        caveat="Ambang pin (≥%d pemohon, ≥%d kabupaten) konservatif: titik dengan dua sampai empat pemohon "
+               "dibiarkan, sehingga sisa kesalahan geokode kecil masih ada — dua heksagon di sekitar Jakarta "
+               "Selatan masih memuat 14 pemilik yang alamat tertulisnya di Jawa Barat. Rumah pemilik EV juga "
+               "proksi permintaan laten yang bias: ia hanya memuat pemohon home charging PLN. Daftar SPKLU "
+               "terbatas pada UID Jawa Barat, sehingga heksagon di perbatasan DKI dan Banten tampak lebih "
+               "kosong daripada kenyataannya." % (PIN_MIN_N, PIN_MIN_KAB),
     ))
 
     # ============================================================ K4 — KUNCI STANDAR

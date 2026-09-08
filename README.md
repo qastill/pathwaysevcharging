@@ -38,7 +38,7 @@ dan GeoJSON jaringan Jawa–Bali — memakai pvlib, H3, dan spesifikasi Open EV 
 |---|---|
 | Tangga daya | charger terpasang 124 kW, armada mampu 89 kW, **yang mengalir 35 kW** — daya bukan pengikatnya |
 | Kebetulan surya | pengisian memuncak 13.00–16.00, **52%** energi bisa langsung dari PV tanpa baterai |
-| Gurun pengisian | hanya **1,4%** pemilik EV di luar jangkauan 5,6 km — masalah akses bergeser ke kualitas |
+| Gurun pengisian | gurun terbesar ternyata pin default geocoder; setelah dibersihkan hanya **1,9%** pemilik di luar jangkauan |
 | Kunci standar | CCS2 **91,4%** energi; CHAdeMO 791 kWh sebulan di 18 charger |
 | Kelekatan jaringan | situs dekat gardu induk menjual **4,6×** lebih banyak energi |
 | Sintesis karbon | PV di situs meniadakan **811 tCO₂/bulan**, puluhan kali lebih besar dari menggeser jam |

@@ -32,7 +32,7 @@ deterministik, H3 murni geometri, dan semua data lain ada di repositori.
 |---|---|---|---|---|
 | K1 | Tangga daya | 99.544 sesi, 3.694 KBLBB | Open EV Data | terpasang 124 kW → armada 89 kW → **terkirim 35 kW** |
 | K2 | Kebetulan surya | profil jam 2,26 GWh | pvlib, evcc | **52%** energi bisa langsung dari PV, tanpa baterai |
-| K3 | Gurun pengisian | SPKLU + rumah pemilik EV | uber/h3, ChargeGap | hanya **1,4%** pemilik di luar jangkauan 5,6 km |
+| K3 | Gurun pengisian | SPKLU + rumah pemilik EV | uber/h3, ChargeGap | 52 pemohon ternyata pin default; gurun nyata **1,9%**, bukan 3,3% |
 | K4 | Kunci standar | konektor pada transaksi | Open EV Data | CCS2 **91,4%**; CHAdeMO 791 kWh sebulan di 18 charger |
 | K5 | Kelekatan jaringan | 328 situs SPKLU | `data/grid-id`, OSRM (lanjutan) | situs terdekat gardu induk menjual **4,6×** lebih banyak |
 | K6 | Sintesis karbon | K2 + energi + `analysis/carbon.json` | Electricity Maps, pvlib | PV **811 tCO₂/bulan** vs geser jam 8–29 tCO₂ |
@@ -78,6 +78,12 @@ bergantung pada satu tebakan.
 * **Iradiasi langit-cerah** adalah batas atas; awan Maret memangkas tingkatnya, tetapi
   bentuk profil harian — yang menentukan pangsa kebetulan — jauh lebih stabil.
 * **Faktor emisi** adalah rata-rata subsistem Jawa Barat (0,6969 kg/kWh), bukan marjinal.
+* **Pin default geocoder** dibuang sebelum K3 dihitung: satu koordinat enam desimal yang dipakai
+  ≥5 pemohon dari ≥3 kabupaten berbeda bukan alamat rumah. Tiga titik di sekitar Monas menampung
+  52 pemohon yang alamat tertulisnya tersebar di Bogor, Depok, Bandung dan Bekasi. Ambangnya
+  konservatif, jadi titik dengan dua sampai empat pemohon sengaja dibiarkan. **Analisis lain yang
+  memakai koordinat KBLBB perlu menyaring hal yang sama** — termasuk `papers/capacity/`, yang
+  memakai 3.687 titik itu.
 
 ## Tautan silang
 

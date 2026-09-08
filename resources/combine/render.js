@@ -33,10 +33,13 @@ function chartFor(c){
    '<div class="ct" style="margin-top:14px">Swasembada menurut ukuran array PV (× energi harian)</div><div style="height:150px"><canvas id="kbSize"></canvas></div></div>';
  }
  if(c.id==='gurun'){
-  const rows=c.deserts.map(d=>`<tr><td>${d.lat.toFixed(2)}, ${d.lon.toFixed(2)}</td><td class="n">${d.owners}</td><td class="n">${d.km.toFixed(1)} km</td><td>${d.boundary?'<span class="warn">batas DKI</span>':''}</td></tr>`).join('');
-  return '<div class="kbchart"><div class="ct">Heksagon gurun terbesar (H3 res '+c.res+', rusuk '+c.edge+' km)</div>'+
-   '<table class="kt"><thead><tr><th>pusat heksagon</th><th style="text-align:right">pemilik EV</th><th style="text-align:right">SPKLU terdekat</th><th></th></tr></thead><tbody>'+rows+'</tbody></table>'+
-   '<div style="font-size:10.5px;color:var(--mut);margin-top:9px;line-height:1.6">Baris bertanda <span class="warn">batas DKI</span> adalah artefak: rumahnya di wilayah DKI Jakarta, yang stasiunnya tidak ada dalam berkas UID Jawa Barat.</div></div>';
+  const pins=c.pins.map(p=>`<tr><td>${p.lat.toFixed(6)}, ${p.lon.toFixed(6)}</td><td class="n">${p.n}</td><td class="n">${p.kab}</td></tr>`).join('');
+  const rows=c.deserts.map(d=>`<tr><td>${d.lat.toFixed(2)}, ${d.lon.toFixed(2)}</td><td class="n">${d.owners}</td><td class="n">${d.km.toFixed(1)} km</td></tr>`).join('');
+  return '<div class="kbchart"><div class="ct">Pin default yang dibuang <span class="warn">bukan alamat</span></div>'+
+   '<table class="kt"><thead><tr><th>koordinat</th><th style="text-align:right">pemohon</th><th style="text-align:right">kabupaten berbeda</th></tr></thead><tbody>'+pins+'</tbody></table>'+
+   '<div style="font-size:10.5px;color:var(--mut);margin:9px 0 4px;line-height:1.6">Satu koordinat enam desimal dipakai bersama pemohon dari belasan kabupaten — pin bawaan peta di sekitar Monas, bukan rumah. '+c.pinned+' pemohon dibuang sebelum gurun dihitung.</div>'+
+   '<div class="ct" style="margin-top:14px">Heksagon gurun terbesar setelah dibersihkan (H3 res '+c.res+', rusuk '+c.edge+' km)</div>'+
+   '<table class="kt"><thead><tr><th>pusat heksagon</th><th style="text-align:right">pemilik EV</th><th style="text-align:right">SPKLU terdekat</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
  }
  if(c.id==='standar'){
   const rows=c.stds.map(s=>`<tr><td><b>${esc(s.std)}</b></td><td class="n">${fmt(s.n)}</td><td class="n">${fmt(Math.round(s.kwh))}</td><td class="n">${s.pct}%</td><td class="n">${s.chargers}</td></tr>`).join('');
