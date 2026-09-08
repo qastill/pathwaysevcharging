@@ -1,0 +1,83 @@
+<div class="page" id="p-resources">
+<style>
+#p-resources .rshead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-resources .rshead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-resources .rshead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-resources .rshead h2 b{color:var(--gold)}
+#p-resources .rshead p{font-size:12.5px;color:#b3c0d8;line-height:1.65;max-width:860px}
+#p-resources .rsstats{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-resources .rsstats .s{min-width:110px}
+#p-resources .rsstats .n{font-family:Fraunces;font-size:22px;font-weight:700;color:var(--gold);line-height:1}
+#p-resources .rsstats .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-resources .rsgroups{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+#p-resources .rsg{padding:9px 15px;border-radius:12px;border:1px solid var(--line);background:#fff;cursor:pointer;font-weight:700;font-size:12.5px;color:var(--navy);display:flex;gap:8px;align-items:center}
+#p-resources .rsg .n{font-size:10px;background:#eef1f6;border-radius:20px;padding:1px 7px;color:var(--mut);font-weight:600}
+#p-resources .rsg.active{background:var(--navy);color:var(--gold);border-color:var(--navy)}#p-resources .rsg.active .n{background:rgba(255,255,255,.15);color:#fff}
+#p-resources .rscats{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#p-resources .rsc{padding:6px 12px;border-radius:20px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:11.5px;font-weight:600;color:#33405a;display:flex;gap:6px;align-items:center}
+#p-resources .rsc i{width:9px;height:9px;border-radius:50%;display:inline-block}
+#p-resources .rsc .n{font-size:10px;color:var(--mut)}
+#p-resources .rsc.active{border-color:var(--navy);background:#f3f6fb;color:var(--navy)}
+#p-resources .rssubs{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+#p-resources .rss{padding:4px 10px;border-radius:20px;border:1px dashed var(--line);background:#fff;cursor:pointer;font-size:11px;color:var(--mut)}
+#p-resources .rss.active{border-style:solid;border-color:var(--gold);color:var(--navy);background:#fffaef}
+#p-resources .rsinfo{background:linear-gradient(180deg,#fffaef,#fff7e3);border:1px solid #efe2b8;border-left:4px solid var(--gold);border-radius:10px;padding:11px 16px;font-size:12.5px;color:#6b5b1f;margin-bottom:13px;line-height:1.6}
+#p-resources .rsinfo b{color:var(--navy)}
+#p-resources .rsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:13px}
+#p-resources .rc{background:#fff;border:1px solid var(--line);border-radius:14px;padding:15px 17px;box-shadow:0 4px 14px rgba(10,23,51,.06);display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--line);position:relative}
+#p-resources .rc.feat{border-top-color:var(--gold)}
+#p-resources .rc .top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+#p-resources .rc .nm{font-family:Fraunces;font-size:14.5px;font-weight:600;color:var(--navy);line-height:1.3}
+#p-resources .rc .nm a{color:inherit;text-decoration:none}#p-resources .rc .nm a:hover{color:var(--blue)}
+#p-resources .rc .kind{font-size:9.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:#eef1f6;color:#4a5670;white-space:nowrap}
+#p-resources .rc .kind.repo{background:#e9f0fa;color:#1f4a86}#p-resources .rc .kind.dataset{background:#e6f5ec;color:#1d6b3c}
+#p-resources .rc .kind.portal{background:#fff1dc;color:#8a5a12}#p-resources .rc .kind.topic{background:#f1ecf8;color:#5b3f8a}
+#p-resources .rc .kind.org{background:#eef1f6;color:#33405a}#p-resources .rc .kind.standard{background:#fde9e7;color:#9a2f28}
+#p-resources .rc .path{font-size:10.5px;color:var(--mut);font-family:ui-monospace,Menlo,monospace;word-break:break-all}
+#p-resources .rc .cat{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;display:flex;gap:6px;align-items:center}
+#p-resources .rc .cat i{width:8px;height:8px;border-radius:50%;display:inline-block}
+#p-resources .rc .cat .sub{font-weight:600;color:var(--mut);text-transform:none;letter-spacing:0}
+#p-resources .rc .ds{font-size:12.5px;color:#33405a;line-height:1.55}
+#p-resources .rc .rl{font-size:11.5px;color:#5a4d22;background:#fffaef;border-left:3px solid var(--gold);padding:6px 9px;border-radius:6px;line-height:1.5}
+#p-resources .rc .chips{display:flex;flex-wrap:wrap;gap:5px}
+#p-resources .rc .ch{font-size:10px;border:1px solid var(--line);border-radius:20px;padding:2px 8px;color:#4a5670;background:#f8fafc}
+#p-resources .rc .th{color:#fff;border:none;font-weight:700}
+#p-resources .rc .tb{border-color:#c9d6ea;color:#1f4a86;background:#eef4fc;cursor:pointer}
+#p-resources .rc .tb:hover{background:#dfe9f9}
+#p-resources .rc .links{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;margin-top:auto;padding-top:6px;border-top:1px solid #f1f3f7}
+#p-resources .rc .links a{color:var(--blue);text-decoration:none;font-weight:600}#p-resources .rc .links a:hover{text-decoration:underline}
+#p-resources .rc .gh{display:flex;gap:10px;font-size:11px;color:var(--mut);min-height:14px}
+#p-resources .rc .gh b{color:var(--navy)}
+#p-resources .rsempty{padding:30px;text-align:center;color:var(--mut);font-size:13px;grid-column:1/-1}
+#p-resources .rsfoot{font-size:11px;color:var(--mut);margin-top:14px;line-height:1.6}
+#p-resources .rsfoot code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:10.5px}
+#p-resources .toolbar .cnt{font-size:12px;color:var(--mut);margin-left:auto}
+@media(max-width:980px){#p-resources .rsgrid{grid-template-columns:1fr}}
+</style>
+
+<div class="rshead">
+ <span class="tag">Database repositori · kode, data & alat</span>
+ <h2>🧰 Repositori Riset — <b>satu tempat</b> untuk semua sumber terbuka riset SPKLU</h2>
+ <p>Setiap repositori GitHub, dataset, portal, dan standar yang dipakai atau relevan untuk riset ini, dicatat <b>sekali</b> dan
+ diklasifikasikan: empat <b>lapisan domain</b> EV charging (lokasi → sesi → kendaraan → siting &amp; operasi), lalu <b>metode &amp; alat</b>,
+ lalu <b>riset &amp; penulisan</b>. Tiap entri diberi tema riset yang sama dengan Perpustakaan, jadi bisa disaring menurut naskah yang sedang dikerjakan.</p>
+ <div class="rsstats" id="rsStats"></div>
+</div>
+
+<div class="rsgroups" id="rsGroups"></div>
+<div class="rscats" id="rsCats"></div>
+<div class="rssubs" id="rsSubs"></div>
+
+<div class="toolbar">
+ <input id="rsSearch" placeholder="🔍 cari nama, deskripsi, tag, owner/repo…" style="min-width:260px">
+ <select id="rsKind"><option value="">Semua jenis</option><option value="repo">Repo GitHub</option><option value="org">Organisasi GitHub</option><option value="topic">Topic page</option><option value="dataset">Dataset</option><option value="portal">Portal / API</option><option value="standard">Standar</option></select>
+ <select id="rsTheme"><option value="">Semua tema riset</option></select>
+ <select id="rsSort"><option value="cat">Urut: kategori</option><option value="name">Urut: nama A–Z</option><option value="stars">Urut: ★ bintang</option></select>
+ <button class="mode-btn" id="rsFeat">⭐ Inti saja</button>
+ <button class="mode-btn active" id="rsStarsBtn">★ Muat statistik GitHub</button>
+ <button class="mode-btn" id="rsExport">⬇ Salin Markdown</button>
+ <span class="cnt" id="rsCount"></span>
+</div>
+<div class="rsinfo" id="rsCatInfo"></div>
+<div class="rsgrid" id="rsGrid"></div>
+<div class="rsfoot" id="rsFoot"></div>
+</div>
