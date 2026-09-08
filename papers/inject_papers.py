@@ -78,10 +78,11 @@ for b in BLOCKS:
 src = src[:idx] + inject + src[idx:]
 
 # ----------------------------------------------------------------- 5) renderer
-tail = "\n</script></body></html>"
-assert src.endswith(tail), "ekor index.html tidak seperti yang diharapkan"
+# renderer masuk ke blok <script> terakhir sebelum </body></html> (skrip mana pun yang ada di sana)
+m = re.search(r"\n</script>\s*</body>\s*</html>\s*$", src)
+assert m, "ekor index.html tidak seperti yang diharapkan"
 body = "".join(b["jsbeg"] + open(b["js"], encoding="utf-8").read() + b["jsend"] for b in BLOCKS)
-src = src[:-len(tail)] + body + tail
+src = src[:m.start()] + body + "\n</script>\n</body></html>\n"
 
 open("index.html", "w", encoding="utf-8").write(src)
 print("tab terpasang; ukuran index.html: %.0f KB" % (len(src) / 1024))
