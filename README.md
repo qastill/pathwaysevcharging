@@ -13,14 +13,36 @@ Tautan langsung ke tab: `index.html#tab=<id>` (mis. `#tab=resources`).
 | Grup | Tab |
 |---|---|
 | 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark · Socio-Economic · Spatial Equity · Perception |
-| 🗺️ Peta & Jaringan | Map · Location Intelligence · GeoSPKLU · EV × Jaringan |
+| 🗺️ Peta & Jaringan | Map · Location Intelligence · **Peta Ekuitas** · GeoSPKLU · EV × Jaringan |
 | 📚 Naskah & Perpustakaan | Perpustakaan · ASEAN Paper · Capacity Maps · P2P Charging · Summary — semua naskah/jurnal terdaftar di Perpustakaan ([`papers/`](papers/README.md)) |
 | 🌍 Open Source & Data Dunia | World EV Insight · Open Charge Map · EV Models · **Repositori Riset** · **Kombinasi** |
+
+## 🗺️ Peta Ekuitas — padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia
+
+[EV Equity Roadmap](https://evmap.climateplans.org/) mewarnai piksel 100 m di California dengan dua lapisan
+terpisah — **prioritas** (siapa yang paling butuh charger publik) dan **kelayakan** (di mana jaringan sanggup).
+Tab **Peta Ekuitas** membangun logika yang sama untuk seluruh Indonesia pada heksagon H3 res 6 (≈36 km²):
+populasi Kontur 2023 per heksagon, 3.212 SPKLU master nasional, 933 gardu induk + 4.052 ruas transmisi, dan
+indikator BPS provinsi. Skor dihitung di browser dari indikator mentah — bobot bisa digeser, lingkup provinsi/
+kabupaten (515) dipilih, hasil diekspor CSV. Rinciannya di [`equitymap/`](equitymap/README.md); intisari alat
+aslinya dan tabel transfer lapisan → data Indonesia ada di Perpustakaan (`papers/bacaan_evmap_equity_roadmap.md`).
+
+| Ukuran (nasional, bobot bawaan) | Nilai |
+|---|---|
+| Penduduk ≤10 km dari SPKLU operasional | **63,7 %** (PLN saja 62,6 %) |
+| Penduduk >25 km — gurun pengisian | **12,0 %** ≈ 33 juta jiwa |
+| Gini charger per kapita antar-kabupaten | 0,595 |
+| Zona *prioritas tinggi & layak* / *prioritas tinggi, jaringan lemah* | 53,2 jt / 26,8 jt jiwa |
+
+```bash
+pip install numpy openpyxl h3 shapely
+python3 equitymap/prepare.py && python3 equitymap/inject.py    # equitymap/fetch.py hanya bila input ingin dibangun ulang
+```
 
 ## 🧰 Repositori Riset — database sumber terbuka
 
 Satu database untuk semua repositori GitHub, dataset, portal, dan standar yang dipakai/relevan untuk riset
-(174 entri, 15 kategori, satu entri per sumber). Sumber kebenaran: [`resources/catalog.py`](resources/README.md);
+(177 entri, 15 kategori, satu entri per sumber). Sumber kebenaran: [`resources/catalog.py`](resources/README.md);
 tab *Global EV Data* dan *Open-Source Stack* yang lama dilebur ke sini supaya tidak ada daftar tautan ganda.
 
 ```bash
