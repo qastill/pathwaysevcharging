@@ -1,0 +1,70 @@
+<div class="page" id="p-combine">
+<style>
+#p-combine .kbhead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-combine .kbhead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-combine .kbhead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-combine .kbhead h2 b{color:var(--gold)}
+#p-combine .kbhead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:900px}
+#p-combine .kbhead p b{color:#e9d9a0;font-weight:600}
+#p-combine .kbmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-combine .kbmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-combine .kbmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-combine .kbnav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+#p-combine .kbn{padding:7px 13px;border-radius:20px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:12px;font-weight:600;color:#33405a}
+#p-combine .kbn:hover{border-color:var(--gold)}#p-combine .kbn.active{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+#p-combine .kb{background:#fff;border:1px solid var(--line);border-radius:16px;padding:24px 28px;margin-bottom:18px;box-shadow:0 4px 14px rgba(10,23,51,.06);border-top:3px solid var(--gold);scroll-margin-top:74px}
+#p-combine .kb h3{font-family:Fraunces;font-size:19px;color:var(--navy);margin:0 0 6px;line-height:1.3}
+#p-combine .kb .q{font-size:13px;color:var(--mut);font-style:italic;margin-bottom:16px;line-height:1.6}
+#p-combine .kb .src{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;align-items:center}
+#p-combine .kb .src .lbl{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);font-weight:700;margin-right:2px}
+#p-combine .sc{font-size:11px;border-radius:20px;padding:4px 11px;border:1px solid var(--line);background:#f8fafc;color:#4a5670;display:inline-flex;gap:6px;align-items:center}
+#p-combine .sc.repo{border-color:#c9d6ea;background:#eef4fc;color:#1f4a86}
+#p-combine .sc.cat{border-color:#e6cf8a;background:#fffaef;color:#8a6d16;cursor:pointer}
+#p-combine .sc.cat:hover{background:#fff3d4}
+#p-combine .sc b{font-weight:700}
+#p-combine .kpis4{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px}
+#p-combine .kpi4{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:linear-gradient(180deg,#fcfdff,#f6f8fc)}
+#p-combine .kpi4 .v{font-family:Fraunces;font-size:25px;font-weight:700;color:var(--navy);line-height:1.05}
+#p-combine .kpi4 .t{font-size:10.5px;color:var(--mut);margin-top:5px;line-height:1.4}
+#p-combine .kpi4:first-child{border-color:#e6cf8a;background:linear-gradient(180deg,#fffaef,#fff7e3)}
+#p-combine .kpi4:first-child .v{color:#8a6d16}
+#p-combine .kbbody{display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:start}
+#p-combine .kbchart{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:#fcfdff}
+#p-combine .kbchart .ct{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:10px}
+#p-combine .ins{border-left:4px solid var(--navy);background:#f6f8fc;border-radius:0 10px 10px 0;padding:14px 17px;font-size:13.5px;line-height:1.75;color:#26334d}
+#p-combine .ins b{color:var(--navy)}
+#p-combine .act{border-left:4px solid var(--gold);background:linear-gradient(180deg,#fffaef,#fff7e3);border-radius:0 10px 10px 0;padding:14px 17px;font-size:13px;line-height:1.7;color:#6b5b1f;margin-top:12px}
+#p-combine .act:before{content:"Konsekuensi praktis";display:block;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
+#p-combine .act b{color:var(--navy)}
+#p-combine details.mc{margin-top:14px;border-top:1px solid #f1f3f7;padding-top:10px}
+#p-combine details.mc summary{font-size:11.5px;color:var(--blue);cursor:pointer;font-weight:600;list-style:none}
+#p-combine details.mc summary::-webkit-details-marker{display:none}
+#p-combine details.mc summary:before{content:"▸ ";color:var(--gold)}
+#p-combine details.mc[open] summary:before{content:"▾ "}
+#p-combine details.mc .mb{font-size:12px;color:#4a5670;line-height:1.7;margin-top:9px}
+#p-combine details.mc .mb .k{font-size:9.5px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);font-weight:700;display:block;margin:9px 0 3px}
+#p-combine table.kt{width:100%;font-size:11.5px;border-collapse:collapse}
+#p-combine table.kt th{font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);text-align:left;padding:6px 6px;border-bottom:2px solid var(--line);cursor:default}
+#p-combine table.kt td{padding:5px 6px;border-bottom:1px solid #f4f6fa}
+#p-combine table.kt td.n{text-align:right;font-variant-numeric:tabular-nums}
+#p-combine .warn{background:#fdf2f0;border:1px solid #f2d5d1;color:#9a3f36;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:700}
+#p-combine .kbfoot{font-size:11px;color:var(--mut);line-height:1.7;margin-top:6px}
+#p-combine .kbfoot code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:10.5px}
+@media(max-width:980px){#p-combine .kbbody{grid-template-columns:1fr}}
+</style>
+
+<div class="kbhead">
+ <span class="tag">Kombinasi · data repo × sumber terbuka</span>
+ <h2>🔗 Kombinasi — apa yang keluar ketika <b>data kita disambungkan</b> ke sumber terbuka</h2>
+ <p>Katalog <b>Repositori Riset</b> menjawab <i>apa yang ada</i>. Halaman ini menjawab pertanyaan berikutnya:
+ <b>mana yang benar-benar bisa disambungkan ke data mentah repositori ini, dan apa yang keluar bila disambungkan.</b>
+ Enam kombinasi di bawah bukan ringkasan pustaka — seluruh angkanya dihitung ulang dari 99.544 transaksi SPKLU,
+ 3.687 rumah pemilik EV, dan GeoJSON jaringan Jawa–Bali, memakai pustaka yang ada di katalog
+ (pvlib, H3, metode ChargeGap, spesifikasi Open EV Data). Tiap temuan membawa metode, konsekuensi praktis,
+ dan batas keberlakuannya.</p>
+ <div class="kbmeta" id="kbMeta"></div>
+</div>
+
+<div class="kbnav" id="kbNav"></div>
+<div id="kbList"></div>
+<div class="kbfoot" id="kbFoot"></div>
+</div>

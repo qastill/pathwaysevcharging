@@ -143,4 +143,11 @@ window.initResources=function(){
   'Tema riset mengikuti kategori Perpustakaan; klik chip biru untuk lompat ke tab yang memakai sumber itu.';
  renderStats();renderAll();
 };
+/* dipakai tab Kombinasi: lompat ke sini dan langsung saring ke satu sumber */
+window.rsFind=function(q){
+ if(window.gotoTab)gotoTab('resources');
+ setTimeout(()=>{if(!R)return;S.group='';S.cat='';S.sub='';S.kind='';S.theme='';S.feat=false;S.q=q||'';
+  const el=$('rsSearch');if(el)el.value=S.q;const f=$('rsFeat');if(f)f.classList.remove('active');
+  const k=$('rsKind'),t=$('rsTheme');if(k)k.value='';if(t)t.value='';renderAll();},80);
+};
 })();

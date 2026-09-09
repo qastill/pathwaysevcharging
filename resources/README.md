@@ -12,6 +12,7 @@ diberi tema riset yang sama dengan Perpustakaan.
 | `page.html` | markup tab (`#p-resources`) |
 | `render.js` | renderer (`window.initResources`): filter grup → kategori → sub, pencarian, tema, jenis, urut, statistik GitHub, ekspor Markdown |
 | `inject.py` | penyisip idempoten ke `index.html` (tab, hook, markup, payload, skrip) |
+| `combine/` | [tab **🔗 Kombinasi**](combine/README.md) — hasil menyambungkan sumber terkatalog ke data mentah repositori |
 
 ## Urutan jalan
 
