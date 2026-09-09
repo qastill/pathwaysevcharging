@@ -52,6 +52,9 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 | Ekuitas vertikal | CI ~IPM **0,365** (pro-kaya), ~PDRB 0,212, ~kepadatan 0,47; kuintil termiskin 0,83 charger/100 rb, 21 % penduduknya >25 km |
 | Defisit kesetaraan | **+2.097 charger (+44 %)** di 402 kabupaten agar semua ≥ rata-rata 1,73/100 rb |
 | Uji 300 situs baru | aturan ekuitas mengorbankan 0,09 poin cakupan nasional, menambah **3,8 poin** bagi kuintil termiskin |
+| Struktur spasial | Moran's I charger/kapita **0,385** (akses 0,430): 28 kab/kota klaster HH (Jabodetabek–Bali) vs 49 kab klaster LL (11 jt jiwa, separuhnya Papua) |
+| Dinamika waktu | PLN menurunkan Gini **0,887 → 0,471** (2021–2024), lalu 0,506; mitra non-PLN menaikkannya ke **0,595** sambil menambah cakupan hanya 1 poin (tahun dari ID SPKLU, akurasi 93 %) |
+| Skenario kebijakan | Gini 0,4 = **+935 charger**, 0,3 = +1.793, 0,2 = +3.330 (water-filling); pada 1.000 situs, pemerataan penuh berbiaya 3,7 poin cakupan untuk 0,10 Gini — dan aturan cakupan melayani kuintil termiskin lebih cepat |
 
 ## 🅿️ Parkir × Charger — padanan ParkServe/ParkScore (Trust for Public Land) untuk SPKLU
 

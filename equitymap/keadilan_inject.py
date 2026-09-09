@@ -51,12 +51,19 @@ src = src.replace(anchor_page, BEG + "\n" + page + END + "\n" + anchor_page, 1)
 
 data_anchor = "Object.assign(D,{grid:"
 once(src, data_anchor)
-payload = open("equitymap/keadilan.json", encoding="utf-8").read().strip()
+import json as _json
+kd = _json.load(open("equitymap/keadilan.json", encoding="utf-8"))
+dyn_path = "equitymap/dinamika.json"
+if os.path.exists(dyn_path):                      # lanjutan §6–§8 (spasial · waktu · skenario), opsional
+    kd["dyn"] = _json.load(open(dyn_path, encoding="utf-8"))
+payload = _json.dumps(kd, ensure_ascii=False, separators=(",", ":"))
 src = src.replace(data_anchor, "Object.assign(D,{kd:%s});\n" % payload + data_anchor, 1)
 
 tail_re = re.compile(r"</body>\s*</html>\s*$")
 assert tail_re.search(src), "ekor index.html tidak seperti yang diharapkan"
 js = open("equitymap/keadilan_render.js", encoding="utf-8").read()
+if os.path.exists("equitymap/dinamika_render.js"):
+    js += "\n" + open("equitymap/dinamika_render.js", encoding="utf-8").read()
 block = "<script>\n" + JSBEG + js + JSEND + "\n</script>\n</body></html>\n"
 src = tail_re.sub(lambda m: block, src, count=1)
 

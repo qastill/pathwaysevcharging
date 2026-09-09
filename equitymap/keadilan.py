@@ -173,6 +173,54 @@ prov_rows = [dict(name=pi_name[i], pop=round(float(pop_p[i])), chargers=int(ch_p
                   within10=round(100 * w10_p[i] / pop_p[i], 1), beyond25=round(100 * b25_p[i] / pop_p[i], 1),
                   grdp=float(grdp[i]), hdi=float(hdi[i]), poverty=float(pov[i])) for i in range(len(PROVS)) if pop_p[i] > 0]
 
+# ------------------------------------------------------------------ 2b) ekuitas vertikal tingkat kabupaten (opsional)
+# Membutuhkan input/kabupaten_sosek.csv dari equitymap/sosek.py (tabel BPS: kemiskinan, IPM, pengeluaran per kapita).
+sosek = None
+_sp = os.path.join(HERE, "input", "kabupaten_sosek.csv")
+if os.path.exists(_sp):
+    _rows = {int(r["idx"]): r for r in csv.DictReader(open(_sp, encoding="utf-8"))}
+    _ok = [i for i, k in enumerate(KS) if k["idx"] in _rows and all(_rows[k["idx"]].get(c, "") != "" for c in ("poverty", "hdi", "expend"))]
+    if len(_ok) >= 100:
+        m = np.array(_ok)
+        pov_k = np.array([float(_rows[KS[i]["idx"]]["poverty"]) for i in _ok]); hdi_k = np.array([float(_rows[KS[i]["idx"]]["hdi"]) for i in _ok])
+        exp_k = np.array([float(_rows[KS[i]["idx"]]["expend"]) for i in _ok])
+        b25_k = np.array([KS[i]["beyond25"] for i in _ok]); w10_k_ = np.array([KS[i]["within10"] for i in _ok])
+        acc_m = pop_k[m] * w10_k_ / 100
+        ci_kpov, cc_kpov = concentration(pop_k[m], ch_k[m], -pov_k)
+        ci_khdi, cc_khdi = concentration(pop_k[m], ch_k[m], hdi_k)
+        ci_kexp, cc_kexp = concentration(pop_k[m], ch_k[m], exp_k)
+        ci_kacc, cc_kacc = concentration(pop_k[m], acc_m, exp_k)
+        # kuintil kabupaten menurut pengeluaran per kapita, tertimbang penduduk
+        oe = np.argsort(exp_k); cume = np.cumsum(pop_k[m][oe]) / pop_k[m].sum(); kq = []
+        for q in range(5):
+            sel = [oe[j] for j in range(len(oe)) if (q / 5) < cume[j] <= ((q + 1) / 5) or (q == 0 and cume[j] <= .2)]
+            if not sel: continue
+            sel = np.array(sorted(set(sel))); P = pop_k[m][sel].sum()
+            kq.append(dict(q=q + 1, n=len(sel), pop=round(float(P)), per100k=round(1e5 * ch_k[m][sel].sum() / P, 2),
+                           within10=round(float(np.average(w10_k_[sel], weights=pop_k[m][sel])), 1),
+                           beyond25=round(float(np.average(b25_k[sel], weights=pop_k[m][sel])), 1),
+                           expend=round(float(np.average(exp_k[sel], weights=pop_k[m][sel]))), poverty=round(float(np.average(pov_k[sel], weights=pop_k[m][sel])), 1),
+                           hdi=round(float(np.average(hdi_k[sel], weights=pop_k[m][sel])), 1),
+                           zero=int((ch_k[m][sel] == 0).sum())))
+        # CI dalam-provinsi (provinsi dengan ≥8 kabupaten bernilai)
+        prov_ci = []
+        for p in range(len(PROVS)):
+            sel = np.array([j for j, i in enumerate(_ok) if prov_k[i] == p])
+            if len(sel) < 8 or ch_k[m][sel].sum() == 0: continue
+            prov_ci.append(dict(name=pi_name[p], n=int(len(sel)), ci_expend=concentration(pop_k[m][sel], ch_k[m][sel], exp_k[sel])[0],
+                                ci_hdi=concentration(pop_k[m][sel], ch_k[m][sel], hdi_k[sel])[0],
+                                ci_poverty=concentration(pop_k[m][sel], ch_k[m][sel], -pov_k[sel])[0]))
+        prov_ci.sort(key=lambda x: -x["ci_expend"])
+        from scipy.stats import spearmanr as _sp_r
+        rho_exp = float(_sp_r(exp_k, ch_k[m] / pop_k[m]).statistic); rho_hdi = float(_sp_r(hdi_k, ch_k[m] / pop_k[m]).statistic)
+        sosek = dict(n=len(_ok), pop_pct=round(100 * pop_k[m].sum() / pop_k.sum(), 1),
+                     ci=dict(poverty=ci_kpov, hdi=ci_khdi, expend=ci_kexp, access_expend=ci_kacc),
+                     curves=dict(poverty=cc_kpov, hdi=cc_khdi, expend=cc_kexp, access_expend=cc_kacc),
+                     quint=kq, prov_ci=prov_ci, rho=dict(expend=round(rho_exp, 3), hdi=round(rho_hdi, 3)))
+        print(f"sosek kabupaten: n={len(_ok)} · CI kemiskinan {ci_kpov} · IPM {ci_khdi} · pengeluaran {ci_kexp} · akses~pengeluaran {ci_kacc} · ρ {rho_exp:.2f}/{rho_hdi:.2f}")
+    else:
+        print(f"sosek kabupaten: hanya {len(_ok)} kabupaten lengkap — dilewati (perlu ≥100)")
+
 # ------------------------------------------------------------------ 3) kurva cakupan marjinal (greedy)
 H = [r[ci["h3"]] for r in R6]; idx = {h: i for i, h in enumerate(H)}
 d0 = np.array([r[ci["d_spklu"]] for r in R6]); kab_h = np.array([r[ci["kab"]] for r in R6])
@@ -251,7 +299,7 @@ payload = dict(
                  top_surplus=[dict(name=n, prov=p, surplus=round(s), pop=pp, chargers=c) for n, p, s, pp, c in top_sur]),
     ci=dict(grdp=ci_grdp, hdi=ci_hdi, poverty=ci_pov, access_grdp=ci_acc_grdp, density=ci_dens,
             curves=dict(grdp=cc_grdp, hdi=cc_hdi, poverty=cc_pov, access_grdp=cc_acc_grdp, density=cc_dens)),
-    quint=quint, prov=prov_rows,
+    quint=quint, prov=prov_rows, sosek=sosek,
     coverage=dict(base=round(100 * cov0 / P0, 2), eq=curve_eq, ek=curve_ek, q1_eq=q1_eq, q1_ek=q1_ek,
                   picks_eq=picks_eq[:40], picks_ek=picks_ek[:40], q1_provs=quint[0]["provs"] if quint else []),
     why=why,
