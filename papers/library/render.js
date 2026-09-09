@@ -7,7 +7,7 @@
  const KEY=p=>'spklu.review.'+p;
  const TAGS={mayor:['Mayor','#d6443c'],minor:['Minor','#e0a52b'],
              tanya:['Pertanyaan','#3a6ea5'],setuju:['Setuju','#2e9e5b']};
- const STL={draft:'Draft',review:'Siap ditinjau',plan:'Rencana',submitted:'Sudah disubmit'};
+ const STL={draft:'Draft',review:'Siap ditinjau',plan:'Rencana',submitted:'Sudah disubmit',bacaan:'Bahan bacaan'};
  const CATS=LIB.categories||{};
  const catLab=k=>(CATS[k]||['Lain-lain','#9aa7bd'])[0], catCol=k=>(CATS[k]||['','#9aa7bd'])[1];
  let filter='all';

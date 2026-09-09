@@ -91,6 +91,7 @@ TAB_LABELS = {
     "ocm": "Open Charge Map", "evmodels": "EV Models", "insight": "World EV Insight",
     "jaringan": "EV × Jaringan", "capacity": "Capacity Maps", "equity": "Spatial Equity",
     "locint": "Location Intelligence", "p2p": "P2P Charging", "national": "Indonesia",
+    "ekuitas": "Peta Ekuitas",
 }
 
 ITEMS = []
@@ -407,8 +408,21 @@ R("siting", "https://github.com/pysal/momepy", "momepy (PySAL)",
   themes=["akses"], tags=["morfologi"])
 R("siting", "https://github.com/uber/h3", "H3 (Uber)",
   "Sistem grid heksagonal hierarkis untuk indeks spasial.",
-  "Alternatif sel 0,045° untuk agregasi permintaan × headroom.",
-  themes=["akses", "jaringan"], tags=["grid", "heksagon"], featured=True)
+  "Sel analisis Peta Ekuitas (res 6 nasional, agregat res 5) dan alternatif sel 0,045° untuk agregasi permintaan × headroom.",
+  themes=["akses", "jaringan"], tabs=["ekuitas"], tags=["grid", "heksagon"], featured=True,
+  links=[["h3-js (dipakai di browser, di-vendor di equitymap/vendor)", "https://github.com/uber/h3-js"]])
+R("siting", "https://evmap.climateplans.org/", "EV Equity Roadmap (CLEE UC Berkeley)",
+  "Peta keputusan terbuka: piksel 100 m di seluruh California diwarnai lapisan prioritas (CalEnviroScreen, pendapatan, "
+  "penyewa/hunian multi-keluarga, akses charger) dan kelayakan (hosting capacity utilitas, dana federal, ruang publik), "
+  "plus kandidat hub komunitas.",
+  "Cetak biru tab Peta Ekuitas: pemisahan prioritas × kelayakan, normalisasi per yurisdiksi, bobot sebagai keluaran; "
+  "intisarinya ada di Perpustakaan (bacaan-evmap).",
+  kind="portal", themes=["akses", "bisnis"], tabs=["ekuitas", "equity"], tags=["equity", "siting", "California"], featured=True,
+  links=[["CLEE EV Equity Initiative — mapping", "https://www.law.berkeley.edu/research/clee/ev-equity/mapping/"],
+         ["Equitable EV Action Plan Framework (PDF, Des 2024)",
+          "https://www.law.berkeley.edu/wp-content/uploads/archive/2024/12/Equitable-EV-Action-Plan-Framework_CLEE.pdf"],
+         ["Legal Planet — Mapping City Priorities (2023)",
+          "https://legal-planet.org/2023/06/23/mapping-city-priorities-for-an-equitable-ev-infrastructure-rollout/"]])
 R("siting", "https://github.com/Project-OSRM/osrm-backend", "OSRM",
   "Mesin routing OSM sangat cepat: rute, matriks jarak/waktu.",
   "Matriks waktu tempuh ke SPKLU terdekat untuk aksesibilitas (2SFCA).",
@@ -481,6 +495,20 @@ R("solar", "https://github.com/Open-Power-System-Data/datapackage_timeseries", "
 R("solar", "https://github.com/owid/etl", "Our World in Data — ETL", "Pipeline data OWID (energi, emisi, EV).",
   "Deret panjang penjualan EV dan bauran energi negara.", themes=["emisi", "bisnis"], tags=["data global"])
 
+R("indonesia", "https://data.humdata.org/dataset/kontur-population-indonesia", "Kontur Population — Indonesia (H3 res 8)",
+  "Populasi per heksagon H3 resolusi 8 (~0,7 km²) seluruh Indonesia, turunan GHSL + jejak bangunan Microsoft + HRSL; "
+  "GeoPackage, CC BY 4.0, rilis 2023-11-01.",
+  "Penyebut penduduk Peta Ekuitas: 874.919 heksagon → 47.793 heksagon res 6 (277,5 juta jiwa); diunduh equitymap/fetch.py "
+  "dari bucket S3 publik Kontur.",
+  kind="dataset", themes=["akses"], tabs=["ekuitas"], tags=["populasi", "H3", "dataset"], featured=True,
+  links=[["Bucket S3 publik (gpkg.gz)",
+          "https://geodata-eu-central-1-kontur-public.s3.amazonaws.com/kontur_datasets/kontur_population_ID_20231101.gpkg.gz"]])
+R("indonesia", "https://www.geoboundaries.org/", "geoBoundaries (gbOpen IDN ADM1/ADM2)",
+  "Batas administratif terbuka seluruh dunia; untuk Indonesia 34 provinsi (ADM1) dan 515 kabupaten/kota (ADM2), "
+  "CC BY 4.0, versi simplified.",
+  "Menempelkan tiap heksagon dan situs SPKLU ke kabupaten/kota dan provinsi di Peta Ekuitas (equitymap/fetch.py).",
+  kind="dataset", themes=["akses"], tabs=["ekuitas"], tags=["batas wilayah", "GeoJSON"],
+  links=[["Repositori data (GitHub, LFS)", "https://github.com/wmgeolab/geoBoundaries"]])
 R("indonesia", "https://github.com/cahyadsn/wilayah", "wilayah (cahyadsn)", "Kode & nama wilayah administratif Indonesia (Kepmendagri) beserta batas.",
   "Kunci gabung kabupaten/kota untuk BPS, PLN, dan pelanggan KBLBB.", themes=["akses"], tabs=["national"], tags=["wilayah"], featured=True)
 R("indonesia", "https://github.com/emsifa/api-wilayah-indonesia", "api-wilayah-indonesia", "API statis provinsi/kabupaten/kecamatan/desa.",

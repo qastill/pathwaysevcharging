@@ -1,0 +1,125 @@
+<div class="page" id="p-ekuitas">
+<style>
+#p-ekuitas .emhead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-ekuitas .emhead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-ekuitas .emhead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-ekuitas .emhead h2 b{color:var(--gold)}
+#p-ekuitas .emhead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:960px}
+#p-ekuitas .emhead p b{color:#e9d9a0;font-weight:600}
+#p-ekuitas .emhead a{color:#e9d9a0}
+#p-ekuitas .emmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-ekuitas .emmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-ekuitas .emmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-ekuitas .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#p-ekuitas .ctl label{font-size:11.5px;color:var(--navy);font-weight:600}
+#p-ekuitas select{padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px;background:#fff;font-family:Outfit;min-width:170px}
+#p-ekuitas .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#p-ekuitas .seg button{padding:6px 11px;border:none;background:#f7f9fc;cursor:pointer;font-size:11.5px;font-weight:600;color:#33405a;font-family:Outfit;border-right:1px solid var(--line)}
+#p-ekuitas .seg button:last-child{border-right:none}
+#p-ekuitas .seg button.active{background:var(--navy);color:var(--gold)}
+#p-ekuitas .pbtn{padding:6px 12px;border-radius:9px;border:1px solid var(--line);cursor:pointer;font-size:12px;font-weight:600;font-family:Outfit}
+#p-ekuitas .wgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px 18px;margin-top:8px}
+#p-ekuitas .wrow{font-size:11.5px;color:#33405a}
+#p-ekuitas .wrow .lab{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+#p-ekuitas .wrow .lab b{color:var(--navy)}
+#p-ekuitas .wrow .lab .v{font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums}
+#p-ekuitas .wrow input{width:100%}
+#p-ekuitas .wrow .h{font-size:10px;color:var(--mut);line-height:1.45}
+#p-ekuitas .wgrp{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--mut);font-weight:700;margin:10px 0 2px}
+#p-ekuitas #emMap{height:600px;border-radius:12px;border:1px solid var(--line);z-index:1}
+#p-ekuitas #emMap canvas{max-height:none} /* aturan global canvas{max-height:330px} milik Chart.js akan meremas kanvas Leaflet */
+#p-ekuitas .legend i{width:12px;height:12px;display:inline-block;border-radius:3px;margin-right:5px;vertical-align:-2px}
+#p-ekuitas .zone{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
+#p-ekuitas .z0{background:#d6443c}#p-ekuitas .z1{background:#e8742c}#p-ekuitas .z2{background:#3a6ea5}#p-ekuitas .z3{background:#9aa6bd}
+#p-ekuitas td.n{text-align:right;font-variant-numeric:tabular-nums}
+#p-ekuitas .bar{display:inline-block;height:8px;border-radius:4px;background:#e6e9f0;width:70px;vertical-align:middle;margin-right:5px;overflow:hidden}
+#p-ekuitas .bar i{display:block;height:100%}
+#p-ekuitas .note{font-size:11.5px;color:#4a5670;line-height:1.75}
+#p-ekuitas .note b{color:var(--navy)}
+#p-ekuitas .note code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:10.5px}
+#p-ekuitas .warn{background:#fdf2f0;border:1px solid #f2d5d1;color:#9a3f36;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:700}
+#p-ekuitas .grid31{display:grid;grid-template-columns:1.35fr .65fr;gap:15px;margin-bottom:15px}
+#p-ekuitas .xfer{width:100%;font-size:11.5px}
+#p-ekuitas .xfer td{vertical-align:top;line-height:1.55}
+#p-ekuitas .ok{color:#2e9e5b;font-weight:700}#p-ekuitas .part{color:#e0a52b;font-weight:700}#p-ekuitas .no{color:#d6443c;font-weight:700}
+@media(max-width:980px){#p-ekuitas .grid31{grid-template-columns:1fr}#p-ekuitas #emMap{height:460px}}
+</style>
+
+<div class="emhead">
+ <span class="tag">Peta ekuitas · padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia</span>
+ <h2>🗺️ Peta Ekuitas SPKLU Indonesia — <b>prioritas keadilan × kelayakan pasokan</b>, per heksagon</h2>
+ <p><a href="https://evmap.climateplans.org/" target="_blank" rel="noopener">EV Equity Roadmap</a> (CLEE UC Berkeley) mewarnai
+ piksel 100 m di California dengan dua lapisan: <b>prioritas</b> (siapa yang paling butuh charger publik) dan <b>kelayakan</b>
+ (di mana jaringan dan lahan sanggup menampungnya). Halaman ini membangun logika yang sama untuk seluruh Indonesia pada
+ heksagon H3 resolusi 6 (≈36 km²): populasi Kontur 2023 per heksagon, 3.212 SPKLU master nasional, 933 gardu induk dan
+ 4.052 ruas transmisi, serta indikator BPS provinsi. Skor dihitung <b>di browser</b> dari indikator mentah, jadi bobotnya bisa
+ digeser dan hasilnya langsung berubah — kebijakan yang menyamar sebagai parameter dibuat terlihat, bukan disembunyikan.
+ Intisari bacaan alat aslinya ada di <a href="#" data-emlib="bacaan-evmap">📚 Perpustakaan</a>.</p>
+ <div class="emmeta" id="emMeta"></div>
+</div>
+
+<div id="emLoading" class="insight">Memuat peta ekuitas (≈3 MB data heksagon + pustaka H3)…</div>
+
+<div id="emBody" style="display:none">
+<div class="card" style="margin-bottom:15px"><h3>🎛️ Lingkup, lapisan &amp; <span>bobot</span> <span class="sub">— pilih provinsi/kabupaten; skor dihitung ulang dalam lingkup itu (peringkat persentil di dalam lingkup)</span></h3>
+<div class="ctl">
+ <label>Provinsi</label><select id="emProv"><option value="all">Seluruh Indonesia</option></select>
+ <label>Kabupaten/Kota</label><select id="emKab"><option value="all">Semua</option></select>
+ <label>Lapisan</label>
+ <span class="seg" id="emMode"><button data-m="zone" class="active">Zona</button><button data-m="prio">Prioritas</button><button data-m="feas">Kelayakan</button><button data-m="dist">Jarak SPKLU</button><button data-m="pop">Populasi</button></span>
+ <label>Cakupan</label>
+ <span class="seg" id="emCov"><button data-c="all" class="active">Semua operator</button><button data-c="pln">PLN saja</button></span>
+ <label style="display:flex;gap:5px;align-items:center;font-weight:500"><input type="checkbox" id="emLySpklu"> titik SPKLU</label>
+ <label style="display:flex;gap:5px;align-items:center;font-weight:500"><input type="checkbox" id="emLyGi"> gardu induk</label>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;border-top:1px solid var(--line);padding-top:10px;margin-top:10px">
+ <span style="font-size:11px;color:var(--mut);font-weight:600">Lensa tujuan:</span>
+ <button class="pbtn" id="emPreEq" style="background:#eef3ff;color:#1f4fb0" title="Bobot ke jarak, defisit charger, dan beban sosial-ekonomi — lensa kebijakan/PLN">⚖️ Keadilan (kebijakan)</button>
+ <button class="pbtn" id="emPreCom" style="background:#fff7e6;color:#b08400" title="Bobot ke populasi terjangkau, jaringan, dan aglomerasi situs — lensa investor/CPO">💰 Komersial (CPO)</button>
+ <button class="pbtn" id="emPreDef" style="background:#fff">Bawaan</button>
+ <span id="emWsum" style="margin-left:auto;font-size:11px;color:var(--mut)"></span>
+</div>
+<div class="wgrp">Prioritas keadilan — makin tinggi, makin butuh intervensi publik</div>
+<div class="wgrid" id="emWP"></div>
+<div class="wgrp">Kelayakan pasokan — makin tinggi, makin mudah dibangun sekarang</div>
+<div class="wgrid" id="emWF"></div>
+</div>
+
+<div class="insight" id="emInsight"></div>
+<div class="statband" id="emStats"></div>
+
+<div class="grid31">
+ <div class="card"><h3>🗺️ Peta <span id="emMapTitle">Zona</span> <span class="sub" id="emMapSub"></span></h3>
+  <div id="emMap"></div>
+  <div class="legend" id="emLegend"></div></div>
+ <div>
+  <div class="card" style="margin-bottom:15px"><h3>Penduduk menurut <span>jarak ke SPKLU terdekat</span> <span class="sub">(garis lurus, km)</span></h3><div style="height:210px"><canvas id="cEmBands"></canvas></div></div>
+  <div class="card" style="margin-bottom:15px"><h3>Lorenz <span>charger vs penduduk</span> <span class="sub" id="emLorenzSub">antar-kabupaten</span></h3><div style="height:210px"><canvas id="cEmLorenz"></canvas></div></div>
+  <div class="card"><h3>Empat <span>zona</span> <span class="sub">jiwa per zona dalam lingkup</span></h3><div style="height:200px"><canvas id="cEmZone"></canvas></div></div>
+ </div>
+</div>
+
+<div class="card" style="margin-bottom:15px"><h3>📊 Peringkat <span id="emRankTitle">provinsi</span> <span class="sub">— % penduduk ≤10 km dari SPKLU operasional; batang = skor prioritas tertimbang populasi</span></h3>
+ <div style="height:420px"><canvas id="cEmRank"></canvas></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>📋 Tabel <span>kabupaten/kota</span> <span class="sub">— klik judul kolom untuk mengurutkan; klik baris untuk memperbesar peta ke kabupaten itu</span></h3>
+ <div class="ctl" style="margin-bottom:8px"><input id="emSearch" placeholder="🔎 cari kabupaten/kota…" style="flex:1;min-width:180px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-family:Outfit;font-size:12px"><span id="emCount" style="font-size:11px;color:var(--mut)"></span></div>
+ <div class="tablewrap" style="max-height:520px"><table id="tblEm"><thead><tr>
+  <th data-k="name">Kabupaten/Kota</th><th data-k="provn">Provinsi</th><th data-k="pop">Penduduk</th><th data-k="chargers">Charger</th>
+  <th data-k="per100k">Charger /100k</th><th data-k="d_mean">Jarak rata² (km)</th><th data-k="within10">≤10 km (%)</th><th data-k="beyond25">&gt;25 km (%)</th>
+  <th data-k="gi">GI</th><th data-k="P">Prioritas</th><th data-k="F">Kelayakan</th><th data-k="z0">Zona 1 (jiwa)</th></tr></thead><tbody></tbody></table></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>🔁 Dari EV Equity Roadmap ke <span>Indonesia</span> <span class="sub">— lapisan mana yang punya padanan data di repositori ini, mana yang belum</span></h3>
+ <div class="tablewrap"><table class="xfer"><thead><tr><th>Lapisan di EV Equity Roadmap (California)</th><th>Padanan Indonesia di peta ini</th><th>Status</th></tr></thead><tbody>
+ <tr><td><b>Priority</b> — beban lingkungan/sosial (CalEnviroScreen), pendapatan rendah, penyewa &amp; hunian multi-keluarga tanpa charger rumah</td><td>Kemiskinan &amp; IPM provinsi (BPS ~2023) sebagai <i>beban sosial-ekonomi</i>; kepadatan penduduk per heksagon (Kontur). Data hunian tanpa garasi/rusun belum ada.</td><td><span class="part">sebagian</span> — indikator sosial masih tingkat provinsi</td></tr>
+ <tr><td><b>Priority</b> — akses charger yang ada (jarak ke L2/DCFC terdekat)</td><td>Jarak garis lurus ke SPKLU operasional terdekat; jiwa per charger dalam ~10 km; jumlah situs DC ≥50 kW dalam 10 km.</td><td><span class="ok">ada</span></td></tr>
+ <tr><td><b>Feasibility</b> — kapasitas jaringan (peta hosting capacity/ICA PG&amp;E, SCE, SDG&amp;E, LADWP)</td><td>Jarak ke gardu induk terdekat, MVA gardu induk dalam 25 km, jarak ke ruas transmisi (data/grid-id). Headroom trafo distribusi baru tersedia untuk Jawa Barat (tab Capacity Maps).</td><td><span class="part">sebagian</span> — proksi transmisi/GI, bukan headroom distribusi</td></tr>
+ <tr><td><b>Feasibility</b> — ruang komersial &amp; publik, kelayakan dana federal (NEVI/Justice40)</td><td>Populasi terjangkau dalam ~10 km (pasar) dan charger yang sudah ada (aglomerasi). Klasifikasi lahan/POI dan kelayakan skema pendanaan belum dimodelkan.</td><td><span class="part">proksi</span></td></tr>
+ <tr><td><b>Community resources</b> — perpustakaan, sekolah, stasiun transit, perumahan terjangkau sebagai kandidat hub</td><td>Belum ada — butuh POI OpenStreetMap (kantor pemda, pasar, terminal, stasiun, puskesmas). Langkah berikutnya.</td><td><span class="no">belum</span></td></tr>
+ <tr><td>Piksel 100 × 100 m per yurisdiksi</td><td>Heksagon H3 res 6 (≈36 km², rusuk 3,7 km) nasional; resolusi 7–8 tersedia dari sumber yang sama untuk kota tertentu.</td><td><span class="part">lebih kasar</span></td></tr>
+ <tr><td>Pilih yurisdiksi (kota/county), atur kriteria, ekspor</td><td>Pilih provinsi/kabupaten (515), geser bobot, tabel peringkat; ekspor CSV kabupaten.</td><td><span class="ok">ada</span></td></tr>
+ </tbody></table></div>
+ <div style="margin-top:8px"><button class="pbtn" id="emCsv" style="background:#fff">⬇ Unduh CSV kabupaten (lingkup &amp; bobot saat ini)</button></div></div>
+
+<div class="card"><h3>📐 Metode, sumber &amp; <span>batas</span></h3><div class="note" id="emNote"></div></div>
+</div>
+</div>
