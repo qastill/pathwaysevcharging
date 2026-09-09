@@ -16,6 +16,8 @@ transfer lapisan → data Indonesia ada di Perpustakaan: `papers/bacaan_evmap_eq
 | `vendor/h3-js.umd.js` | h3-js 4.1.0 (Apache-2.0) untuk menggambar batas heksagon di browser |
 | `page.html` · `render.js` | markup tab (`#p-ekuitas`) dan renderer (`window.initEquity`) |
 | `inject.py` | penyisip idempoten ke `index.html` (`<!-- EQ:BEGIN/END -->`, `/* EQ:BEGIN/END */`) |
+| `keadilan.py` | **analisis mendalam ekuitas vs kesetaraan** dari `equity.js` → `keadilan.json` (Lorenz/Gini bertingkat, Theil, kota–kabupaten, CI pendapatan/IPM/kemiskinan/kepadatan, kuintil, defisit, kurva cakupan 300 situs dua aturan) |
+| `keadilan_page.html` · `keadilan_render.js` · `keadilan_inject.py` | tab **⚖️ Ekuitas vs Kesetaraan** (grup *Analisis SPKLU*, `#tab=keadilan`); catatan naratifnya di `papers/catatan_ekuitas_kesetaraan.md` |
 
 ## Urutan jalan
 
@@ -24,6 +26,7 @@ pip install numpy openpyxl h3 shapely
 python3 equitymap/fetch.py      # hanya bila input/ ingin dibangun ulang (unduh ±75 MB)
 python3 equitymap/prepare.py    # ±30 detik → equity.js, summary.json
 python3 equitymap/inject.py     # pasang/perbarui tab (aman diulang)
+python3 equitymap/keadilan.py && python3 equitymap/keadilan_inject.py   # tab ⚖️ Ekuitas vs Kesetaraan
 ```
 
 ## Sumber data

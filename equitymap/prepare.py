@@ -19,6 +19,7 @@ dan skor dihitung ulang di browser dengan rumus yang sama (render.js: score()).
 import csv, json, math, os, re, glob
 
 import numpy as np
+_trapz = getattr(np, "trapezoid", None) or getattr(np, "trapz")  # numpy 1.x/2.x
 import h3
 import openpyxl
 from shapely.geometry import LineString

@@ -1,0 +1,113 @@
+<div class="page" id="p-keadilan">
+<style>
+#p-keadilan .kdhead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-keadilan .kdhead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-keadilan .kdhead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-keadilan .kdhead h2 b{color:var(--gold)}
+#p-keadilan .kdhead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:980px}#p-keadilan .kdhead p b{color:#e9d9a0;font-weight:600}#p-keadilan .kdhead a{color:#e9d9a0}
+#p-keadilan .kdmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-keadilan .kdmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-keadilan .kdmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-keadilan .sec{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 26px;margin-bottom:16px;box-shadow:0 4px 14px rgba(10,23,51,.06);border-top:3px solid var(--gold)}
+#p-keadilan .sec h3{font-family:Fraunces;font-size:18px;color:var(--navy);margin:0 0 4px}
+#p-keadilan .sec .q{font-size:12.5px;color:var(--mut);font-style:italic;margin-bottom:14px;line-height:1.6}
+#p-keadilan .why{border-left:4px solid var(--navy);background:#f6f8fc;border-radius:0 10px 10px 0;padding:14px 17px;font-size:13px;line-height:1.75;color:#26334d;margin-top:12px}
+#p-keadilan .why b{color:var(--navy)}
+#p-keadilan .why ol{margin:6px 0 0 18px}#p-keadilan .why li{margin-bottom:6px}
+#p-keadilan .concl{border-left:4px solid var(--gold);background:linear-gradient(180deg,#fffaef,#fff7e3);border-radius:0 10px 10px 0;padding:14px 17px;font-size:13px;line-height:1.75;color:#5b4a14;margin-top:12px}
+#p-keadilan .concl:before{content:"Kesimpulan";display:block;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
+#p-keadilan .concl b{color:var(--navy)}
+#p-keadilan .ct{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px}
+#p-keadilan .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+#p-keadilan .kv div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#fcfdff,#f6f8fc)}
+#p-keadilan .kv .v{font-family:Fraunces;font-size:23px;font-weight:700;color:var(--navy);line-height:1.05}
+#p-keadilan .kv .t{font-size:10.5px;color:var(--mut);margin-top:4px;line-height:1.4}
+#p-keadilan .kv div.g{border-color:#e6cf8a;background:linear-gradient(180deg,#fffaef,#fff7e3)}#p-keadilan .kv div.g .v{color:#8a6d16}
+#p-keadilan td.n{text-align:right;font-variant-numeric:tabular-nums}
+#p-keadilan .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:12px}
+#p-keadilan .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:12px}
+#p-keadilan .def{font-size:12px;line-height:1.7;color:#33405a;border:1px dashed #c9d6ea;border-radius:10px;padding:10px 14px;background:#f8fafc;margin-bottom:12px}
+#p-keadilan .def b{color:var(--navy)}
+@media(max-width:980px){#p-keadilan .grid2,#p-keadilan .grid3{grid-template-columns:1fr}}
+</style>
+
+<div class="kdhead">
+ <span class="tag">Inti riset · ekuitas (equity) vs kesetaraan (equality) · nasional</span>
+ <h2>⚖️ Ekuitas vs Kesetaraan — <b>mengapa angkanya begitu</b>, dan apa kesimpulannya</h2>
+ <p>Tab <a href="#" data-kdtab="ekuitas">Peta Ekuitas</a> mengeluarkan dua angka yang mudah dikutip — <b>63,7 % penduduk ≤10 km</b> dari SPKLU operasional dan
+ <b>Gini charger per kapita 0,595</b> — tetapi tidak menjelaskan dari mana keduanya lahir. Halaman ini membongkarnya dari prinsip pertama dan
+ memisahkan dua pertanyaan yang sering dicampur: <b>kesetaraan</b> (<i>equality</i>, horizontal: apakah tiap orang mendapat porsi charger yang sama?) dan
+ <b>ekuitas</b> (<i>equity</i>, vertikal: apakah porsi itu mengikuti kebutuhan — yang lebih miskin, lebih padat, lebih sulit mengisi di rumah?).
+ Seluruh angka dihitung ulang dari 508 kabupaten/kota, 31.405 heksagon berpenduduk, 4.795 charger operasional, dan indikator BPS provinsi;
+ kurva cakupan diuji dengan menempatkan 300 situs baru secara bergantian menurut dua aturan.</p>
+ <div class="kdmeta" id="kdMeta"></div>
+</div>
+
+<div class="def"><b>Definisi yang dipakai.</b> <b>Kesetaraan</b> = distribusi charger sebanding dengan jumlah penduduk; diukur kurva Lorenz (sumbu x: kumulatif penduduk, kabupaten diurut dari porsi terkecil; sumbu y: kumulatif charger), Gini = 1 − 2 × luas di bawah kurva (0 = setara sempurna, 1 = satu kabupaten memegang semuanya), Theil T yang bisa dipecah menjadi antar-provinsi dan dalam-provinsi, rasio 20:20 dan Palma. <b>Ekuitas</b> = distribusi menurut kebutuhan; diukur kurva konsentrasi (unit diurut dari termiskin ke terkaya) dan indeks konsentrasi CI (&gt;0 pro-kaya, &lt;0 pro-miskin), kuintil pendapatan, dan uji aturan penempatan. <b>Akses</b> = penduduk ≤10 km garis lurus dari situs operasional. "Charger" = unit charger di situs operasional (PLN <i>available/inuse</i> + mitra).</div>
+
+<!-- 1 -->
+<div class="sec"><h3>1 · Kesetaraan horizontal — porsi charger vs porsi penduduk</h3>
+ <div class="q">Bila 4.795 charger dibagi rata menurut penduduk, tiap kabupaten mendapat 1,73 per 100 ribu jiwa. Seberapa jauh kenyataannya dari itu, dan lapisan mana yang menyumbang ketimpangan?</div>
+ <div class="kv" id="kdKv1"></div>
+ <div class="grid2">
+  <div><div class="ct">Kurva Lorenz — empat ukuran pada 508 kabupaten/kota + satu ukuran per heksagon</div><div style="height:320px"><canvas id="cKdLorenz"></canvas></div></div>
+  <div><div class="ct">Gini charger/kapita bila lingkupnya diubah</div><div style="height:150px"><canvas id="cKdVar"></canvas></div>
+   <div class="ct" style="margin-top:12px">Dekomposisi Theil — dari mana ketimpangan berasal</div><div style="height:140px"><canvas id="cKdTheil"></canvas></div></div>
+ </div>
+ <div class="why" id="kdWhy1"></div>
+</div>
+
+<!-- 2 -->
+<div class="sec"><h3>2 · Kota vs kabupaten, Jawa vs luar Jawa — dua garis patahan</h3>
+ <div class="q">Ketimpangan yang terukur Gini bukan kabut merata; ia mengikuti dua garis yang jelas.</div>
+ <div class="grid2">
+  <div><div class="ct">Charger per 100 ribu jiwa · % penduduk ≤10 km · % penduduk &gt;25 km</div><div style="height:260px"><canvas id="cKdGroups"></canvas></div></div>
+  <div><div class="ct">Porsi penduduk vs porsi charger</div><div style="height:260px"><canvas id="cKdShare"></canvas></div></div>
+ </div>
+ <div class="tablewrap" style="max-height:260px"><table id="tblKdGroups"><thead><tr><th>Kelompok</th><th>Kab/kota</th><th>Penduduk</th><th>Charger</th><th>per 100 rb</th><th>≤10 km %</th><th>&gt;25 km %</th><th>Jarak rata² km</th><th>Kab tanpa charger</th><th>Situs DC</th></tr></thead><tbody></tbody></table></div>
+ <div class="why" id="kdWhy2"></div>
+</div>
+
+<!-- 3 -->
+<div class="sec"><h3>3 · Ekuitas vertikal — apakah charger mengikuti kebutuhan?</h3>
+ <div class="q">Kesetaraan bertanya "sama rata?"; ekuitas bertanya "yang lebih membutuhkan mendapat lebih?". Provinsi diurutkan dari termiskin ke terkaya, lalu dilihat ke mana charger menumpuk.</div>
+ <div class="kv" id="kdKv3"></div>
+ <div class="grid2">
+  <div><div class="ct">Kurva konsentrasi — provinsi diurut miskin → kaya (PDRB/kapita, IPM, kemiskinan) · kabupaten diurut jarang → padat</div><div style="height:320px"><canvas id="cKdConc"></canvas></div></div>
+  <div><div class="ct">Kuintil provinsi menurut PDRB per kapita (tertimbang penduduk)</div><div style="height:320px"><canvas id="cKdQuint"></canvas></div></div>
+ </div>
+ <div class="tablewrap" style="max-height:220px"><table id="tblKdQuint"><thead><tr><th>Kuintil</th><th>Provinsi</th><th>Penduduk</th><th>PDRB/kapita (jt Rp)</th><th>Kemiskinan %</th><th>Charger /100 rb</th><th>≤10 km %</th><th>&gt;25 km %</th></tr></thead><tbody></tbody></table></div>
+ <div class="why" id="kdWhy3"></div>
+</div>
+
+<!-- 4 -->
+<div class="sec"><h3>4 · Defisit menuju kesetaraan — berapa charger yang "kurang" dan di mana</h3>
+ <div class="q">Bila tiap kabupaten dibawa ke rata-rata nasional 1,73 charger per 100 ribu jiwa tanpa mengambil dari yang sudah punya, berapa yang harus ditambah?</div>
+ <div class="kv" id="kdKv4"></div>
+ <div class="grid2">
+  <div><div class="ct">15 kabupaten/kota dengan defisit terbesar (charger yang kurang dari rata-rata nasional)</div><div class="tablewrap" style="max-height:330px"><table id="tblKdDef"><thead><tr><th>Kabupaten/Kota</th><th>Provinsi</th><th>Penduduk</th><th>Charger</th><th>Defisit</th></tr></thead><tbody></tbody></table></div></div>
+  <div><div class="ct">10 dengan surplus terbesar (di atas rata-rata nasional)</div><div class="tablewrap" style="max-height:330px"><table id="tblKdSur"><thead><tr><th>Kabupaten/Kota</th><th>Provinsi</th><th>Penduduk</th><th>Charger</th><th>Surplus</th></tr></thead><tbody></tbody></table></div></div>
+ </div>
+ <div class="why" id="kdWhy4"></div>
+</div>
+
+<!-- 5 -->
+<div class="sec"><h3>5 · Uji aturan penempatan — kesetaraan vs ekuitas pada 300 situs baru</h3>
+ <div class="q">Dua aturan diadu pada peta yang sama: <b>kesetaraan</b> memilih situs yang menambah penduduk tercakup terbanyak (siapa pun orangnya); <b>ekuitas</b> memberi bobot hingga 2× pada penduduk provinsi dengan beban sosial-ekonomi tertinggi. Apakah ekuitas "mahal"?</div>
+ <div class="kv" id="kdKv5"></div>
+ <div class="grid2">
+  <div><div class="ct">Cakupan nasional (% penduduk ≤10 km) menurut jumlah situs baru</div><div style="height:280px"><canvas id="cKdCov"></canvas></div></div>
+  <div><div class="ct">Cakupan penduduk kuintil termiskin (8 provinsi) menurut jumlah situs baru</div><div style="height:280px"><canvas id="cKdCovQ1"></canvas></div></div>
+ </div>
+ <div class="grid2">
+  <div><div class="ct">20 penempatan pertama — aturan kesetaraan</div><div class="tablewrap" style="max-height:300px"><table id="tblKdPickEq"><thead><tr><th>#</th><th>Kabupaten</th><th>Provinsi</th><th>Jiwa baru tercakup</th></tr></thead><tbody></tbody></table></div></div>
+  <div><div class="ct">20 penempatan pertama — aturan ekuitas</div><div class="tablewrap" style="max-height:300px"><table id="tblKdPickEk"><thead><tr><th>#</th><th>Kabupaten</th><th>Provinsi</th><th>Jiwa baru tercakup</th></tr></thead><tbody></tbody></table></div></div>
+ </div>
+ <div class="why" id="kdWhy5"></div>
+</div>
+
+<!-- 6 -->
+<div class="sec"><h3>6 · Kesimpulan untuk riset — apa yang dibuktikan angka-angka ini</h3>
+ <div class="concl" id="kdConcl"></div>
+ <div class="why" id="kdLimit"></div>
+</div>
+</div>

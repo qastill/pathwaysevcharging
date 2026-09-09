@@ -1006,6 +1006,75 @@ OUTPUTS = [
     ["Data", "Payload teragregasi", "capacity.json, grid.json, grid2.json, library.json — teragregasi & dianonimkan", ""],
 ]
 
+PAPERS.append(dict(
+    id="bacaan-parkserve", n=21, category="akses", tags=["akses", "bisnis"],
+    title="Intisari bacaan — ParkServe, park priority areas & ParkScore (Trust for Public Land): ukuran akses 10 menit untuk taman, dan cara memindahkannya ke lahan parkir ber-charger",
+    short="Intisari bacaan: ParkServe/ParkScore (TPL) → Parkir × Charger",
+    kind="Intisari bacaan", venue="Bahan bacaan — bukan untuk publikasi",
+    alt="Dipakai Paper 2, Paper 3 (P2P), CUPUM Bab 1, RQ4", venue_src="—",
+    status="bacaan", stage="Intisari selesai; butir [VERIFY] menunggu cek ke situs TPL (diblokir dari lingkungan bangun)", pct=100,
+    target="Rujukan hidup — perbarui bila ParkScore tahun baru terbit", lead="Qashtalani Haramaini",
+    goal="Merangkum tiga produk data Trust for Public Land — ParkServe (% penduduk dalam 10 menit jalan kaki dari taman), park priority areas, dan ParkScore (indeks 100 kota) — lalu memindahkannya ke lahan parkir ber-charger: akses 10 menit ke SPKLU, heksagon prioritas, ChargeScore, ditambah perilaku parkir nyata dari 157.760 sesi.",
+    finding="Hanya 8,7 % penduduk Indonesia tinggal ≤0,8 km (10 menit jalan kaki) dari SPKLU operasional dan 44,7 % ≤5 km. Durasi parkir di bay charger tidak mengikuti alasan parkir (mal ≈ rest area ≈ 40 menit) melainkan daya charger (≤7 kW 82 menit, ≥150 kW 36 menit) — bay charger dipakai seperti pompa bensin, sehingga peluang AC murah berjam-jam di parkir destinasi/kerja belum terpakai.",
+    data=["ParkServe/ParkScore (TPL) — metode 10 menit, priority areas, indeks 100 kota",
+          "Kontur Population res 8 (874.919 heksagon), master SPKLU nasional, 101.020 sesi Jawa Barat + 56.740 sesi Jakarta Raya"],
+    method=["Transfer ukuran akses 10 menit (0,8 km jalan kaki / 5 km berkendara) ke charger",
+            "Kategori lahan parkir dari nama situs & tag lokasi PLN; okupansi bay, perputaran, profil jam",
+            "ChargeScore: 4 kategori, 8 ukuran, poin kuintil relatif 100 kota"],
+    tabs=["parkir", "sector", "p2p"],
+    html=md_to_html(rd("papers/bacaan_tpl_parkserve.md")),
+    files=[["Intisari (.md)", "papers/bacaan_tpl_parkserve.md"], ["Pipeline Parkir × Charger (.py)", "parkir/prepare.py"]],
+    todo=["Cek butir [VERIFY] ke tpl.org/parkserve dan laporan ParkScore terbaru",
+          "Tambahkan poligon lahan parkir OSM (amenity=parking) — lahan parkir tanpa charger sebagai kandidat",
+          "Ganti garis lurus dengan jaringan jalan (OSRM) seperti ParkServe",
+          "Tambahkan kategori keadilan begitu data kemiskinan/IPM tingkat kabupaten tersedia"],
+))
+
+PAPERS.append(dict(
+    id="catatan-keadilan", n=22, category="akses", tags=["akses"],
+    title="Catatan analisis — Ekuitas vs kesetaraan jaringan SPKLU Indonesia: mengapa Gini 0,595 dan cakupan 63,7 % bisa keluar bersamaan, dan apa kesimpulannya",
+    short="Catatan analisis: ekuitas vs kesetaraan nasional (mengapa angkanya begitu)",
+    kind="Catatan analisis", venue="Bahan RQ2/RQ4 — masuk ke Paper 2 dan bab sintesis",
+    alt="Dipakai Paper 1, Paper 2, RQ4", venue_src="—",
+    status="bacaan", stage="Analisis selesai dan direproduksi oleh equitymap/keadilan.py; menunggu data BPS tingkat kabupaten untuk CI dalam-provinsi", pct=100,
+    target="Perbarui tiap master SPKLU baru", lead="Qashtalani Haramaini",
+    goal="Membongkar dari prinsip pertama dua angka Peta Ekuitas — 63,7 % penduduk ≤10 km dan Gini charger/kapita 0,595 — memisahkan kesetaraan (horizontal) dari ekuitas (vertikal), dan menguji apakah aturan penempatan berbobot ekuitas mahal.",
+    finding="Akses (Gini 0,274) dan kepemilikan (Gini 0,595) adalah dua hal berbeda; ketidaksetaraan terstruktur — 63 % antar-provinsi (Theil), kota 5,0× kabupaten per kapita, 100 kabupaten (15,6 jt jiwa) tanpa charger, rasio 20:20 = 33,7. Secara vertikal pro-kaya menurut IPM (CI 0,365) tetapi bukan menurut PDRB (0,212): gradiennya kepadatan & pembangunan manusia. Kesetaraan per kapita menuntut +2.097 charger (+44 %). Ekuitas nyaris gratis: bobot 2× untuk provinsi termiskin mengorbankan 0,09 poin cakupan nasional dan menambah 3,8 poin bagi kuintil termiskin.",
+    data=["Payload Peta Ekuitas: 508 kabupaten/kota, 31.405 heksagon res 6, 4.795 charger operasional",
+          "BPS provinsi ~2023 indikatif (PDRB/kapita, IPM, kemiskinan)"],
+    method=["Lorenz/Gini (charger, kW, situs, akses, heksagon); dekomposisi Theil antar/dalam provinsi dan kota/kabupaten",
+            "Kurva & indeks konsentrasi terhadap PDRB, IPM, kemiskinan, kepadatan; kuintil provinsi tertimbang penduduk",
+            "Defisit menuju rata-rata per kapita; greedy maximum coverage 300 situs dengan dua aturan (kesetaraan vs ekuitas)"],
+    tabs=["keadilan", "ekuitas", "equity"],
+    html=md_to_html(rd("papers/catatan_ekuitas_kesetaraan.md")),
+    files=[["Catatan (.md)", "papers/catatan_ekuitas_kesetaraan.md"], ["Pipeline (.py)", "equitymap/keadilan.py"]],
+    todo=["Tambahkan indikator BPS tingkat kabupaten untuk CI dalam-provinsi",
+          "Ganti radius heksagon dengan waktu tempuh jalan pada kurva cakupan",
+          "Masukkan biaya sambungan jaringan per situs ke aturan penempatan (zona 'jaringan lemah')",
+          "Angkat §6 (uji aturan penempatan) menjadi bagian hasil Paper 2 / bab sintesis RQ4"],
+))
+
+# Versi Indonesia Naskah 1 & 2 — entri terpisah supaya bisa dibaca dan dikomentari per paragraf di
+# Perpustakaan; metadata (kategori, status, data, metode, tab) diwarisi dari entri Inggrisnya.
+_ID_VERSIONS = {
+    "equity": ("papers/paper1_equity_perception_id.md", 19,
+               "Siapa yang tertinggal? Keadilan spasial dan persepsi publik atas infrastruktur pengisian "
+               "kendaraan listrik umum di sebuah megaregion negara berkembang — bukti dari Jawa Barat, Indonesia"),
+    "siting": ("papers/paper2_national_siting_condition_id.md", 20,
+               "Dari cakupan ke kapabilitas: penempatan berbasis data dan diagnosis utilisasi–ketersediaan pada "
+               "jaringan pengisian EV nasional yang tumbuh cepat — kajian tingkat transaksi di Indonesia"),
+}
+for _src_id, (_fname, _n, _title) in _ID_VERSIONS.items():
+    _src = next(p for p in PAPERS if p["id"] == _src_id)
+    _src["files"] = _src["files"] + [["Versi Indonesia (.md)", _fname]]
+    PAPERS.append(dict(_src, id=_src_id + "-id", n=_n, title=_title,
+                       short=_src["short"] + " — versi Indonesia", kind="Naskah versi Indonesia",
+                       stage=_src["stage"] + " · terjemahan Indonesia; versi Inggris yang mengikat",
+                       html=md_to_html(rd(_fname)),
+                       files=[["Naskah versi Indonesia (.md)", _fname],
+                              ["Naskah asli Inggris (.md)", _src["files"][0][1]]],
+                       todo=["Jaga sinkron dengan versi Inggris setiap kali naskah aslinya berubah"] + _src["todo"]))
+
 for p in PAPERS:
     p.setdefault("manuscript", True)
     p["html"] = number_blocks(p["html"])
