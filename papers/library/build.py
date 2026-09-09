@@ -1006,6 +1006,27 @@ OUTPUTS = [
     ["Data", "Payload teragregasi", "capacity.json, grid.json, grid2.json, library.json — teragregasi & dianonimkan", ""],
 ]
 
+# Versi Indonesia Naskah 1 & 2 — entri terpisah supaya bisa dibaca dan dikomentari per paragraf di
+# Perpustakaan; metadata (kategori, status, data, metode, tab) diwarisi dari entri Inggrisnya.
+_ID_VERSIONS = {
+    "equity": ("papers/paper1_equity_perception_id.md", 19,
+               "Siapa yang tertinggal? Keadilan spasial dan persepsi publik atas infrastruktur pengisian "
+               "kendaraan listrik umum di sebuah megaregion negara berkembang — bukti dari Jawa Barat, Indonesia"),
+    "siting": ("papers/paper2_national_siting_condition_id.md", 20,
+               "Dari cakupan ke kapabilitas: penempatan berbasis data dan diagnosis utilisasi–ketersediaan pada "
+               "jaringan pengisian EV nasional yang tumbuh cepat — kajian tingkat transaksi di Indonesia"),
+}
+for _src_id, (_fname, _n, _title) in _ID_VERSIONS.items():
+    _src = next(p for p in PAPERS if p["id"] == _src_id)
+    _src["files"] = _src["files"] + [["Versi Indonesia (.md)", _fname]]
+    PAPERS.append(dict(_src, id=_src_id + "-id", n=_n, title=_title,
+                       short=_src["short"] + " — versi Indonesia", kind="Naskah versi Indonesia",
+                       stage=_src["stage"] + " · terjemahan Indonesia; versi Inggris yang mengikat",
+                       html=md_to_html(rd(_fname)),
+                       files=[["Naskah versi Indonesia (.md)", _fname],
+                              ["Naskah asli Inggris (.md)", _src["files"][0][1]]],
+                       todo=["Jaga sinkron dengan versi Inggris setiap kali naskah aslinya berubah"] + _src["todo"]))
+
 for p in PAPERS:
     p.setdefault("manuscript", True)
     p["html"] = number_blocks(p["html"])
