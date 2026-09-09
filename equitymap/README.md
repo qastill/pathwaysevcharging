@@ -17,6 +17,8 @@ transfer lapisan → data Indonesia ada di Perpustakaan: `papers/bacaan_evmap_eq
 | `page.html` · `render.js` | markup tab (`#p-ekuitas`) dan renderer (`window.initEquity`) |
 | `inject.py` | penyisip idempoten ke `index.html` (`<!-- EQ:BEGIN/END -->`, `/* EQ:BEGIN/END */`) |
 | `keadilan.py` | **analisis mendalam ekuitas vs kesetaraan** dari `equity.js` → `keadilan.json` (Lorenz/Gini bertingkat, Theil, kota–kabupaten, CI pendapatan/IPM/kemiskinan/kepadatan, kuintil, defisit, kurva cakupan 300 situs dua aturan) |
+| `dinamika.py` · `dinamika_render.js` | **lanjutan §6–§8** → `dinamika.json` (digabung ke payload tab sebagai `kd.dyn`): Moran's I & LISA per kabupaten (bobot ketetanggaan `cache/adm2.geojson`), deret waktu Jawa Barat (tanggal nyata `Master SPKLU Maret 2026.xlsx`) dan nasional PLN (ID SPKLU dikalibrasi ke tahun), skenario water-filling menuju target Gini + batas trade-off cakupan × pemerataan |
+| `sosek.py` | pembaca tabel BPS kabupaten/kota (kemiskinan, IPM, pengeluaran per kapita) → `input/kabupaten_sosek.csv`; bila berkas itu ada, `keadilan.py` menambah CI dan kuintil tingkat kabupaten |
 | `keadilan_page.html` · `keadilan_render.js` · `keadilan_inject.py` | tab **⚖️ Ekuitas vs Kesetaraan** (grup *Analisis SPKLU*, `#tab=keadilan`); catatan naratifnya di `papers/catatan_ekuitas_kesetaraan.md` |
 
 ## Urutan jalan
@@ -26,8 +28,23 @@ pip install numpy openpyxl h3 shapely
 python3 equitymap/fetch.py      # hanya bila input/ ingin dibangun ulang (unduh ±75 MB)
 python3 equitymap/prepare.py    # ±30 detik → equity.js, summary.json
 python3 equitymap/inject.py     # pasang/perbarui tab (aman diulang)
-python3 equitymap/keadilan.py && python3 equitymap/keadilan_inject.py   # tab ⚖️ Ekuitas vs Kesetaraan
+python3 equitymap/keadilan.py                                            # tab ⚖️ Ekuitas vs Kesetaraan §1–§5
+python3 equitymap/dinamika.py                                            # §6–§8 (butuh cache/adm2.geojson + scipy, shapely; ±10 detik)
+python3 equitymap/keadilan_inject.py
+python3 equitymap/sosek.py --poverty <bps.xlsx> --hdi <bps.xlsx> --expend <bps.xlsx>   # opsional, lalu ulangi keadilan.py
 ```
+
+## Lanjutan §6–§8 (dari `dinamika.py`)
+
+| Ukuran | Nilai |
+|---|---|
+| Moran's I charger/kapita (log) · akses ≤10 km · jarak per heksagon | **0,385** (z 10,9) · 0,430 · 0,963 |
+| LISA: klaster HH / LL | 28 kab/kota (16,9 % penduduk, 5,07 charger/100 rb) / 49 kab (4,0 %, 0,25; 5,3 jt jiwa di Papua) |
+| Kalibrasi tahun dari ID SPKLU (327 situs Jabar) | ρ 0,89 · akurasi 93 % · batas ID 139/302/482/1.512/2.119 |
+| Gini nasional PLN 2021 → 2024 → Jun 2026 → + mitra | 0,887 → **0,471** → 0,506 → **0,595** (mitra +1.013 situs, cakupan +1,05 poin) |
+| Jawa Barat (tanggal nyata) Gini 2022 → 2024 → Mar 2026 | 0,265 → 0,333 → 0,282; ≤10 km 70,0 → 81,0 %, ≤5 km 42,6 → 57,9 % |
+| Water-filling: Gini 0,5 / 0,4 / 0,3 / 0,2 | +369 / **+935** / +1.793 / +3.330 charger (40 % ke Jawa pada 0,4) |
+| 1.000 situs: cakupan murni vs pemerataan murni | 95,4 % · Gini 0,409 vs 91,8 % · Gini 0,312; kuintil termiskin 91,9 % vs 86,1 % |
 
 ## Sumber data
 

@@ -125,7 +125,105 @@ ekuitas tidak bertentangan sampai ±300 situs**; konfliknya baru muncul pada uku
 situs-situs ekor (Papua pegunungan) yang mahal secara jaringan — wilayah "prioritas tinggi, jaringan lemah" di
 Peta Ekuitas.
 
-## 7. Kesimpulan untuk riset
+## 7. Struktur spasial: ketimpangan mengelompok, bukan acak
+
+Gini buta terhadap *di mana* kabupaten tertinggal berada. Moran's I pada log(1 + charger/100 ribu) dengan bobot
+ketetanggaan poligon geoBoundaries ADM2 (queen, buffer ±0,5 km; 28 pulau tanpa tetangga memakai 3 centroid
+terdekat; 999 permutasi) = **0,385** (harapan acak −0,002; z = 10,9; p = 0,001). Untuk akses ≤10 km lebih kuat
+lagi (**0,430**) karena satu situs melayani lintas batas kabupaten, dan untuk jarak per heksagon nyaris kontinu
+(**0,963**): gurun pengisian adalah hamparan, bukan lubang.
+
+LISA (klaster lokal, p < 0,05) membedakan dua dunia:
+
+| Kelas | Kab/kota | Penduduk | Charger/100 rb | ≤10 km |
+|---|---|---|---|---|
+| Tinggi–tinggi (HH) | 28 | 16,9 % | 5,07 | 94,0 % |
+| Rendah–rendah (LL) | 49 | 4,0 % | 0,25 | 24,0 % |
+| Tinggi di tengah rendah (HL) | 7 | 0,5 % | 1,74 | 63,2 % |
+| Rendah di tengah tinggi (LH) | 4 | 0,6 % | 0,65 | 71,7 % |
+| Tidak signifikan | 420 | 78,1 % | 1,09 | 59,1 % |
+
+HH = Jabodetabek (DKI 5, Jawa Barat 6, Banten 4) dan Bali (9). LL = 49 kabupaten berpenduduk kecil tetapi luas —
+11,0 juta jiwa, 5,3 juta di antaranya di Papua (21 kabupaten), lalu Sulawesi Tenggara, Aceh, NTT. Dari 100
+kabupaten tanpa charger, hanya 9 dikelilingi seluruhnya oleh kabupaten tanpa charger (Papua pegunungan); 91
+lainnya berbatasan dengan kabupaten ber-charger dan "meminjam" sebagian akses tetangganya — itulah mekanisme
+mengapa Gini akses (0,274) jauh di bawah Gini kepemilikan (0,595). Konsekuensi metodologis: residu antar-kabupaten
+berkorelasi spasial, sehingga regresi charger ~ IPM harus memakai model spasial (SAR/SEM) atau galat berkelompok
+per provinsi; unit kebijakan yang tepat adalah wilayah.
+
+## 8. Dinamika waktu: ketimpangan diproduksi ulang, bukan diwarisi
+
+Dua jendela. **Jawa Barat** memakai tanggal operasi nyata 636 unit charger (Master SPKLU Maret 2026; Kota Cimahi
+digabung ke Bandung Barat karena tidak punya heksagon res 6 sendiri). **Nasional PLN** memakai urutan ID SPKLU
+sebagai proksi urutan pembangunan: pada 327 situs Jawa Barat yang tanggalnya diketahui, ID dan tanggal berkorelasi
+ρ Spearman 0,89; batas ID per tahun (139 / 302 / 482 / 1.512 / 2.119) memberi akurasi tahun 93 % (±1 tahun 94 %).
+Berlaku untuk 2.059 situs PLN aktif; 1.013 situs mitra tidak ber-ID berurutan sehingga hanya muncul di titik akhir.
+
+| Titik | Situs | Charger | Gini kab | Gini prov | Theil antar-prov | Kab kosong | Kota/kab | Jawa | ≤10 km | Q1 ≤10 km |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 2021 | 86 | 187 | 0,887 | 0,465 | 29 % | 450 | 5,3× | 49 % | 19,2 % | 13,9 % |
+| 2022 | 226 | 443 | 0,731 | 0,471 | 35 % | 399 | 2,9× | 65 % | 32,5 % | 19,7 % |
+| 2023 | 372 | 724 | 0,632 | 0,367 | 32 % | 331 | 2,5× | 66 % | 41,4 % | 23,9 % |
+| 2024 | 1.274 | 2.030 | **0,471** | 0,251 | 30 % | 121 | 2,4× | 59 % | 58,7 % | 45,0 % |
+| 2025 | 1.799 | 2.859 | 0,508 | 0,335 | 49 % | 113 | 3,2× | 66 % | 60,9 % | 46,7 % |
+| Jun 2026 (PLN) | 2.059 | 3.205 | 0,506 | 0,340 | 52 % | 104 | 3,3× | 67 % | 62,7 % | 46,7 % |
+| Jun 2026 + mitra | 3.072 | 4.795 | **0,595** | 0,433 | 63 % | 100 | 5,1× | 74 % | 63,7 % | 47,6 % |
+
+Tiga fase. (1) 2021–2024: PLN menyebar — 902 situs dalam setahun (2024), 34 provinsi terisi, kabupaten kosong 450
+→ 121, Gini 0,887 → 0,471, cakupan kuintil termiskin 14 % → 45 %. (2) 2025–2026: pertumbuhan berbalik ke pusat —
+Gini naik ke 0,506, rasio kota/kabupaten 2,4× → 3,3×, porsi Theil antar-provinsi 30 % → 52 %, kuintil termiskin
+diam di 46,7 %; 785 situs baru hanya menambah 4 poin cakupan. (3) Mitra non-PLN: +1.013 situs, +1.590 charger,
+cakupan hanya +1,05 poin, tetapi Gini 0,506 → **0,595**, kota/kabupaten 5,1×, Jawa 74 %. Pasar menaruh charger di
+tempat yang sudah punya charger. Gini 0,595 di §1 adalah Gini pasar + PLN; Gini PLN sendiri 0,506.
+
+Jawa Barat dengan tanggal nyata mengulang pola yang sama: Gini 0,265 (2022, 93 unit) → 0,333 (2024, unit baru
+menumpuk di kota) → 0,282 (Mar 2026, 636 unit); cakupan ≤10 km 70,0 % → 81,0 % tetapi ≤5 km hanya 42,6 % → 57,9 %;
+unit per situs naik dari 1,1 ke 2,0 — ekspansi 2025–2026 *menebalkan* lebih daripada *meluaskan*. Kesimpulan
+dinamis: ukuran pemerataan harus marjinal (ke mana situs tahun ini pergi), bukan stok kumulatif.
+
+## 9. Skenario kebijakan: harga pemerataan
+
+**Water-filling** — tiap kabupaten diangkat ke ambang per kapita t yang sama, tanpa mengurangi yang di atas
+(biaya per charger diasumsikan; slider di dasbor, bawaan Rp 400 juta/unit kelas DC 25–50 kW termasuk sipil dan
+sambungan — belum diverifikasi ke RAB PLN [VERIFY]):
+
+| Target Gini | Ambang /100 rb | Charger tambahan | % jaringan | Kab penerima | ke Jawa | ke kab tanpa charger |
+|---|---|---|---|---|---|---|
+| 0,5 | 0,66 | 369 | 7,7 % | 266 | 36 % | 28 % |
+| 0,4 | 1,08 | **935** | 19,5 % | 343 | 40 % | 18 % |
+| 0,3 | 1,58 | 1.793 | 37,4 % | 395 | 43 % | 14 % |
+| 0,2 | 2,30 | 3.330 | 69,5 % | 439 | 47 % | 11 % |
+
+Kurva cembung: tiap 0,1 poin Gini berikutnya menuntut kira-kira dua kali charger sebelumnya. Penerima terbesar
+pada Gini 0,4 bukan Papua melainkan kabupaten padat Jawa (Jawa Timur 185, Jawa Tengah 128; Tasikmalaya +18,
+Kediri +16, Jember +15) — dan hanya 18 % ke 100 kabupaten tanpa charger, yang masing-masing hanya butuh beberapa
+unit (Paniai 430 ribu jiwa: 5 unit). Kesetaraan per kapita adalah ukuran orang; orang ada di Jawa.
+
+**Batas trade-off** — anggaran N situs (2 charger/situs) dibagi dengan porsi f lewat aturan pemerataan (kabupaten
+dengan charger/kapita terendah, heksagon dengan penduduk belum tercakup terbanyak di dalamnya) dan sisanya lewat
+aturan cakupan (greedy maximum coverage ≈10 km):
+
+| Situs | f | ≤10 km | Gini kab | Q1 ≤10 km | Situs luar Jawa |
+|---|---|---|---|---|---|
+| 500 | 0 % | 89,2 % | 0,456 | 78,6 % | 68 % |
+| 500 | 100 % | 85,3 % | 0,420 | 78,1 % | 69 % |
+| 1.000 | 0 % | 95,4 % | 0,409 | 91,9 % | 81 % |
+| 1.000 | 50 % | 94,0 % | 0,349 | 89,1 % | 69 % |
+| 1.000 | 100 % | 91,8 % | 0,312 | 86,1 % | 62 % |
+| 2.000 | 0 % | 99,3 % | 0,444 | 98,6 % | 88 % |
+| 2.000 | 100 % | 96,0 % | 0,200 | 92,2 % | 56 % |
+
+Tiga temuan. (a) 500 situs pertama hampir bebas konflik. (b) Pada 1.000 situs, pemerataan penuh berbiaya 3,7 poin
+cakupan nasional untuk 0,10 poin Gini; campuran 50/50 mengambil sebagian besar manfaat keduanya. Aturan cakupan
+murni bahkan menaikkan Gini lagi setelah ±1.000 situs (0,409 → 0,444) karena situs berikutnya mengisi kabupaten
+luas berpenduduk jarang (Ketapang, Kutai Kartanegara, Musi Banyuasin) sampai per kapitanya melampaui rata-rata.
+(c) **Paradoks kuintil termiskin:** aturan cakupan menutup kuintil termiskin lebih cepat (91,9 % vs 86,1 % pada
+1.000 situs) karena ia mengejar penduduk belum terlayani — yang miskin dan di luar Jawa — sedangkan pemerataan per
+kapita menarik situs kembali ke Bogor, Bandung, Malang. Kesetaraan per kapita, ekuitas bagi termiskin, dan
+efisiensi cakupan adalah tiga fungsi tujuan berbeda dengan penerima berbeda; setelah ±500 situs ketiganya tidak
+bisa dimaksimalkan bersama.
+
+## 10. Kesimpulan untuk riset
 
 1. Jaringan tidak setara dan ketidaksetaraannya terstruktur tiga tingkat: antar-provinsi (63 %), kota vs kabupaten
    (5,0× per kapita), pusat vs pinggiran di dalam kabupaten (Gini heksagon 0,72). Ukuran keadilan untuk RQ4 harus
@@ -141,10 +239,24 @@ Peta Ekuitas.
    keberhasilan dengan cakupan kuintil termiskin.
 6. Belum terjawab: ketidakadilan dalam-provinsi menurut pendapatan (BPS kabupaten), waktu tempuh jalan, dan siapa
    yang bisa mengisi di rumah (garasi) — agenda RQ4 berikutnya.
+7. Ketimpangan mengelompok di ruang (Moran's I 0,385; akses 0,430): 28 kab/kota HH di Jabodetabek–Bali vs 49
+   kabupaten LL (11 juta jiwa, separuhnya Papua). Unit kebijakan adalah wilayah; model antar-kabupaten harus spasial.
+8. Ketimpangan diproduksi ulang setiap tahun: PLN menurunkan Gini 0,887 → 0,471 (2021–2024), pertumbuhan 2025–2026
+   berbalik ke kota (0,506), dan mitra non-PLN menaikkannya ke 0,595 sambil menambah cakupan hanya 1 poin. Ukur
+   pemerataan secara marjinal.
+9. Harga pemerataan terukur: Gini 0,4 = +935 charger (+19,5 %), 0,3 = +1.793, 0,2 = +3.330; pada 1.000 situs,
+   pemerataan penuh berbiaya 3,7 poin cakupan untuk 0,10 poin Gini.
+10. Kesetaraan per kapita, ekuitas bagi termiskin, dan efisiensi cakupan adalah tiga tujuan berbeda dengan penerima
+    berbeda (Bogor/Malang vs Papua/NTT vs Kalimantan luas). Riset ini harus menyatakan fungsi tujuannya; rekomendasi
+    yang dipertahankan: campuran 50/50 dengan ketiga ukuran dilaporkan bersama, dan water-filling ke Gini 0,4 sebagai
+    anggaran pemerataan satu RUPTL.
 
-## 8. Batas
+## 11. Batas
 
-Jarak garis lurus; charger = unit di situs operasional (PLN *available/inuse* + mitra non-PLN berstatus *offline
+Bobot spasial dari poligon tersederhana (celah ditutup buffer ±0,5 km); LISA memakai permutasi kondisional dengan
+pengembalian; deret nasional adalah *survivor* (situs PLN yang kini *unavailable/maintenance* tidak ikut) dan
+tahunnya estimasi (akurasi 93 % pada sampel Jawa Barat); simulasi tidak memuat batasan jaringan listrik, lahan,
+atau permintaan, dan biaya per charger adalah asumsi [VERIFY]. Jarak garis lurus; charger = unit di situs operasional (PLN *available/inuse* + mitra non-PLN berstatus *offline
 mode* karena tidak terpantau PLN); master PLN tanpa wilayah PLN Batam; populasi Kontur 2023 (estimasi model);
 indikator sosial-ekonomi BPS ~2023 indikatif tingkat provinsi; kurva cakupan memakai radius heksagon (≈10–13 km),
 bukan tepat 10 km, dan tidak memperhitungkan biaya jaringan tiap situs.
