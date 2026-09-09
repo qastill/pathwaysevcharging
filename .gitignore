@@ -3,3 +3,4 @@ ngecas/
 app/node_modules/
 app/dist/
 equitymap/cache/
+__pycache__/

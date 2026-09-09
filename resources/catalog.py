@@ -91,7 +91,7 @@ TAB_LABELS = {
     "ocm": "Open Charge Map", "evmodels": "EV Models", "insight": "World EV Insight",
     "jaringan": "EV × Jaringan", "capacity": "Capacity Maps", "equity": "Spatial Equity",
     "locint": "Location Intelligence", "p2p": "P2P Charging", "national": "Indonesia",
-    "ekuitas": "Peta Ekuitas",
+    "ekuitas": "Peta Ekuitas", "parkir": "Parkir × Charger",
 }
 
 ITEMS = []
@@ -411,6 +411,16 @@ R("siting", "https://github.com/uber/h3", "H3 (Uber)",
   "Sel analisis Peta Ekuitas (res 6 nasional, agregat res 5) dan alternatif sel 0,045° untuk agregasi permintaan × headroom.",
   themes=["akses", "jaringan"], tabs=["ekuitas"], tags=["grid", "heksagon"], featured=True,
   links=[["h3-js (dipakai di browser, di-vendor di equitymap/vendor)", "https://github.com/uber/h3-js"]])
+R("siting", "https://www.tpl.org/park-data-downloads", "ParkServe / ParkScore data (Trust for Public Land)",
+  "Basis data taman >15.000 kota AS: poligon taman, area layanan 10 menit jalan kaki (jaringan jalan), park priority "
+  "areas (blok sensus di luar jangkauan), dan indeks ParkScore 100 kota (akses, luas, investasi, fasilitas, keadilan).",
+  "Cetak biru tab Parkir × Charger: ukuran akses 10 menit, area prioritas sebagai kantong penduduk di luar jangkauan, "
+  "indeks kota relatif berkategori; intisarinya di Perpustakaan (bacaan-parkserve).",
+  kind="portal", themes=["akses"], tabs=["parkir"], tags=["akses", "10-minute walk", "indeks kota", "AS"], featured=True,
+  links=[["Tentang basis data ParkServe", "https://www.tpl.org/parkserve/about"],
+         ["ArcGIS REST — 10-minute walk service areas",
+          "https://services9.arcgis.com/FF3qnCUixr5w9JQi/arcgis/rest/services/ServiceAreas_Clip/FeatureServer/0"],
+         ["Galeri alat 10-Minute Walk (TPL GIS)", "https://web.tplgis.org/10minwalk-project-gallery/"]])
 R("siting", "https://evmap.climateplans.org/", "EV Equity Roadmap (CLEE UC Berkeley)",
   "Peta keputusan terbuka: piksel 100 m di seluruh California diwarnai lapisan prioritas (CalEnviroScreen, pendapatan, "
   "penyewa/hunian multi-keluarga, akses charger) dan kelayakan (hosting capacity utilitas, dana federal, ruang publik), "

@@ -1006,6 +1006,30 @@ OUTPUTS = [
     ["Data", "Payload teragregasi", "capacity.json, grid.json, grid2.json, library.json — teragregasi & dianonimkan", ""],
 ]
 
+PAPERS.append(dict(
+    id="bacaan-parkserve", n=21, category="akses", tags=["akses", "bisnis"],
+    title="Intisari bacaan — ParkServe, park priority areas & ParkScore (Trust for Public Land): ukuran akses 10 menit untuk taman, dan cara memindahkannya ke lahan parkir ber-charger",
+    short="Intisari bacaan: ParkServe/ParkScore (TPL) → Parkir × Charger",
+    kind="Intisari bacaan", venue="Bahan bacaan — bukan untuk publikasi",
+    alt="Dipakai Paper 2, Paper 3 (P2P), CUPUM Bab 1, RQ4", venue_src="—",
+    status="bacaan", stage="Intisari selesai; butir [VERIFY] menunggu cek ke situs TPL (diblokir dari lingkungan bangun)", pct=100,
+    target="Rujukan hidup — perbarui bila ParkScore tahun baru terbit", lead="Qashtalani Haramaini",
+    goal="Merangkum tiga produk data Trust for Public Land — ParkServe (% penduduk dalam 10 menit jalan kaki dari taman), park priority areas, dan ParkScore (indeks 100 kota) — lalu memindahkannya ke lahan parkir ber-charger: akses 10 menit ke SPKLU, heksagon prioritas, ChargeScore, ditambah perilaku parkir nyata dari 157.760 sesi.",
+    finding="Hanya 8,7 % penduduk Indonesia tinggal ≤0,8 km (10 menit jalan kaki) dari SPKLU operasional dan 44,7 % ≤5 km. Durasi parkir di bay charger tidak mengikuti alasan parkir (mal ≈ rest area ≈ 40 menit) melainkan daya charger (≤7 kW 82 menit, ≥150 kW 36 menit) — bay charger dipakai seperti pompa bensin, sehingga peluang AC murah berjam-jam di parkir destinasi/kerja belum terpakai.",
+    data=["ParkServe/ParkScore (TPL) — metode 10 menit, priority areas, indeks 100 kota",
+          "Kontur Population res 8 (874.919 heksagon), master SPKLU nasional, 101.020 sesi Jawa Barat + 56.740 sesi Jakarta Raya"],
+    method=["Transfer ukuran akses 10 menit (0,8 km jalan kaki / 5 km berkendara) ke charger",
+            "Kategori lahan parkir dari nama situs & tag lokasi PLN; okupansi bay, perputaran, profil jam",
+            "ChargeScore: 4 kategori, 8 ukuran, poin kuintil relatif 100 kota"],
+    tabs=["parkir", "sector", "p2p"],
+    html=md_to_html(rd("papers/bacaan_tpl_parkserve.md")),
+    files=[["Intisari (.md)", "papers/bacaan_tpl_parkserve.md"], ["Pipeline Parkir × Charger (.py)", "parkir/prepare.py"]],
+    todo=["Cek butir [VERIFY] ke tpl.org/parkserve dan laporan ParkScore terbaru",
+          "Tambahkan poligon lahan parkir OSM (amenity=parking) — lahan parkir tanpa charger sebagai kandidat",
+          "Ganti garis lurus dengan jaringan jalan (OSRM) seperti ParkServe",
+          "Tambahkan kategori keadilan begitu data kemiskinan/IPM tingkat kabupaten tersedia"],
+))
+
 # Versi Indonesia Naskah 1 & 2 — entri terpisah supaya bisa dibaca dan dikomentari per paragraf di
 # Perpustakaan; metadata (kategori, status, data, metode, tab) diwarisi dari entri Inggrisnya.
 _ID_VERSIONS = {

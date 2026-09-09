@@ -1,0 +1,111 @@
+<div class="page" id="p-parkir">
+<style>
+#p-parkir .pkhead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-parkir .pkhead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-parkir .pkhead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-parkir .pkhead h2 b{color:var(--gold)}
+#p-parkir .pkhead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:960px}
+#p-parkir .pkhead p b{color:#e9d9a0;font-weight:600}#p-parkir .pkhead a{color:#e9d9a0}
+#p-parkir .pkmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-parkir .pkmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-parkir .pkmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-parkir .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#p-parkir .ctl label{font-size:11.5px;color:var(--navy);font-weight:600}
+#p-parkir select{padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px;background:#fff;font-family:Outfit;min-width:170px}
+#p-parkir .chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;border:1px solid var(--line);background:#fff;font-size:11.5px;cursor:pointer;color:#33405a;font-weight:600}
+#p-parkir .chip i{width:10px;height:10px;border-radius:50%;display:inline-block}
+#p-parkir .chip.off{opacity:.4}
+#p-parkir #pkMap{height:560px;border-radius:12px;border:1px solid var(--line);z-index:1}
+#p-parkir #pkMap canvas{max-height:none}
+#p-parkir .legend i{width:12px;height:12px;display:inline-block;border-radius:3px;margin-right:5px;vertical-align:-2px}
+#p-parkir td.n{text-align:right;font-variant-numeric:tabular-nums}
+#p-parkir .bar{display:inline-block;height:8px;border-radius:4px;background:#e6e9f0;width:64px;vertical-align:middle;margin-right:5px;overflow:hidden}
+#p-parkir .bar i{display:block;height:100%}
+#p-parkir .pts{display:inline-block;min-width:22px;text-align:center;border-radius:6px;padding:1px 5px;font-size:10.5px;font-weight:700;color:#fff}
+#p-parkir .grid31{display:grid;grid-template-columns:1.3fr .7fr;gap:15px;margin-bottom:15px}
+#p-parkir .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:15px}
+#p-parkir .catcard{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:linear-gradient(180deg,#fcfdff,#f6f8fc);border-top:3px solid var(--gold)}
+#p-parkir .catcard .h{font-weight:700;color:var(--navy);font-size:13px}
+#p-parkir .catcard .d{font-size:10.5px;color:var(--mut);margin:2px 0 8px;line-height:1.4}
+#p-parkir .catcard .kv{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:11px;color:#4a5670}
+#p-parkir .catcard .kv b{font-family:Fraunces;font-size:15px;color:var(--navy)}
+#p-parkir .note{font-size:11.5px;color:#4a5670;line-height:1.75}#p-parkir .note b{color:var(--navy)}
+#p-parkir .note code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:10.5px}
+#p-parkir .warn{background:#fdf2f0;border:1px solid #f2d5d1;color:#9a3f36;border-radius:6px;padding:1px 7px;font-size:10px;font-weight:700}
+#p-parkir .xfer{width:100%;font-size:11.5px}#p-parkir .xfer td{vertical-align:top;line-height:1.55}
+#p-parkir .ok{color:#2e9e5b;font-weight:700}#p-parkir .part{color:#e0a52b;font-weight:700}#p-parkir .no{color:#d6443c;font-weight:700}
+#p-parkir .pbtn{padding:6px 12px;border-radius:9px;border:1px solid var(--line);cursor:pointer;font-size:12px;font-weight:600;font-family:Outfit;background:#fff}
+@media(max-width:980px){#p-parkir .grid31,#p-parkir .grid3{grid-template-columns:1fr}#p-parkir #pkMap{height:440px}}
+</style>
+
+<div class="pkhead">
+ <span class="tag">Parkir × Charger · padanan ParkServe / ParkScore (Trust for Public Land) untuk SPKLU</span>
+ <h2>🅿️ Lahan parkir sebagai lokasi charger — <b>akses 10 menit, perilaku parkir, dan ChargeScore</b></h2>
+ <p><a href="https://www.tpl.org/park-data-downloads" target="_blank" rel="noopener">ParkServe</a> milik Trust for Public Land mengukur satu hal dengan tajam:
+ <b>berapa persen penduduk yang tinggal dalam 10 menit berjalan kaki dari taman</b>, lalu menandai <i>park priority areas</i> (blok yang di luar jangkauan)
+ dan memeringkat 100 kota terbesar dengan <i>ParkScore</i>. Halaman ini memindahkan ketiganya ke charger: setiap SPKLU publik berdiri di sebuah
+ <b>lahan parkir</b> — rest area, mal, kantor, perumahan, dealer — dan ekonominya ditentukan oleh <i>mengapa mobil diparkir di sana dan berapa lama</i>.
+ Tiga blok: <b>akses 10 menit</b> ke SPKLU dari 874.919 heksagon berpenduduk (Kontur), <b>perilaku parkir</b> dari 157.760 sesi nyata
+ (durasi parkir, okupansi bay, perputaran, profil jam) per kategori lahan parkir, dan <b>ChargeScore</b> untuk 100 kabupaten/kota terpadat.
+ Intisari alat aslinya ada di <a href="#" data-pklib="bacaan-parkserve">📚 Perpustakaan</a>.</p>
+ <div class="pkmeta" id="pkMeta"></div>
+</div>
+
+<div id="pkLoading" class="insight">Memuat data parkir × charger (≈1 MB) dan pustaka H3…</div>
+<div id="pkBody" style="display:none">
+
+<div class="card" style="margin-bottom:15px"><h3>🎛️ Lingkup &amp; <span>lapisan</span> <span class="sub">— pilih provinsi/kabupaten; klik kategori untuk menyembunyikan/menampilkan titik SPKLU-nya</span></h3>
+<div class="ctl">
+ <label>Provinsi</label><select id="pkProv"><option value="all">Seluruh Indonesia</option></select>
+ <label>Kabupaten/Kota</label><select id="pkKab"><option value="all">Semua</option></select>
+ <span id="pkCats" style="display:flex;gap:6px;flex-wrap:wrap"></span>
+ <label style="display:flex;gap:5px;align-items:center;font-weight:500"><input type="checkbox" id="pkLyPrio" checked> heksagon prioritas (di luar 10 menit jalan kaki)</label>
+ <label style="display:flex;gap:5px;align-items:center;font-weight:500"><input type="checkbox" id="pkLyWalk"> lingkar 800 m (10 menit jalan kaki)</label>
+</div></div>
+
+<div class="insight" id="pkInsight"></div>
+<div class="statband" id="pkStats"></div>
+
+<div class="grid31">
+ <div class="card"><h3>🗺️ Peta <span>lahan parkir ber-charger</span> <span class="sub" id="pkMapSub"></span></h3>
+  <div id="pkMap"></div><div class="legend" id="pkLegend"></div></div>
+ <div>
+  <div class="card" style="margin-bottom:15px"><h3>Penduduk menurut <span>jarak ke SPKLU</span> <span class="sub">— nasional, heksagon res 8 (≈0,74 km²)</span></h3><div style="height:200px"><canvas id="cPkBands"></canvas></div></div>
+  <div class="card" style="margin-bottom:15px"><h3>Charger operasional <span>per kategori lahan parkir</span> <span class="sub" id="pkCatSub">nasional</span></h3><div style="height:200px"><canvas id="cPkCat"></canvas></div></div>
+  <div class="card"><h3>Akses 10 menit <span id="pkRankTitle">provinsi</span> <span class="sub">— % penduduk ≤0,8 km (gelap) dan ≤5 km (terang)</span></h3><div style="height:330px"><canvas id="cPkRank"></canvas></div></div>
+ </div>
+</div>
+
+<div class="card" style="margin-bottom:15px"><h3>🚗 Perilaku parkir di charger <span>per kategori lahan parkir</span> <span class="sub" id="pkBehSub">— Jawa Barat, Maret 2026 (101.020 sesi, tag lokasi resmi PLN) · sakelar sumber di kanan</span>
+ <span class="seg" style="float:right;display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden"><button data-s="jabar" class="pbtn active" style="border:none;border-right:1px solid var(--line);border-radius:0;background:var(--navy);color:var(--gold)">Jawa Barat · Mar 2026</button><button data-s="jakarta" class="pbtn" style="border:none;border-radius:0">Jakarta Raya · 1–8 Jun 2026</button></span></h3>
+ <div class="grid3" id="pkCatCards"></div>
+ <div class="grid3">
+  <div><div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px">Durasi parkir saat mengisi (median, menit)</div><div style="height:220px"><canvas id="cPkDwell"></canvas></div></div>
+  <div><div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px">Okupansi bay (% jam terisi) &amp; perputaran (sesi/bay/hari)</div><div style="height:220px"><canvas id="cPkOcc"></canvas></div></div>
+  <div><div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px">Sebaran durasi parkir (% sesi)</div><div style="height:220px"><canvas id="cPkHist"></canvas></div></div>
+ </div>
+ <div class="grid2">
+  <div><div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px">Profil jam — rata-rata bay terisi (%) menurut kategori</div><div style="height:240px"><canvas id="cPkProf"></canvas></div></div>
+  <div><div style="font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px">Daya charger menentukan lama parkir — Jawa Barat</div><div style="height:240px"><canvas id="cPkPower"></canvas></div></div>
+ </div>
+ <div class="insight" id="pkBehInsight" style="margin:10px 0 0"></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>🏆 ChargeScore <span>100 kabupaten/kota terpadat</span> <span class="sub">— padanan ParkScore: 4 kategori, 8 ukuran, poin 1–5 per kuintil relatif terhadap 100 kota, dinormalkan ke 100; klik judul kolom untuk mengurutkan, klik baris untuk memperbesar peta</span></h3>
+ <div class="ctl" style="margin-bottom:8px"><input id="pkSearch" placeholder="🔎 cari kota/kabupaten…" style="flex:1;min-width:180px;padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-family:Outfit;font-size:12px"><button class="pbtn" id="pkCsv">⬇ CSV</button></div>
+ <div class="tablewrap" style="max-height:520px"><table id="tblPk"><thead><tr>
+  <th data-k="rank">#</th><th data-k="name">Kabupaten/Kota</th><th data-k="provn">Provinsi</th><th data-k="pop">Penduduk</th><th data-k="score">ChargeScore</th>
+  <th data-k="akses">Akses</th><th data-k="kapasitas">Kapasitas</th><th data-k="ketersediaan">Ketersediaan</th><th data-k="parkir">Parkir</th>
+  <th data-k="walk">≤0,8 km %</th><th data-k="drive">≤5 km %</th><th data-k="per100k">Charger /100k</th><th data-k="avail">PLN aktif %</th><th data-k="park_share">di parkir umum %</th><th data-k="prio_pop">Jiwa di luar 10 mnt</th></tr></thead><tbody></tbody></table></div></div>
+
+<div class="card" style="margin-bottom:15px"><h3>🔁 Dari ParkServe/ParkScore ke <span>charger</span> <span class="sub">— apa yang dipindahkan, apa yang diganti, apa yang belum</span></h3>
+ <div class="tablewrap"><table class="xfer"><thead><tr><th>Produk Trust for Public Land</th><th>Padanan di halaman ini</th><th>Status</th></tr></thead><tbody>
+ <tr><td><b>ParkServe</b> — % penduduk dalam 10 menit jalan kaki (0,5 mil) ke taman, lewat jaringan jalan; jalan tol/highway sebagai penghalang</td><td>% penduduk ≤0,8 km (jalan kaki) dan ≤5 km (berkendara) dari SPKLU operasional, garis lurus dari pusat heksagon Kontur res 8; varian "hanya charger di lahan parkir umum" dan "hanya DC"</td><td><span class="part">garis lurus</span> — belum jaringan jalan</td></tr>
+ <tr><td><b>Park priority areas</b> — blok sensus di luar 10 menit jalan kaki, diberi peringkat kebutuhan</td><td>Heksagon res 8 di luar 0,8 km dari charger mana pun, 25 terpadat per kabupaten/kota, digambar di peta; jiwa di luar jangkauan per kabupaten</td><td><span class="ok">ada</span></td></tr>
+ <tr><td><b>ParkScore</b> — 100 kota terbesar, 5 kategori (akses, luas, investasi, fasilitas, keadilan), poin per bracket</td><td>ChargeScore: 100 kabupaten/kota terpadat, 4 kategori (akses, kapasitas, ketersediaan, parkir), 8 ukuran, poin kuintil. Kategori <i>keadilan</i> belum ada — data pendapatan hanya tingkat provinsi</td><td><span class="part">4 dari 5 kategori</span></td></tr>
+ <tr><td>Poligon taman, jalur, taman bermain (park polygons, trails, playgrounds)</td><td>Poligon lahan parkir Indonesia tidak tersedia offline (OSM diblokir dari lingkungan bangun); lahan parkir diwakili oleh SPKLU yang berdiri di atasnya, diklasifikasi dari nama situs dan tag lokasi resmi PLN</td><td><span class="no">belum</span> — langkah berikutnya: <code>amenity=parking</code> OSM</td></tr>
+ <tr><td>Pilah demografi (ras, usia, pendapatan)</td><td>Belum — perlu kemiskinan/IPM tingkat kabupaten atau Susenas</td><td><span class="no">belum</span></td></tr>
+ <tr><td>—</td><td><b>Tambahan yang tidak ada di ParkServe:</b> perilaku parkir nyata di charger (durasi, okupansi bay, perputaran, profil jam) dari 157.760 sesi, per kategori lahan parkir</td><td><span class="ok">ada</span></td></tr>
+ </tbody></table></div></div>
+
+<div class="card"><h3>📐 Metode, sumber &amp; <span>batas</span></h3><div class="note" id="pkNote"></div></div>
+</div>
+</div>
