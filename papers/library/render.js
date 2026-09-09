@@ -489,4 +489,6 @@
    if(SB&&!SB.upload){$('upKey').placeholder='kunci unggah belum diatur';} }
   home();
  };
+ // tautan dalam (#tab=library) memicu klik tab sebelum skrip ini terurai — inisialisasi bila tab sudah aktif
+ if(document.querySelector('#p-library.active'))setTimeout(window.initLibrary,60);
 })();

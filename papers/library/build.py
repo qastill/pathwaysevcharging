@@ -1030,6 +1030,30 @@ PAPERS.append(dict(
           "Tambahkan kategori keadilan begitu data kemiskinan/IPM tingkat kabupaten tersedia"],
 ))
 
+PAPERS.append(dict(
+    id="catatan-keadilan", n=22, category="akses", tags=["akses"],
+    title="Catatan analisis — Ekuitas vs kesetaraan jaringan SPKLU Indonesia: mengapa Gini 0,595 dan cakupan 63,7 % bisa keluar bersamaan, dan apa kesimpulannya",
+    short="Catatan analisis: ekuitas vs kesetaraan nasional (mengapa angkanya begitu)",
+    kind="Catatan analisis", venue="Bahan RQ2/RQ4 — masuk ke Paper 2 dan bab sintesis",
+    alt="Dipakai Paper 1, Paper 2, RQ4", venue_src="—",
+    status="bacaan", stage="Analisis selesai dan direproduksi oleh equitymap/keadilan.py; menunggu data BPS tingkat kabupaten untuk CI dalam-provinsi", pct=100,
+    target="Perbarui tiap master SPKLU baru", lead="Qashtalani Haramaini",
+    goal="Membongkar dari prinsip pertama dua angka Peta Ekuitas — 63,7 % penduduk ≤10 km dan Gini charger/kapita 0,595 — memisahkan kesetaraan (horizontal) dari ekuitas (vertikal), dan menguji apakah aturan penempatan berbobot ekuitas mahal.",
+    finding="Akses (Gini 0,274) dan kepemilikan (Gini 0,595) adalah dua hal berbeda; ketidaksetaraan terstruktur — 63 % antar-provinsi (Theil), kota 5,0× kabupaten per kapita, 100 kabupaten (15,6 jt jiwa) tanpa charger, rasio 20:20 = 33,7. Secara vertikal pro-kaya menurut IPM (CI 0,365) tetapi bukan menurut PDRB (0,212): gradiennya kepadatan & pembangunan manusia. Kesetaraan per kapita menuntut +2.097 charger (+44 %). Ekuitas nyaris gratis: bobot 2× untuk provinsi termiskin mengorbankan 0,09 poin cakupan nasional dan menambah 3,8 poin bagi kuintil termiskin.",
+    data=["Payload Peta Ekuitas: 508 kabupaten/kota, 31.405 heksagon res 6, 4.795 charger operasional",
+          "BPS provinsi ~2023 indikatif (PDRB/kapita, IPM, kemiskinan)"],
+    method=["Lorenz/Gini (charger, kW, situs, akses, heksagon); dekomposisi Theil antar/dalam provinsi dan kota/kabupaten",
+            "Kurva & indeks konsentrasi terhadap PDRB, IPM, kemiskinan, kepadatan; kuintil provinsi tertimbang penduduk",
+            "Defisit menuju rata-rata per kapita; greedy maximum coverage 300 situs dengan dua aturan (kesetaraan vs ekuitas)"],
+    tabs=["keadilan", "ekuitas", "equity"],
+    html=md_to_html(rd("papers/catatan_ekuitas_kesetaraan.md")),
+    files=[["Catatan (.md)", "papers/catatan_ekuitas_kesetaraan.md"], ["Pipeline (.py)", "equitymap/keadilan.py"]],
+    todo=["Tambahkan indikator BPS tingkat kabupaten untuk CI dalam-provinsi",
+          "Ganti radius heksagon dengan waktu tempuh jalan pada kurva cakupan",
+          "Masukkan biaya sambungan jaringan per situs ke aturan penempatan (zona 'jaringan lemah')",
+          "Angkat §6 (uji aturan penempatan) menjadi bagian hasil Paper 2 / bab sintesis RQ4"],
+))
+
 # Versi Indonesia Naskah 1 & 2 — entri terpisah supaya bisa dibaca dan dikomentari per paragraf di
 # Perpustakaan; metadata (kategori, status, data, metode, tab) diwarisi dari entri Inggrisnya.
 _ID_VERSIONS = {
