@@ -12,10 +12,30 @@ Tautan langsung ke tab: `index.html#tab=<id>` (mis. `#tab=resources`).
 
 | Grup | Tab |
 |---|---|
+| 🎓 **PhD Monash** | **Ikhtisar Disertasi** · **Kerangka Keadilan** · **Data & Bukti** · **Referensi Vault** — kerangka disertasi Monash yang memakai dashboard ini sebagai aset empiris; dicerminkan dari vault Obsidian `Pathways-Vault` |
 | 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark · Socio-Economic · Spatial Equity · **Ekuitas vs Kesetaraan** · Perception |
 | 🗺️ Peta & Jaringan | Map · Location Intelligence · **Peta Ekuitas** · **Parkir × Charger** · GeoSPKLU · EV × Jaringan |
 | 📚 Naskah & Perpustakaan | Perpustakaan · ASEAN Paper · Capacity Maps · P2P Charging · Summary — semua naskah/jurnal terdaftar di Perpustakaan ([`papers/`](papers/README.md)) |
 | 🌍 Open Source & Data Dunia | World EV Insight · Open Charge Map · EV Models · **Repositori Riset** · **Kombinasi** |
+
+## 🎓 PhD Monash — kerangka disertasi di atas data yang sama
+
+Grup **PhD Monash** (empat tab, paling depan) menyatakan apa yang mau dibuktikan disertasi *Pathways to Advancing
+Sustainable Transportation: Spatial Equity and Public Perception of EV Charging Infrastructure in Indonesia*
+(Monash University Indonesia · RACE for 2030 · Alyas Widita, Liz Taylor) — arah kebalikan dari tab-tab lain:
+dashboard adalah **aset empiris**, grup ini adalah **argumennya**.
+
+| Tab | Isinya |
+|---|---|
+| `#tab=phd` Ikhtisar Disertasi | abstract, dua dimensi brief (D1/D2), empat RQ dengan wording penuh, peta argumen, ilustrasi Access Gap, klaim kebaruan, P1–P4, dan tabel tab mana menopang RQ mana |
+| `#tab=phdequity` Kerangka Keadilan | tiga standar keadilan + keadilan prosedur, **cara membaca Gini dan Concentration Index** (kurva Lorenz 0,595 vs 0,274 dan kurva konsentrasi CI 0,365, digambar dari nilai sebenarnya), apa yang diam-diam diandaikan tiap ukuran, angka ekuitas yang sudah ada, diagram lingkaran permintaan-melingkar, pembagi pengganti, dan risiko yang bisa membatalkan kesimpulan |
+| `#tab=phddata` Data & Bukti | register data mentah, diagram 1.292 kotak 5 km (235 ada pemilik EV · 174 ada charger · 129 pemilik tanpa charger), kapasitas sisa jaringan, uji tiga aturan penempatan, daftar klaim C0–C6, dan urutan bukti yang harus dikejar |
+| `#tab=phdref` Referensi Vault | 36 bacaan dalam lima blok (urutan blok = urutan baca) dengan status, akses, klaim yang dibutuhkan, dan RQ yang dilayani; ✚ = usulan sendiri di luar reading list |
+
+Sumbernya vault Obsidian `Pathways-Vault` — `00 Project Brief`, `00 Proposal`, `02 Research Questions/RQ1–RQ4`,
+`06 Peta Argumen`, `07 Redefining Need`, `08 Referensi`, `11 Evidence Ledger`, `13 Data & Aset Empiris`. Nama note disebut di tiap bagian supaya satu perubahan di vault ketemu pasangannya di
+dashboard. Blok kode tab ada di `index.html` antara penanda `<!-- PHD:BEGIN -->` dan `<!-- PHD:END -->`; id tabnya
+terdaftar di `TABS` dan grup navnya di `NAVGROUPS`.
 
 ## 🗺️ Peta Ekuitas — padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia
 
