@@ -1,5 +1,13 @@
 # pathwaysevcharging
 
+## Rencana penyelesaian riset GeoSPKLU
+
+[Rencana kerja, kebutuhan data, dan protokol Gini/concentration index](papers/rencana_penyelesaian_riset_geospklu.md)
+menghubungkan modul dashboard dengan RQ distribusi, persepsi, integrasi, dan skenario penempatan.
+Dokumen ini memuat audit awal, prioritas pekerjaan, contoh perhitungan, serta kriteria selesai.
+Mulai dari rekonsiliasi data dan definisi indeks; baseline nasional saat ini memakai jarak garis lurus 10 km.
+Status: rencana kerja untuk ditinjau, bukan hasil analisis baru.
+
 ## 📱 Ngecas — web app & mobile app
 
 Aplikasi konsumen (cari, pesan, ngecas + sewa charger rumah P2P) yang dibangun dari data repositori ini
