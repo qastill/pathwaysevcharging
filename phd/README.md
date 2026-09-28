@@ -1,27 +1,23 @@
-# PhD Monash workspace
+# PhD Monash — native GeoSPKLU section
 
-Open `/phd/` for the full workspace, or `/#tab=phd` inside GeoSPKLU. The **PhD Monash** navigation group owns Spatial Equity, Ekuitas vs Kesetaraan, Peta Ekuitas, Socio-Economic, and Perception. Existing tab URLs remain valid.
+Open `/#tab=phd` in the existing dashboard. PhD Monash contains an overview, concept map, eight-week research plan, literature, methods and data, existing analysis links, weekly progress and Obsidian notes. The old `/phd/` URL redirects to this menu.
 
-## Contents
+All new interface text is English. The imported collection contains 94 English note guides, including 43 literature summaries with the main idea and use in this PhD. Original Obsidian text remains available as a Markdown download. Guides are concise syntheses rather than complete translations. The snapshot date is 28 September 2026; there is no automatic Obsidian sync.
 
-- Overview and the RQ1–RQ4 concept map, based on the newer Obsidian concept note.
-- Eight work packages with editable completion checkpoints.
-- Searchable literature and a reader for the imported research notes, including internal wiki links and Markdown download.
-- Methods, data requirements, and links to the existing analysis modules.
-- Weekly entries: target, achievement, evidence, blockers, next steps, supervision, status, and self-reported completion of that week's target.
+Four original SVG illustrations explain usable access, dependence on public charging, the combination of evidence, and Gini versus the concentration index. Numeric examples are explicitly hypothetical.
 
-`notes.json` is a dated snapshot of 94 selected research notes (43 literature notes) from Pathways-Vault, including the GeoSPKLU completion plan. It includes the research notes at the vault root, Exercises, Research Questions, Concepts, and Literature; gallery-only notes, videos, media binaries, and private supervision correspondence are excluded. Source paths and original draft content are retained. Original claims are not treated as verified findings; the interface labels them as working notes and highlights methodological cautions. No automatic sync with Obsidian is configured.
+The PhD navigation group also contains the existing Spatial Equity, Equity & Equality, Equity Map, Socio-Economic and Perception modules. These modules retain their original analyses and content. Existing tab URLs remain valid.
 
-## Checkpoint storage
+## Weekly progress
 
-Entries and work-package checkboxes are stored under `pathways.phd.monash.v1` in this browser's localStorage. Data is **not shared across browsers, devices, or deployment origins**. Export JSON for backup or transfer between preview and production; import merges by week and asks before replacing existing weeks. Markdown export is available for supervision summaries. No sample progress is preloaded and no dissertation completion percentage is invented.
+Entries contain the week, research question, status, target completion, target, results, evidence, blockers, next steps and supervision notes. Entries and work-package checkboxes use localStorage key `pathways.phd.monash.v1`. They stay in this browser and site origin; use JSON export/import to back up or transfer them. Markdown export supports supervision notes. Previous backups using `Lintas RQ` migrate to the English label `All RQs`.
 
-Local storage failures are reported without clearing the form. Imports are size/schema validated; user input and note HTML are escaped, and source links accept only HTTP(S). Deletion requires confirmation.
+No sample progress is loaded. Completion refers to the week's target or the eight work packages, not the whole PhD. The work plan is proposed, not an official Monash milestone schedule.
 
-## Integration and reproduction
+## Integration
 
-Run `node phd/inject.cjs` after generating `index.html`. The Vercel build runs it before copying the site to `public/`. The script is idempotent and leaves all analysis renderers/data intact.
+`section.html` is injected directly into the dashboard. CSS is scoped to `.phd-workspace`; JavaScript is isolated in a closure and uses prefixed element IDs. There is no iframe or second website. Run `node phd/inject.cjs` after dashboard generation; the existing build does this before copying static files. Repeated injection is safe.
 
-For local preview, serve the repository through an HTTP server and open `/phd/`. No build or third-party JavaScript is required for the workspace. Web fonts have system font fallbacks.
+## Literature sources
 
-The workspace's RQ numbering follows `29 Peta Konsep Penelitian SPKLU.md`. Older paper-library plans use a different numbering; this implementation does not rewrite those manuscripts or imply supervisor approval.
+Summaries use the imported research notes. Thin proposal-only entries were supplemented from publisher abstracts/pages for Asensio (2020), Karner, Pereira & Farber (2025; online 2024), Sheldon (2022), Yu (2025), Zheng (2024), and the Welch & Widita (2019) abstract. The English guides link to the original sources. Research-use paragraphs describe proposed applications to this PhD, not additional findings of those papers.

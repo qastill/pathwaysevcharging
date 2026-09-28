@@ -126,7 +126,8 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 .aiform input{flex:1;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-family:Outfit;font-size:12.5px}
 .aiform button{background:var(--navy);color:var(--gold);border:none;border-radius:9px;padding:0 15px;font-weight:600;cursor:pointer}
 .aiform button:disabled{opacity:.5;cursor:default}
-</style></head><body><div class="wrap">
+</style><!-- PHD:ASSETS --><link rel="stylesheet" href="phd/styles.css"><script src="phd/app.js" defer></script><!-- PHD:ASSETS:END -->
+</head><body><div class="wrap">
 <header>
 <div class="tag">PLN · Indonesia · 2024–2026 — National SPKLU Intelligence</div>
 <h1>Indonesia EV Charging (SPKLU) — <b>National Dashboard</b></h1>
@@ -141,9 +142,14 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 <div class="tabs" id="tabs"></div>
 
 <!-- PHD:BEGIN -->
-<div class="page" id="p-phd">
-<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 0;font-size:12px"><span>PhD Monash · catatan, metode, dan checkpoint penelitian. Filter wilayah tidak berlaku untuk ruang kerja ini.</span><a href="phd/" target="_blank" rel="noopener" style="white-space:nowrap">Buka layar penuh ↗</a></div>
-<iframe src="phd/" title="PhD Monash research workspace" loading="lazy" style="width:100%;height:1150px;border:1px solid #dde4df;border-radius:12px;background:#f5f6f2"></iframe>
+<div class="page" id="p-phd"><div class="phd-workspace" id="phd-workspace" lang="en">
+  <header class="phd-heading"><div><span class="eyebrow">PATHWAYS · DOCTORAL RESEARCH</span><h2>PhD Monash</h2></div><span class="source-note">Qashtalani Haramaini · Indonesia’s EV charging network</span></header>
+  <nav id="phd-nav" aria-label="PhD Monash sections"></nav>
+  <div id="phd-content"><p class="empty">Loading research notes…</p></div>
+  <footer>Personal PhD research workspace · Monash University · Obsidian research collection</footer>
+  <dialog id="phd-reader" aria-labelledby="phd-reader-title"><header><div><span class="eyebrow" id="phd-reader-group"></span><h2 id="phd-reader-title"></h2></div><button class="icon-button" id="phd-close-reader" aria-label="Close note">✕</button></header><div class="reader-meta" id="phd-reader-meta"></div><article id="phd-reader-body" class="markdown"></article><div class="reader-actions"><button id="phd-download-note" class="secondary">Download original Obsidian note (.md)</button></div></dialog>
+  <div id="phd-toast" role="status" aria-live="polite"></div>
+</div>
 </div>
 <!-- PHD:END -->
 
@@ -2145,7 +2151,7 @@ const ASPLAB={keandalan:"Reliability",ketersediaan:"Availability",kejujuran_daya
 const hmc=v=>{if(v==null)return '#eef1f6';const t=(v+1)/2;return `rgb(${Math.round(214-(214-46)*t)},${Math.round(68+(158-68)*t)},${Math.round(60+(91-60)*t)})`;};
 const $=id=>document.getElementById(id);const C={};
 
-const TABS=[["phd","PhD Workspace"],["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["keadilan","⚖️ Ekuitas vs Kesetaraan"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["ekuitas","🗺️ Peta Ekuitas"],["parkir","🅿️ Parkir × Charger"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["jaringan","⚡ EV × Jaringan"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["asean","🌏 ASEAN Paper"],["capacity","🔌 Capacity Maps"],["p2p","🤝 P2P Charging"],["library","📚 Perpustakaan"],["resources","🧰 Repositori Riset"],["combine","🔗 Kombinasi"],["summary","Summary"]];
+const TABS=[["phd","PhD Workspace"],["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["keadilan","Equity & Equality"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["ekuitas","Equity Map"],["parkir","🅿️ Parkir × Charger"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["jaringan","⚡ EV × Jaringan"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["asean","🌏 ASEAN Paper"],["capacity","🔌 Capacity Maps"],["p2p","🤝 P2P Charging"],["library","📚 Perpustakaan"],["resources","🧰 Repositori Riset"],["combine","🔗 Kombinasi"],["summary","Summary"]];
 $('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${t[0]==='overview'?' active':''}" data-p="${t[0]}">${t[1]}</div>`).join('');
 /* NAV:BEGIN — navigasi dua tingkat: grup -> tab. Tab yang tidak terdaftar jatuh ke grup 'open'. */
 const NAVGROUPS=[["analisis","📊 Analisis SPKLU",["overview","national","demand","policy","sector","jraya","pelanggan","benchmark"]],["phd","🎓 PhD Monash",["phd","equity","keadilan","ekuitas","socio","perception"]],["peta","🗺️ Peta & Jaringan",["map","locint","parkir","geopeta","jaringan"]],["naskah","📚 Naskah & Perpustakaan",["library","asean","capacity","p2p","summary"]],["open","🌍 Open Source & Data Dunia",["insight","ocm","evmodels","resources","combine"]]];

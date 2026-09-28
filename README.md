@@ -8,15 +8,15 @@ Dokumen ini memuat audit awal, prioritas pekerjaan, contoh perhitungan, serta kr
 Mulai dari rekonsiliasi data dan definisi indeks; baseline nasional saat ini memakai jarak garis lurus 10 km.
 Status: rencana kerja untuk ditinjau, bukan hasil analisis baru.
 
-## 🎓 PhD Monash — ruang kerja penelitian
+## 🎓 PhD Monash
 
-Buka [`/phd/`](phd/) atau tab **PhD Workspace** di grup **PhD Monash**: concept map interaktif,
-research plan, 43 catatan literatur, metode/data, dan 94 catatan riset dari Obsidian.
-Checkpoint mingguan dapat diisi, diedit, diekspor dan diimpor; data progres disimpan di browser
-masing-masing, belum tersinkron lintas perangkat. Rinciannya di [`phd/README.md`](phd/README.md).
+Open `/#tab=phd` in the existing dashboard for the English research workspace: concept map,
+eight-week plan, 43 literature summaries, methods, four illustrations and 94 Obsidian note guides.
+Weekly progress can be entered, edited and exported. Entries are stored in the current browser
+and site address; use JSON backup to transfer them. See [`phd/README.md`](phd/README.md).
 
-**Spatial Equity, Ekuitas vs Kesetaraan, Peta Ekuitas, Socio-Economic, dan Perception** sekarang
-berada dalam grup PhD Monash. Tautan tab lama tetap berfungsi. Snapshot catatan diimpor 28 September 2026.
+Spatial Equity, Equity & Equality, Equity Map, Socio-Economic and Perception are grouped
+under PhD Monash. The workspace is part of the dashboard, with no embedded website.
 
 ## 📱 Ngecas — web app & mobile app
 

@@ -8,6 +8,7 @@ if (!html.includes('const TABS=[') || !html.includes('const NAVGROUPS=[')) throw
 if (!html.includes('["phd","PhD Workspace"]')) html = html.replace('const TABS=[', 'const TABS=[["phd","PhD Workspace"],');
 // Preserve Overview as the initial page even when PhD is added before the original tabs.
 html = html.replace("${i==0?' active':''}", "${t[0]==='overview'?' active':''}");
+html=html.replace('["keadilan","⚖️ Ekuitas vs Kesetaraan"]','["keadilan","Equity & Equality"]').replace('["ekuitas","🗺️ Peta Ekuitas"]','["ekuitas","Equity Map"]');
 const groupPattern = /const NAVGROUPS=(\[[\s\S]*?\]);/;
 const match = html.match(groupPattern);
 if (!match) throw new Error('NAVGROUPS not found');
@@ -17,11 +18,10 @@ const next = groups.filter(g => g[0] !== 'phd').map(g => [g[0], g[1], g[2].filte
 next.splice(1,0,['phd','🎓 PhD Monash',['phd',...moved]]);
 html = html.replace(groupPattern, 'const NAVGROUPS='+JSON.stringify(next)+';');
 const section = `<!-- PHD:BEGIN -->
-<div class="page" id="p-phd">
-<div style="display:flex;justify-content:space-between;gap:12px;align-items:center;padding:14px 0;font-size:12px"><span>PhD Monash · catatan, metode, dan checkpoint penelitian. Filter wilayah tidak berlaku untuk ruang kerja ini.</span><a href="phd/" target="_blank" rel="noopener" style="white-space:nowrap">Buka layar penuh ↗</a></div>
-<iframe src="phd/" title="PhD Monash research workspace" loading="lazy" style="width:100%;height:1150px;border:1px solid #dde4df;border-radius:12px;background:#f5f6f2"></iframe>
-</div>
+<div class="page" id="p-phd">${fs.readFileSync(path.join(__dirname,'section.html'),'utf8')}</div>
 <!-- PHD:END -->`;
+html=html.replace(/<!-- PHD:ASSETS -->[\s\S]*?<!-- PHD:ASSETS:END -->\s*/g,'');
+html=html.replace('</head>','<!-- PHD:ASSETS --><link rel="stylesheet" href="phd/styles.css"><script src="phd/app.js" defer></script><!-- PHD:ASSETS:END -->\n</head>');
 html = html.replace(/<!-- PHD:BEGIN -->[\s\S]*?<!-- PHD:END -->\s*/g,'');
 if (!html.includes('<!-- OVERVIEW -->')) throw new Error('Overview anchor not found');
 html = html.replace('<!-- OVERVIEW -->',section+'\n\n<!-- OVERVIEW -->');
