@@ -1,5 +1,23 @@
 # pathwaysevcharging
 
+## Rencana penyelesaian riset GeoSPKLU
+
+[Rencana kerja, kebutuhan data, dan protokol Gini/concentration index](papers/rencana_penyelesaian_riset_geospklu.md)
+menghubungkan modul dashboard dengan RQ distribusi, persepsi, integrasi, dan skenario penempatan.
+Dokumen ini memuat audit awal, prioritas pekerjaan, contoh perhitungan, serta kriteria selesai.
+Mulai dari rekonsiliasi data dan definisi indeks; baseline nasional saat ini memakai jarak garis lurus 10 km.
+Status: rencana kerja untuk ditinjau, bukan hasil analisis baru.
+
+## 🎓 PhD Monash
+
+Open `/#tab=phd` in the existing dashboard for the English research workspace: concept map,
+eight-week plan, 43 literature summaries, methods, four illustrations and 94 Obsidian note guides.
+Weekly progress can be entered, edited and exported. Entries are stored in the current browser
+and site address; use JSON backup to transfer them. See [`phd/README.md`](phd/README.md).
+
+Spatial Equity, Equity & Equality, Equity Map, Socio-Economic and Perception are grouped
+under PhD Monash. The workspace is part of the dashboard, with no embedded website.
+
 ## 📱 Ngecas — web app & mobile app
 
 Aplikasi konsumen (cari, pesan, ngecas + sewa charger rumah P2P) yang dibangun dari data repositori ini
@@ -7,13 +25,14 @@ ada di [`app/`](app/README.md) — satu basis kode untuk PWA dan Android/iOS (Ca
 
 ## 🧭 Dashboard (`index.html`) — navigasi dua tingkat
 
-Tab dashboard dikelompokkan menjadi empat grup (baris atas), tiap grup memuat tab-tabnya (baris bawah).
+Tab dashboard dikelompokkan menjadi lima grup (baris atas), tiap grup memuat tab-tabnya (baris bawah).
 Tautan langsung ke tab: `index.html#tab=<id>` (mis. `#tab=resources`).
 
 | Grup | Tab |
 |---|---|
-| 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark · Socio-Economic · Spatial Equity · **Ekuitas vs Kesetaraan** · Perception |
-| 🗺️ Peta & Jaringan | Map · Location Intelligence · **Peta Ekuitas** · **Parkir × Charger** · GeoSPKLU · EV × Jaringan |
+| 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark |
+| 🎓 PhD Monash | PhD Workspace · Spatial Equity · Ekuitas vs Kesetaraan · Peta Ekuitas · Socio-Economic · Perception |
+| 🗺️ Peta & Jaringan | Map · Location Intelligence · **Parkir × Charger** · GeoSPKLU · EV × Jaringan |
 | 📚 Naskah & Perpustakaan | Perpustakaan · ASEAN Paper · Capacity Maps · P2P Charging · Summary — semua naskah/jurnal terdaftar di Perpustakaan ([`papers/`](papers/README.md)) |
 | 🌍 Open Source & Data Dunia | World EV Insight · Open Charge Map · EV Models · **Repositori Riset** · **Kombinasi** |
 
