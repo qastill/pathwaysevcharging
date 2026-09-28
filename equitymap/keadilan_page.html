@@ -47,6 +47,166 @@
 
 <div class="def"><b>Definisi yang dipakai.</b> <b>Kesetaraan</b> = distribusi charger sebanding dengan jumlah penduduk; diukur kurva Lorenz (sumbu x: kumulatif penduduk, kabupaten diurut dari porsi terkecil; sumbu y: kumulatif charger), Gini = 1 − 2 × luas di bawah kurva (0 = setara sempurna, 1 = satu kabupaten memegang semuanya), Theil T yang bisa dipecah menjadi antar-provinsi dan dalam-provinsi, rasio 20:20 dan Palma. <b>Ekuitas</b> = distribusi menurut kebutuhan; diukur kurva konsentrasi (unit diurut dari termiskin ke terkaya) dan indeks konsentrasi CI (&gt;0 pro-kaya, &lt;0 pro-miskin), kuintil pendapatan, dan uji aturan penempatan. <b>Akses</b> = penduduk ≤10 km garis lurus dari situs operasional. "Charger" = unit charger di situs operasional (PLN <i>available/inuse</i> + mitra).</div>
 
+<div class="sec">
+ <h3>Metode — rumus apa yang dipakai, dan tiap angka datang dari mana</h3>
+ <div class="q">Halaman ini penuh angka. Bagian ini menjelaskan alat hitungnya satu per satu, data mentahnya apa, dan berkas mana yang menghasilkannya — supaya tiap angka bisa ditelusuri, bukan diterima begitu saja.</div>
+
+ <div class="ct">Rantai datanya</div>
+ <div style="overflow-x:auto"><svg viewBox="0 0 900 306" role="img" aria-label="Rantai data dari sumber mentah sampai angka di halaman ini"><g font-family="Outfit,sans-serif"><rect x="20" y="26" width="250" height="58" rx="10" fill="#fff" stroke="#e6e9f0" stroke-width="1.2"/>
+<text x="32" y="47" font-size="11" font-weight="700" fill="#0a1733">Kontur Population 2023</text>
+<text x="32" y="64" font-size="9.5" fill="#67748c">874.919 heksagon res 8</text>
+<text x="32" y="78" font-size="9.5" fill="#67748c">→ 47.793 res 6 · 277,5 jt jiwa</text>
+<line x1="272" y1="55" x2="305.5" y2="143.5" stroke="#8590a6" stroke-width="1.4"/><polygon points="308,150 302.3,144.7 308.7,142.2" fill="#8590a6"/>
+<rect x="20" y="96" width="250" height="58" rx="10" fill="#fff" stroke="#e6e9f0" stroke-width="1.2"/>
+<text x="32" y="117" font-size="11" font-weight="700" fill="#0a1733">Master SPKLU PLN (Jun 2026)</text>
+<text x="32" y="134" font-size="9.5" fill="#67748c">3.212 situs · 5.009 charger</text>
+<text x="32" y="148" font-size="9.5" fill="#67748c">operasional: 2.059 PLN + 1.013 mitra</text>
+<line x1="272" y1="125" x2="302.3" y2="146.0" stroke="#8590a6" stroke-width="1.4"/><polygon points="308,150 300.3,148.8 304.2,143.2" fill="#8590a6"/>
+<rect x="20" y="166" width="250" height="58" rx="10" fill="#fff" stroke="#e6e9f0" stroke-width="1.2"/>
+<text x="32" y="187" font-size="11" font-weight="700" fill="#0a1733">geoBoundaries ADM1/ADM2</text>
+<text x="32" y="204" font-size="9.5" fill="#67748c">34 provinsi · 515 kabupaten/kota</text>
+<text x="32" y="218" font-size="9.5" fill="#67748c">508 dipakai (berpenduduk > 0)</text>
+<line x1="272" y1="195" x2="303.6" y2="155.5" stroke="#8590a6" stroke-width="1.4"/><polygon points="308,150 306.3,157.6 301.0,153.3" fill="#8590a6"/>
+<rect x="20" y="236" width="250" height="58" rx="10" fill="#fff" stroke="#e6e9f0" stroke-width="1.2"/>
+<text x="32" y="257" font-size="11" font-weight="700" fill="#0a1733">BPS provinsi (±2023)</text>
+<text x="32" y="274" font-size="9.5" fill="#67748c">PDRB/kapita · IPM · kemiskinan</text>
+<text x="32" y="288" font-size="9.5" fill="#67748c">hanya tingkat provinsi</text>
+<line x1="272" y1="265" x2="305.9" y2="156.7" stroke="#8590a6" stroke-width="1.4"/><polygon points="308,150 309.2,157.7 302.7,155.7" fill="#8590a6"/>
+<rect x="312" y="116" width="150" height="68" rx="10" fill="#f7f9fc" stroke="#e6e9f0" stroke-width="1.2"/>
+<text x="324" y="137" font-size="11" font-weight="700" fill="#0a1733">prepare.py</text>
+<text x="324" y="154" font-size="9.5" fill="#67748c">indikator per heksagon</text>
+<text x="324" y="168" font-size="9.5" fill="#67748c">+ agregat kab/prov</text>
+<line x1="464" y1="150" x2="493.0" y2="150.0" stroke="#8590a6" stroke-width="1.4"/><polygon points="500,150 493.0,153.4 493.0,146.6" fill="#8590a6"/>
+<rect x="504" y="116" width="150" height="68" rx="10" fill="#f7f9fc" stroke="#e6e9f0" stroke-width="1.2"/>
+<text x="516" y="137" font-size="11" font-weight="700" fill="#0a1733">equity.js</text>
+<text x="516" y="154" font-size="9.5" fill="#67748c">payload 2,6 MB</text>
+<text x="516" y="168" font-size="9.5" fill="#67748c">31.405 heksagon ≥100 jiwa</text>
+<line x1="656" y1="150" x2="685.0" y2="150.0" stroke="#8590a6" stroke-width="1.4"/><polygon points="692,150 685.0,153.4 685.0,146.6" fill="#8590a6"/>
+<rect x="696" y="92" width="184" height="60" rx="10" fill="#fffaef" stroke="#e6cf8a" stroke-width="1.2"/>
+<text x="708" y="113" font-size="11" font-weight="700" fill="#0a1733">keadilan.py</text>
+<text x="708" y="130" font-size="9.5" fill="#67748c">Gini · CI · Theil · defisit</text>
+<text x="708" y="144" font-size="9.5" fill="#67748c">greedy 300 situs</text>
+<rect x="696" y="160" width="184" height="60" rx="10" fill="#fffaef" stroke="#e6cf8a" stroke-width="1.2"/>
+<text x="708" y="181" font-size="11" font-weight="700" fill="#0a1733">dinamika.py</text>
+<text x="708" y="198" font-size="9.5" fill="#67748c">Moran's I · LISA · water-filling</text>
+<text x="708" y="212" font-size="9.5" fill="#67748c">deret waktu</text>
+<line x1="788" y1="224" x2="788.0" y2="237.0" stroke="#8590a6" stroke-width="1.4"/><polygon points="788,244 784.6,237.0 791.4,237.0" fill="#8590a6"/>
+<rect x="620" y="248" width="260" height="46" rx="10" fill="#eef3f1" stroke="#0D5B54" stroke-width="1.2"/>
+<text x="632" y="269" font-size="11" font-weight="700" fill="#0a1733">keadilan.json → tab ini</text>
+<text x="632" y="286" font-size="9.5" fill="#67748c">semua angka di halaman ini dibaca dari berkas itu</text></g></svg></div>
+ <div style="font-size:11.5px;color:var(--mut);line-height:1.6;margin:8px 0 4px">
+  Tidak ada angka di halaman ini yang diketik tangan. Semuanya dihitung ulang dari empat sumber di kiri, lalu disimpan ke <code>equitymap/keadilan.json</code>.
+  Menjalankan ulang <code>python3 equitymap/keadilan.py</code> akan menghasilkan angka yang sama persis.
+ </div>
+
+ <div class="ct" style="margin-top:18px">Ukuran yang dipakai — dan apa yang diam-diam diandaikan</div>
+ <div class="tablewrap" style="max-height:none">
+ <table>
+  <thead><tr><th style="width:150px">Ukuran</th><th style="width:96px">Untuk standar</th><th style="width:230px">Rumusnya</th><th>Menjawab apa — dan mengandaikan apa</th><th style="width:120px">Dihitung di</th></tr></thead>
+  <tbody>
+  <tr><td><b>Gini–Lorenz</b></td><td>mendatar<br><span style="color:#67748c">kesetaraan</span></td>
+   <td><code>G = 1 − 2∫L(p)dp</code><br><span style="font-size:10.5px;color:#67748c">kabupaten diurut naik menurut charger per penduduk; sumbu datar kumulatif penduduk, sumbu tegak kumulatif charger; luas dihitung trapesium</span></td>
+   <td>Seberapa jauh sebarannya dari sebanding dengan jumlah penduduk. <b>Mengandaikan pembaginya memang sama dengan kebutuhan</b> — ini andaian terbesar di seluruh analisis, dan yang dipersoalkan di tab <a href="#tab=phdequity">Kerangka Keadilan</a>.</td>
+   <td><code>keadilan.py</code><br><span style="font-size:10px;color:#67748c">fungsi <code>lorenz()</code></span></td></tr>
+
+  <tr><td><b>Concentration Index</b></td><td>menegak<br><span style="color:#67748c">ekuitas</span></td>
+   <td><code>CI = 1 − 2∫C(p)dp</code><br><span style="font-size:10.5px;color:#67748c">rumus persis sama, <b>hanya urutannya beda</b>: unit diurut dari termiskin ke terkaya, bukan dari charger tersedikit</span></td>
+   <td>Apakah charger menumpuk di daerah yang lebih makmur. <b>Mengandaikan PDRB/IPM tingkat provinsi cukup halus</b> untuk menilai itu — padahal ketimpangan di dalam provinsi (kota kaya vs kabupaten miskin) tidak tertangkap sama sekali.</td>
+   <td><code>keadilan.py</code><br><span style="font-size:10px;color:#67748c">fungsi <code>concentration()</code></span></td></tr>
+
+  <tr><td><b>Kurva konsentrasi</b></td><td>menegak</td>
+   <td><span style="font-size:10.5px;color:#67748c">titik-titik (kumulatif penduduk, kumulatif charger) dari fungsi yang sama; 40 titik per kurva</span></td>
+   <td>Membandingkan beberapa ukuran sekaligus dalam satu gambar — charger, kW terpasang, jumlah situs, dan jangkauan 10 km. Sengaja ditumpuk, karena keempatnya memberi kesimpulan berbeda pada data yang sama.</td>
+   <td><code>keadilan.py</code></td></tr>
+
+  <tr><td><b>Theil T</b></td><td>diagnosa</td>
+   <td><code>T = Σ (y<sub>i</sub>/Y)·ln[(y<sub>i</sub>/Y)÷(p<sub>i</sub>/P)]</code><br><span style="font-size:10.5px;color:#67748c">lalu dipecah jadi bagian antar-kelompok dan dalam-kelompok</span></td>
+   <td>Ketimpangannya ada di antar-provinsi atau di dalam provinsi. Dipakai karena Gini tidak bisa dipecah seperti ini — Theil bisa, dan itu satu-satunya alasan ia ikut dipakai.</td>
+   <td><code>keadilan.py</code><br><span style="font-size:10px;color:#67748c">fungsi <code>theil()</code></span></td></tr>
+
+  <tr><td><b>Moran's I &amp; LISA</b></td><td>diagnosa</td>
+   <td><code>I = (n/ΣW)·(z<sup>T</sup>Wz)/(z<sup>T</sup>z)</code><br><span style="font-size:10.5px;color:#67748c">bobot ketetanggaan queen (±0,5 km); pulau tanpa tetangga memakai 3 centroid terdekat; uji permutasi 999×</span></td>
+   <td>Apakah daerah padat charger saling bertetangga, atau tersebar acak. LISA menunjukkan klaster mana yang tinggi-tinggi dan mana yang rendah-rendah. <b>Mengandaikan definisi "tetangga" yang dipilih masuk akal</b> — hasilnya bisa berubah kalau bobotnya diganti.</td>
+   <td><code>dinamika.py</code></td></tr>
+
+  <tr><td><b>Rasio 20:20 &amp; Palma</b></td><td>mendatar</td>
+   <td><span style="font-size:10.5px;color:#67748c">porsi charger 20 % penduduk teratas ÷ porsi 20 % terbawah (Palma: 10 % atas ÷ 40 % bawah)</span></td>
+   <td>Ujung ke ujung, tanpa peduli bentuk tengahnya. Berguna karena Gini bisa sama untuk dua sebaran yang ujungnya sangat berbeda.</td>
+   <td><code>keadilan.py</code></td></tr>
+
+  <tr><td><b>Defisit kesetaraan</b></td><td>mendatar</td>
+   <td><code>defisit = max(0, penduduk × 1,73/100rb − charger)</code></td>
+   <td>Berapa charger yang kurang bila tiap kabupaten dibawa ke rata-rata nasional, tanpa mengambil dari yang sudah punya. Ini <b>hitungan kesetaraan, bukan ekuitas</b> — ia sengaja mengabaikan kebutuhan yang berbeda.</td>
+   <td><code>keadilan.py</code></td></tr>
+
+  <tr><td><b>Uji 300 situs baru</b></td><td>uji aturan</td>
+   <td><span style="font-size:10.5px;color:#67748c">algoritma serakah: tiap langkah pilih heksagon yang menambah penduduk tercakup terbanyak; aturan ekuitas mengalikan penduduk dengan bobot beban sosial-ekonomi provinsi (1×–2×)</span></td>
+   <td>Berapa mahal harga "adil" dalam poin cakupan. <b>Mengandaikan situs baru selalu berhasil dibangun di heksagon terpilih</b> — kelayakan lahan dan jaringan tidak ikut diuji di sini.</td>
+   <td><code>keadilan.py</code><br><span style="font-size:10px;color:#67748c">fungsi <code>greedy()</code></span></td></tr>
+
+  <tr><td><b>Water-filling</b></td><td>skenario</td>
+   <td><span style="font-size:10.5px;color:#67748c">tambah charger ke kabupaten dengan per-kapita terendah dulu, sampai target Gini tercapai</span></td>
+   <td>Berapa charger yang dibutuhkan untuk mencapai Gini 0,5 / 0,4 / 0,3 / 0,2. Menjawab "berapa mahal pemerataan", bukan "di mana persisnya harus dibangun".</td>
+   <td><code>dinamika.py</code></td></tr>
+
+  <tr><td><b>Equity Priority Index</b></td><td>menegak</td>
+   <td><code>EPI = kurang terlayani × pendapatan rendah</code></td>
+   <td>Prioritas intervensi. <b>Mengandaikan dua komponen boleh dikalikan tanpa bobot yang dinyatakan</b> — dan bobot itu sebetulnya keputusan kebijakan yang menyamar jadi parameter. <span style="color:#8c6510"><b>Tidak dipakai di halaman ini</b></span> — ada di tab <a href="#tab=equity">Spatial Equity</a> tingkat Jawa Barat.</td>
+   <td>tab lain</td></tr>
+
+  <tr><td><b>2SFCA</b></td><td>batas minimum</td>
+   <td><span style="font-size:10.5px;color:#67748c">akses = Σ (kapasitas charger ÷ penduduk yang memperebutkannya) dalam radius tempuh</span></td>
+   <td>Akses yang memperhitungkan rebutan antarpengguna dan kapasitas alat, bukan cuma jarak ke titik terdekat. <span style="color:#a5442b"><b>Belum diterapkan</b></span> — halaman ini masih memakai jarak garis lurus ≤10 km. Ini yang akan dipakai disertasi untuk mengganti ukuran akses. → <a href="#tab=phdequity">Kerangka Keadilan</a></td>
+   <td>rencana</td></tr>
+  </tbody>
+ </table>
+ </div>
+
+ <div class="ct" style="margin-top:20px">Contoh hitung — dari angka mentah sampai satu angka Gini</div>
+ <div style="font-size:12.5px;line-height:1.75;color:#33405a;margin-bottom:8px">
+  Supaya rumusnya tidak terasa abstrak, ini hitungan lengkapnya pada lima kuintil provinsi — angka yang sama yang muncul di bagian 3.
+  Kabupaten diurut dari charger per penduduk paling sedikit, lalu penduduk dan chargernya ditumpuk.
+ </div>
+ <div class="tablewrap" style="max-height:none">
+ <table>
+  <thead><tr><th>Kuintil</th><th>Charger /100 rb</th><th>Penduduk</th><th>Charger</th><th>Kumulatif penduduk</th><th>Kumulatif charger</th></tr></thead>
+  <tbody><tr><td><b>Q1</b> <span style="color:#67748c">termiskin</span></td><td class="n">0,83</td><td class="n">25.460.031</td><td class="n">211</td><td class="n">0,0917</td><td class="n">0,0441</td></tr>
+<tr><td><b>Q4</b> </td><td class="n">0,97</td><td class="n">31.599.300</td><td class="n">307</td><td class="n">0,2056</td><td class="n">0,1081</td></tr>
+<tr><td><b>Q2</b> </td><td class="n">1,43</td><td class="n">85.019.129</td><td class="n">1.216</td><td class="n">0,5119</td><td class="n">0,3619</td></tr>
+<tr><td><b>Q3</b> </td><td class="n">2,08</td><td class="n">46.854.283</td><td class="n">975</td><td class="n">0,6807</td><td class="n">0,5653</td></tr>
+<tr><td><b>Q5</b> <span style="color:#67748c">terkaya</span></td><td class="n">2,35</td><td class="n">88.609.439</td><td class="n">2.082</td><td class="n">1,0000</td><td class="n">1,0000</td></tr></tbody>
+ </table>
+ </div>
+ <div class="concl" style="margin-top:12px">
+  Luas di bawah kurva itu <b>0,4108</b>, jadi <code>G = 1 − 2 × 0,4108 = <b>0,178</b></code>.
+  Tetapi Gini di kepala halaman ini <b>0,595</b>. Bukan salah satunya keliru — <b>keduanya benar untuk unit yang berbeda</b>.
+  Pada lima kuintil, ketimpangan di dalam tiap kuintil hilang karena ikut dirata-ratakan; pada 508 kabupaten/kota, ia kelihatan.
+  Itu sebabnya setiap angka Gini di halaman ini selalu disebut bersama unitnya — 508 kabupaten/kota, 34 provinsi, atau 31.405 heksagon —
+  dan kenapa angka yang diagregasi terlalu kasar selalu terlihat lebih adil daripada kenyataannya.
+ </div>
+
+ <div class="ct" style="margin-top:20px">Dari mana data mentahnya</div>
+ <div class="tablewrap" style="max-height:none">
+ <table>
+  <thead><tr><th style="width:180px">Lapisan</th><th style="width:260px">Sumber</th><th>Catatan</th></tr></thead>
+  <tbody>
+  <tr><td><b>Penduduk</b></td><td>Kontur Population — Indonesia, rilis 1 Nov 2023 (CC BY 4.0)</td><td>874.919 heksagon H3 res 8 dipadatkan jadi 47.793 heksagon res 6 (±36 km²); total 277,5 juta jiwa. Hanya heksagon ≥100 jiwa (31.405 = 99,9 % penduduk) yang dikirim ke peta; statistik memakai semuanya.</td></tr>
+  <tr><td><b>Batas wilayah</b></td><td>geoBoundaries gbOpen IDN ADM1/ADM2 (CC BY 4.0)</td><td>34 provinsi, 515 kabupaten/kota; 508 berpenduduk &gt; 0 dan ikut dihitung. Heksagon pesisir yang tidak jatuh di poligon mana pun (7.017) dilekatkan ke kabupaten terdekat.</td></tr>
+  <tr><td><b>SPKLU</b></td><td><code>SPKLU_Indonesia_Lengkap_2026-06-08.xlsx</code> (master PLN)</td><td>3.212 situs, 5.009 charger. <b>Operasional</b> = PLN berstatus <i>available</i>/<i>inuse</i> (2.059 situs) + seluruh situs mitra non-PLN (1.013). Mitra berstatus <i>offline mode</i> karena tidak terpantau sistem PLN, bukan karena mati. PLN <i>unavailable</i>/<i>maintenance</i> (140) dibuang.</td></tr>
+  <tr><td><b>Jaringan listrik</b></td><td><code>data/grid-id/</code> — RUPTL 2025–2034 + OpenStreetMap</td><td>933 gardu induk (138.877 MVA), 4.052 ruas transmisi. Dipakai untuk lapisan kelayakan, bukan untuk angka keadilan di halaman ini.</td></tr>
+  <tr><td><b>Sosial-ekonomi</b></td><td>BPS ±2023 — PDRB per kapita, IPM, kemiskinan</td><td><b>Hanya tingkat provinsi (34 unit).</b> Semua Concentration Index di halaman ini karenanya adalah CI <i>antar-provinsi</i>. Kalau tabel BPS tingkat kabupaten dimuat (<code>equitymap/sosek.py</code>), CI tingkat kabupaten ikut dihitung.</td></tr>
+  </tbody>
+ </table>
+ </div>
+
+ <div class="why" style="margin-top:14px"><b>Empat batas yang harus disebut sebelum angkanya dikutip.</b><ol>
+  <li><b>Jarak di sini garis lurus, bukan waktu tempuh.</b> "≤10 km" dihitung dari titik ke titik, tanpa jalan, tanpa macet, tanpa selat. Di Jawa perbedaannya kecil; di daerah berbukit dan kepulauan, angka ini terlalu optimistis.</li>
+  <li><b>Sosial-ekonominya cuma tingkat provinsi.</b> Kota kaya dan kabupaten miskin di provinsi yang sama dianggap sama persis. Itu menekan nilai CI ke bawah — ketidakadilan di dalam provinsi tidak terhitung sama sekali.</li>
+  <li><b>Charger dihitung sebagai unit, bukan kapasitas layanan.</b> Satu charger 200 kW dan satu charger 7 kW dihitung sama. Karena itu Gini kW (0,712) selalu dilaporkan bersama Gini charger (0,595).</li>
+  <li><b>Semua ini deskriptif.</b> Tidak ada satu pun angka di halaman ini yang membuktikan sebab-akibat. Ia menunjukkan pola, bukan alasan kenapa polanya begitu — dan itu batas yang membedakan dashboard dari disertasi.</li>
+ </ol></div>
+</div>
+
 <!-- 1 -->
 <div class="sec"><h3>1 · Kesetaraan horizontal — porsi charger vs porsi penduduk</h3>
  <div class="q">Bila 4.795 charger dibagi rata menurut penduduk, tiap kabupaten mendapat 1,73 per 100 ribu jiwa. Seberapa jauh kenyataannya dari itu, dan lapisan mana yang menyumbang ketimpangan?</div>
