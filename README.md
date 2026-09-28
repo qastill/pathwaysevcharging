@@ -8,6 +8,16 @@ Dokumen ini memuat audit awal, prioritas pekerjaan, contoh perhitungan, serta kr
 Mulai dari rekonsiliasi data dan definisi indeks; baseline nasional saat ini memakai jarak garis lurus 10 km.
 Status: rencana kerja untuk ditinjau, bukan hasil analisis baru.
 
+## 🎓 PhD Monash — ruang kerja penelitian
+
+Buka [`/phd/`](phd/) atau tab **PhD Workspace** di grup **PhD Monash**: concept map interaktif,
+research plan, 43 catatan literatur, metode/data, dan 94 catatan riset dari Obsidian.
+Checkpoint mingguan dapat diisi, diedit, diekspor dan diimpor; data progres disimpan di browser
+masing-masing, belum tersinkron lintas perangkat. Rinciannya di [`phd/README.md`](phd/README.md).
+
+**Spatial Equity, Ekuitas vs Kesetaraan, Peta Ekuitas, Socio-Economic, dan Perception** sekarang
+berada dalam grup PhD Monash. Tautan tab lama tetap berfungsi. Snapshot catatan diimpor 28 September 2026.
+
 ## 📱 Ngecas — web app & mobile app
 
 Aplikasi konsumen (cari, pesan, ngecas + sewa charger rumah P2P) yang dibangun dari data repositori ini
@@ -15,13 +25,14 @@ ada di [`app/`](app/README.md) — satu basis kode untuk PWA dan Android/iOS (Ca
 
 ## 🧭 Dashboard (`index.html`) — navigasi dua tingkat
 
-Tab dashboard dikelompokkan menjadi empat grup (baris atas), tiap grup memuat tab-tabnya (baris bawah).
+Tab dashboard dikelompokkan menjadi lima grup (baris atas), tiap grup memuat tab-tabnya (baris bawah).
 Tautan langsung ke tab: `index.html#tab=<id>` (mis. `#tab=resources`).
 
 | Grup | Tab |
 |---|---|
-| 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark · Socio-Economic · Spatial Equity · **Ekuitas vs Kesetaraan** · Perception |
-| 🗺️ Peta & Jaringan | Map · Location Intelligence · **Peta Ekuitas** · **Parkir × Charger** · GeoSPKLU · EV × Jaringan |
+| 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark |
+| 🎓 PhD Monash | PhD Workspace · Spatial Equity · Ekuitas vs Kesetaraan · Peta Ekuitas · Socio-Economic · Perception |
+| 🗺️ Peta & Jaringan | Map · Location Intelligence · **Parkir × Charger** · GeoSPKLU · EV × Jaringan |
 | 📚 Naskah & Perpustakaan | Perpustakaan · ASEAN Paper · Capacity Maps · P2P Charging · Summary — semua naskah/jurnal terdaftar di Perpustakaan ([`papers/`](papers/README.md)) |
 | 🌍 Open Source & Data Dunia | World EV Insight · Open Charge Map · EV Models · **Repositori Riset** · **Kombinasi** |
 
