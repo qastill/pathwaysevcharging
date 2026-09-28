@@ -18,6 +18,7 @@ transfer lapisan → data Indonesia ada di Perpustakaan: `papers/bacaan_evmap_eq
 | `inject.py` | penyisip idempoten ke `index.html` (`<!-- EQ:BEGIN/END -->`, `/* EQ:BEGIN/END */`) |
 | `keadilan.py` | **analisis mendalam ekuitas vs kesetaraan** dari `equity.js` → `keadilan.json` (Lorenz/Gini bertingkat, Theil, kota–kabupaten, CI pendapatan/IPM/kemiskinan/kepadatan, kuintil, defisit, kurva cakupan 300 situs dua aturan) |
 | `dinamika.py` · `dinamika_render.js` | **lanjutan §6–§8** → `dinamika.json` (digabung ke payload tab sebagai `kd.dyn`): Moran's I & LISA per kabupaten (bobot ketetanggaan `cache/adm2.geojson`), deret waktu Jawa Barat (tanggal nyata `Master SPKLU Maret 2026.xlsx`) dan nasional PLN (ID SPKLU dikalibrasi ke tahun), skenario water-filling menuju target Gini + batas trade-off cakupan × pemerataan |
+| `akses.py` | **aksesibilitas** — enam ukuran akses dari `equity.js` → `akses.json`: container, proximity, cakupan biner, cumulative, gravity, dan **E2SFCA berbobot kapasitas** (pita 5/10/25 km, bobot 1,00/0,60/0,25; pasokan kW dan cacah charger). Dipakai oleh bagian *Aksesibilitas* di tab ⚖️ Ekuitas vs Kesetaraan |
 | `sosek.py` | pembaca tabel BPS kabupaten/kota (kemiskinan, IPM, pengeluaran per kapita) → `input/kabupaten_sosek.csv`; bila berkas itu ada, `keadilan.py` menambah CI dan kuintil tingkat kabupaten |
 | `keadilan_page.html` · `keadilan_render.js` · `keadilan_inject.py` | tab **⚖️ Ekuitas vs Kesetaraan** (grup *Analisis SPKLU*, `#tab=keadilan`); catatan naratifnya di `papers/catatan_ekuitas_kesetaraan.md` |
 
@@ -45,6 +46,33 @@ python3 equitymap/sosek.py --poverty <bps.xlsx> --hdi <bps.xlsx> --expend <bps.x
 | Jawa Barat (tanggal nyata) Gini 2022 → 2024 → Mar 2026 | 0,265 → 0,333 → 0,282; ≤10 km 70,0 → 81,0 %, ≤5 km 42,6 → 57,9 % |
 | Water-filling: Gini 0,5 / 0,4 / 0,3 / 0,2 | +369 / **+935** / +1.793 / +3.330 charger (40 % ke Jawa pada 0,4) |
 | 1.000 situs: cakupan murni vs pemerataan murni | 95,4 % · Gini 0,409 vs 91,8 % · Gini 0,312; kuintil termiskin 91,9 % vs 86,1 % |
+
+## Aksesibilitas — E2SFCA berbobot kapasitas (`akses.py`)
+
+Ukuran keadilan di atas semuanya menghitung **jumlah** (charger per penduduk, persen penduduk ≤10 km). `akses.py`
+menambahkan ukuran **akses**: berapa daya yang benar-benar jadi jatah seseorang setelah dibagi dengan semua orang lain
+yang juga bisa mencapainya.
+
+```
+langkah 1   R_j = S_j / Σ_k ( P_k · W(d_kj) )      kompetisi di tiap situs
+langkah 2   A_i = Σ_j ( R_j · W(d_ij) )            akses tiap heksagon
+W:  ≤5 km → 1,00 · 5–10 km → 0,60 · 10–25 km → 0,25 · >25 km → 0
+```
+
+31.405 heksagon × 3.072 situs operasional (4.795 charger, 138.899 kW) = 96 juta pasang jarak haversine, ±13 detik.
+Uji kewarasan: rata-rata nasional versi cacah keluar **1,73 charger/100 rb** — persis sama dengan rata-rata nasional,
+karena metode ini membagi habis pasokan tanpa menambah atau menghilangkan unit.
+
+| Ukuran | Charger per kapita | Akses E2SFCA (cacah) | Akses E2SFCA (kW) |
+|---|---|---|---|
+| Gini | 0,595 | **0,542** | **0,640** |
+| CI ~ IPM | 0,360 | — | **0,449** |
+| CI ~ PDRB | 0,225 | — | 0,265 |
+
+Temuannya berlawanan dengan dugaan: membiarkan akses melewati batas kabupaten **menurunkan** Gini (0,595 → 0,542),
+tetapi mengganti cacah unit dengan kW **menaikkannya** ke 0,640 — dan keberpihakan ke daerah ber-IPM tinggi menguat
+(CI 0,360 → 0,449). Ukuran berbasis jumlah selama ini meremehkan ketimpangannya. Peringkat 105 dari 249 kabupaten
+berpenduduk >300 rb bergeser lebih dari 25 tangga (37 bergeser >50).
 
 ## Sumber data
 

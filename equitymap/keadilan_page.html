@@ -386,6 +386,435 @@
  <div id="kdSosek" hidden></div>
 </div>
 
+<div class="sec">
+ <h3>Aksesibilitas — dari "ada berapa" ke "bisa dipakai berapa"</h3>
+ <div class="q">Semua angka di bagian sebelumnya menghitung <b>jumlah</b>: berapa charger per penduduk, berapa persen penduduk dalam 10 km. Tidak satu pun menghitung <b>akses</b> — berapa daya yang benar-benar jadi jatah seseorang setelah dibagi dengan semua orang lain yang juga bisa mencapainya. Bagian ini menutup celah itu, dan hasilnya mengubah kesimpulannya.</div>
+
+ <div class="ct">Enam cara mengukur akses, dari yang paling kasar</div>
+ <div style="overflow-x:auto"><svg viewBox="0 0 900 238" role="img" aria-label="Enam ukuran aksesibilitas, makin kanan makin lengkap"><g font-family="Outfit,sans-serif"><rect x="24" y="148" width="132" height="44" rx="8" fill="#c9d0dd"/>
+<text x="34" y="168" font-size="10" font-weight="700" fill="#41506b">1</text>
+<text x="34" y="184" font-size="10.5" font-weight="700" fill="#0a1733">Container</text>
+<text x="34" y="210" font-size="9" fill="#4a5670">charger ÷ penduduk wilayah</text>
+<text x="34" y="223" font-size="8.5" fill="#8590a6">buta batas wilayah</text>
+<rect x="166" y="126" width="132" height="66" rx="8" fill="#b8c6d9"/>
+<text x="176" y="146" font-size="10" font-weight="700" fill="#41506b">2</text>
+<text x="176" y="162" font-size="10.5" font-weight="700" fill="#0a1733">Proximity</text>
+<text x="176" y="210" font-size="9" fill="#4a5670">jarak ke yang terdekat</text>
+<text x="176" y="223" font-size="8.5" fill="#8590a6">tak kenal antrean</text>
+<rect x="308" y="104" width="132" height="88" rx="8" fill="#9fb4cd"/>
+<text x="318" y="124" font-size="10" font-weight="700" fill="#41506b">3</text>
+<text x="318" y="140" font-size="10.5" font-weight="700" fill="#0a1733">Cakupan ≤10 km</text>
+<text x="318" y="210" font-size="9" fill="#4a5670">masuk jangkauan atau tidak</text>
+<text x="318" y="223" font-size="8.5" fill="#8590a6">ambangnya keputusan</text>
+<rect x="450" y="82" width="132" height="110" rx="8" fill="#7d9ac0"/>
+<text x="460" y="102" font-size="10" font-weight="700" fill="#41506b">4</text>
+<text x="460" y="118" font-size="10.5" font-weight="700" fill="#0a1733">Cumulative</text>
+<text x="460" y="210" font-size="9" fill="#4a5670">berapa charger terjangkau</text>
+<text x="460" y="223" font-size="8.5" fill="#8590a6">abai kompetisi</text>
+<rect x="592" y="60" width="132" height="132" rx="8" fill="#4f78ab"/>
+<text x="602" y="80" font-size="10" font-weight="700" fill="#e9d9a0">5</text>
+<text x="602" y="96" font-size="10.5" font-weight="700" fill="#fff">Gravity</text>
+<text x="602" y="210" font-size="9" fill="#4a5670">yang jauh dihitung sebagian</text>
+<text x="602" y="223" font-size="8.5" fill="#8590a6">β harus dikalibrasi</text>
+<rect x="734" y="38" width="132" height="154" rx="8" fill="#16305f"/>
+<text x="744" y="58" font-size="10" font-weight="700" fill="#e9d9a0">6</text>
+<text x="744" y="74" font-size="10.5" font-weight="700" fill="#fff">E2SFCA + kapasitas</text>
+<text x="744" y="210" font-size="9" fill="#4a5670">jatah nyata setelah dibagi</text>
+<text x="744" y="223" font-size="8.5" fill="#8590a6">dipakai di bawah</text>
+<text x="24" y="20" font-size="10" fill="#67748c">makin ke kanan, makin banyak hal yang ikut dihitung →</text></g></svg></div>
+
+ <div class="tablewrap" style="max-height:none;margin-top:14px"><table>
+  <thead><tr><th style="width:44px">#</th><th style="width:150px">Metode</th><th style="width:230px">Rumus</th><th>Menjawab apa — dan kelemahannya</th><th style="width:100px">Status</th></tr></thead>
+  <tbody>
+  <tr><td><b>1</b></td><td><b>Container</b></td><td><code>A = charger ÷ penduduk × 100.000</code></td>
+   <td>Di wilayah saya ada berapa. <b>Buta batas wilayah</b> — charger 500 m di seberang batas kabupaten dianggap tidak ada.</td><td>dipakai sekarang</td></tr>
+  <tr><td><b>2</b></td><td><b>Proximity</b></td><td><code>A = min(d<sub>ij</sub>)</code></td>
+   <td>Yang terdekat berapa jauh. <b>Tidak kenal antrean</b> — satu charger untuk sejuta orang tetap terlihat bagus.</td><td>dipakai (jarak rata²)</td></tr>
+  <tr><td><b>3</b></td><td><b>Cakupan biner</b></td><td><code>A = 1 bila d ≤ 10 km</code></td>
+   <td>Masuk jangkauan atau tidak. <b>Ambang 10 km itu keputusan, bukan temuan</b> — 9,9 km dan 10,1 km diperlakukan ekstrem berbeda.</td><td>dipakai sekarang</td></tr>
+  <tr><td><b>4</b></td><td><b>Cumulative</b></td><td><code>A = Σ charger dalam radius d</code></td>
+   <td>Berapa charger yang bisa dicapai. <b>Masih abai kompetisi</b> — 50 charger untuk 50 ribu orang sama nilainya dengan 50 charger untuk 5 juta orang.</td><td>tersedia di data</td></tr>
+  <tr><td><b>5</b></td><td><b>Gravity</b></td><td><code>A<sub>i</sub> = Σ S<sub>j</sub> · e<sup>−βd</sup></code></td>
+   <td>Yang dekat dihitung penuh, yang jauh dihitung sebagian. <b>β harus dikalibrasi</b> dari perilaku nyata; di sini dipakai β = 0,15 sebagai pembanding saja.</td><td>dihitung, pembanding</td></tr>
+  <tr><td><b>6</b></td><td><b>E2SFCA berbobot kapasitas</b></td>
+   <td><code>Langkah 1&nbsp; R<sub>j</sub> = S<sub>j</sub> ÷ Σ P<sub>k</sub>W(d<sub>kj</sub>)</code><br><code>Langkah 2&nbsp; A<sub>i</sub> = Σ R<sub>j</sub>W(d<sub>ij</sub>)</code></td>
+   <td>Berapa daya yang benar-benar jadi jatah saya setelah dibagi. Menutup ketiga kelemahan di atas sekaligus: lintas batas wilayah, memperhitungkan kompetisi, dan memakai kapasitas bukan cacah unit.</td><td><b style="color:#1d7a44">baru — di bawah ini</b></td></tr>
+  </tbody>
+ </table></div>
+
+ <div class="def" style="border-style:solid;border-color:#c9d6ea;background:#fff;margin-top:16px">
+  <b style="font-size:13px">Cara ukuran ke-6 dihitung di sini</b>
+  <div style="font-size:12.5px;line-height:1.8;color:#33405a;margin-top:6px">
+   <b>Bobot jarak</b> memakai pita yang sudah dipakai dashboard, supaya tidak ada ambang baru yang diciptakan diam-diam:
+   <code>≤5 km → 1,00</code> · <code>5–10 km → 0,60</code> · <code>10–25 km → 0,25</code> · <code>&gt;25 km → 0</code>.<br>
+   <b>Pasokan S<sub>j</sub></b> diisi dua kali: cacah charger (untuk pembanding) dan <b>kW terpasang</b> (versi kapasitas).
+   <b>Permintaan P<sub>k</sub></b> adalah penduduk tiap heksagon. Jarak garis lurus dari pusat 31,405 heksagon ke 3,072 situs operasional
+   (4,795 charger, 138,899 kW) — 96 juta pasang jarak, dihitung <code>equitymap/akses.py</code>.
+  </div>
+  <div class="note ok" style="border:1px solid #b7e2c8;background:#f2faf5;border-radius:10px;padding:11px 14px;font-size:12px;line-height:1.7;color:#26334d;margin-top:10px">
+   <b>Uji kewarasan.</b> Rata-rata nasional akses E2SFCA versi cacah keluar <b>1,73 charger per 100 ribu jiwa</b> — persis sama dengan rata-rata nasional charger per 100 ribu.
+   Memang harus begitu: metode ini membagi habis pasokan tanpa menambah atau menghilangkan satu unit pun. Yang berubah bukan totalnya, melainkan <b>siapa yang dianggap kebagian</b>.
+  </div>
+ </div>
+
+ <div class="kv" style="margin-top:16px">
+  <div class="g"><div class="v">0,640</div><div class="t">Gini akses E2SFCA (kW) — naik dari 0,595</div></div>
+  <div><div class="v">0,542</div><div class="t">Gini akses E2SFCA (cacah charger)</div></div>
+  <div><div class="v">0,449</div><div class="t">CI akses ~ IPM — naik dari 0,360</div></div>
+  <div><div class="v">0,86</div><div class="t">korelasi peringkat dengan ukuran lama</div></div>
+  <div><div class="v">105</div><div class="t">dari 249 kabupaten bergeser &gt;25 peringkat</div></div>
+  <div><div class="v">37</div><div class="t">bergeser &gt;50 peringkat</div></div>
+ </div>
+
+ <div class="ct" style="margin-top:16px">Ketimpangan yang sama, diukur tiga cara</div>
+ <div style="overflow-x:auto"><svg viewBox="0 0 900 372" role="img" aria-label="Tiga kurva Lorenz: charger per kapita, akses E2SFCA cacah, akses E2SFCA kW"><g font-family="Outfit,sans-serif"><line x1="70" y1="330" x2="400" y2="330" stroke="#c9d0dd"/>
+<line x1="70" y1="30" x2="70" y2="330" stroke="#c9d0dd"/>
+<line x1="70" y1="330" x2="400" y2="30" stroke="#8590a6" stroke-width="1.3" stroke-dasharray="5 4"/>
+<polyline points="70.0,330.0 72.6,330.0 74.4,330.0 76.0,330.0 77.6,330.0 79.3,330.0 81.6,330.0 85.6,329.8 91.4,329.2 100.5,328.1 107.1,327.1 113.8,326.0 120.9,324.7 126.6,323.5 133.9,321.8 139.7,320.4 148.4,318.3 157.0,316.1 167.8,313.0 177.4,310.1 184.7,307.7 189.7,306.0 195.0,304.1 200.3,301.9 205.1,299.9 220.2,293.1 224.1,291.2 231.0,287.8 242.6,281.4 247.3,278.7 255.9,273.4 267.0,265.8 279.4,256.7 287.5,250.2 294.0,244.8 299.2,240.1 316.3,223.7 332.5,206.3 341.8,195.6 348.4,186.8 362.7,165.7 373.6,146.4 393.0,71.7 400.0,30.0" fill="none" stroke="#2e9e5b" stroke-width="2.4"/>
+<polyline points="70.0,330.0 72.3,330.0 74.6,330.0 76.5,330.0 78.6,330.0 81.0,330.0 82.1,330.0 84.8,330.0 87.5,330.0 99.0,329.4 109.0,328.4 117.7,327.3 126.4,326.0 135.3,324.5 140.6,323.5 148.1,321.9 154.8,320.3 166.7,317.4 174.5,315.4 179.4,314.0 188.1,311.5 195.2,309.3 203.9,306.4 207.2,305.2 214.8,302.2 223.0,298.9 231.3,295.2 241.1,290.4 250.0,285.7 258.3,281.0 271.4,272.9 280.0,267.0 286.6,262.0 302.8,249.1 316.1,237.4 322.9,230.9 334.9,218.3 345.4,205.5 350.7,198.4 361.4,180.5 376.6,148.8 379.6,141.1 394.4,83.2 400.0,30.0" fill="none" stroke="#3a6ea5" stroke-width="2.4"/>
+<polyline points="70.0,330.0 72.5,330.0 74.4,330.0 76.2,330.0 78.0,330.0 79.8,330.0 82.0,330.0 85.2,329.9 92.0,329.6 101.6,328.9 107.4,328.4 117.8,327.2 124.3,326.4 130.8,325.5 137.6,324.6 141.3,324.0 149.7,322.6 157.2,321.2 164.6,319.8 172.1,318.2 181.1,316.2 186.6,314.9 192.0,313.5 197.3,312.0 206.7,309.2 212.8,307.2 217.7,305.5 226.9,302.0 237.3,297.8 246.6,293.9 253.1,290.9 258.9,288.0 268.6,282.7 277.9,277.2 290.9,269.0 302.2,261.4 309.3,256.2 321.1,246.3 337.9,229.9 350.4,216.0 361.9,199.8 374.0,179.9 391.4,99.1 400.0,30.0" fill="none" stroke="#d6443c" stroke-width="2.6"/>
+<text x="235.0" y="356" text-anchor="middle" font-size="10" fill="#67748c">kumulatif penduduk, diurut dari yang paling sedikit →</text>
+<rect x="430" y="60" width="448" height="72" rx="9" fill="#fff" stroke="#2e9e5b" stroke-width="1.3"/>
+<text x="446" y="84" font-size="13" font-weight="700" fill="#2e9e5b" font-family="Fraunces,serif">Gini 0,542</text>
+<text x="446" y="102" font-size="11" fill="#33405a">akses E2SFCA, cacah charger</text>
+<text x="446" y="119" font-size="9.5" fill="#67748c">paling merata — akses tidak berhenti di batas kabupaten</text>
+<rect x="430" y="146" width="448" height="72" rx="9" fill="#fff" stroke="#3a6ea5" stroke-width="1.3"/>
+<text x="446" y="170" font-size="13" font-weight="700" fill="#3a6ea5" font-family="Fraunces,serif">Gini 0,595</text>
+<text x="446" y="188" font-size="11" fill="#33405a">charger per kapita (angka resmi)</text>
+<text x="446" y="205" font-size="9.5" fill="#67748c">ukuran yang dipakai sekarang</text>
+<rect x="430" y="232" width="448" height="72" rx="9" fill="#fff" stroke="#d6443c" stroke-width="1.3"/>
+<text x="446" y="256" font-size="13" font-weight="700" fill="#d6443c" font-family="Fraunces,serif">Gini 0,640</text>
+<text x="446" y="274" font-size="11" fill="#33405a">akses E2SFCA berbobot kW</text>
+<text x="446" y="291" font-size="9.5" fill="#67748c">paling timpang — kapasitas menumpuk lebih parah daripada cacah</text></g></svg></div>
+ <div style="font-size:11.5px;color:var(--mut);line-height:1.6;margin-top:6px">
+  Kurva hijau lebih dekat ke diagonal daripada biru: begitu akses dibiarkan melewati batas kabupaten, ketimpangannya <b>turun</b> dari 0,595 ke 0,542 — banyak kabupaten yang dicap "nol charger" ternyata terlayani tetangganya.
+  Tetapi kurva merah menjauh lagi: begitu yang dihitung <b>kW, bukan cacah unit</b>, ketimpangannya naik ke 0,640. Charger besar menumpuk lebih parah daripada charger sebagai benda.
+ </div>
+
+ <div class="ct" style="margin-top:20px">Peringkat 249 kabupaten/kota berpenduduk &gt;300 ribu — lama vs baru</div>
+ <div style="overflow-x:auto"><svg viewBox="0 0 900 400" role="img" aria-label="Sebar peringkat 249 kabupaten: charger per kapita vs akses E2SFCA"><g font-family="Outfit,sans-serif"><rect x="70" y="34" width="330" height="330" fill="#fbfcfe" stroke="#e6e9f0"/>
+<line x1="70" y1="34" x2="400" y2="364" stroke="#8590a6" stroke-width="1.2" stroke-dasharray="5 4"/>
+<circle cx="362.7" cy="104.5" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="249.6" cy="277.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="385.4" cy="240.2" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="298.9" cy="276.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="264.3" cy="346.7" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="74.0" cy="46.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="119.2" cy="80.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="107.3" cy="48.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="104.6" cy="83.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="79.3" cy="40.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="83.3" cy="50.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="268.3" cy="119.2" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="244.3" cy="160.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="94.0" cy="55.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="95.3" cy="60.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="80.6" cy="44.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="72.7" cy="42.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="284.2" cy="288.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="259.0" cy="262.9" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="173.8" cy="91.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="88.6" cy="56.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="137.9" cy="120.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="161.8" cy="89.9" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="342.8" cy="249.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="215.0" cy="147.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="133.9" cy="96.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="78.0" cy="38.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="70.0" cy="34.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="71.3" cy="36.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="76.7" cy="39.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="75.3" cy="35.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="386.7" cy="234.9" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="274.9" cy="274.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="111.2" cy="123.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="294.9" cy="242.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="305.5" cy="213.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="320.2" cy="293.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="328.1" cy="316.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="273.6" cy="286.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="176.5" cy="125.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="139.2" cy="108.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="140.5" cy="54.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="153.8" cy="77.9" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="293.5" cy="292.1" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="143.2" cy="191.0" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="121.9" cy="72.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="184.4" cy="220.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="191.1" cy="199.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="125.9" cy="113.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="96.6" cy="71.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="87.3" cy="43.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="116.6" cy="64.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="103.3" cy="51.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="117.9" cy="47.3" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="120.6" cy="225.6" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="181.8" cy="100.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="135.2" cy="192.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="209.7" cy="221.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="90.0" cy="65.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="175.1" cy="117.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="248.3" cy="236.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="152.5" cy="156.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="378.7" cy="325.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="353.4" cy="264.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="211.0" cy="127.1" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="123.2" cy="93.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="344.1" cy="246.9" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="187.1" cy="128.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="324.2" cy="163.1" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="285.6" cy="248.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="256.3" cy="176.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="272.3" cy="268.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="300.2" cy="306.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="220.4" cy="85.9" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="241.7" cy="269.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="278.9" cy="131.1" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="208.4" cy="140.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="101.9" cy="69.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="221.7" cy="173.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="197.7" cy="175.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="301.5" cy="203.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="236.3" cy="141.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="227.0" cy="228.3" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="260.3" cy="201.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="252.3" cy="261.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="384.0" cy="345.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="145.8" cy="121.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="127.2" cy="137.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="109.9" cy="81.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="157.8" cy="169.7" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="232.3" cy="229.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="316.2" cy="278.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="266.9" cy="204.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="361.4" cy="252.2" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="219.0" cy="244.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="382.7" cy="342.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="288.2" cy="250.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="336.1" cy="238.9" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="147.2" cy="103.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="282.9" cy="324.1" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="290.9" cy="241.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="377.4" cy="321.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="97.9" cy="67.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="91.3" cy="52.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="163.1" cy="216.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="332.1" cy="322.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="160.5" cy="88.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="136.5" cy="111.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="237.7" cy="180.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="204.4" cy="215.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="381.4" cy="212.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="100.6" cy="68.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="366.7" cy="329.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="312.2" cy="337.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="155.2" cy="181.7" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="286.9" cy="284.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="229.7" cy="189.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="368.1" cy="338.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="224.4" cy="84.6" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="180.4" cy="107.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="369.4" cy="330.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="374.7" cy="341.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="313.5" cy="308.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="306.9" cy="309.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="200.4" cy="167.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="86.0" cy="87.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="195.1" cy="161.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="257.6" cy="219.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="302.9" cy="302.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="185.8" cy="63.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="372.1" cy="149.8" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="253.6" cy="207.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="82.0" cy="59.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="99.3" cy="148.4" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="340.1" cy="349.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="196.4" cy="273.5" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="276.2" cy="230.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="292.2" cy="328.1" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="124.6" cy="58.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="165.8" cy="172.4" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="199.1" cy="223.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="172.5" cy="168.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="314.8" cy="304.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="270.9" cy="143.1" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="338.8" cy="332.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="113.9" cy="112.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="397.3" cy="348.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="128.5" cy="95.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="217.7" cy="233.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="380.0" cy="258.9" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="296.2" cy="256.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="318.8" cy="232.3" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="337.5" cy="289.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="309.5" cy="124.5" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="354.8" cy="300.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="164.5" cy="183.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="265.6" cy="237.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="388.0" cy="358.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="231.0" cy="200.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="84.6" cy="61.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="179.1" cy="129.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="281.6" cy="224.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="365.4" cy="333.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="148.5" cy="208.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="129.9" cy="133.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="334.8" cy="305.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="255.0" cy="314.8" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="394.7" cy="356.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="330.8" cy="350.7" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="396.0" cy="357.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="360.1" cy="352.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="131.2" cy="177.7" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="228.3" cy="297.5" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="350.8" cy="344.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="392.0" cy="361.3" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="393.3" cy="362.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="389.4" cy="364.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="390.7" cy="360.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="239.0" cy="184.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="346.8" cy="298.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="203.1" cy="105.9" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="216.4" cy="132.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="357.4" cy="260.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="112.6" cy="76.6" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="289.6" cy="217.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="373.4" cy="334.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="349.4" cy="296.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="310.8" cy="270.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="251.0" cy="197.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="245.6" cy="280.2" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="364.1" cy="317.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="269.6" cy="290.8" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="233.7" cy="257.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="201.7" cy="153.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="345.4" cy="312.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="105.9" cy="75.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="398.7" cy="336.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="333.5" cy="310.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="280.2" cy="152.4" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="329.5" cy="281.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="156.5" cy="209.6" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="243.0" cy="226.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="352.1" cy="326.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="341.5" cy="320.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="317.5" cy="245.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="108.6" cy="115.2" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="193.8" cy="136.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="240.3" cy="282.8" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="348.1" cy="265.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="400.0" cy="354.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="183.1" cy="211.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="92.6" cy="73.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="247.0" cy="151.1" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="212.4" cy="195.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="207.1" cy="193.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="132.5" cy="101.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="189.8" cy="116.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="144.5" cy="196.3" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="169.8" cy="164.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="171.1" cy="187.0" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="192.4" cy="188.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="167.1" cy="157.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="151.2" cy="155.1" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="225.7" cy="253.6" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="149.8" cy="144.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="213.7" cy="179.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="326.8" cy="135.1" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="370.7" cy="340.0" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="358.8" cy="313.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="188.4" cy="165.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="159.2" cy="109.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="322.8" cy="318.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="376.0" cy="353.4" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="304.2" cy="272.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="262.9" cy="79.2" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="205.7" cy="139.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="177.8" cy="171.1" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="141.9" cy="92.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="115.2" cy="97.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="277.6" cy="205.7" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="308.2" cy="254.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="261.6" cy="145.8" r="3.4" fill="#d6443c" fill-opacity="0.85"/>
+<circle cx="297.5" cy="266.9" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="321.5" cy="301.5" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="325.5" cy="294.8" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="223.0" cy="185.7" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="168.5" cy="99.2" r="2.1" fill="#9fb0c8" fill-opacity="0.85"/>
+<circle cx="356.1" cy="285.5" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<circle cx="235.0" cy="159.1" r="2.8" fill="#e0a52b" fill-opacity="0.85"/>
+<text x="235.0" y="390" text-anchor="middle" font-size="10" fill="#67748c">peringkat menurut charger per kapita →</text>
+<text x="-199.0" y="24" transform="rotate(-90)" text-anchor="middle" font-size="10" fill="#67748c">peringkat menurut akses E2SFCA →</text>
+<text x="78" y="50" font-size="9.5" fill="#8590a6">bagus di dua-duanya</text>
+<text x="392" y="356" text-anchor="end" font-size="9.5" fill="#8590a6">buruk di dua-duanya</text>
+<text x="392" y="50" text-anchor="end" font-size="9.5" fill="#1d7a44">terlihat buruk, sebenarnya terlayani</text>
+<text x="78" y="356" font-size="9.5" fill="#a5442b">terlihat bagus, sebenarnya tidak</text>
+<rect x="430" y="48" width="448" height="64" rx="9" fill="#fff" stroke="#d6443c" stroke-width="1.2"/>
+<text x="446" y="70" font-size="11.5" font-weight="700" fill="#0a1733">Kota Tasikmalaya</text>
+<text x="561" y="70" font-size="11" font-weight="700" fill="#d6443c">#39 → #145</text>
+<text x="446" y="90" font-size="9.5" fill="#4a5670">charger banyak &amp; semua dekat, tapi kecil dan diperebutkan 720 rb jiwa</text>
+<rect x="430" y="126" width="448" height="64" rx="9" fill="#fff" stroke="#d6443c" stroke-width="1.2"/>
+<text x="446" y="148" font-size="11.5" font-weight="700" fill="#0a1733">Pidie</text>
+<text x="482" y="148" font-size="11" font-weight="700" fill="#d6443c">#147 → #236</text>
+<text x="446" y="168" font-size="9.5" fill="#4a5670">chargernya ada, kapasitasnya kecil dan jauh dari penduduk</text>
+<rect x="430" y="204" width="448" height="64" rx="9" fill="#fff" stroke="#1d7a44" stroke-width="1.2"/>
+<text x="446" y="226" font-size="11.5" font-weight="700" fill="#0a1733">Aceh Besar</text>
+<text x="518" y="226" font-size="11" font-weight="700" fill="#1d7a44">#221 → #54</text>
+<text x="446" y="246" font-size="9.5" fill="#4a5670">hampir tak punya charger sendiri — yang dipakai ada di Banda Aceh</text>
+<rect x="430" y="282" width="448" height="64" rx="9" fill="#fff" stroke="#1d7a44" stroke-width="1.2"/>
+<text x="446" y="304" font-size="11.5" font-weight="700" fill="#0a1733">Muara Enim</text>
+<text x="518" y="304" font-size="11" font-weight="700" fill="#1d7a44">#194 → #77</text>
+<text x="446" y="324" font-size="9.5" fill="#4a5670">cuma 17 % penduduk ≤10 km, tapi yang terlayani dilayani besar</text></g></svg></div>
+ <div style="font-size:11.5px;color:var(--mut);line-height:1.6;margin-top:6px">
+  Titik di garis putus-putus = peringkatnya tidak berubah. Kuning bergeser lebih dari 25 peringkat, merah lebih dari 50.
+  Korelasinya 0,86 — terdengar tinggi, tetapi <b>105 dari 249 kabupaten (42 %) berpindah lebih dari 25 tangga</b>, dan itu cukup untuk mengubah siapa yang masuk daftar prioritas.
+ </div>
+
+ <div class="grid2" style="margin-top:16px">
+  <div>
+   <div class="ct">Naik paling jauh — terlihat tertinggal, sebenarnya terlayani</div>
+   <div class="tablewrap" style="max-height:none"><table>
+    <thead><tr><th>Kabupaten/Kota</th><th>Penduduk</th><th>per 100rb</th><th>≤10 km</th><th>Akses kW</th><th>Geser</th></tr></thead>
+    <tbody><tr><td><b>Aceh Besar</b><br><span style='font-size:10px;color:#67748c'>Aceh</span></td><td class='n'>0.50 jt</td><td class='n'>0,20 <span style='color:#67748c'>#221</span></td><td class='n'>46,5 % <span style='color:#67748c'>#149</span></td><td class='n'><b>0,39</b> <span style='color:#67748c'>#54</span></td><td class='n'><span style="color:#1d7a44;font-weight:700">▲ +167</span></td></tr>
+<tr><td><b>Banjar</b><br><span style='font-size:10px;color:#67748c'>Kalimantan Selatan</span></td><td class='n'>0.61 jt</td><td class='n'>0,16 <span style='color:#67748c'>#228</span></td><td class='n'>52,2 % <span style='color:#67748c'>#136</span></td><td class='n'><b>0,29</b> <span style='color:#67748c'>#88</span></td><td class='n'><span style="color:#1d7a44;font-weight:700">▲ +140</span></td></tr>
+<tr><td><b>Muara Enim</b><br><span style='font-size:10px;color:#67748c'>Sumatera Selatan</span></td><td class='n'>0.69 jt</td><td class='n'>0,29 <span style='color:#67748c'>#194</span></td><td class='n'>17,3 % <span style='color:#67748c'>#229</span></td><td class='n'><b>0,32</b> <span style='color:#67748c'>#77</span></td><td class='n'><span style="color:#1d7a44;font-weight:700">▲ +117</span></td></tr>
+<tr><td><b>Tanggamus</b><br><span style='font-size:10px;color:#67748c'>Lampung</span></td><td class='n'>0.56 jt</td><td class='n'>0,36 <span style='color:#67748c'>#181</span></td><td class='n'>41,7 % <span style='color:#67748c'>#161</span></td><td class='n'><b>0,35</b> <span style='color:#67748c'>#69</span></td><td class='n'><span style="color:#1d7a44;font-weight:700">▲ +112</span></td></tr>
+<tr><td><b>Batu Bara</b><br><span style='font-size:10px;color:#67748c'>Sumatera Utara</span></td><td class='n'>0.37 jt</td><td class='n'>0,54 <span style='color:#67748c'>#146</span></td><td class='n'>34,6 % <span style='color:#67748c'>#182</span></td><td class='n'><b>0,53</b> <span style='color:#67748c'>#35</span></td><td class='n'><span style="color:#1d7a44;font-weight:700">▲ +111</span></td></tr>
+<tr><td><b>Nganjuk</b><br><span style='font-size:10px;color:#67748c'>Jawa Timur</span></td><td class='n'>1.10 jt</td><td class='n'>0,09 <span style='color:#67748c'>#235</span></td><td class='n'>36,4 % <span style='color:#67748c'>#178</span></td><td class='n'><b>0,17</b> <span style='color:#67748c'>#135</span></td><td class='n'><span style="color:#1d7a44;font-weight:700">▲ +100</span></td></tr></tbody></table></div>
+  </div>
+  <div>
+   <div class="ct">Turun paling jauh — terlihat terlayani, sebenarnya tidak</div>
+   <div class="tablewrap" style="max-height:none"><table>
+    <thead><tr><th>Kabupaten/Kota</th><th>Penduduk</th><th>per 100rb</th><th>≤10 km</th><th>Akses kW</th><th>Geser</th></tr></thead>
+    <tbody><tr><td><b>Kota Tasikmalaya</b><br><span style='font-size:10px;color:#67748c'>Jawa Barat</span></td><td class='n'>0.72 jt</td><td class='n'>2,09 <span style='color:#67748c'>#39</span></td><td class='n'>100,0 % <span style='color:#67748c'>#13</span></td><td class='n'><b>0,14</b> <span style='color:#67748c'>#145</span></td><td class='n'><span style="color:#a5442b;font-weight:700">▼ -106</span></td></tr>
+<tr><td><b>Pidie</b><br><span style='font-size:10px;color:#67748c'>Aceh</span></td><td class='n'>0.37 jt</td><td class='n'>0,54 <span style='color:#67748c'>#147</span></td><td class='n'>42,1 % <span style='color:#67748c'>#160</span></td><td class='n'><b>0,02</b> <span style='color:#67748c'>#236</span></td><td class='n'><span style="color:#a5442b;font-weight:700">▼ -89</span></td></tr>
+<tr><td><b>Tanah Bumbu</b><br><span style='font-size:10px;color:#67748c'>Kalimantan Selatan</span></td><td class='n'>0.40 jt</td><td class='n'>1,00 <span style='color:#67748c'>#96</span></td><td class='n'>26,6 % <span style='color:#67748c'>#207</span></td><td class='n'><b>0,09</b> <span style='color:#67748c'>#181</span></td><td class='n'><span style="color:#a5442b;font-weight:700">▼ -85</span></td></tr>
+<tr><td><b>Merauke</b><br><span style='font-size:10px;color:#67748c'>Papua</span></td><td class='n'>0.40 jt</td><td class='n'>0,75 <span style='color:#67748c'>#120</span></td><td class='n'>38,0 % <span style='color:#67748c'>#172</span></td><td class='n'><b>0,07</b> <span style='color:#67748c'>#199</span></td><td class='n'><span style="color:#a5442b;font-weight:700">▼ -79</span></td></tr>
+<tr><td><b>Sumbawa</b><br><span style='font-size:10px;color:#67748c'>Nusa Tenggara Barat</span></td><td class='n'>0.39 jt</td><td class='n'>1,53 <span style='color:#67748c'>#60</span></td><td class='n'>42,8 % <span style='color:#67748c'>#158</span></td><td class='n'><b>0,18</b> <span style='color:#67748c'>#132</span></td><td class='n'><span style="color:#a5442b;font-weight:700">▼ -72</span></td></tr>
+<tr><td><b>Manggarai</b><br><span style='font-size:10px;color:#67748c'>Nusa Tenggara Timur</span></td><td class='n'>0.35 jt</td><td class='n'>0,56 <span style='color:#67748c'>#140</span></td><td class='n'>48,3 % <span style='color:#67748c'>#144</span></td><td class='n'><b>0,06</b> <span style='color:#67748c'>#212</span></td><td class='n'><span style="color:#a5442b;font-weight:700">▼ -72</span></td></tr></tbody></table></div>
+  </div>
+ </div>
+
+ <div class="concl">
+  <b>Mengganti "jumlah" dengan "akses" tidak membuat gambarannya lebih baik — membuatnya lebih buruk, dan lebih berpihak.</b>
+  Ini kesimpulan yang tidak terduga dan karenanya layak dipertahankan. Tiga angkanya:
+  <ol>
+   <li><b>Ketimpangan naik, bukan turun.</b> Gini 0,595 → <b>0,640</b> begitu kapasitas dan kompetisi ikut dihitung. Dugaan wajar justru sebaliknya — akses lintas batas mestinya melunakkan angka, dan memang begitu untuk cacah unit (0,542). Yang membalikkannya adalah <b>kW</b>: charger cepat menumpuk di tempat yang sudah padat charger.</li>
+   <li><b>Keberpihakannya menguat.</b> CI terhadap IPM 0,360 → <b>0,449</b>; terhadap PDRB 0,225 → 0,265. Artinya laporan berbasis jumlah selama ini <b>meremehkan</b> seberapa jauh infrastruktur ini memihak daerah makmur.</li>
+   <li><b>Daftar prioritasnya berubah.</b> 105 kabupaten bergeser &gt;25 peringkat, 37 bergeser &gt;50. Kota Tasikmalaya jatuh 106 tangga; Aceh Besar naik 167. Keduanya bukan kasus aneh — keduanya akibat langsung dari memakai batas administratif sebagai wadah akses.</li>
+  </ol>
+  Konsekuensi kebijakannya satu kalimat: <b>menambah jumlah charger di kabupaten yang angkanya rendah tidak otomatis menambah akses</b>, dan kabupaten yang angkanya sudah bagus belum tentu perlu berhenti dibangun.
+ </div>
+
+ <div class="why"><b>Apa yang masih kurang — dan mana yang bisa dikerjakan sekarang.</b><ol>
+  <li><b>Jarak masih garis lurus.</b> Penggantinya matriks waktu tempuh di atas jaringan jalan (OSRM atau r5r). Ini yang paling mengubah hasil di daerah berbukit dan kepulauan, dan tidak butuh data baru dari PLN.</li>
+  <li><b>Kapasitas masih nominal.</b> S<sub>j</sub> memakai kW terpasang, bukan kW yang benar-benar hidup. Dikalikan uptime dari log transaksi, ukurannya berubah dari <i>access</i> jadi <b>usable access</b> — dan itu hanya bisa dilakukan di Jawa Barat, satu-satunya tempat dengan 101.020 transaksi.</li>
+  <li><b>β gravity belum dikalibrasi.</b> Angka 0,15 dipakai sebagai pembanding, bukan sebagai klaim. Kalibrasinya butuh data perjalanan nyata.</li>
+  <li><b>Permintaannya masih penduduk, bukan kebutuhan.</b> Semua di atas tetap memakai jumlah jiwa sebagai penyebut. Persoalan pembagi yang melingkar tidak selesai oleh metode ini — itu urusan yang berbeda. → <a href="#tab=phdequity">Kerangka Keadilan</a></li>
+ </ol>
+ Dihitung ulang oleh <code>equitymap/akses.py</code> → <code>equitymap/akses.json</code>. Jalankan ulang untuk memverifikasi angka mana pun di bagian ini.</div>
+</div>
+
 <!-- 4 -->
 <div class="sec"><h3>4 · Defisit menuju kesetaraan — berapa charger yang "kurang" dan di mana</h3>
  <div class="q">Bila tiap kabupaten dibawa ke rata-rata nasional 1,73 charger per 100 ribu jiwa tanpa mengambil dari yang sudah punya, berapa yang harus ditambah?</div>
