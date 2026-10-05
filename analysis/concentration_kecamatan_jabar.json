@@ -619,6 +619,96 @@
    "signif": true
   }
  ],
+ "E_kec": [
+  {
+   "rank": "Pengeluaran per kapita kab/kota induk",
+   "var": "kekurangan: kecamatan tanpa charger",
+   "e": -0.285,
+   "lo": -0.405,
+   "hi": -0.158,
+   "signif": true
+  },
+  {
+   "rank": "Pengeluaran per kapita kab/kota induk",
+   "var": "akses: kecamatan punya charger",
+   "e": 0.285,
+   "lo": 0.162,
+   "hi": 0.399,
+   "signif": true
+  },
+  {
+   "rank": "IPM kab/kota induk",
+   "var": "kekurangan: kecamatan tanpa charger",
+   "e": -0.289,
+   "lo": -0.415,
+   "hi": -0.166,
+   "signif": true
+  },
+  {
+   "rank": "IPM kab/kota induk",
+   "var": "akses: kecamatan punya charger",
+   "e": 0.289,
+   "lo": 0.166,
+   "hi": 0.409,
+   "signif": true
+  },
+  {
+   "rank": "Kemiskinan kab/kota induk, dibalik",
+   "var": "kekurangan: kecamatan tanpa charger",
+   "e": -0.311,
+   "lo": -0.432,
+   "hi": -0.183,
+   "signif": true
+  },
+  {
+   "rank": "Kemiskinan kab/kota induk, dibalik",
+   "var": "akses: kecamatan punya charger",
+   "e": 0.311,
+   "lo": 0.186,
+   "hi": 0.423,
+   "signif": true
+  },
+  {
+   "rank": "Kepadatan penduduk kecamatan",
+   "var": "kekurangan: kecamatan tanpa charger",
+   "e": -0.436,
+   "lo": -0.549,
+   "hi": -0.313,
+   "signif": true
+  },
+  {
+   "rank": "Kepadatan penduduk kecamatan",
+   "var": "akses: kecamatan punya charger",
+   "e": 0.436,
+   "lo": 0.304,
+   "hi": 0.552,
+   "signif": true
+  },
+  {
+   "rank": "Pemilik EV per 100 rb kecamatan",
+   "var": "kekurangan: kecamatan tanpa charger",
+   "e": -0.528,
+   "lo": -0.619,
+   "hi": -0.422,
+   "signif": true
+  },
+  {
+   "rank": "Pemilik EV per 100 rb kecamatan",
+   "var": "akses: kecamatan punya charger",
+   "e": 0.528,
+   "lo": 0.423,
+   "hi": 0.623,
+   "signif": true
+  },
+  {
+   "rank": "IPM kab/kota induk",
+   "var": "pemakaian: kecamatan ada transaksi",
+   "e": 0.308,
+   "lo": 0.184,
+   "hi": 0.427,
+   "signif": true
+  }
+ ],
  "curves_kab": {
   "Pengeluaran per kapita (BPS 2024)": {
    "chargers": [

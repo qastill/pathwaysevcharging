@@ -13,7 +13,7 @@ Tautan langsung ke tab: `index.html#tab=<id>` (mis. `#tab=resources`).
 | Grup | Tab |
 |---|---|
 | 🎓 **PhD Monash** | **Ikhtisar Disertasi** · **Kerangka Keadilan** · **Data & Bukti** · **Referensi Vault** — kerangka disertasi Monash yang memakai dashboard ini sebagai aset empiris; dicerminkan dari vault Obsidian `Pathways-Vault` |
-| 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark · Socio-Economic · Spatial Equity · **Ekuitas vs Kesetaraan** · Perception |
+| 📊 Analisis SPKLU | Overview · Indonesia · Demand & Sales · Growth & Policy · Sector Analysis · Jakarta Raya · Pelanggan EV · Global Benchmark · Socio-Economic · Spatial Equity · **Ekuitas vs Kesetaraan** · **🎯 Concentration Index Jabar** · Perception |
 | 🗺️ Peta & Jaringan | Map · Location Intelligence · **Peta Ekuitas** · **Parkir × Charger** · GeoSPKLU · EV × Jaringan |
 | 📚 Naskah & Perpustakaan | Perpustakaan · ASEAN Paper · Capacity Maps · P2P Charging · Summary — semua naskah/jurnal terdaftar di Perpustakaan ([`papers/`](papers/README.md)) |
 | 🌍 Open Source & Data Dunia | World EV Insight · Open Charge Map · EV Models · **Repositori Riset** · **Kombinasi** |
@@ -77,6 +77,21 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 | Skenario kebijakan | Gini 0,4 = **+935 charger**, 0,3 = +1.793, 0,2 = +3.330 (water-filling); pada 1.000 situs, pemerataan penuh berbiaya 3,7 poin cakupan untuk 0,10 Gini — dan aturan cakupan melayani kuintil termiskin lebih cepat |
 
 ## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
+
+Tab **🎯 Concentration Index Jabar** (`index.html#tab=conc`, grup Analisis SPKLU) menyatukan semuanya dan menautkannya ke
+proposal konfirmasi *Who Is Really Served* (RQ3 akses ≠ pemakaian di Jawa Barat; RQ4 Erreygers CI berperingkat IPM):
+ringkasan bahasa sehari-hari, pemetaan tiap komponen proposal ke aset dasbor, metode langkah demi langkah dengan contoh
+angka, tombol unduh skrip, hasil dengan selang, insight, saran per anak tangga layanan (dengan tabel skenario +300 charger
+untuk tiga aturan penempatan), dasbor interaktif tersemat, dan batas klaim. Dipasang oleh `analysis/conc_inject.py`
+(template `analysis/conc_page.html`, blok `<!-- CONC:BEGIN/END -->`). Skrip mandiri siap unduh:
+`scripts/concentration_index_standalone.py` (hanya numpy; CSV apa pun → CI, Erreygers, bootstrap, kuintil, dekomposisi;
+`--demo` untuk contoh).
+
+| Erreygers E (variabel 0/1 per kecamatan, berperingkat IPM) | Nilai |
+|---|---|
+| Akses: kecamatan punya charger | **+0,289** [+0,17, +0,41] — aturan lulus ekuitas vertikal proposal (E ≤ 0) **gagal** |
+| Kekurangan: kecamatan tanpa charger | **−0,289** — kekurangan menumpuk di wilayah kurang maju (H4 didukung) |
+| Skenario +300 charger: kesetaraan vs permintaan | cakupan 43 % → **80 %** vs 52 %; E akses → **+0,01** vs +0,43 |
 
 Dua skrip di `scripts/` (alat ukur bersama di `concentration_lib.py`), halaman visual mandiri `analysis/concentration_jabar.html`
 (`python3 analysis/concentration_render.py`), ringkasan di `analysis/concentration_*_jabar.md`, dan **dasbor interaktif**

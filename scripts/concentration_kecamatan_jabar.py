@@ -32,7 +32,7 @@ from shapely.geometry import shape, Point, mapping
 from shapely.ops import unary_union
 from shapely.strtree import STRtree
 
-from concentration_lib import ci, ci_boot, conc_stats, curve, gini
+from concentration_lib import ci, ci_boot, conc_stats, curve, gini, erreygers_boot
 
 warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -158,6 +158,17 @@ ranks_kec = {"Pengeluaran per kapita kab/kota induk": K["expend"].to_numpy(float
 B_kec = [dict(level="kecamatan", rank=rl, outcome=ol, **ci_boot(K[oc].to_numpy(float), rv, w)) for rl, rv in ranks_kec.items() for ol, oc in outs.items()]
 curves_kec = {rl: {oc: curve(K[oc].to_numpy(float), rv, w, npts=60) for oc in ("chargers", "kwh")} for rl, rv in ranks_kec.items()}
 
+# Erreygers CI (proposal §5.7 / RQ4): variabel terbatas 0/1 per kecamatan, peringkat IPM dll.
+#   "kekurangan" = kecamatan tanpa charger (1) — E<0 berarti kekurangan menumpuk di wilayah kurang maju
+#   "akses"      = kecamatan punya charger (1) — aturan lulus ekuitas vertikal proposal: E ≤ 0 dengan selang tak melewati 0
+has = (K["chargers"].to_numpy() > 0).astype(float)
+E_kec = []
+for rl, rv in ranks_kec.items():
+    E_kec.append(dict(rank=rl, var="kekurangan: kecamatan tanpa charger", **erreygers_boot(1 - has, rv, w)))
+    E_kec.append(dict(rank=rl, var="akses: kecamatan punya charger", **erreygers_boot(has, rv, w)))
+has_trx = (K["spklu_trx"].to_numpy() > 0).astype(float)
+E_kec.append(dict(rank="IPM kab/kota induk", var="pemakaian: kecamatan ada transaksi", **erreygers_boot(has_trx, ranks_kec["IPM kab/kota induk"], w)))
+
 # kuintil kecamatan menurut pengeluaran kab induk (tertimbang penduduk) dan menurut kepadatan
 def quintiles(key, label):
     o = np.argsort(K[key].to_numpy(float), kind="stable"); cum = np.cumsum(w[o]) / w.sum(); out = []
@@ -199,7 +210,7 @@ out = dict(meta=dict(periode="Maret 2026", n_kecamatan=int(len(kec)), n_kecamata
                      pop_kontur=round(float(kec["pop"].sum())), n_charger=int(len(master)), n_spklu_trx=int(len(rekap)), n_ev=int(len(ev)),
                      titik_tak_terpetakan=lost, sosek="BPS 2024 kab/kota (IPM, pengeluaran per kapita disesuaikan ribu Rp/th, P0 %)",
                      catatan="SES kecamatan = nilai kab/kota induk (tidak ada data resmi per kecamatan)."),
-           A=A, B_kab=B_kab, B_kec=B_kec, curves_kab=curves_kab, curves_kec=curves_kec, quintiles=quint, within=within,
+           A=A, B_kab=B_kab, B_kec=B_kec, E_kec=E_kec, curves_kab=curves_kab, curves_kec=curves_kec, quintiles=quint, within=within,
            kab=kab.round(3).to_dict("records"))
 json.dump(out, open("analysis/concentration_kecamatan_jabar.json", "w"), ensure_ascii=False, indent=1)
 
@@ -227,6 +238,9 @@ for title, B in (("## CI kab/kota (27 unit, SES BPS 2024; * = 95 % CI tidak mele
     L += ["", title, "", "| Peringkat r | Pasokan | CI | 95 % CI |", "|---|---|---|---|"]
     for b in B:
         L.append(f"| {b['rank']} | {b['outcome']} | {b['ci']:+.3f}{'*' if b['signif'] else ''} | [{b['lo']:+.3f}, {b['hi']:+.3f}] |")
+L += ["", "## Erreygers CI (variabel 0/1 per kecamatan; * = 95 % CI tidak melewati 0)", "", "| Peringkat r | Variabel | E | 95 % CI |", "|---|---|---|---|"]
+for e in E_kec:
+    L.append(f"| {e['rank']} | {e['var']} | {e['e']:+.3f}{'*' if e['signif'] else ''} | [{e['lo']:+.3f}, {e['hi']:+.3f}] |")
 L += ["", "## Kuintil kecamatan (tertimbang penduduk)", "", "| Dasar | Q | n kec | Penduduk | Charger/100 rb | kWh/kapita | % penduduk di kec tanpa charger | EV/100 rb |", "|---|---|---|---|---|---|---|---|"]
 for q in quint:
     L.append(f"| {q['by']} | Q{q['q']} | {q['n_kec']} | {q['pop']:,} | {q['per100k']} | {q['kwh_per_capita']} | {q['pop_no_charger_pct']} | {q['ev_per100k']} |")

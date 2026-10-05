@@ -1,0 +1,220 @@
+<div class="page" id="p-conc">
+<style>
+#p-conc .kdhead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-conc .kdhead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-conc .kdhead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-conc .kdhead h2 b{color:var(--gold)}
+#p-conc .kdhead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:980px}#p-conc .kdhead p b{color:#e9d9a0;font-weight:600}#p-conc .kdhead a{color:#e9d9a0}
+#p-conc .kdmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-conc .kdmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-conc .kdmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-conc .sec{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 26px;margin-bottom:16px;box-shadow:0 4px 14px rgba(10,23,51,.06);border-top:3px solid var(--gold)}
+#p-conc .sec h3{font-family:Fraunces;font-size:18px;color:var(--navy);margin:0 0 4px}
+#p-conc .sec .q{font-size:12.5px;color:var(--mut);font-style:italic;margin-bottom:14px;line-height:1.6}
+#p-conc .sec h4{font-size:13.5px;color:var(--navy3);margin:16px 0 6px;font-weight:600}
+#p-conc p,#p-conc li{font-size:13px;line-height:1.75;color:#26334d}
+#p-conc ul,#p-conc ol{margin:6px 0 10px 20px}#p-conc li{margin-bottom:5px}
+#p-conc .why{border-left:4px solid var(--navy);background:#f6f8fc;border-radius:0 10px 10px 0;padding:14px 17px;font-size:13px;line-height:1.75;color:#26334d;margin-top:12px}
+#p-conc .why b{color:var(--navy)}
+#p-conc .concl{border-left:4px solid var(--gold);background:linear-gradient(180deg,#fffaef,#fff7e3);border-radius:0 10px 10px 0;padding:14px 17px;font-size:13px;line-height:1.75;color:#5b4a14;margin-top:12px}
+#p-conc .concl:before{content:"Kesimpulan";display:block;font-size:9.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:5px}
+#p-conc .concl b{color:var(--navy)}
+#p-conc .ct{font-size:10.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:6px}
+#p-conc .kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+#p-conc .kv div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#fcfdff,#f6f8fc)}
+#p-conc .kv .v{font-family:Fraunces;font-size:23px;font-weight:700;color:var(--navy);line-height:1.05}
+#p-conc .kv .t{font-size:10.5px;color:var(--mut);margin-top:4px;line-height:1.4}
+#p-conc .kv div.g{border-color:#e6cf8a;background:linear-gradient(180deg,#fffaef,#fff7e3)}#p-conc .kv div.g .v{color:#8a6d16}
+#p-conc .kv div.r{border-color:#e8b4b0;background:linear-gradient(180deg,#fff6f5,#fdeceb)}#p-conc .kv div.r .v{color:#a33d36}
+#p-conc .kv div.ok{border-color:#b6dec6;background:linear-gradient(180deg,#f3fbf6,#e9f6ee)}#p-conc .kv div.ok .v{color:#1f7a45}
+#p-conc table{width:100%;border-collapse:collapse;font-size:12px}
+#p-conc th{background:var(--navy);color:var(--gold2);text-align:left;padding:8px 10px;font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;border:none;position:static;white-space:normal}
+#p-conc td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+#p-conc td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#p-conc .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;margin:8px 0 12px}
+#p-conc .grid2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:12px}
+#p-conc .def{font-size:12px;line-height:1.7;color:#33405a;border:1px dashed #c9d6ea;border-radius:10px;padding:10px 14px;background:#f8fafc;margin-bottom:12px}
+#p-conc .def b{color:var(--navy)}
+#p-conc .formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:#0f1d3a;color:#e9d9a0;border-radius:10px;padding:12px 16px;margin:8px 0 12px;line-height:1.8;overflow-x:auto;white-space:pre}
+#p-conc .formula i{color:#9fc5ff;font-style:normal}
+#p-conc .step{display:grid;grid-template-columns:34px 1fr;gap:10px;margin-bottom:10px}
+#p-conc .step .no{width:30px;height:30px;border-radius:50%;background:var(--navy);color:var(--gold);font-family:Fraunces;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:14px}
+#p-conc .step .b{font-size:13px;line-height:1.7;color:#26334d}#p-conc .step .b b{color:var(--navy)}
+#p-conc .dl{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+#p-conc .dl a{display:flex;flex-direction:column;gap:3px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:linear-gradient(180deg,#fcfdff,#f6f8fc);text-decoration:none;min-width:220px;flex:1}
+#p-conc .dl a b{color:var(--navy);font-size:13px}#p-conc .dl a span{color:var(--mut);font-size:11px;line-height:1.5}
+#p-conc .dl a:hover{border-color:var(--gold)}
+#p-conc .pill{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-right:4px}
+#p-conc .pill.y{background:#fff3cd;color:#7a5a00}#p-conc .pill.g{background:#e3f6ea;color:#1f7a45}#p-conc .pill.r{background:#fde8e6;color:#a33d36}#p-conc .pill.b{background:#e6eefb;color:#16305f}
+#p-conc .sig{color:#1f7a45;font-weight:700}#p-conc .ns{color:var(--mut)}
+#p-conc .geoframe{width:100%;height:1500px;border:1px solid var(--line);border-radius:12px;background:#fff}
+#p-conc .ladder{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 12px}
+#p-conc .ladder div{border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.5;border:1px solid var(--line)}
+#p-conc .ladder .k{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;display:block;margin-bottom:4px}
+#p-conc .ladder .obs{background:#eef6ff;border-color:#b9d3f3}#p-conc .ladder .obs .k{color:#16305f}
+#p-conc .ladder .part{background:#fff8e6;border-color:#ecd59a}#p-conc .ladder .part .k{color:#7a5a00}
+#p-conc .ladder .no{background:#f4f4f4;border-color:#ddd;color:#777}#p-conc .ladder .no .k{color:#888}
+@media(max-width:980px){#p-conc .grid2,#p-conc .ladder{grid-template-columns:1fr}#p-conc .geoframe{height:1900px}}
+</style>
+
+<div class="kdhead">
+ <span class="tag">Jawa Barat · Maret 2026 · menjawab RQ3 &amp; RQ4 proposal <i>Who Is Really Served</i></span>
+ <h2>🎯 Concentration Index Jabar — <b>siapa yang benar-benar dilayani</b> SPKLU, dan siapa yang hanya dilayani di atas kertas</h2>
+ <p>Proposal konfirmasi (Oktober 2026) menolak ukuran "jumlah charger per kendaraan" karena bisa membalik kebenaran, dan menggantinya dengan satu pertanyaan yang bisa diuji:
+ <b>siapa yang benar-benar dilayani, secukupnya dan dengan kemampuan nyata memakainya, dan apakah kekurangannya menumpuk di wilayah kurang maju?</b>
+ Tab ini adalah uji coba pertanyaan itu di satu-satunya provinsi yang punya data transaksi, Jawa Barat: {{n_kec}} kecamatan, {{n_charger}} charger, {{n_spklu}} SPKLU bertransaksi,
+ {{n_ev}} titik pemilik EV, penduduk Kontur H3 res 8, dan IPM/pengeluaran/kemiskinan BPS 2024. Semua ukuran dihitung ulang dari nol dengan skrip Python yang bisa diunduh di bawah.</p>
+ <div class="kdmeta">
+  <div><div class="n">{{ci_ch_exp}}</div><div class="t">CI charger ~ pengeluaran (n.s.)</div></div>
+  <div><div class="n">{{ci_kwh_exp}}</div><div class="t">CI kWh terjual ~ pengeluaran</div></div>
+  <div><div class="n">{{e_has_ipm}}</div><div class="t">Erreygers E "punya charger" ~ IPM</div></div>
+  <div><div class="n">{{n_kec_ch}} / {{n_kec}}</div><div class="t">kecamatan berisi charger</div></div>
+  <div><div class="n">{{cov_pct}} %</div><div class="t">penduduk di kecamatan berisi charger</div></div>
+  <div><div class="n">{{q_ratio}}×</div><div class="t">kWh/kapita kuintil terkaya : termiskin</div></div>
+ </div>
+</div>
+
+<!-- 0 ringkasan -->
+<div class="sec"><h3>0 · Jawaban singkat, dalam bahasa sehari-hari</h3>
+ <div class="q">Tiga kalimat yang bisa dibawa ke rapat tanpa membuka tabel.</div>
+ <div class="kv">
+  <div class="ok"><div class="v">Merata</div><div class="t"><b>Jumlah charger</b> per penduduk di Jawa Barat tidak condong ke kab/kota kaya. CI {{ci_ch_exp}} dengan selang {{ci_ch_exp_band}} — secara statistik tidak bisa dibedakan dari nol.</div></div>
+  <div class="r"><div class="v">Timpang</div><div class="t"><b>Kehadiran charger</b> (ada atau tidak ada sama sekali di kecamatan) menumpuk di wilayah ber-IPM tinggi: Erreygers E {{e_has_ipm}} {{e_has_ipm_band}}, signifikan. Menurut aturan lulus proposal (§5.8), ekuitas vertikal <b>gagal</b>.</div></div>
+  <div class="g"><div class="v">Lebih timpang</div><div class="t"><b>Pemakaian</b> (kWh terjual) jauh lebih pro-kaya daripada penempatannya: CI {{ci_kwh_exp}} {{ci_kwh_exp_band}}. Kuintil terkaya memakai {{q_ratio}}× lebih banyak energi per jiwa daripada kuintil termiskin.</div></div>
+ </div>
+ <div class="concl"><b>Jawa Barat sudah menaruh charger relatif merata antar kab/kota, tetapi {{n_kec_no}} dari {{n_kec}} kecamatan ({{nocov_pct}} % penduduk) belum punya satu pun, dan yang tidak punya itu lebih sering kecamatan di kab/kota kurang maju.</b>
+ Charger yang ada dipakai terutama oleh penduduk wilayah kaya. Jadi masalahnya dua lapis: <b>jangkauan</b> (anak tangga 1 proposal) di wilayah kurang maju, dan <b>konversi akses menjadi pemakaian</b> (RQ3) di mana-mana. Ini persis skenario (A) proposal: layanan di atas kertas yang luas, dengan kekurangan menumpuk di wilayah kurang maju.</div>
+</div>
+
+<!-- 1 sinkron proposal -->
+<div class="sec"><h3>1 · Posisi tab ini di dalam proposal — dan bagaimana semua riset di dasbor ini ditarik ke arah yang sama</h3>
+ <div class="q">Proposal menyusun empat RQ berurutan di atas tangga layanan lima anak tangga. Tabel ini memetakan tiap komponen proposal ke aset yang sudah ada di dasbor ini, dan ke apa yang ditambahkan tab ini.</div>
+ <div class="ladder">
+  <div class="part"><span class="k">1 · Terjangkau</span>Proposal: waktu tempuh jalan ≤10 menit ke charger non-koridor.<br><b>Di sini:</b> proksi kasar "ada charger di kecamatan yang sama". Tab <i>Peta Ekuitas</i> memakai ≤10 km garis lurus. Belum ada waktu tempuh OSRM.</div>
+  <div class="part"><span class="k">2 · Daya cukup</span>Proposal: skor E2SFCA kW per rumah tangga yang bergantung.<br><b>Di sini:</b> kW terpasang per kapita (CI kW ~ pengeluaran {{ci_kw_exp}}). Tab <i>Ekuitas vs Kesetaraan</i> sudah punya E2SFCA berbobot kapasitas nasional.</div>
+  <div class="no"><span class="k">3 · Berfungsi</span>Proposal: uptime ≥90 %.<br><b>Di sini:</b> tidak diamati. Sesuai aturan proposal, dicatat <i>unobserved</i>, bukan <i>lulus</i>. Log uptime sedang diminta ke PLN.</div>
+  <div class="part"><span class="k">4 · Tidak padat</span>Proposal: utilisasi jam puncak ≤70–80 %.<br><b>Di sini:</b> jumlah transaksi dan kWh per SPKLU Maret 2026 (10 % SPKLU teratas menjual {{top10pct}} % kWh) — bahan utilisasi, belum dihitung per jam puncak.</div>
+  <div class="part"><span class="k">5 · Pengalaman</span>Proposal: ≤20 % ulasan bermasalah.<br><b>Di sini:</b> tidak di tab ini; tab <i>Perception</i> memuat ulasan 584 lokasi yang akan diberi label.</div>
+ </div>
+ <div class="tablewrap"><table>
+  <thead><tr><th>Komponen proposal</th><th>Aset di dasbor ini</th><th>Yang ditambahkan tab ini</th><th>Status</th></tr></thead>
+  <tbody>
+  <tr><td><b>RQ1 Profil tangga</b> — di anak tangga mana tiap wilayah berhenti</td><td>Peta Ekuitas (H3 res 6, ≤10 km), Capacity Maps, EV × Jaringan (headroom gardu)</td><td>Posisi anak tangga 1 per kecamatan (ada/tidak ada charger) untuk 629 kecamatan Jabar</td><td><span class="pill y">sebagian</span></td></tr>
+  <tr><td><b>RQ2 Kecukupan</b> — H, A, M0 Alkire–Foster, FGT</td><td>Ekuitas vs Kesetaraan §4 (defisit menuju rata-rata), E2SFCA</td><td>Insiden kekurangan anak tangga 1: {{nocov_pct}} % penduduk di kecamatan tanpa charger, per kuintil pengeluaran (Q1 {{q1_none}} % → Q5 {{q5_none}} %)</td><td><span class="pill y">sebagian</span></td></tr>
+  <tr><td><b>RQ3 Kapabilitas</b> — apakah akses menjadi pemakaian, di Jawa Barat</td><td>Pelanggan EV, Perception, Rekap transaksi Jabar</td><td><b>Inti tab ini:</b> CI penempatan ({{ci_ch_exp}}) vs CI pemakaian ({{ci_kwh_exp}}) — jurang di antaranya adalah bukti "akses ≠ layanan"; kuadran akses × pemakaian per kecamatan ada di dasbor interaktif</td><td><span class="pill g">dijawab (potret 1 bulan)</span></td></tr>
+  <tr><td><b>RQ4 Distribusi</b> — Erreygers CI berperingkat IPM, Moran/LISA, Theil</td><td>Ekuitas vs Kesetaraan §3 (CI ~IPM provinsi 0,365), §6 Moran's I, Theil</td><td><b>Inti tab ini:</b> Erreygers E variabel 0/1 per kecamatan berperingkat IPM: akses {{e_has_ipm}}, kekurangan {{e_dep_ipm}}; CI dalam tiap kab/kota</td><td><span class="pill g">dijawab untuk Jabar</span></td></tr>
+  <tr><td><b>H3</b> jurang akses–pemakaian lebih besar di wilayah kurang maju</td><td>—</td><td>Diuji: CI kWh ({{ci_kwh_exp}}) − CI charger ({{ci_ch_exp}}) = {{gap}} poin; kuintil termiskin memakai {{q1_kwhpc}} kWh/jiwa vs {{q5_kwhpc}} di terkaya</td><td><span class="pill g">didukung</span></td></tr>
+  <tr><td><b>H4</b> kekurangan menumpuk di wilayah ber-IPM rendah (CI negatif)</td><td>—</td><td>Diuji: Erreygers E kekurangan ~IPM = {{e_dep_ipm}} {{e_dep_ipm_band}}</td><td><span class="pill g">didukung</span></td></tr>
+  <tr><td><b>Penyebut kebutuhan</b> N1 / N2 / N3</td><td>Pelanggan EV (3.694 pengajuan home-charger), gardu distribusi</td><td>Dipakai N1 (seluruh penduduk Kontur). N2 (rumah tangga yang bergantung pada charger publik) belum bisa dibangun — butuh pelanggan PLN ≥2.200 VA rumah tapak per kecamatan</td><td><span class="pill r">belum</span></td></tr>
+  <tr><td><b>Disiplin pelaporan</b> §5.8 — jangan hanya Gini, selalu dengan selang, ambang ditetapkan di muka</td><td>Ekuitas vs Kesetaraan melaporkan Gini + CI + Theil</td><td>Tiap indeks dilaporkan dengan bootstrap 95 %; aturan lulus proposal diterapkan apa adanya; Gini hanya pelengkap</td><td><span class="pill g">dipatuhi</span></td></tr>
+  </tbody></table></div>
+ <div class="why"><b>Apa artinya untuk arah riset.</b> Tab-tab lain mengukur <i>kesetaraan</i> (porsi charger sebanding penduduk) dan <i>akses potensial</i> (jarak, E2SFCA). Tab ini menambah dua hal yang diminta proposal dan belum ada: ukuran <b>vertikal</b> yang eksplisit (diurut menurut IPM, dengan koreksi Erreygers untuk variabel terbatas) dan perbandingan langsung <b>akses vs pemakaian</b> di tempat yang sama. Keduanya adalah kerangka Paper B proposal (RQ3 + RQ4), dan hasil Jabar ini menjadi uji coba sebelum peta nasional.</div>
+</div>
+
+<!-- 2 metode -->
+<div class="sec"><h3>2 · Metode perhitungan — langkah demi langkah</h3>
+ <div class="q">Dari data mentah sampai satu angka. Tiap langkah punya padanannya di skrip yang bisa diunduh (bagian 3).</div>
+ <div class="step"><div class="no">1</div><div class="b"><b>Satuan wilayah.</b> 5.973 poligon desa Jawa Barat (HDX-BPS 2020) digabung menurut kode kecamatan menjadi 629 kecamatan. Kecamatan dipilih karena proposal memperingatkan masalah unit areal (MAUP): ketimpangan yang tersembunyi di tingkat kab/kota muncul di tingkat yang lebih halus — dan memang: Gini charger/kapita antar kab/kota 0,36, antar kecamatan 0,86.</div></div>
+ <div class="step"><div class="no">2</div><div class="b"><b>Penduduk (bobot w<sub>i</sub>).</b> Kontur Population 2023 pada heksagon H3 res 8 (≈0,74 km²); titik pusat heksagon dijatuhkan ke poligon kecamatan. Total 54,5 juta jiwa (BPS ≈50 juta); yang dipakai hanya porsinya, sehingga selisih level tidak mengubah indeks.</div></div>
+ <div class="step"><div class="no">3</div><div class="b"><b>Pasokan (h<sub>i</sub>).</b> Empat ukuran dipisah karena masing-masing menjawab pertanyaan berbeda: <b>jumlah charger</b> (penempatan), <b>kW terpasang</b> (anak tangga 2, daya), <b>kWh terjual</b> dan <b>transaksi</b> Maret 2026 (pemakaian nyata — bahan RQ3). Titik SPKLU dari Master Maret 2026 dan rekap transaksi dijatuhkan ke kecamatan dengan <i>point-in-polygon</i>; 1 SPKLU dan 2 titik EV tidak terpetakan.</div></div>
+ <div class="step"><div class="no">4</div><div class="b"><b>Variabel peringkat (r<sub>i</sub>).</b> Mengikuti proposal §5.7, peringkat utama adalah <b>IPM</b>, bukan pendapatan, karena pemilik EV cenderung kaya sehingga peringkat pendapatan bisa menyesatkan. Dilaporkan juga pengeluaran per kapita disesuaikan dan P0 (dibalik), semuanya BPS 2024 per kab/kota. Karena tidak ada angka resmi per kecamatan, setiap kecamatan memakai nilai kab/kota induknya; ikatan peringkat ditangani dengan rata-rata peringkat tertimbang. Dua peringkat tambahan benar-benar per kecamatan: kepadatan dan pemilik EV per 100 ribu.</div></div>
+ <div class="step"><div class="no">5</div><div class="b"><b>Peringkat fraksional tertimbang R<sub>i</sub>.</b> Wilayah diurut menurut r, lalu R<sub>i</sub> = (penduduk kumulatif sebelum i + ½ penduduk i) / total penduduk, sehingga R ∈ (0, 1) dan 0 = termiskin, 1 = terkaya.</div></div>
+ <div class="step"><div class="no">6</div><div class="b"><b>Indeks konsentrasi.</b> Dengan y<sub>i</sub> = h<sub>i</sub>/w<sub>i</sub> (pasokan per kapita) dan μ = rata-rata tertimbang y:</div></div>
+ <div class="formula"><i>C</i> = 2 · cov<sub>w</sub>(y, R) / μ  = 1 − 2 ∫₀¹ L(p) dp         <i>C</i> ∈ [−1, +1]
+L(p) = porsi kumulatif pasokan yang diterima p porsi penduduk termiskin  (kurva konsentrasi)
+<i>C</i> &gt; 0  pasokan menumpuk di wilayah peringkat tinggi (pro-kaya) · <i>C</i> = 0 tidak terkait · <i>C</i> &lt; 0 pro-miskin</div>
+ <div class="step"><div class="no">7</div><div class="b"><b>Koreksi Erreygers untuk variabel terbatas.</b> "Kecamatan punya charger" bernilai 0 atau 1. Untuk variabel seperti ini C biasa bergantung pada rata-ratanya, maka proposal memakai Erreygers (2009):</div></div>
+ <div class="formula"><i>E</i> = 8 · cov<sub>w</sub>(ind, R) / (b − a)  = 4 · μ · <i>C</i> / (b − a)        ind ∈ [a, b] = [0, 1]
+Akses (ind = 1 bila ada charger): aturan lulus ekuitas vertikal proposal §5.8 → <i>E</i> ≤ 0 dengan selang tidak melewati 0
+Kekurangan (ind = 1 bila TIDAK ada charger): <i>E</i> &lt; 0 berarti kekurangan menumpuk di wilayah kurang maju (H4)</div>
+ <div class="step"><div class="no">8</div><div class="b"><b>Selang kepercayaan.</b> Bootstrap: 2.000 kali wilayah diambil ulang dengan pengembalian, indeks dihitung ulang, persentil 2,5 dan 97,5 dilaporkan. Mengikuti proposal: <i>tidak ada indeks tanpa selang</i>, dan selang yang melewati nol tidak boleh dibaca sebagai "tidak ada perbedaan".</div></div>
+ <div class="step"><div class="no">9</div><div class="b"><b>Pelengkap, bukan pengganti.</b> Gini pasokan/kapita (kesetaraan horizontal), HHI dan CR10 atas porsi pasokan (seberapa terpusat di sedikit lokasi), kuintil penduduk, dan CI dalam tiap kab/kota. Proposal melarang melaporkan Gini saja; di sini Gini selalu berdampingan dengan CI.</div></div>
+ <h4>Contoh angka kecil, supaya rumusnya terasa</h4>
+ <div class="def">Lima kecamatan, diurut IPM rendah → tinggi, penduduk sama (w = 1 masing-masing), charger h = (0, 0, 1, 1, 3). Peringkat R = (0,1; 0,3; 0,5; 0,7; 0,9). Per kapita y = h, μ = 1. cov(y, R) = Σ(y−1)(R−0,5)/5 = [(−1)(−0,4) + (−1)(−0,2) + 0 + 0 + (2)(0,4)]/5 = 1,4/5 = 0,28 → <b>C = 2 × 0,28 / 1 = +0,56</b>: sangat pro-kaya. Indikator "punya charger" ind = (0, 0, 1, 1, 1), μ = 0,6; cov = [(−0,6)(−0,4) + (−0,6)(−0,2) + (0,4)(0) + (0,4)(0,2) + (0,4)(0,4)]/5 = 0,6/5 = 0,12 → <b>E = 8 × 0,12 = +0,96</b>: kehadiran charger hampir sepenuhnya di tiga kecamatan terkaya. Skrip <code>--demo</code> di bawah menjalankan contoh serupa dengan 20 wilayah.</div>
+</div>
+
+<!-- 3 unduh -->
+<div class="sec"><h3>3 · Unduh skrip Python dan datanya</h3>
+ <div class="q">Satu skrip mandiri untuk data Anda sendiri, dan pipeline lengkap yang menghasilkan semua angka di halaman ini. Hanya butuh <code>numpy</code> (skrip mandiri) atau <code>numpy pandas openpyxl shapely h3</code> (pipeline).</div>
+ <div class="dl">
+  <a href="scripts/concentration_index_standalone.py" download><b>concentration_index_standalone.py</b><span>Skrip mandiri. Masukan CSV apa pun (wilayah, penduduk, pasokan, peringkat) → CI + Erreygers + bootstrap 95 % + kurva + kuintil + Gini/HHI + dekomposisi kelompok. <code>python3 concentration_index_standalone.py data.csv --pop pop --supply chargers --rank ipm --group kab</code> · <code>--demo</code> untuk contoh.</span></a>
+  <a href="equitymap/input/jabar_kecamatan.csv" download><b>jabar_kecamatan.csv</b><span>Tabel 629 kecamatan: penduduk, kepadatan, charger, kW, kWh, transaksi, pemilik EV, IPM/pengeluaran/P0 kab induk. Masukan siap pakai untuk skrip mandiri.</span></a>
+  <a href="scripts/concentration_lib.py" download><b>concentration_lib.py</b><span>Pustaka alat ukur yang dipakai pipeline: HHI, Gini, peringkat tertimbang, CI, Erreygers, bootstrap, kurva.</span></a>
+  <a href="scripts/concentration_kecamatan_jabar.py" download><b>concentration_kecamatan_jabar.py</b><span>Pipeline kecamatan: dissolve desa → kecamatan, Kontur H3 → penduduk, point-in-polygon SPKLU/EV, SES BPS, semua indeks, GeoJSON peta.</span></a>
+  <a href="scripts/concentration_index_jabar.py" download><b>concentration_index_jabar.py</b><span>Konsentrasi pasokan/pasar per SPKLU, kab/kota, UP3, jenis lokasi, pemilik, merek.</span></a>
+  <a href="data/jabar_kecamatan_spklu.geojson" download><b>jabar_kecamatan_spklu.geojson</b><span>Poligon 629 kecamatan dengan semua indikator, untuk QGIS/ArcGIS.</span></a>
+  <a href="analysis/concentration_kecamatan_jabar.json" download><b>concentration_kecamatan_jabar.json</b><span>Semua hasil mentah: CI, Erreygers, bootstrap, kuintil, CI dalam-kab, kurva.</span></a>
+ </div>
+ <div class="def"><b>Cara pakai untuk provinsi lain</b> — siapkan CSV dengan empat kolom (nama wilayah, penduduk, pasokan, variabel peringkat), lalu <code>python3 concentration_index_standalone.py provinsi.csv --pop penduduk --supply charger --rank ipm --out hasil.json</code>. Untuk peringkat kemiskinan (tinggi = miskin) tambahkan <code>--invert-rank</code>. Semua rumus di skrip sama persis dengan yang dipakai di halaman ini, dan sudah diverifikasi identik dengan metode integral trapesium di <code>equitymap/keadilan.py</code>.</div>
+</div>
+
+<!-- 4 hasil -->
+<div class="sec"><h3>4 · Hasil — angka dengan selangnya</h3>
+ <div class="q">Dua tingkat agregasi (27 kab/kota dan 629 kecamatan), lima peringkat, empat pasokan. ★ = selang 95 % tidak melewati nol.</div>
+ <div class="kv">{{kv_results}}</div>
+ <div class="grid2">
+  <div><div class="ct">Indeks konsentrasi tingkat kecamatan (629), tertimbang penduduk</div><div class="tablewrap">{{tbl_ci_kec}}</div></div>
+  <div><div class="ct">Erreygers E untuk variabel 0/1 per kecamatan (RQ4, H4)</div><div class="tablewrap">{{tbl_err}}</div>
+   <div class="ct" style="margin-top:10px">Kuintil kecamatan menurut pengeluaran kab induk (Q1 termiskin)</div><div class="tablewrap">{{tbl_quint}}</div></div>
+ </div>
+ <div class="ct">Indeks konsentrasi tingkat kab/kota (27 unit, SES BPS 2024 asli)</div><div class="tablewrap">{{tbl_ci_kab}}</div>
+ <div class="ct">Di dalam kab/kota — kecamatan diurut kepadatan (kab/kota dengan ≥8 kecamatan dan ≥5 charger)</div><div class="tablewrap">{{tbl_within}}</div>
+</div>
+
+<!-- 5 insight -->
+<div class="sec"><h3>5 · Insight — apa yang sebenarnya dikatakan angka-angka ini</h3>
+ <div class="q">Ditulis untuk pembaca yang tidak perlu tahu apa itu kovarians.</div>
+ <ol>
+  <li><b>Jumlah charger bukan masalahnya; keberadaannya yang masalah.</b> Kalau dihitung charger per penduduk, Jawa Barat terlihat adil (CI {{ci_ch_exp}}, tidak signifikan). Tetapi begitu pertanyaannya diganti menjadi "apakah kecamatan ini punya charger sama sekali?", jawabannya timpang: kecamatan di kab/kota ber-IPM tinggi jauh lebih mungkin punya (E {{e_has_ipm}}, signifikan). Inilah alasan proposal mengganti <i>menghitung</i> dengan <i>ambang kecukupan</i>: rata-rata menyembunyikan siapa yang berada di bawah nol.</li>
+  <li><b>{{n_kec_no}} kecamatan, {{nocov_pct}} % penduduk, berada di bawah anak tangga pertama.</b> Di kuintil termiskin {{q1_none}} % penduduknya tinggal di kecamatan tanpa charger; di kuintil terkaya {{q5_none}} %. Untuk mereka pertanyaan "berfungsi atau tidak", "padat atau tidak" belum relevan — tidak ada yang bisa dinilai.</li>
+  <li><b>Pemakaian jauh lebih timpang daripada pasokan.</b> CI kWh terjual {{ci_kwh_exp}} vs CI charger {{ci_ch_exp}}: jurang {{gap}} poin. Charger yang dipasang di wilayah kurang maju ada, tetapi sepi. Ini bukan kegagalan penempatan; ini kegagalan <i>konversi</i> — faktor yang mengubah akses menjadi layanan nyata (kepemilikan EV, kemampuan mengecas di rumah, harga, pembayaran) belum ada di sana. Persis hipotesis H3 proposal.</li>
+  <li><b>Kapasitas ikut condong ke kaya, walau jumlah unit tidak.</b> CI kW terpasang {{ci_kw_exp}} (signifikan) lebih tinggi dari CI jumlah charger: unit di wilayah kaya berdaya lebih besar. Anak tangga 2 proposal (daya cukup) gagal lebih dulu daripada anak tangga 1 di beberapa tempat.</li>
+  <li><b>Kab/kota berbeda logika penempatannya.</b> Kota Bekasi dan Depok menaruh charger di kecamatan yang lebih jarang (CI dalam-kota negatif), Karawang, Majalengka, Tasikmalaya menumpuknya di kecamatan padat (CI +0,6 sampai +0,75). Satu aturan provinsi tidak akan cocok untuk semua.</li>
+  <li><b>Energi terpusat di segelintir titik.</b> 10 % SPKLU teratas menjual {{top10pct}} % kWh; Gini kWh antar SPKLU 0,77. Jaringan yang "merata jumlahnya" bisa sekaligus "terpusat pemakaiannya" — keduanya benar, dan hanya tampak bila diukur terpisah.</li>
+ </ol>
+</div>
+
+<!-- 6 saran -->
+<div class="sec"><h3>6 · Saran — apa yang perlu dilakukan, dipetakan ke anak tangga proposal</h3>
+ <div class="q">Proposal menegaskan tiap kegagalan menunjuk instrumen yang berbeda; empat dari lima tidak butuh lokasi baru. Saran di bawah mengikuti logika itu, dan angkanya dihitung dengan skenario yang sama seperti di dasbor interaktif.</div>
+ <h4>A · Untuk PLN / perencana jaringan Jawa Barat</h4>
+ <div class="tablewrap">{{tbl_scen}}</div>
+ <ul>
+  <li><b>Anak tangga 1 (jangkauan): pakai aturan "kesetaraan" atau "pro-miskin" untuk gelombang berikutnya, bukan "ikuti permintaan".</b> Tabel di atas menunjukkan harga tiap aturan: dengan {{scen_n}} charger baru, aturan kesetaraan menaikkan penduduk yang tercakup dari {{cov_pct}} % ke {{scen_equal_cov}} % dan menurunkan E akses ke {{scen_equal_e}}; aturan permintaan hanya ke {{scen_demand_cov}} % dan E {{scen_demand_e}}. Aturan permintaan memperbesar justru yang mau dikoreksi.</li>
+  <li><b>Anak tangga 2 (daya): tambah kapasitas di situs yang sudah ada di kab/kota berpengeluaran rendah</b> sebelum membangun situs baru di kota. CI kW ({{ci_kw_exp}}) lebih tinggi dari CI unit ({{ci_ch_exp}}): yang kurang di wilayah miskin bukan titiknya, tetapi dayanya.</li>
+  <li><b>Anak tangga 4 (kepadatan): tambah colokan di {{top10pct}}-persen-penjual itu</b> — sepuluh kecamatan teratas (Bogor Utara, Bekasi Timur, Coblong, …) menjual {{top10kec_share}} % kWh provinsi. Itu kegagalan "padat", obatnya plug tambahan di situs yang sama, bukan situs baru.</li>
+  <li><b>Konversi (RQ3): di kecamatan yang punya charger tetapi sepi, masalahnya sisi permintaan.</b> Program home-charger PLN, insentif adopsi, dan informasi lokasi lebih tepat daripada charger tambahan. Dasbor interaktif menandai kecamatan "ada charger, pemakaian rendah" per kab/kota.</li>
+ </ul>
+ <h4>B · Untuk riset (Paper B proposal, RQ3 + RQ4)</h4>
+ <ul>
+  <li><b>Bangun penyebut N2.</b> Semua angka di sini memakai seluruh penduduk (N1). Proposal menetapkan N2 = rumah tangga yang bergantung pada charger publik (pelanggan PLN ≥2.200 VA di rumah tapak dikurangkan). Data pelanggan per kecamatan sudah diminta; begitu ada, jalankan ulang skrip dengan kolom penduduk diganti N2 — tidak ada yang lain yang perlu diubah.</li>
+  <li><b>Ganti peringkat kab/kota dengan peringkat kecamatan.</b> Meta Relative Wealth Index (2,4 km) atau PODES per desa akan membuat CI dalam-kota bermakna. Skrip sudah menerima kolom peringkat apa pun.</li>
+  <li><b>Naik ke Erreygers atas skor deprivasi multidimensi</b> (Alkire–Foster, RQ2) begitu uptime dan label ulasan tersedia; sekarang baru variabel 0/1 anak tangga 1. Struktur skrip sama: ind ∈ [0,1].</li>
+  <li><b>Jalankan di 162 spesifikasi proposal.</b> Ambang penduduk kecamatan (slider di dasbor) dan pilihan peringkat sudah bisa diubah; tambahkan perlakuan charger koridor (rest area tol dikeluarkan / dibobot 0,5 / dimasukkan) dan unit (kecamatan vs grid 5 km) sebagai sumbu berikutnya. Jenis lokasi sudah ada di rekap transaksi.</li>
+  <li><b>Tulis tiga angka ini ke decision log sebelum data nasional dibuka:</b> aturan lulus ekuitas vertikal (E akses ≤ 0), ambang H ≤ 0,10, dan ambang 80 % spesifikasi. Hasil Jabar sudah menunjukkan arah; jangan biarkan ia menggeser ambangnya.</li>
+ </ul>
+ <h4>C · Cara melaporkan</h4>
+ <ul>
+  <li>Selalu laporkan <b>tiga angka berdampingan</b>: CI jumlah (penempatan), E kehadiran (kecukupan), CI pemakaian (kapabilitas). Satu angka saja akan menyesatkan ke arah yang berbeda-beda.</li>
+  <li>Sebut selangnya. "CI +0,095 [−0,02, +0,20]" adalah temuan; "+0,095" saja bukan.</li>
+  <li>Jangan menyebut "tidak ada ketimpangan" ketika selang melewati nol — proposal melarangnya; katakan "tidak terdeteksi pada ukuran contoh ini".</li>
+ </ul>
+</div>
+
+<!-- 7 dasbor -->
+<div class="sec"><h3>7 · Dasbor interaktif — pilih wilayah, geser skenario</h3>
+ <div class="q">Semua ukuran dihitung ulang di browser: pilih kab/kota atau kawasan, geser ambang penduduk, tambah charger dengan tiga aturan, lihat peta, kurva, dan tabel berubah. Halaman penuh: <a href="analysis/concentration_dashboard.html" target="_blank" rel="noopener">concentration_dashboard.html</a> · halaman statis dengan forest plot: <a href="analysis/concentration_jabar.html" target="_blank" rel="noopener">concentration_jabar.html</a>.</div>
+ <iframe class="geoframe" src="analysis/concentration_dashboard.html" title="Dasbor Konsentrasi SPKLU Jabar" loading="lazy"></iframe>
+</div>
+
+<!-- 8 batas -->
+<div class="sec"><h3>8 · Batas klaim</h3>
+ <ul>
+  <li><b>Tidak ada klaim sebab-akibat.</b> Hubungan IPM dan charger adalah asosiasi; proposal menegaskan hal yang sama untuk RQ4.</li>
+  <li><b>Peringkat kecamatan diwariskan dari kab/kota.</b> CI~IPM di tingkat kecamatan mengukur gradien antar kab/kota dengan penyebut lebih halus, bukan kaya-miskin di dalam satu kota. Yang benar-benar per kecamatan hanya kepadatan dan pemilik EV.</li>
+  <li><b>Satu bulan transaksi</b> (Maret 2026) adalah potret. Pemilik EV dari pengajuan PLN hanya menangkap yang memasang home-charger lewat PLN.</li>
+  <li><b>"Ada charger di kecamatan" bukan "terjangkau".</b> Proposal memakai waktu tempuh ≤10 menit; proksi di sini lebih kasar ke dua arah (charger di tepi kecamatan tetangga tidak dihitung; charger di ujung kecamatan luas dihitung).</li>
+  <li><b>Charger koridor belum dikeluarkan.</b> Rest area tol melayani pelintas; proposal mengeluarkannya dari layanan lokal. Sumbu ini perlu ditambah (jenis lokasi tersedia di rekap).</li>
+  <li><b>Anak tangga 3 dan 5 tidak diamati</b>, dan menurut aturan proposal dicatat sebagai tidak diamati, bukan lulus.</li>
+ </ul>
+</div>
+</div>
