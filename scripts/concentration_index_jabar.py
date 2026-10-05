@@ -24,12 +24,12 @@ import json, os, re, warnings
 import numpy as np
 import pandas as pd
 
+from concentration_lib import N_BOOT, ci, ci_boot, conc_stats, curve
+
 warnings.filterwarnings("ignore")
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 os.chdir(ROOT)
-RNG = np.random.default_rng(2026)
-N_BOOT = 2000
 
 
 def norm(s):
@@ -39,72 +39,6 @@ def norm(s):
     s = re.sub(r"\s+", " ", s)
     # Kota Cimahi tak punya heksagon penduduk sendiri (terserap ke Kota Bandung) -> satu unit analisis
     return "KOTA BANDUNG" if s == "KOTA CIMAHI" else s
-
-
-# ------------------------------------------------------------------ ukuran
-def hhi(shares):
-    s = np.asarray(shares, float); s = s[s > 0] / s.sum()
-    return float(np.sum(s ** 2) * 10000)
-
-
-def conc_stats(values, labels=None):
-    v = np.asarray(values, float); v = v[v > 0]
-    s = np.sort(v)[::-1] / v.sum()
-    h = hhi(s)
-    return dict(n=int(len(v)), hhi=round(h, 1), n_effective=round(10000 / h, 2), cr1=round(float(s[:1].sum()), 4),
-                cr4=round(float(s[:4].sum()), 4), cr10=round(float(s[:10].sum()), 4), gini=round(gini(v), 3))
-
-
-def gini(v):
-    v = np.sort(np.asarray(v, float)); n = len(v)
-    return float((2 * np.sum((np.arange(1, n + 1)) * v) / (n * v.sum())) - (n + 1) / n)
-
-
-def _ranks(r, w):
-    """Peringkat fraksional tertimbang (titik tengah kelompok sama-r) pada [0,1]."""
-    o = np.argsort(r, kind="stable"); rs = r[o]; ws = w[o]
-    cum = np.cumsum(ws) / ws.sum()
-    mid = cum - ws / ws.sum() / 2
-    out = np.empty_like(mid)
-    i = 0
-    while i < len(rs):                              # ikatan -> rata-rata tertimbang peringkat
-        j = i
-        while j + 1 < len(rs) and rs[j + 1] == rs[i]:
-            j += 1
-        out[i:j + 1] = np.average(mid[i:j + 1], weights=ws[i:j + 1]); i = j + 1
-    res = np.empty_like(out); res[o] = out
-    return res
-
-
-def ci(h, r, w):
-    """Indeks konsentrasi tertimbang. h = pasokan per unit (total), r = variabel peringkat, w = penduduk."""
-    h, r, w = (np.asarray(x, float) for x in (h, r, w))
-    if h.sum() <= 0:
-        return float("nan")
-    R = _ranks(r, w)
-    # h_i/w_i = pasokan per kapita; mean_w(per kapita) = total/penduduk
-    pc = h / w
-    mu = np.sum(w * pc) / w.sum()
-    cov = np.sum(w * (pc - mu) * (R - np.sum(w * R) / w.sum())) / w.sum()
-    return float(2 * cov / mu)
-
-
-def ci_boot(h, r, w):
-    est = ci(h, r, w); n = len(h); b = []
-    for _ in range(N_BOOT):
-        ix = RNG.integers(0, n, n)
-        if len(np.unique(r[ix])) < 3 or h[ix].sum() <= 0:
-            continue
-        b.append(ci(h[ix], r[ix], w[ix]))
-    lo, hi = np.percentile(b, [2.5, 97.5])
-    return dict(ci=round(est, 3), lo=round(float(lo), 3), hi=round(float(hi), 3),
-                signif=bool(lo > 0 or hi < 0))
-
-
-def curve(h, r, w, npts=30):
-    o = np.argsort(r, kind="stable"); w, h = np.asarray(w, float)[o], np.asarray(h, float)[o]
-    cp = np.concatenate([[0], np.cumsum(w) / w.sum()]); cv = np.concatenate([[0], np.cumsum(h) / max(h.sum(), 1e-9)])
-    return [[round(float(a), 4), round(float(b), 4)] for a, b in zip(cp, cv)]
 
 
 # ------------------------------------------------------------------ data
