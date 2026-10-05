@@ -78,3 +78,26 @@ def curve(h, r, w, npts=40):
     if pts[-1] != [1.0, 1.0]:
         pts.append([1.0, 1.0])
     return pts
+
+
+def erreygers(ind, r, w, a=0.0, b=1.0):
+    """Indeks konsentrasi Erreygers (2009) untuk variabel terbatas [a, b], mis. indikator 0/1 "kecamatan punya charger"
+    atau "kecamatan kekurangan". E = 8·cov_w(ind, R)/(b − a) = 4·mean_w(ind)·C/(b − a). Tanda: E>0 menumpuk di
+    peringkat tinggi; untuk variabel KEKURANGAN, E<0 berarti kekurangan menumpuk di wilayah kurang maju."""
+    ind, r, w = (np.asarray(x, float) for x in (ind, r, w))
+    R = weighted_ranks(r, w)
+    W = w.sum(); mu = np.sum(w * ind) / W; mR = np.sum(w * R) / W
+    cov = np.sum(w * (ind - mu) * (R - mR)) / W
+    return float(8 * cov / (b - a))
+
+
+def erreygers_boot(ind, r, w, n_boot=N_BOOT, a=0.0, b=1.0):
+    ind, r, w = (np.asarray(x, float) for x in (ind, r, w))
+    est = erreygers(ind, r, w, a, b); n = len(ind); out = []
+    for _ in range(n_boot):
+        ix = RNG.integers(0, n, n)
+        if len(np.unique(r[ix])) < 3:
+            continue
+        out.append(erreygers(ind[ix], r[ix], w[ix], a, b))
+    lo, hi = np.percentile(out, [2.5, 97.5])
+    return dict(e=round(est, 3), lo=round(float(lo), 3), hi=round(float(hi), 3), signif=bool(lo > 0 or hi < 0))

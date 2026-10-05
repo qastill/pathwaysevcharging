@@ -63,6 +63,22 @@ Charger ada di **177** kecamatan (43.2 % penduduk); pemilik EV ada di 201 kecama
 | Pemilik EV per 100 rb kecamatan | Energi Mar-2026 (kWh) | +0.460* | [+0.300, +0.598] |
 | Pemilik EV per 100 rb kecamatan | Transaksi Mar-2026 | +0.463* | [+0.323, +0.588] |
 
+## Erreygers CI (variabel 0/1 per kecamatan; * = 95 % CI tidak melewati 0)
+
+| Peringkat r | Variabel | E | 95 % CI |
+|---|---|---|---|
+| Pengeluaran per kapita kab/kota induk | kekurangan: kecamatan tanpa charger | -0.285* | [-0.405, -0.158] |
+| Pengeluaran per kapita kab/kota induk | akses: kecamatan punya charger | +0.285* | [+0.162, +0.399] |
+| IPM kab/kota induk | kekurangan: kecamatan tanpa charger | -0.289* | [-0.415, -0.166] |
+| IPM kab/kota induk | akses: kecamatan punya charger | +0.289* | [+0.166, +0.409] |
+| Kemiskinan kab/kota induk, dibalik | kekurangan: kecamatan tanpa charger | -0.311* | [-0.432, -0.183] |
+| Kemiskinan kab/kota induk, dibalik | akses: kecamatan punya charger | +0.311* | [+0.186, +0.423] |
+| Kepadatan penduduk kecamatan | kekurangan: kecamatan tanpa charger | -0.436* | [-0.549, -0.313] |
+| Kepadatan penduduk kecamatan | akses: kecamatan punya charger | +0.436* | [+0.304, +0.552] |
+| Pemilik EV per 100 rb kecamatan | kekurangan: kecamatan tanpa charger | -0.528* | [-0.619, -0.422] |
+| Pemilik EV per 100 rb kecamatan | akses: kecamatan punya charger | +0.528* | [+0.423, +0.623] |
+| IPM kab/kota induk | pemakaian: kecamatan ada transaksi | +0.308* | [+0.184, +0.427] |
+
 ## Kuintil kecamatan (tertimbang penduduk)
 
 | Dasar | Q | n kec | Penduduk | Charger/100 rb | kWh/kapita | % penduduk di kec tanpa charger | EV/100 rb |
