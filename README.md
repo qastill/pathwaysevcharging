@@ -76,6 +76,28 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 | Dinamika waktu | PLN menurunkan Gini **0,887 → 0,471** (2021–2024), lalu 0,506; mitra non-PLN menaikkannya ke **0,595** sambil menambah cakupan hanya 1 poin (tahun dari ID SPKLU, akurasi 93 %) |
 | Skenario kebijakan | Gini 0,4 = **+935 charger**, 0,3 = +1.793, 0,2 = +3.330 (water-filling); pada 1.000 situs, pemerataan penuh berbiaya 3,7 poin cakupan untuk 0,10 Gini — dan aturan cakupan melayani kuintil termiskin lebih cepat |
 
+## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
+
+Dua skrip di `scripts/` (alat ukur bersama di `concentration_lib.py`), halaman visual mandiri `analysis/concentration_jabar.html`
+(`python3 analysis/concentration_render.py`), ringkasan di `analysis/concentration_*_jabar.md`.
+
+| Skrip | Isi |
+|---|---|
+| `concentration_index_jabar.py` | Konsentrasi pasokan/pasar (HHI, CR4/CR10, Gini) per SPKLU, kab/kota, UP3, jenis lokasi, pemilik, merek; CI tertimbang penduduk atas kab/kota dengan peringkat kepadatan dan pemilik EV |
+| `concentration_kecamatan_jabar.py` | 629 kecamatan (desa HDX-BPS 2020 digabung), penduduk Kontur H3 res 8, sosial-ekonomi BPS 2024 per kab/kota (IPM, pengeluaran, P0); CI kab/kota dan kecamatan + bootstrap 95 %, kuintil, CI dalam-kab/kota, GeoJSON peta `data/jabar_kecamatan_spklu.geojson` |
+
+| Temuan (Maret 2026) | Angka |
+|---|---|
+| Penempatan charger ~ pengeluaran per kapita | CI **+0,095** [−0,02, +0,20] — tidak bisa dibedakan dari merata |
+| Pemakaian (kWh) ~ pengeluaran per kapita | CI **+0,385** [+0,23, +0,51] — pro-kaya, signifikan; ~IPM +0,305 |
+| Kecamatan berisi charger | **177 / 629** (43 % penduduk); kuintil termiskin 69 % penduduknya di kecamatan tanpa charger, terkaya 34 % |
+| kWh per kapita kuintil terkaya vs termiskin | **9,5×** |
+| Sebaran antar-kecamatan | Gini charger 0,43 ≈ Gini penduduk 0,39; Gini kWh 0,76; 10 % SPKLU teratas menjual 60 % kWh |
+
+Masukan mentah (`--raw DIR`) diunduh dari cermin GitHub/S3: `JfrAziz/indonesia-district` (desa Jabar), Kontur
+`kontur_population_ID_20231101.gpkg.gz`, `MercyCantik/UAS-VISDAT-222313205` (`profil_kabkota.csv`, BPS 2024). Tidak ada
+data pendapatan resmi per kecamatan; kecamatan memakai nilai kab/kota induknya (Meta RWI akan menutup celah ini).
+
 ## 🅿️ Parkir × Charger — padanan ParkServe/ParkScore (Trust for Public Land) untuk SPKLU
 
 [ParkServe](https://www.tpl.org/park-data-downloads) mengukur % penduduk dalam 10 menit jalan kaki dari taman,
