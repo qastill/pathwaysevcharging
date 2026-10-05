@@ -79,7 +79,11 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 ## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
 
 Dua skrip di `scripts/` (alat ukur bersama di `concentration_lib.py`), halaman visual mandiri `analysis/concentration_jabar.html`
-(`python3 analysis/concentration_render.py`), ringkasan di `analysis/concentration_*_jabar.md`.
+(`python3 analysis/concentration_render.py`), ringkasan di `analysis/concentration_*_jabar.md`, dan **dasbor interaktif**
+`analysis/concentration_dashboard.html` (`python3 analysis/concentration_dashboard_render.py`): pilih kab/kota atau preset kawasan,
+geser ambang penduduk kecamatan, pilih variabel peringkat dan pasokan, dan slider skenario tambah N charger dengan tiga aturan
+penempatan (kesetaraan / permintaan / pro-miskin); CI dengan bootstrap, cakupan, Gini, HHI, peta, kurva, perbandingan antar
+kab/kota, dan tabel kecamatan dihitung ulang di browser.
 
 | Skrip | Isi |
 |---|---|
