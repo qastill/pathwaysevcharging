@@ -98,6 +98,13 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 
 ## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
 
+Dua halaman interaktif mandiri (semua ukuran dihitung ulang di browser dari `data/jabar_kecamatan_spklu.geojson`):
+`analysis/concentration_dashboard.html` (Bahasa Indonesia, `python3 analysis/concentration_dashboard_render.py`) dan
+**`analysis/concentration_dashboard_en.html`** (English, `python3 analysis/concentration_dashboard_en_render.py`) — versi
+Inggris menambahkan *verdict* bahasa sehari-hari yang ikut berubah tiap kendali digeser, grafik kuintil penduduk,
+perbandingan tiga aturan penempatan berdampingan, bantuan `?` pada tiap ukuran, tabel kecamatan dengan pencarian dan
+ekspor CSV, serta tautan berbagi yang menyimpan seluruh keadaan di URL.
+
 Dua skrip di `scripts/` (alat ukur bersama di `concentration_lib.py`), halaman visual mandiri `analysis/concentration_jabar.html`
 (`python3 analysis/concentration_render.py`), ringkasan di `analysis/concentration_*_jabar.md`.
 
