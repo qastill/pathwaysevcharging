@@ -1892,6 +1892,131 @@ background:var(--card);border:1px solid var(--line);border-radius:16px;box-shado
 </div>
 </div>
 <!-- KD:END -->
+<!-- TTM:BEGIN -->
+<div class="page" id="p-ttm">
+<style>
+#p-ttm .tthead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-ttm .tthead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-ttm .tthead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-ttm .tthead h2 b{color:var(--gold)}
+#p-ttm .tthead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:980px}
+#p-ttm .tthead p b{color:#e9d9a0;font-weight:600}#p-ttm .tthead a{color:#e9d9a0}
+#p-ttm .ttmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-ttm .ttmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-ttm .ttmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-ttm .mode{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;margin-left:8px;vertical-align:middle}
+#p-ttm .mode.jarak{background:#fdf2f0;color:#9a3f36;border:1px solid #f2d5d1}
+#p-ttm .mode.ttm{background:#eaf7ee;color:#1f7a44;border:1px solid #bfe3cb}
+#p-ttm .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+#p-ttm .ctl label{font-size:11.5px;color:var(--navy);font-weight:600}
+#p-ttm select{padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px;background:#fff;font-family:Outfit;min-width:170px}
+#p-ttm .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#p-ttm .seg button{padding:6px 11px;border:none;background:#f7f9fc;cursor:pointer;font-size:11.5px;font-weight:600;color:#33405a;font-family:Outfit;border-right:1px solid var(--line)}
+#p-ttm .seg button:last-child{border-right:none}
+#p-ttm .seg button.active{background:var(--navy);color:var(--gold)}
+#p-ttm #ttMap{height:620px;border-radius:12px;border:1px solid var(--line);z-index:1}
+#p-ttm #ttMap canvas{max-height:none}
+#p-ttm .legend{font-size:11px;color:#33405a;display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center}
+#p-ttm .legend i{width:14px;height:12px;display:inline-block;border-radius:3px;margin-right:4px;vertical-align:-2px}
+#p-ttm td.n{text-align:right;font-variant-numeric:tabular-nums}
+#p-ttm .bar{display:inline-block;height:8px;border-radius:4px;background:#e6e9f0;width:70px;vertical-align:middle;margin-right:5px;overflow:hidden}
+#p-ttm .bar i{display:block;height:100%}
+#p-ttm .note{font-size:11.5px;color:#4a5670;line-height:1.75}
+#p-ttm .note b{color:var(--navy)}
+#p-ttm .note code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:10.5px}
+#p-ttm .grid31{display:grid;grid-template-columns:1.35fr .65fr;gap:15px;margin-bottom:15px}
+#p-ttm .steps{counter-reset:s;list-style:none;padding:0;margin:0}
+#p-ttm .steps li{position:relative;padding:6px 0 6px 34px;font-size:11.8px;color:#33405a;line-height:1.6;border-bottom:1px dashed #e9ecf2}
+#p-ttm .steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:7px;width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--gold);font-weight:700;font-size:11px;text-align:center;line-height:22px}
+#p-ttm .steps li b{color:var(--navy)}
+#p-ttm .next{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+#p-ttm .next .it{border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:#fcfdff;font-size:11.5px;line-height:1.6;color:#33405a}
+#p-ttm .next .it b{display:block;color:var(--navy);font-size:12px;margin-bottom:3px}
+#p-ttm .next .it .st{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:10px;margin-bottom:5px}
+#p-ttm .st.done{background:#eaf7ee;color:#1f7a44}#p-ttm .st.wait{background:#fff6e0;color:#8a6410}#p-ttm .st.todo{background:#eef1f6;color:#4a5670}
+#p-ttm .ok{color:#2e9e5b;font-weight:700}#p-ttm .no{color:#d6443c;font-weight:700}#p-ttm .part{color:#e0a52b;font-weight:700}
+@media(max-width:980px){#p-ttm .grid31{grid-template-columns:1fr}#p-ttm #ttMap{height:460px}}
+</style>
+
+<div class="tthead">
+ <span class="tag">Akses waktu tempuh · pilot Jawa Barat–Jakarta–Banten · fondasi (in)equality / (in)equity antar-kota</span>
+ <h2>⏱️ Akses Waktu Tempuh Desa → SPKLU — <b>siapa yang bisa sampai, dan siapa yang tidak</b><span id="ttMode" class="mode"></span></h2>
+ <p>Menindaklanjuti masukan Dr Alyas Widita (6 Okt 2026): perbandingan ekuitas akses SPKLU dibangun dari <b>koordinat eksak
+ stasiun</b> dan <b>waktu tempuh jaringan jalan</b> antar-desa (matriks r5r/R5 <code>west_java_ttm_car.csv</code>, folder supervisi
+ QH), bukan dari jumlah charger per provinsi. Halaman ini menyajikan hasilnya untuk <b>6.669 desa/kelurahan</b> di Jawa Barat, DKI
+ Jakarta, dan Banten daratan (Tangerang) — area studi skrip <code>java_ttm_01.R</code> — dengan <b>kebutuhan</b> diukur dari penduduk
+ Kontur 2023 per desa, lalu dibaca lewat dua kacamata: <b>kesetaraan</b> (apakah akses merata antar desa dan antar kab/kota) dan
+ <b>ekuitas</b> (apakah akses mengikuti kebutuhan, atau justru mengikuti kemampuan ekonomi). Semua angka dihitung ulang oleh
+ <code>ttm/compute.py</code>; tidak ada angka yang diketik tangan.</p>
+ <div class="ttmeta" id="ttMeta"></div>
+</div>
+
+<div id="ttWarn" class="insight" style="display:none"></div>
+<div id="ttLoading" class="insight">Memuat peta desa (≈4 MB poligon) dan hasil hitung…</div>
+
+<div class="kpis" id="ttKpi"></div>
+
+<div class="grid31">
+ <div class="card">
+  <h3>🗺️ Peta desa — <span id="ttMapTitle">akses ke SPKLU terdekat</span></h3>
+  <div class="ctl">
+   <label>Lapisan</label>
+   <div class="seg" id="ttLayerSeg">
+    <button data-l="access" class="active">Akses terdekat</button>
+    <button data-l="far" id="ttBtnFar">Charger terjangkau</button>
+    <button data-l="villages30" id="ttBtnV30">Desa terjangkau ≤30 mnt</button>
+    <button data-l="chargers">Charger di desa</button>
+    <button data-l="dens">Kepadatan penduduk</button>
+   </div>
+   <label>Kab/kota</label><select id="ttKab"><option value="all">Semua (36 kab/kota)</option></select>
+   <label><input type="checkbox" id="ttSites" checked> titik SPKLU</label>
+  </div>
+  <div id="ttMap"></div>
+  <div class="legend" id="ttLegend"></div>
+ </div>
+ <div>
+  <div class="card" style="margin-bottom:15px">
+   <h3>📐 Bagaimana angka ini dihitung</h3>
+   <ol class="steps" id="ttSteps"></ol>
+  </div>
+  <div class="card">
+   <h3>🧭 Kesetaraan vs ekuitas — <span>satu bacaan</span></h3>
+   <div class="note" id="ttRead"></div>
+  </div>
+ </div>
+</div>
+
+<div class="grid2">
+ <div class="card"><h3>📊 Sebaran penduduk menurut <span id="ttHistLab">akses ke SPKLU terdekat</span></h3><canvas id="ttHist" height="230"></canvas>
+  <div class="note" id="ttHistNote" style="margin-top:8px"></div></div>
+ <div class="card"><h3>📈 Kurva Lorenz — <span>charger terjangkau per penduduk</span></h3><canvas id="ttLorenz" height="230"></canvas>
+  <div class="note" id="ttLorenzNote" style="margin-top:8px"></div></div>
+</div>
+
+<div class="grid2">
+ <div class="card"><h3>🏙️ Metropolitan vs luar metropolitan</h3><div class="tablewrap" id="ttMetro"></div>
+  <div class="note" style="margin-top:8px">Delineasi kerja: <b>Jabodetabek</b> (5 kota Jakarta, Bogor, Kota Bogor, Depok, Bekasi, Kota Bekasi, Tangerang, Kota Tangerang, Tangerang Selatan),
+  <b>Bandung Raya</b> (Kota Bandung, Bandung, Bandung Barat, Cimahi, Sumedang), <b>Cirebon Raya</b> (Kota Cirebon, Cirebon, Kuningan, Majalengka, Indramayu). Inilah
+  unit banding yang akan dipakai secara nasional: antar-kawasan metropolitan, bukan antar-provinsi.</div></div>
+ <div class="card"><h3>⚖️ Ekuitas vertikal — <span>kuintil pengeluaran per kapita (Jawa Barat)</span></h3><canvas id="ttQuint" height="200"></canvas>
+  <div class="note" id="ttQuintNote" style="margin-top:8px"></div></div>
+</div>
+
+<div class="card" style="margin-bottom:15px">
+ <h3>📋 Kab/kota — <span>akses, kebutuhan, dan sosial-ekonomi</span> <small style="font-weight:400;color:var(--mut)">klik judul kolom untuk mengurutkan</small></h3>
+ <div class="tablewrap" id="ttTable"></div>
+ <div class="note" style="margin-top:8px">IPM dan pengeluaran per kapita (BPS 2024) hanya tersedia untuk 27 kab/kota Jawa Barat di repositori ini; Jakarta dan Tangerang
+ ditampilkan tanpa kolom itu dan tidak ikut dalam indeks konsentrasi berbasis pengeluaran. Charger = unit charger (bukan konektor) dari master SPKLU nasional Juni 2026.</div>
+</div>
+
+<div class="card">
+ <h3>🧪 Arah output riset dari fondasi ini</h3>
+ <div class="next" id="ttNext"></div>
+ <div class="note" style="margin-top:12px">Pilot ini menjawab pertanyaan metodologis, bukan pertanyaan substantif: apakah rantai <i>koordinat stasiun → poligon desa →
+ matriks waktu tempuh → kebutuhan penduduk → ukuran kesetaraan/ekuitas</i> bisa berjalan ujung ke ujung dan hasilnya terbaca. Begitu
+ ya, pipeline yang sama dijalankan untuk setiap kawasan metropolitan nasional dengan ekstrak OSM dan GADM level 4 masing-masing.</div>
+</div>
+</div>
+<!-- TTM:END -->
 <!-- SUMMARY (paper) -->
 <!-- CAP:BEGIN -->
 <div class="page" id="p-capacity">
@@ -3578,11 +3703,11 @@ const ASPLAB={keandalan:"Reliability",ketersediaan:"Availability",kejujuran_daya
 const hmc=v=>{if(v==null)return '#eef1f6';const t=(v+1)/2;return `rgb(${Math.round(214-(214-46)*t)},${Math.round(68+(158-68)*t)},${Math.round(60+(91-60)*t)})`;};
 const $=id=>document.getElementById(id);const C={};
 
-const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["keadilan","⚖️ Ekuitas vs Kesetaraan"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["ekuitas","🗺️ Peta Ekuitas"],["parkir","🅿️ Parkir × Charger"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["jaringan","⚡ EV × Jaringan"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["asean","🌏 ASEAN Paper"],["capacity","🔌 Capacity Maps"],["p2p","🤝 P2P Charging"],["library","📚 Perpustakaan"],["resources","🧰 Repositori Riset"],["combine","🔗 Kombinasi"],["summary","Summary"],["phd","🎓 Ikhtisar Disertasi"],["phdequity","⚖️ Kerangka Keadilan"],["phddata","🗃️ Data & Bukti"],["phdref","📖 Referensi Vault"]];
+const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["keadilan","⚖️ Ekuitas vs Kesetaraan"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["ekuitas","🗺️ Peta Ekuitas"],["parkir","🅿️ Parkir × Charger"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["jaringan","⚡ EV × Jaringan"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["asean","🌏 ASEAN Paper"],["capacity","🔌 Capacity Maps"],["p2p","🤝 P2P Charging"],["library","📚 Perpustakaan"],["resources","🧰 Repositori Riset"],["combine","🔗 Kombinasi"],["summary","Summary"],["phd","🎓 Ikhtisar Disertasi"],["phdequity","⚖️ Kerangka Keadilan"],["phddata","🗃️ Data & Bukti"],["ttm","⏱️ Akses Waktu Tempuh"],["phdref","📖 Referensi Vault"]];
 $('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i==0?' active':''}" data-p="${t[0]}">${t[1]}</div>`).join('');
 /* NAV:BEGIN — navigasi dua tingkat: grup -> tab. Tab yang tidak terdaftar jatuh ke grup 'open'. */
 const NAVGROUPS=[
- ["phd","🎓 PhD Monash",["phd","phdequity","phddata","phdref"]],
+ ["phd","🎓 PhD Monash",["phd","phdequity","phddata","ttm","phdref"]],
  ["analisis","📊 Analisis SPKLU",["overview","national","demand","policy","sector","jraya","pelanggan","benchmark","socio","equity","keadilan","perception"]],
  ["peta","🗺️ Peta & Jaringan",["map","locint","ekuitas","parkir","geopeta","jaringan"]],
  ["naskah","📚 Naskah & Perpustakaan",["library","asean","capacity","p2p","summary"]],
@@ -3611,6 +3736,7 @@ document.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{
  if(tb.dataset.p==='map'&&!C.map)setTimeout(initMap,80);
  if(tb.dataset.p==='locint')setTimeout(()=>{if(!window.liMapInit)initLiMap();else{if(window.liMap)window.liMap.invalidateSize();if(window.liCandMap)window.liCandMap.invalidateSize();if(window.srMap)window.srMap.invalidateSize();}},80);
  if(tb.dataset.p==='sector'&&window.initSector)setTimeout(window.initSector,80);
+ if(tb.dataset.p==='ttm'&&window.initTTM)setTimeout(window.initTTM,60);
  if(tb.dataset.p==='keadilan'&&window.initKeadilan)setTimeout(window.initKeadilan,60);
  if(tb.dataset.p==='parkir'&&window.initParkir)setTimeout(window.initParkir,60);
  if(tb.dataset.p==='ekuitas'&&window.initEquity)setTimeout(window.initEquity,60);
@@ -8359,5 +8485,187 @@ window.buildKdDyn=function(Y,K){
  if(document.querySelector('#p-library.active'))setTimeout(window.initLibrary,60);
 })();
 /* LIB:END */
+</script>
+<script>
+/* TTM:BEGIN */
+/* ============ AKSES WAKTU TEMPUH — desa -> SPKLU (ttm/ttm.json + ttm/input/villages_simplified.geojson, dimuat malas) ============ */
+(function(){
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>(n==null||isNaN(n))?'—':Math.round(+n).toLocaleString('id-ID');
+const f1=n=>(n==null||isNaN(n))?'—':(+n).toLocaleString('id-ID',{maximumFractionDigits:1,minimumFractionDigits:1});
+const f2=n=>(n==null||isNaN(n))?'—':(+n).toLocaleString('id-ID',{maximumFractionDigits:2,minimumFractionDigits:2});
+const f3=n=>(n==null||isNaN(n))?'—':(+n).toLocaleString('id-ID',{maximumFractionDigits:3,minimumFractionDigits:3});
+const pct=n=>(n==null||isNaN(n))?'—':(100*n).toLocaleString('id-ID',{maximumFractionDigits:1})+' %';
+const jt=n=>n>=1e6?(n/1e6).toLocaleString('id-ID',{maximumFractionDigits:2})+' jt':n>=1e3?(n/1e3).toLocaleString('id-ID',{maximumFractionDigits:0})+' rb':fmt(n);
+const NAVY='#16305f',GOLD='#d4af37',BLUE='#3a6ea5',GREEN='#2e9e5b',RED='#d6443c',ORANGE='#e8742c',MUT='#9aa6bd';
+/* skala magma 7 kelas (meniru peta supervisor) — gelap = rendah */
+const MAGMA=['#000004','#2c115f','#721f81','#b73779','#f1605d','#feb078','#fcfdbf'];
+const C={};let D=null,GJ=null,map=null,layer=null,sitesLayer=null,built=false,S={l:'access',kab:'all'},VI=new Map(),sortK='pop',sortD=-1;
+
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('gagal memuat '+src));document.head.appendChild(s);});}
+function mk(id,cfg){if(C[id])C[id].destroy();const el=$(id);if(!el||typeof Chart==='undefined')return;C[id]=new Chart(el,cfg);}
+const isTTM=()=>D.summary.mode==='ttm';
+const unit=()=>D.summary.unit;
+
+/* ---------- warna ---------- */
+function breaks(){
+ const s=D.summary;
+ if(S.l==='access')return isTTM()?[5,10,15,20,30,45]:[1,2,5,10,15,25];
+ if(S.l==='far')return isTTM()?[1,5,20,50,100,250]:[1,5,20,50,100,250];
+ if(S.l==='villages30')return [10,25,50,100,150,250];
+ if(S.l==='chargers')return [1,2,4,8,16,32];
+ if(S.l==='dens')return [250,1000,2500,5000,10000,20000];
+}
+function colorOf(v){
+ if(v==null)return S.l==='access'?'#222':'#dfe3ea';
+ const b=breaks();let i=0;while(i<b.length&&v>b[i])i++;
+ /* akses: kecil = baik = terang; lainnya: besar = terang */
+ return S.l==='access'?MAGMA[6-i]:MAGMA[i];
+}
+function valueOf(r){
+ if(S.l==='access')return r.access;
+ if(S.l==='far')return r.far;
+ if(S.l==='villages30')return r.villages30;
+ if(S.l==='chargers')return r.chargers;
+ if(S.l==='dens')return r.pop/Math.max(r.area||1,0.01);
+}
+function legend(){
+ const b=breaks(),u=S.l==='access'?' '+unit():S.l==='dens'?' jiwa/km²':'';
+ const labs=[];for(let i=0;i<=b.length;i++){labs.push(i===0?'≤ '+b[0]+u:i===b.length?'> '+b[b.length-1]+u:b[i-1]+'–'+b[i]+u);}
+ $('ttLegend').innerHTML=labs.map((t,i)=>`<span><i style="background:${S.l==='access'?MAGMA[6-i]:MAGMA[i]}"></i>${t}</span>`).join('')+
+  (S.l==='access'?`<span><i style="background:#222"></i>${isTTM()?'> 60 mnt / tak terjangkau':'tanpa nilai'}</span>`:'')+
+  `<span style="color:${MUT}">${{access:isTTM()?'menit berkendara ke desa ber-SPKLU terdekat (p50, Selasa 14.00)':'km garis lurus ke lokasi SPKLU terdekat (ukuran antara)',
+    far:'unit charger yang bisa dicapai dalam '+D.summary.th[1]+' '+unit(),villages30:'jumlah desa lain yang bisa dicapai ≤30 menit (replikasi peta supervisor)',
+    chargers:'unit charger yang berlokasi di dalam desa',dens:'penduduk Kontur 2023 ÷ luas desa'}[S.l]}</span>`;
+}
+
+/* ---------- peta ---------- */
+function buildMap(){
+ if(map)return;
+ map=L.map('ttMap',{preferCanvas:true}).setView([-6.6,107.3],8);
+ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',maxZoom:18}).addTo(map);
+ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{pane:'overlayPane',maxZoom:18}).addTo(map);
+ layer=L.geoJSON(GJ,{style:styleOf,onEachFeature:(f,ly)=>{ly.on('click',()=>{const r=VI.get(f.properties.id);if(!r)return;const nm=D.names[r.id]||['','',''];
+  ly.bindPopup(`<b>${esc(nm[0])}</b><br>Kec. ${esc(nm[1])}, ${esc(nm[2])}<br><span style="color:${MUT}">kode ${r.id}</span><hr style="margin:5px 0;border:none;border-top:1px solid #eee">
+   ${isTTM()?'Waktu ke desa ber-SPKLU terdekat':'Jarak ke SPKLU terdekat'}: <b>${r.access==null?(isTTM()?'> 60 mnt':'—'):f1(r.access)+' '+unit()}</b><br>
+   Charger terjangkau ≤${D.summary.th[0]} ${unit()}: <b>${fmt(r.near)}</b> · ≤${D.summary.th[1]} ${unit()}: <b>${fmt(r.far)}</b><br>
+   ${isTTM()?'Desa terjangkau ≤30 mnt: <b>'+fmt(r.villages30)+'</b><br>':''}Charger di desa ini: <b>${fmt(r.chargers)}</b><br>Penduduk (Kontur 2023): <b>${fmt(r.pop)}</b> · ${fmt(r.pop/Math.max(r.area||1,.01))} jiwa/km²`).openPopup();});}}).addTo(map);
+ sitesLayer=L.layerGroup().addTo(map);
+ fetch('ttm/input/spklu_sites.csv').then(r=>r.text()).then(t=>{const rows=t.trim().split('\n').slice(1);rows.forEach(l=>{const c=l.match(/("[^"]*"|[^,]*)(,|$)/g).map(x=>x.replace(/,$/,'').replace(/^"|"$/g,''));
+  const lon=+c[2],lat=+c[3];if(!isFinite(lon)||!isFinite(lat))return;L.circleMarker([lat,lon],{radius:2.6,color:'#fff',weight:.6,fillColor:c[8]==='PLN'?GOLD:BLUE,fillOpacity:.95}).bindTooltip(`${esc(c[1])} · ${c[6]} kW · ${c[7]} charger · ${esc(c[8])}`).addTo(sitesLayer);});}).catch(()=>{});
+ $('ttSites').onchange=e=>{if(e.target.checked)sitesLayer.addTo(map);else map.removeLayer(sitesLayer);};
+}
+function styleOf(f){const r=VI.get(f.properties.id);const hide=S.kab!=='all'&&f.properties.k!==S.kab;
+ return {color:'#ffffff',weight:hide?0.1:0.25,opacity:hide?.25:.6,fillColor:r?colorOf(valueOf(r)):'#eee',fillOpacity:hide?.08:.88};}
+function restyle(){if(layer)layer.setStyle(styleOf);legend();$('ttMapTitle').textContent={access:isTTM()?'waktu tempuh ke desa ber-SPKLU terdekat':'jarak ke SPKLU terdekat (antara)',far:'charger terjangkau ≤'+D.summary.th[1]+' '+unit(),villages30:'desa terjangkau ≤30 menit',chargers:'charger di dalam desa',dens:'kepadatan penduduk'}[S.l];
+ if(S.kab!=='all'&&layer){const b=L.latLngBounds([]);layer.eachLayer(l=>{if(l.feature.properties.k===S.kab)b.extend(l.getBounds());});if(b.isValid())map.fitBounds(b,{padding:[10,10]});}}
+
+/* ---------- kartu & narasi ---------- */
+function head(){
+ const s=D.summary,T=isTTM();
+ $('ttMode').textContent=T?'MODE: WAKTU TEMPUH r5r':'MODE ANTARA: JARAK GARIS LURUS';$('ttMode').className='mode '+s.mode;
+ $('ttMeta').innerHTML=[[fmt(s.n_villages),'desa / kelurahan'],[jt(s.pop),'penduduk (Kontur 2023)'],[fmt(s.sites),'lokasi SPKLU'],[fmt(s.chargers),'unit charger'],[fmt(s.n_spklu_villages),'desa ber-SPKLU'],[T?fmt(s.rows):'—',T?'baris matriks r5r':'matriks r5r: belum dimuat']].map(x=>`<div><div class="n">${x[0]}</div><div class="t">${x[1]}</div></div>`).join('');
+ if(!T){$('ttWarn').style.display='';$('ttWarn').innerHTML=`<b>Matriks waktu tempuh belum tersedia di repositori.</b> Angka di halaman ini memakai <b>jarak garis lurus</b> desa → lokasi SPKLU terdekat
+  (ambang 5 dan 10 km) sebagai ukuran antara. Begitu <code>west_java_ttm_car.csv</code> (keluaran r5r supervisor) ditaruh di <code>ttm/input/</code> dan <code>python3 ttm/compute.py</code> dijalankan ulang,
+  seluruh halaman — peta, KPI, Gini, indeks konsentrasi, kuintil — beralih otomatis ke <b>menit berkendara</b> (ambang 15 dan 30 menit) tanpa mengubah kode. Jarak garis lurus
+  menilai akses terlalu baik di wilayah bergunung (Garut, Cianjur, Sukabumi selatan) dan terlalu buruk di koridor tol; bacalah pola, bukan angkanya.`;}
+ const U=unit(),[t1,t2]=s.th;
+ $('ttKpi').innerHTML=[
+  [pct(s.pop_within1/s.pop),`penduduk ≤ ${t1} ${U} dari SPKLU`,`${jt(s.pop_within1)} jiwa · ${fmt(s.vil_within1)} desa`],
+  [pct(s.pop_within2/s.pop),`penduduk ≤ ${t2} ${U}`,`${jt(s.pop_within2)} jiwa · ${fmt(s.vil_within2)} desa`],
+  [jt(s.pop_beyond),T?'penduduk > 60 menit / tak terjangkau':`penduduk > ${t2} km`,`${pct(s.pop_beyond/s.pop)} dari area studi`],
+  [f1(s.median_access_pop)+' '+U,'akses median (tertimbang penduduk)',`rata-rata ${f1(s.mean_access_pop)} ${U}`],
+  [f3(s.gini_far),`Gini charger terjangkau ≤${t2} ${U}`,'antar desa, bobot penduduk — kesetaraan'],
+  [f3(s.ci.density),'CI charger terjangkau ~ kepadatan','+ = terkonsentrasi di desa padat'],
+  [s.ci.expend!=null?f3(s.ci.expend):'—','CI charger terjangkau ~ pengeluaran','Jabar 27 kab/kota · + = pro-kaya'],
+  [f3(s.gini_kab_per100k),'Gini charger/100 rb antar kab/kota','36 kab/kota, bobot penduduk']
+ ].map(k=>`<div class="kpi"><div class="l">${k[1]}</div><div class="v">${k[0]}</div><div class="s">${k[2]}</div></div>`).join('');
+ $('ttSteps').innerHTML=[
+  `<b>Area studi</b> mengikuti <code>java_ttm_01.R</code>: provinsi Jakarta Raya, Jawa Barat, Banten; Cilegon, Kota Serang, Lebak, Pandeglang, Serang, Kepulauan Seribu dibuang. Poligon desa HDX-BPS 2020 (kode BPS 10 digit) — ${fmt(s.n_villages)} desa.`,
+  `<b>Titik asal</b> = satu titik yang dijamin di dalam tiap poligon desa (<code>st_point_on_surface</code> ↔ <code>representative_point</code>), bukan centroid.`,
+  `<b>Stasiun</b>: ${fmt(s.sites)} lokasi SPKLU master nasional (Juni 2026) jatuh di area studi lewat <i>point-in-polygon</i> → ${fmt(s.n_spklu_villages)} desa ber-SPKLU, ${fmt(s.chargers)} unit charger.`,
+  T?`<b>Waktu tempuh</b>: r5r (<code>travel_time_matrix</code>, mode CAR, keberangkatan Selasa 13 Mei 2025 14.00, maks 60 menit) atas ekstrak OSM Jawa Barat; ${fmt(s.rows)} pasangan asal–tujuan. Akses desa = waktu p50 ke desa ber-SPKLU terdekat; charger terjangkau = jumlah unit di desa-desa yang tercapai ≤15/≤30 menit.`
+   :`<b>Akses (antara)</b>: jarak lingkaran besar dari titik desa ke lokasi SPKLU terdekat; charger terjangkau = unit dalam radius 5/10 km. Akan diganti waktu tempuh r5r (15/30 menit) saat matriks dimuat.`,
+  `<b>Kebutuhan</b>: penduduk Kontur 2023 (H3 res 8, ~0,74 km²) dijatuhkan ke poligon desa → ${jt(s.pop)} jiwa. Semua pangsa, median, Gini, dan CI ditimbang penduduk desa, bukan jumlah desa.`,
+  `<b>Kesetaraan</b>: Gini antar desa atas charger terjangkau; Gini antar kab/kota atas charger per 100 rb. <b>Ekuitas</b>: indeks konsentrasi (Wagstaff; Erreygers untuk variabel pangsa 0–1) dengan desa diurut menurut kepadatan, dan menurut pengeluaran per kapita / IPM kab/kota induk (Jabar).`
+ ].map(t=>`<li>${t}</li>`).join('');
+ const m=s.metros,jb=m.find(x=>x.key==='jabodetabek'),lu=m.find(x=>x.key==='luar'),q=s.quintiles_expend;
+ $('ttRead').innerHTML=`<p><b>Kesetaraan</b> bertanya apakah akses sama rata. Jawabannya tidak: Gini charger terjangkau antar desa <b>${f3(s.gini_far)}</b>; ${pct(s.pop_within2/s.pop)} penduduk berada ≤${t2} ${U} dari SPKLU, tetapi ${jt(s.pop_beyond)} jiwa ${T?'tidak mencapai satu pun desa ber-SPKLU dalam 60 menit':'berjarak > '+t2+' km'}. Jabodetabek ${pct(jb.share2)} vs luar metropolitan ${pct(lu.share2)}; charger per 100 rb ${f2(jb.per100k)} vs ${f2(lu.per100k)} (${f1(jb.per100k/lu.per100k)}×).</p>
+ <p style="margin-top:7px"><b>Ekuitas</b> bertanya apakah ketaksetaraan itu mengikuti kebutuhan. CI charger terjangkau terhadap kepadatan <b>${f3(s.ci.density)}</b>: akses terkonsentrasi di desa padat — sebagian wajar, karena di sanalah orang tinggal. ${q?`Tetapi terhadap pengeluaran per kapita kab/kota (Jabar) CI juga <b>${f3(s.ci.expend)}</b> (IPM ${f3(s.ci.ipm)}): kuintil termiskin ${pct(q[0].share2)} penduduknya ≤${t2} ${U}, kuintil terkaya ${pct(q[4].share2)}; charger terjangkau rata-rata ${f1(q[4].far)} vs ${f1(q[0].far)} unit (${f1(q[4].far/Math.max(q[0].far,.1))}×).`:''} Inilah pemisahan yang diminta: <i>unequal</i> sudah pasti; pertanyaan disertasinya adalah seberapa jauh ia <i>inequitable</i> — dan jawaban itu berbeda antar kawasan metropolitan.</p>`;
+ if(!T){$('ttBtnV30').disabled=true;$('ttBtnV30').title='hanya tersedia pada mode waktu tempuh';$('ttBtnV30').style.opacity=.45;}
+}
+function charts(){
+ const s=D.summary,U=unit(),h=s.hist,labs=h.edges.slice(0,-1).map((e,i)=>e+'–'+h.edges[i+1]);
+ if(isTTM()){labs[labs.length-1]='55–60';}
+ $('ttHistLab').textContent=isTTM()?'menit ke desa ber-SPKLU terdekat':'km ke SPKLU terdekat (antara)';
+ mk('ttHist',{type:'bar',data:{labels:labs,datasets:[{label:'penduduk (jt)',data:h.pop.map(x=>x/1e6),backgroundColor:labs.map((_,i)=>MAGMA[Math.max(0,6-Math.floor(i*7/labs.length))]),borderRadius:4,yAxisID:'y'},
+  {label:'desa',data:h.villages,type:'line',borderColor:NAVY,backgroundColor:NAVY,pointRadius:3,yAxisID:'y1',tension:.3}]},
+  options:{plugins:{legend:{position:'bottom'}},scales:{y:{title:{display:true,text:'penduduk (juta)'},beginAtZero:true},y1:{position:'right',title:{display:true,text:'desa'},grid:{drawOnChartArea:false},beginAtZero:true},x:{title:{display:true,text:U}}}}});
+ const top=h.pop[0]/s.pop;
+ $('ttHistNote').innerHTML=`${pct(top)} penduduk berada di kelas pertama (≤${h.edges[1]} ${U}); ekor kanan adalah ${isTTM()?'desa yang hanya mencapai SPKLU setelah 45–60 menit':'desa pegunungan selatan dan pantai utara timur'} — populasinya kecil, tetapi inilah kelompok yang akan gagal di anak tangga pertama (<i>reachable</i>) tangga layanan proposal.`;
+ const lz=s.lorenz_far;
+ mk('ttLorenz',{type:'line',data:{datasets:[{label:'charger terjangkau ≤'+s.th[1]+' '+U+' (Gini '+f3(s.gini_far)+')',data:lz.map(p=>({x:p[0],y:p[1]})),borderColor:RED,backgroundColor:'rgba(214,68,60,.12)',fill:true,pointRadius:0,tension:.2},
+  {label:'charger di desa per kapita (Gini '+f3(s.gini_chargers_village)+')',data:s.lorenz_pop_vs_chargers.map(p=>({x:p[0],y:p[1]})),borderColor:BLUE,pointRadius:0,borderDash:[5,4],tension:.2},
+  {label:'kesetaraan sempurna',data:[{x:0,y:0},{x:1,y:1}],borderColor:MUT,pointRadius:0,borderDash:[2,3]}]},
+  options:{plugins:{legend:{position:'bottom'}},scales:{x:{type:'linear',min:0,max:1,title:{display:true,text:'kumulatif penduduk (diurut dari akses terburuk)'}},y:{min:0,max:1,title:{display:true,text:'kumulatif charger terjangkau'}}}}});
+ $('ttLorenzNote').innerHTML=`Garis merah: <b>akses</b> (charger yang bisa dicapai) — lebih merata daripada garis biru, <b>kepemilikan</b> (charger yang berlokasi di desa sendiri, Gini ${f3(s.gini_chargers_village)}), karena satu charger melayani banyak desa sekitarnya. Inilah alasan berpindah dari menghitung charger per wilayah ke menghitung jangkauan dari tiap desa.`;
+ const q=s.quintiles_expend;
+ if(q){mk('ttQuint',{type:'bar',data:{labels:q.map(x=>'Q'+x.q+(x.q===1?' termiskin':x.q===5?' terkaya':'')),datasets:[{label:'penduduk ≤'+s.th[1]+' '+U+' (%)',data:q.map(x=>100*x.share2),backgroundColor:NAVY,borderRadius:4,yAxisID:'y'},
+  {label:'penduduk ≤'+s.th[0]+' '+U+' (%)',data:q.map(x=>100*x.share1),backgroundColor:GOLD,borderRadius:4,yAxisID:'y'},
+  {label:'charger terjangkau rata-rata',data:q.map(x=>x.far),type:'line',borderColor:RED,backgroundColor:RED,yAxisID:'y1',tension:.3}]},
+  options:{plugins:{legend:{position:'bottom'}},scales:{y:{min:0,max:100,title:{display:true,text:'% penduduk'}},y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'unit charger'},beginAtZero:true}}}});
+  $('ttQuintNote').innerHTML=`Penduduk Jawa Barat (${jt(s.ci.n_jabar_pop)} jiwa) dibagi lima kuintil menurut pengeluaran per kapita kab/kota induk (BPS 2024). Gradien dari Q1 ke Q5 adalah <b>ekuitas vertikal</b>; CI Erreygers pangsa ≤${s.th[1]} ${U} ~ pengeluaran = <b>${f3(s.ci.expend_share2)}</b>. Catatan: variabel peringkat masih tingkat kab/kota — Meta RWI atau PODES akan menurunkannya ke desa.`;}
+ else{$('ttQuintNote').textContent='Data sosial-ekonomi kab/kota belum tersedia.';}
+}
+function metroTable(){
+ const s=D.summary,U=unit();
+ $('ttMetro').innerHTML=`<table><thead><tr><th>Kawasan</th><th class="n">Kab/kota</th><th class="n">Penduduk</th><th class="n">Charger</th><th class="n">per 100 rb</th><th class="n">≤${s.th[0]} ${U}</th><th class="n">≤${s.th[1]} ${U}</th><th class="n">Median</th><th class="n">Charger terjangkau</th><th class="n">Gini</th></tr></thead><tbody>`+
+  s.metros.map(m=>`<tr><td><b>${esc(m.label)}</b></td><td class="n">${m.n_kab}</td><td class="n">${jt(m.pop)}</td><td class="n">${fmt(m.chargers)}</td><td class="n">${f2(m.per100k)}</td><td class="n"><span class="bar"><i style="width:${100*m.share1}%;background:${GOLD}"></i></span>${pct(m.share1)}</td><td class="n"><span class="bar"><i style="width:${100*m.share2}%;background:${NAVY}"></i></span>${pct(m.share2)}</td><td class="n">${f1(m.median)} ${U}</td><td class="n">${f1(m.far_mean)}</td><td class="n">${f3(m.gini_far)}</td></tr>`).join('')+'</tbody></table>';
+}
+function table(){
+ const s=D.summary,U=unit();
+ const cols=[['name','Kab/kota'],['prov','Prov.'],['n','Desa'],['pop','Penduduk'],['sites','Lokasi'],['chargers','Charger'],['per100k','per 100 rb'],['share1','≤'+s.th[0]+' '+U],['share2','≤'+s.th[1]+' '+U],['median','Median'],['far_mean','Charger terjangkau'],['gini_far','Gini'],['expend','Pengeluaran/kap'],['ipm','IPM'],['p0','P0 %']];
+ const rows=[...D.kabs].sort((a,b)=>{const x=a[sortK],y=b[sortK];if(x==null)return 1;if(y==null)return -1;return (typeof x==='string'?x.localeCompare(y):x-y)*sortD;});
+ $('ttTable').innerHTML=`<table><thead><tr>${cols.map(c=>`<th data-k="${c[0]}" style="cursor:pointer${['name','prov'].includes(c[0])?'':';text-align:right'}">${c[1]}${sortK===c[0]?(sortD<0?' ▼':' ▲'):''}</th>`).join('')}</tr></thead><tbody>`+
+  rows.map(r=>`<tr data-k="${r.code}" style="cursor:pointer"><td><b>${esc(r.name)}</b> <span style="color:${MUT};font-size:10px">${r.metro==='luar'?'':esc(s.metros.find(m=>m.key===r.metro).label)}</span></td><td>${esc(r.prov.replace('Jawa Barat','Jabar').replace('DKI Jakarta','DKI'))}</td><td class="n">${fmt(r.n)}</td><td class="n">${jt(r.pop)}</td><td class="n">${fmt(r.sites)}</td><td class="n">${fmt(r.chargers)}</td><td class="n">${f2(r.per100k)}</td>
+   <td class="n"><span class="bar"><i style="width:${100*r.share1}%;background:${GOLD}"></i></span>${pct(r.share1)}</td><td class="n"><span class="bar"><i style="width:${100*r.share2}%;background:${NAVY}"></i></span>${pct(r.share2)}</td><td class="n">${f1(r.median)}</td><td class="n">${f1(r.far_mean)}</td><td class="n">${f3(r.gini_far)}</td><td class="n">${r.expend!=null?fmt(r.expend):'—'}</td><td class="n">${r.ipm!=null?f1(r.ipm):'—'}</td><td class="n">${r.p0!=null?f1(r.p0):'—'}</td></tr>`).join('')+'</tbody></table>';
+ $('ttTable').querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortK===k)sortD*=-1;else{sortK=k;sortD=['name','prov'].includes(k)?1:-1;}table();});
+ $('ttTable').querySelectorAll('tbody tr').forEach(tr=>tr.onclick=()=>{S.kab=tr.dataset.k;$('ttKab').value=S.kab;restyle();$('ttMap').scrollIntoView({behavior:'smooth',block:'center'});});
+}
+function next(){
+ const T=isTTM();
+ $('ttNext').innerHTML=[
+  ['done','Pilot pipeline Jabar–Jakarta–Tangerang','Rantai koordinat → desa → akses → kebutuhan → Gini/CI berjalan ujung ke ujung (halaman ini).'],
+  [T?'done':'wait','Matriks waktu tempuh r5r dimuat','Mengganti jarak garis lurus dengan menit berkendara (p50) dan ambang 15/30 menit; menghidupkan lapisan "desa terjangkau ≤30 mnt" yang mereplikasi peta supervisor.'],
+  ['todo','Replikasi ke kawasan metropolitan nasional','Ekstrak OSM per kawasan (Geofabrik) + GADM level 4 + master SPKLU nasional → satu tabel akses per desa untuk Jabodetabek, Bandung Raya, Gerbangkertosusila, Mebidangro, Kedungsepur, Mamminasata, Sarbagita, Palembang, Yogyakarta, Cirebon.'],
+  ['todo','Perbandingan (in)equality antar-metropolitan','Gini akses & kurva Lorenz per kawasan; Theil dalam-vs-antar kawasan; peringkat kawasan menurut pangsa penduduk ≤15/30 menit.'],
+  ['todo','Perbandingan (in)equity antar-metropolitan','CI akses terhadap pengeluaran/IPM/RWI per kawasan; kuintil termiskin vs terkaya di tiap kawasan; uji apakah gradien pro-kaya sama kuatnya di semua kota.'],
+  ['todo','Dari jangkauan ke kecukupan (tangga layanan)','Anak tangga 1 (reachable) = ≤15/30 menit; anak tangga 2 (sufficient power) = E2SFCA kW per rumah tangga tanpa charging rumah dalam catchment waktu tempuh; anak tangga 3–5 dari transaksi dan ulasan.'],
+  ['todo','Penyebut kebutuhan N2','Mengganti total penduduk dengan rumah tangga yang bergantung pada charging publik (PLN ≥2.200 VA rumah tapak / PODES) agar pangsa terjangkau tidak menilai lebih baik kawasan padat apartemen.'],
+  ['todo','Kurva spesifikasi','Ambang (15/30/45 menit) × titik asal (desa/heksagon) × penyebut (N1/N2) × perlakuan charger koridor tol → apakah peringkat kawasan stabil.']
+ ].map(x=>`<div class="it"><span class="st ${x[0]}">${{done:'SELESAI',wait:'MENUNGGU DATA',todo:'BERIKUTNYA'}[x[0]]}</span><b>${x[1]}</b>${x[2]}</div>`).join('');
+}
+
+/* ---------- init ---------- */
+window.initTTM=async function(){
+ if(built){if(map)setTimeout(()=>map.invalidateSize(),50);return;}built=true;
+ try{
+  if(typeof L==='undefined'){await loadScript('https://unpkg.com/leaflet@1.9.4/dist/leaflet.js');}
+  const [d,g]=await Promise.all([fetch('ttm/ttm.json').then(r=>{if(!r.ok)throw new Error('ttm.json');return r.json();}),fetch('ttm/input/villages_simplified.geojson').then(r=>{if(!r.ok)throw new Error('geojson');return r.json();})]);
+  D=d;GJ=g;
+  const vc=D.village_cols;D.villages.forEach(a=>{const r={};vc.forEach((c,i)=>r[c]=a[i]);VI.set(r.id,r);});
+  $('ttLoading').style.display='none';
+  const kabs=[...D.kabs].sort((a,b)=>a.name.localeCompare(b.name));$('ttKab').innerHTML='<option value="all">Semua (36 kab/kota)</option>'+kabs.map(k=>`<option value="${k.code}">${esc(k.name)}</option>`).join('');
+  $('ttKab').onchange=e=>{S.kab=e.target.value;restyle();if(S.kab==='all')map.setView([-6.6,107.3],8);};
+  $('ttLayerSeg').querySelectorAll('button').forEach(b=>b.onclick=()=>{if(b.disabled)return;S.l=b.dataset.l;$('ttLayerSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));restyle();});
+  head();buildMap();legend();charts();metroTable();table();next();
+  setTimeout(()=>map.invalidateSize(),80);
+ }catch(e){$('ttLoading').innerHTML='Gagal memuat: '+esc(e.message)+'. Jalankan <code>python3 ttm/compute.py</code> lalu muat ulang.';console.error(e);}
+};
+/* tautan langsung #tab=ttm: gotoTab() sudah berjalan sebelum skrip ini terdefinisi, jadi panggil sendiri bila halaman sudah aktif */
+if(document.querySelector('#p-ttm.active')||(location.hash.match(/tab=([a-z0-9_-]+)/)||[])[1]==='ttm')setTimeout(window.initTTM,60);
+})();
+/* TTM:END */
 </script>
 </body></html>

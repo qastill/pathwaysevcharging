@@ -1,0 +1,123 @@
+<div class="page" id="p-ttm">
+<style>
+#p-ttm .tthead{background:linear-gradient(135deg,#12233f,#1d3a68);color:#fff;border-radius:16px;padding:22px 26px;margin-bottom:14px;position:relative;overflow:hidden}
+#p-ttm .tthead:before{content:"";position:absolute;right:-60px;top:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(212,175,55,.18),transparent 70%);border-radius:50%}
+#p-ttm .tthead h2{font-size:21px;color:#fff;margin:4px 0 6px}#p-ttm .tthead h2 b{color:var(--gold)}
+#p-ttm .tthead p{font-size:12.5px;color:#b3c0d8;line-height:1.7;max-width:980px}
+#p-ttm .tthead p b{color:#e9d9a0;font-weight:600}#p-ttm .tthead a{color:#e9d9a0}
+#p-ttm .ttmeta{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+#p-ttm .ttmeta .n{font-family:Fraunces;font-size:20px;font-weight:700;color:var(--gold);line-height:1}
+#p-ttm .ttmeta .t{font-size:10.5px;color:#aebbd6;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+#p-ttm .mode{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:700;margin-left:8px;vertical-align:middle}
+#p-ttm .mode.jarak{background:#fdf2f0;color:#9a3f36;border:1px solid #f2d5d1}
+#p-ttm .mode.ttm{background:#eaf7ee;color:#1f7a44;border:1px solid #bfe3cb}
+#p-ttm .ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+#p-ttm .ctl label{font-size:11.5px;color:var(--navy);font-weight:600}
+#p-ttm select{padding:7px 10px;border-radius:8px;border:1px solid var(--line);font-size:12px;background:#fff;font-family:Outfit;min-width:170px}
+#p-ttm .seg{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+#p-ttm .seg button{padding:6px 11px;border:none;background:#f7f9fc;cursor:pointer;font-size:11.5px;font-weight:600;color:#33405a;font-family:Outfit;border-right:1px solid var(--line)}
+#p-ttm .seg button:last-child{border-right:none}
+#p-ttm .seg button.active{background:var(--navy);color:var(--gold)}
+#p-ttm #ttMap{height:620px;border-radius:12px;border:1px solid var(--line);z-index:1}
+#p-ttm #ttMap canvas{max-height:none}
+#p-ttm .legend{font-size:11px;color:#33405a;display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;align-items:center}
+#p-ttm .legend i{width:14px;height:12px;display:inline-block;border-radius:3px;margin-right:4px;vertical-align:-2px}
+#p-ttm td.n{text-align:right;font-variant-numeric:tabular-nums}
+#p-ttm .bar{display:inline-block;height:8px;border-radius:4px;background:#e6e9f0;width:70px;vertical-align:middle;margin-right:5px;overflow:hidden}
+#p-ttm .bar i{display:block;height:100%}
+#p-ttm .note{font-size:11.5px;color:#4a5670;line-height:1.75}
+#p-ttm .note b{color:var(--navy)}
+#p-ttm .note code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:10.5px}
+#p-ttm .grid31{display:grid;grid-template-columns:1.35fr .65fr;gap:15px;margin-bottom:15px}
+#p-ttm .steps{counter-reset:s;list-style:none;padding:0;margin:0}
+#p-ttm .steps li{position:relative;padding:6px 0 6px 34px;font-size:11.8px;color:#33405a;line-height:1.6;border-bottom:1px dashed #e9ecf2}
+#p-ttm .steps li:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:7px;width:22px;height:22px;border-radius:50%;background:var(--navy);color:var(--gold);font-weight:700;font-size:11px;text-align:center;line-height:22px}
+#p-ttm .steps li b{color:var(--navy)}
+#p-ttm .next{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+#p-ttm .next .it{border:1px solid var(--line);border-radius:11px;padding:11px 13px;background:#fcfdff;font-size:11.5px;line-height:1.6;color:#33405a}
+#p-ttm .next .it b{display:block;color:var(--navy);font-size:12px;margin-bottom:3px}
+#p-ttm .next .it .st{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 7px;border-radius:10px;margin-bottom:5px}
+#p-ttm .st.done{background:#eaf7ee;color:#1f7a44}#p-ttm .st.wait{background:#fff6e0;color:#8a6410}#p-ttm .st.todo{background:#eef1f6;color:#4a5670}
+#p-ttm .ok{color:#2e9e5b;font-weight:700}#p-ttm .no{color:#d6443c;font-weight:700}#p-ttm .part{color:#e0a52b;font-weight:700}
+@media(max-width:980px){#p-ttm .grid31{grid-template-columns:1fr}#p-ttm #ttMap{height:460px}}
+</style>
+
+<div class="tthead">
+ <span class="tag">Akses waktu tempuh · pilot Jawa Barat–Jakarta–Banten · fondasi (in)equality / (in)equity antar-kota</span>
+ <h2>⏱️ Akses Waktu Tempuh Desa → SPKLU — <b>siapa yang bisa sampai, dan siapa yang tidak</b><span id="ttMode" class="mode"></span></h2>
+ <p>Menindaklanjuti masukan Dr Alyas Widita (6 Okt 2026): perbandingan ekuitas akses SPKLU dibangun dari <b>koordinat eksak
+ stasiun</b> dan <b>waktu tempuh jaringan jalan</b> antar-desa (matriks r5r/R5 <code>west_java_ttm_car.csv</code>, folder supervisi
+ QH), bukan dari jumlah charger per provinsi. Halaman ini menyajikan hasilnya untuk <b>6.669 desa/kelurahan</b> di Jawa Barat, DKI
+ Jakarta, dan Banten daratan (Tangerang) — area studi skrip <code>java_ttm_01.R</code> — dengan <b>kebutuhan</b> diukur dari penduduk
+ Kontur 2023 per desa, lalu dibaca lewat dua kacamata: <b>kesetaraan</b> (apakah akses merata antar desa dan antar kab/kota) dan
+ <b>ekuitas</b> (apakah akses mengikuti kebutuhan, atau justru mengikuti kemampuan ekonomi). Semua angka dihitung ulang oleh
+ <code>ttm/compute.py</code>; tidak ada angka yang diketik tangan.</p>
+ <div class="ttmeta" id="ttMeta"></div>
+</div>
+
+<div id="ttWarn" class="insight" style="display:none"></div>
+<div id="ttLoading" class="insight">Memuat peta desa (≈4 MB poligon) dan hasil hitung…</div>
+
+<div class="kpis" id="ttKpi"></div>
+
+<div class="grid31">
+ <div class="card">
+  <h3>🗺️ Peta desa — <span id="ttMapTitle">akses ke SPKLU terdekat</span></h3>
+  <div class="ctl">
+   <label>Lapisan</label>
+   <div class="seg" id="ttLayerSeg">
+    <button data-l="access" class="active">Akses terdekat</button>
+    <button data-l="far" id="ttBtnFar">Charger terjangkau</button>
+    <button data-l="villages30" id="ttBtnV30">Desa terjangkau ≤30 mnt</button>
+    <button data-l="chargers">Charger di desa</button>
+    <button data-l="dens">Kepadatan penduduk</button>
+   </div>
+   <label>Kab/kota</label><select id="ttKab"><option value="all">Semua (36 kab/kota)</option></select>
+   <label><input type="checkbox" id="ttSites" checked> titik SPKLU</label>
+  </div>
+  <div id="ttMap"></div>
+  <div class="legend" id="ttLegend"></div>
+ </div>
+ <div>
+  <div class="card" style="margin-bottom:15px">
+   <h3>📐 Bagaimana angka ini dihitung</h3>
+   <ol class="steps" id="ttSteps"></ol>
+  </div>
+  <div class="card">
+   <h3>🧭 Kesetaraan vs ekuitas — <span>satu bacaan</span></h3>
+   <div class="note" id="ttRead"></div>
+  </div>
+ </div>
+</div>
+
+<div class="grid2">
+ <div class="card"><h3>📊 Sebaran penduduk menurut <span id="ttHistLab">akses ke SPKLU terdekat</span></h3><canvas id="ttHist" height="230"></canvas>
+  <div class="note" id="ttHistNote" style="margin-top:8px"></div></div>
+ <div class="card"><h3>📈 Kurva Lorenz — <span>charger terjangkau per penduduk</span></h3><canvas id="ttLorenz" height="230"></canvas>
+  <div class="note" id="ttLorenzNote" style="margin-top:8px"></div></div>
+</div>
+
+<div class="grid2">
+ <div class="card"><h3>🏙️ Metropolitan vs luar metropolitan</h3><div class="tablewrap" id="ttMetro"></div>
+  <div class="note" style="margin-top:8px">Delineasi kerja: <b>Jabodetabek</b> (5 kota Jakarta, Bogor, Kota Bogor, Depok, Bekasi, Kota Bekasi, Tangerang, Kota Tangerang, Tangerang Selatan),
+  <b>Bandung Raya</b> (Kota Bandung, Bandung, Bandung Barat, Cimahi, Sumedang), <b>Cirebon Raya</b> (Kota Cirebon, Cirebon, Kuningan, Majalengka, Indramayu). Inilah
+  unit banding yang akan dipakai secara nasional: antar-kawasan metropolitan, bukan antar-provinsi.</div></div>
+ <div class="card"><h3>⚖️ Ekuitas vertikal — <span>kuintil pengeluaran per kapita (Jawa Barat)</span></h3><canvas id="ttQuint" height="200"></canvas>
+  <div class="note" id="ttQuintNote" style="margin-top:8px"></div></div>
+</div>
+
+<div class="card" style="margin-bottom:15px">
+ <h3>📋 Kab/kota — <span>akses, kebutuhan, dan sosial-ekonomi</span> <small style="font-weight:400;color:var(--mut)">klik judul kolom untuk mengurutkan</small></h3>
+ <div class="tablewrap" id="ttTable"></div>
+ <div class="note" style="margin-top:8px">IPM dan pengeluaran per kapita (BPS 2024) hanya tersedia untuk 27 kab/kota Jawa Barat di repositori ini; Jakarta dan Tangerang
+ ditampilkan tanpa kolom itu dan tidak ikut dalam indeks konsentrasi berbasis pengeluaran. Charger = unit charger (bukan konektor) dari master SPKLU nasional Juni 2026.</div>
+</div>
+
+<div class="card">
+ <h3>🧪 Arah output riset dari fondasi ini</h3>
+ <div class="next" id="ttNext"></div>
+ <div class="note" style="margin-top:12px">Pilot ini menjawab pertanyaan metodologis, bukan pertanyaan substantif: apakah rantai <i>koordinat stasiun → poligon desa →
+ matriks waktu tempuh → kebutuhan penduduk → ukuran kesetaraan/ekuitas</i> bisa berjalan ujung ke ujung dan hasilnya terbaca. Begitu
+ ya, pipeline yang sama dijalankan untuk setiap kawasan metropolitan nasional dengan ekstrak OSM dan GADM level 4 masing-masing.</div>
+</div>
+</div>
