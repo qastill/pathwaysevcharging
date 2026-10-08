@@ -11,6 +11,7 @@ Masukan
 Keluaran (ttm/input/)
   villages.csv     id, nama desa/kec/kab/prov, lon/lat titik di dalam poligon, luas km2
   spklu_village.csv  SPKLU per desa (jumlah lokasi, charger, kW, status, kategori PLN/nonPLN)
+  spklu_sites.csv    daftar lokasi SPKLU di area studi dengan koordinat dan kode desa
   villages_simplified.geojson  poligon disederhanakan (toleransi ~60 m) untuk peta dashboard
 
 Jalankan dari akar repo:
@@ -72,6 +73,7 @@ def kw(s):
     return float(m.group(0).replace(",", ".")) if m else 0.0
 
 per = {}
+sites = []
 n_in, n_total = 0, 0
 for r in rows[1:]:
     try:
@@ -85,6 +87,9 @@ for r in rows[1:]:
         continue
     n_in += 1
     v = villages[hits[0]]
+    sites.append(dict(spklu_id=r[ix["ID SPKLU"]], name=r[ix["Nama SPKLU"]], lon=lon, lat=lat, village_id=v["id"],
+                      regency_code=v["regency_code"], kw=kw(r[ix["Kapasitas (kW)"]]),
+                      chargers=int(r[ix["Jumlah Charger"]] or 0), kategori=r[ix["Kategori"]], status=r[ix["Status"]]))
     d = per.setdefault(v["id"], dict(id=v["id"], sites=0, chargers=0, connectors=0, kw=0.0,
                                      pln=0, nonpln=0, available=0, offline=0, maxkw=0.0))
     d["sites"] += 1
@@ -104,6 +109,8 @@ with open(os.path.join(OUT, "villages.csv"), "w", newline="") as f:
 with open(os.path.join(OUT, "spklu_village.csv"), "w", newline="") as f:
     w = csv.DictWriter(f, fieldnames=list(next(iter(per.values())).keys())); w.writeheader()
     w.writerows(sorted(per.values(), key=lambda d: d["id"]))
+with open(os.path.join(OUT, "spklu_sites.csv"), "w", newline="") as f:
+    w = csv.DictWriter(f, fieldnames=list(sites[0].keys())); w.writeheader(); w.writerows(sites)
 
 feats = []
 for v, g in zip(villages, geoms):

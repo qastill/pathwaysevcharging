@@ -37,6 +37,26 @@ Sumbernya vault Obsidian `Pathways-Vault` — `00 Project Brief`, `00 Proposal`,
 dashboard. Blok kode tab ada di `index.html` antara penanda `<!-- PHD:BEGIN -->` dan `<!-- PHD:END -->`; id tabnya
 terdaftar di `TABS` dan grup navnya di `NAVGROUPS`.
 
+## ⏱️ Akses Waktu Tempuh — desa → SPKLU (pilot Jabar–Jakarta–Tangerang)
+
+Tab **⏱️ Akses Waktu Tempuh** (grup *PhD Monash*) menindaklanjuti masukan supervisor (Alyas Widita, 6 Okt 2026): ekuitas akses
+SPKLU dibangun dari **koordinat eksak stasiun** dan **waktu tempuh jaringan jalan antar-desa** (matriks r5r
+`west_java_ttm_car.csv`, folder supervisi QH, skrip `java_ttm_01.R`), bukan dari jumlah charger per provinsi. Pipeline di
+[`ttm/`](ttm/): 6.669 desa/kelurahan (HDX-BPS 2020, area studi mengikuti skrip r5r), 1.556 lokasi SPKLU master nasional
+dijatuhkan ke 634 desa, kebutuhan = penduduk Kontur 2023 per desa; keluaran Gini antar desa/kab/kota (kesetaraan) dan indeks
+konsentrasi terhadap kepadatan, pengeluaran per kapita, IPM (ekuitas), kuintil, metropolitan vs luar metropolitan.
+
+Dua mode otomatis di `ttm/compute.py`: **waktu tempuh** bila `ttm/input/west_java_ttm_car.csv[.gz]` ada (ambang 15/30 menit,
+lapisan "desa terjangkau ≤30 mnt" mereplikasi `WestJava_Access30_Car.png`); bila belum, **jarak garis lurus** (5/10 km) sebagai
+ukuran antara yang diberi label di halaman.
+
+```bash
+pip install numpy shapely h3 openpyxl
+python3 ttm/prepare_villages.py --villages /path/JfrAziz-indonesia-district   # -> ttm/input/
+python3 ttm/compute.py --kontur /path/kontur_population_ID_20231101.gpkg      # -> ttm/ttm.json (+ cache village_pop.csv)
+python3 ttm/inject.py                                                          # pasang tab (idempoten)
+```
+
 ## 🗺️ Peta Ekuitas — padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia
 
 [EV Equity Roadmap](https://evmap.climateplans.org/) mewarnai piksel 100 m di California dengan dua lapisan
