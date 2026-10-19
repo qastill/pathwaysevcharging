@@ -109,80 +109,116 @@ a{color:var(--s1)}
 .stairs .v{font-family:var(--display);font-weight:800;font-size:18px;color:var(--fg);font-variant-numeric:tabular-nums;margin-top:6px}
 .stairs .lab{margin-top:2px}
 dl.gloss{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-size:14px;margin:8px 0 0;max-width:90ch}dl.gloss dt{font-weight:600}dl.gloss dd{margin:0;color:var(--fg2)}
+.chapters{display:flex;flex-wrap:wrap;gap:6px;margin:22px 0 6px;position:sticky;top:54px;z-index:4;background:var(--bg);padding:8px 0;border-bottom:1px solid var(--line)}
+.chapters button{font:inherit;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--fg2);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.chapters button .k{font-family:var(--display);font-size:11px;color:var(--fg3)}
+.chapters button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}.chapters button[aria-pressed="true"] .k{color:var(--bg);opacity:.7}
+.chdesc{font-size:14px;color:var(--fg2);margin:8px 0 0;min-height:22px}
+section.ch{display:none;animation:fade .18s ease}section.ch.active{display:block}
+section.ch h2{margin-top:22px}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:28px;padding-top:14px;border-top:1px solid var(--line)}
 .only-nat,.only-jab{display:none}body[data-scope="national"] .only-nat{display:revert}body[data-scope="jabar"] .only-jab{display:revert}
 .hidden{display:none !important}
 @media (prefers-reduced-motion:no-preference){path.u{transition:fill .15s}}
 </style></head><body data-scope="national">
 <div class="topbar"><div class="wrap"><div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="eyebrow">Charging equity story</span><div class="seg" role="group" aria-label="Scope"><button type="button" data-s="national" aria-pressed="true">🇮🇩 Indonesia · 508 districts</button><button type="button" data-s="jabar" aria-pressed="false">West Java · 629 sub-districts</button></div></div>
-<div class="nav"><a href="#s0">100 residents</a><a href="#sg">Gap</a><a href="#s00">Evidence</a><a href="#s1">Map</a><a href="#s2">Unequal</a><a href="#s3">Inequitable</a><a href="#s4">Fifths</a><a href="#s5">Scatter</a><a href="#s6">Inside</a><a href="#s7">Sources</a><a href="#s8">Robust</a><a href="#s9">Equalise</a><a href="#s10">Table</a><a href="#s11">Method</a></div></div></div>
+<span class="note" style="margin:0">One chapter at a time — pick a tab, or use Previous / Next.</span></div></div>
 <div class="wrap">
 <div class="hero"><div class="eyebrow" id="eyebrow"></div><h1 id="h1"></h1><p class="lede" id="lede"></p>
-<div class="big" id="big"></div>
-<div class="story" id="story"></div></div>
+<div class="big" id="big"></div></div>
 
-<h2 id="s0"><span class="n">00</span>If there were 100 residents…</h2>
+<nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+<div class="chdesc" id="chdesc"></div>
+
+<section class="ch" data-ch="overview">
+<div class="story" id="story"></div>
+<h2><span class="n">00</span>If there were 100 residents…</h2>
 <p class="note" id="w-note"></p>
 <div class="panel"><div class="waffles" id="waffles"></div></div>
+</section>
 
-<h2><span class="n">00b</span>The quintile staircase</h2>
-<p class="note">Each icon ≈ <span id="stair-unit"></span>. Residents are split into five equal groups by spending per person in their district (BPS 2024).</p>
-<div class="panel"><div class="stairs" id="stairs"></div></div>
-
-<h2 id="sg"><span class="n">00c</span><span id="gap-title"></span></h2>
+<section class="ch" data-ch="gap">
+<h2><span class="n">01</span><span id="gap-title"></span></h2>
 <p class="note" id="gap-note"></p>
 <div class="panel"><div class="controls"><label>Show <select id="gap-metric"></select></label><span class="note" id="gap-sum"></span></div><div id="lolli"></div><div class="legend" id="lolli-leg"></div></div>
 <div class="two"><div class="panel"><h3 id="slope-title"></h3><div id="slope"></div><p class="note">Left: share of residents. Right: share of chargers (square-root scale). Red lines climb: the group holds more than its population share; blue lines fall: less. Five largest over-served and six most populous under-served shown.</p></div>
 <div class="panel"><h3>Reach by group <span class="sig" id="reach-sub"></span></h3><div id="reach"></div><p class="note" id="reach-note"></p></div></div>
+</section>
 
-<h2 id="s00"><span class="n">01</span>Key evidence</h2>
-<p class="note">Each card is one finding computed from the data below, with what it implies for the thesis. Red = equity concern, amber = mixed, green = reassuring. Numbers are population-weighted unless stated.</p>
+<section class="ch" data-ch="evidence">
+<h2><span class="n">02</span>Key evidence</h2>
+<p class="note">Each card is one finding computed from the data, with what it implies for the thesis. Red = equity concern, amber = mixed, green = reassuring. Numbers are population-weighted unless stated.</p>
 <div class="ev" id="evidence"></div>
+</section>
 
-<h2 id="s1"><span class="n">02</span>Where the supply is</h2>
+<section class="ch" data-ch="map">
+<h2><span class="n">03</span>Where the supply is</h2>
 <p class="note">Colour classes are population-weighted quintiles of the selected layer; hatched = zero. Hover or tap for numbers.</p>
 <div class="panel"><div class="controls"><label>Layer <select id="layer"></select></label><span class="note" id="map-note"></span></div><div id="map"></div><div class="mapleg" id="mapleg"></div></div>
 <div class="lists" id="lists"></div>
+</section>
 
-<h2 id="s2"><span class="n">03</span>How unequal is the supply?</h2>
+<section class="ch" data-ch="unequal">
+<h2><span class="n">04</span>How unequal is the supply?</h2>
 <p class="note">Equality asks whether supply is spread in proportion to people, without asking who the people are. Lorenz curves line units up from the lowest to the highest chargers per resident; the Gini is twice the area between the curve and the diagonal.</p>
 <div class="two"><div class="panel"><h3>Lorenz curves — supply per resident vs population</h3><div id="lorenz"></div><div class="legend"><span><i style="background:var(--s1)"></i>Chargers</span><span><i style="background:var(--s2)"></i>Capacity (kW)</span><span><i style="background:var(--fg3);height:1px"></i>Perfect equality</span></div></div>
 <div class="panel"><h3>Concentration of supply</h3><div class="scroll" style="max-height:none" id="market"></div><p class="note" id="market-note"></p></div></div>
+</section>
 
-<h2 id="s3"><span class="n">04</span>Is it inequitable — does supply follow advantage?</h2>
+<section class="ch" data-ch="inequitable">
+<h2><span class="n">05</span>Is it inequitable — does supply follow advantage?</h2>
 <p class="note" id="forest-note"></p>
 <div class="panel"><div id="forest"></div><div class="legend" id="forest-leg"></div><details><summary>Table of values</summary><div class="scroll" id="forest-table"></div></details></div>
 <div class="panel"><div class="controls"><label>Rank residents by <select id="cv-rank"></select></label><label>Supply <select id="cv-out"></select></label></div><div id="curve"></div><p class="note" id="curve-note"></p></div>
+</section>
 
-<h2 id="s4"><span class="n">05</span>Fifths of the population</h2>
-<p class="note">Residents are split into five groups of equal population by the ranking variable (Q1 = lowest). If supply were proportional to people, every bar would be the same height.</p>
+<section class="ch" data-ch="fifths">
+<h2><span class="n">06</span>Fifths of the population</h2>
+<p class="note">Residents are split into five groups of equal population by the ranking variable (Q1 = lowest). If supply were proportional to people, every bar would be the same height. Each staircase icon ≈ <span id="stair-unit"></span>.</p>
+<div class="panel"><h3>The quintile staircase — by spending per person</h3><div class="stairs" id="stairs"></div></div>
 <div class="panel"><div class="controls"><label>Rank by <select id="q-rank"></select></label></div><div class="three" id="quint"></div><p class="note" id="q-note"></p></div>
+</section>
 
-<h2 id="s5"><span class="n">06</span>Every unit at once</h2>
+<section class="ch" data-ch="scatter">
+<h2><span class="n">07</span>Every unit at once</h2>
 <p class="note">Each bubble is one unit (size = residents). Horizontal axis: the ranking variable. Vertical: chargers per 100,000 residents (square-root scale). Spearman's ρ measures the rank association.</p>
 <div class="panel"><div class="controls"><label>Horizontal axis <select id="sc-rank"></select></label><span id="sc-note" class="note"></span></div><div id="scatter"></div><div class="legend"><span><i class="dot" style="background:var(--s1)"></i>Regency (kabupaten)</span><span><i class="dot" style="background:var(--s2)"></i>City (kota)</span><span><i class="dot" style="background:var(--hatch)"></i>No charger</span></div></div>
+</section>
 
-<h2 id="s6"><span class="n">07</span><span id="within-title"></span></h2>
+<section class="ch" data-ch="inside">
+<h2><span class="n">08</span><span id="within-title"></span></h2>
 <p class="note" id="within-note"></p>
 <div class="panel"><div id="within"></div><details><summary>Table</summary><div class="scroll" id="within-table"></div></details></div>
+</section>
 
-<h2 id="s7"><span class="n">08</span>Where the inequality comes from</h2>
+<section class="ch" data-ch="sources">
+<h2><span class="n">09</span>Where the inequality comes from</h2>
 <p class="note">Theil's T of chargers per resident splits exactly into inequality <i>between</i> groups and <i>within</i> them.</p>
 <div class="panel"><div id="theil"></div></div><div id="groups"></div>
+</section>
 
-<h2 id="s8"><span class="n">09</span>Does the verdict survive subsetting?</h2>
+<section class="ch" data-ch="robust">
+<h2><span class="n">10</span>Does the verdict survive subsetting?</h2>
 <p class="note">The headline indices recomputed on subsets. If a sign flips, the finding depends on which units are in the frame.</p>
 <div class="panel"><div class="scroll" style="max-height:none" id="robust"></div></div>
+</section>
 
-<h2 id="s9"><span class="n">10</span>What it would take to equalise</h2>
+<section class="ch" data-ch="equalise">
+<h2><span class="n">11</span>What it would take to equalise</h2>
 <p class="note">Chargers to add so that every unit reaches today's average per 100,000 residents, holding existing chargers in place (water-filling). A yardstick, not a recommendation.</p>
 <div class="panel"><div class="big" id="deficit-kpi" style="margin-top:0"></div><div class="lists" id="deficit-list"></div></div>
+</section>
 
-<h2 id="s10"><span class="n">11</span><span id="pt-title"></span></h2>
+<section class="ch" data-ch="table">
+<h2><span class="n">12</span><span id="pt-title"></span></h2>
 <div class="panel"><div class="scroll" id="pt"></div><p class="note">Click a header to sort.</p></div>
+</section>
 
-<h2 id="s11"><span class="n">12</span>Method, sources and limits</h2>
+<section class="ch" data-ch="method">
+<h2><span class="n">13</span>Method, sources and limits</h2>
 <div class="panel" id="method"></div>
-<details><summary>Glossary</summary><dl class="gloss">
+<details open><summary>Glossary</summary><dl class="gloss">
 <dt>Concentration index (CI)</dt><dd>C = 2·cov<sub>w</sub>(supply per resident, population-weighted fractional rank) / mean; equivalent to 1 − 2∫L(p)dp on the concentration curve. Positive = supply concentrated among residents high on the ranking.</dd>
 <dt>Erreygers CI</dt><dd>Correction for bounded outcomes (a yes/no flag or a 0–100 % share): 8·cov<sub>w</sub>(y, R)/(max−min).</dd>
 <dt>95 % band</dt><dd>Percentile bootstrap over units (1,000 resamples). "Significant" = band excludes zero.</dd>
@@ -192,6 +228,9 @@ dl.gloss{display:grid;grid-template-columns:max-content 1fr;gap:4px 14px;font-si
 <dt>20:20, Palma</dt><dd>Share of chargers held by the best-served 20 % of residents over the worst-served 20 %; Palma = top 10 % over bottom 40 %.</dd>
 </dl></details>
 <p class="note" style="margin-top:20px">Companion pages: <a href="concentration_national_en.html">national evidence</a> · <a href="concentration_jabar_en.html">West Java evidence</a> · <a href="concentration_dashboard_en.html">interactive West Java explorer with scenarios</a> · <a href="../index.html#tab=ttm">travel-time access pilot</a>.</p>
+</section>
+
+<div class="pager"><button type="button" class="btn" id="prev">← Previous</button><span id="pager-pos" class="note"></span><button type="button" class="btn" id="next">Next →</button></div>
 </div>
 <div class="tip" id="tip" hidden></div>
 <script>
@@ -428,11 +467,19 @@ function ptable(){ const PTC = NAT ? [["parent","Province"],["n","Districts"],["
   $("pt").innerHTML = `<table><thead><tr>${PTC.map(c => `<th data-k="${c[0]}"${ptk===c[0]?` aria-sort="${ptd<0?"descending":"ascending"}"`:""}>${c[1]}${ptk===c[0]?(ptd<0?" ▾":" ▴"):""}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${PTC.map(c => { const v = r[c[0]]; return `<td>${typeof v === "number" ? (c[0]==="pop" ? fmt(v/1e6,2)+" M" : c[0]==="per100k" ? fmt(v,2) : c[0]==="ipm" ? fmt(v,1) : (["cov","within10","beyond25"].includes(c[0]) ? pct(v) : fmt(v))) : esc(v)}</td>`; }).join("")}</tr>`).join("")}</tbody></table>`;
   document.querySelectorAll("#pt th").forEach(th => th.addEventListener("click", () => { const k = th.dataset.k; if (ptk === k) ptd *= -1; else { ptk = k; ptd = k === "parent" ? 1 : -1; } ptable(); })); }
 
+// ---------- chapters (one at a time)
+const CH = [["overview","Overview","Big numbers, the four-step story and the 100-residents picture."],["gap","Gap","Every province / district ranked against the national value; who holds more than their share."],["evidence","Evidence","Ten computed findings with what each implies for the thesis."],["map","Map","Where the supply sits, with selectable layers and top / bottom lists."],["unequal","Unequal","Lorenz curves, Gini, HHI — how uneven supply is, regardless of who."],["inequitable","Inequitable","Concentration indices with bootstrap bands — does supply follow advantage?"],["fifths","Fifths","The population in five equal groups: the staircase and the quintile panels."],["scatter","Scatter","Every unit as a bubble: ranking variable vs chargers per resident."],["inside","Inside","The same index recomputed within each province / district."],["sources","Sources","Theil decomposition: between vs within groups, metros, Java, islands."],["robust","Robust","Does the headline survive subsetting?"],["equalise","Equalise","How many chargers it would take to lift every unit to today's average."],["table","Table","Provinces / districts side by side, sortable."],["method","Method","Data, estimators, limits and glossary."]];
+let CUR_CH = "overview";
+function chapters(){ const nav = $("chapters"); if (!nav.children.length){ nav.innerHTML = CH.map((c,i) => `<button type="button" data-ch="${c[0]}" aria-pressed="false"><span class="k">${String(i).padStart(2,"0")}</span>${c[1]}</button>`).join(""); nav.querySelectorAll("button").forEach(b => b.addEventListener("click", () => showChapter(b.dataset.ch))); $("prev").addEventListener("click", () => step(-1)); $("next").addEventListener("click", () => step(1)); } }
+function step(d){ const i = CH.findIndex(c => c[0] === CUR_CH); const j = Math.min(CH.length-1, Math.max(0, i + d)); showChapter(CH[j][0]); window.scrollTo({top: $("chapters").offsetTop - 60, behavior: "smooth"}); }
+function showChapter(ch){ CUR_CH = ch; const c = CH.find(x => x[0] === ch); document.querySelectorAll("section.ch").forEach(s => s.classList.toggle("active", s.dataset.ch === ch)); document.querySelectorAll("#chapters button").forEach(b => b.setAttribute("aria-pressed", b.dataset.ch === ch));
+  $("chdesc").textContent = c[2]; const i = CH.indexOf(c); $("prev").disabled = i === 0; $("next").disabled = i === CH.length-1; $("pager-pos").textContent = `Chapter ${i} of ${CH.length-1} · ${c[1]}`; history.replaceState(null, "", `#${S}/${ch}`); }
+
 // ---------- render all
-function renderAll(scope){ load(scope); hero(); waffles(); stairs(); gap(); evidence(); renderMap(); lorenz(); forest(); curveInit(); quintInit(); scatterInit(); within(); theil(); rest(); history.replaceState(null, "", "#" + scope); }
+function renderAll(scope){ load(scope); hero(); waffles(); stairs(); gap(); evidence(); renderMap(); lorenz(); forest(); curveInit(); quintInit(); scatterInit(); within(); theil(); rest(); chapters(); showChapter(CUR_CH); }
 document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { if (b.dataset.s !== S) renderAll(b.dataset.s); }));
 $("layer").addEventListener("change", renderMap); $("gap-metric").addEventListener("change", gap); $("cv-rank").addEventListener("change", drawCurve); $("cv-out").addEventListener("change", drawCurve); $("q-rank").addEventListener("change", drawQuint); $("sc-rank").addEventListener("change", drawScatter);
-renderAll(location.hash === "#jabar" ? "jabar" : "national");
+{ const h = location.hash.slice(1).split("/"); if (h[1] && CH.some(c => c[0] === h[1])) CUR_CH = h[1]; renderAll(h[0] === "jabar" ? "jabar" : "national"); }
 </script></body></html>
 """
 html = TEMPLATE.replace("__ALL__", json.dumps(DATA, ensure_ascii=False, separators=(",", ":"))).replace("__GEO__", json.dumps(GEO, ensure_ascii=False, separators=(",", ":")))
