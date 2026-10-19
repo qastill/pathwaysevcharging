@@ -171,6 +171,7 @@ ul.m{margin:0;padding-left:18px;font-size:12.5px;color:var(--fg2)}ul.m li{margin
 
 <section class="ch" data-ch="inequitable">
  <h2><span class="n">05</span>Does supply follow advantage?</h2><p class="note" id="forest-note"></p>
+ <div class="controls"><label>Within <select id="f-within"></select></label><span class="note" id="f-within-note"></span></div>
  <div class="row c21"><div class="panel"><div class="chart" id="forest"></div><div class="legend" id="forest-leg"></div></div>
   <div class="panel"><div class="controls"><label>Rank by <select id="cv-rank"></select></label><label>Supply <select id="cv-out"></select></label></div><div class="chart" id="curve"></div><p class="note" id="curve-note"></p></div></div>
  <p class="take" id="f-take"></p>
@@ -224,7 +225,7 @@ const ICON = { plug: '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="cu
 
 let S = "national", D, GEO, M, U, RL, OL, NAT, UNIT, UNITS, PARENT, PARENTS, bbox = null;
 const B = (r, o) => D.B.find(b => b.rank === r && b.outcome === o);
-function load(scope){ S = scope; D = ALL[scope]; GEO = GEOS[scope]; M = D.meta; NAT = scope === "national"; bbox = null;
+function load(scope){ S = scope; D = ALL[scope]; GEO = GEOS[scope]; M = D.meta; NAT = scope === "national"; bbox = null; FW = "all"; FD = null;
   U = D.units.map(a => { const o = {}; D.unit_cols.forEach((c, i) => o[c] = a[i]); o.per100k = 1e5*o.ch/o.pop; o.kw100k = 1e5*o.kw/o.pop; o.npov = -o.pov; if (!NAT){ o.ev100k = 1e5*o.ev/o.pop; o.kwhpc = o.kwh/o.pop; } return o; });
   RL = Object.fromEntries(M.ranks.map(r => [r.key, r])); OL = Object.fromEntries(M.outcomes.map(o => [o.key, o.label])); UNIT = M.unit; UNITS = M.unit_pl; PARENT = M.parent; PARENTS = M.parent_pl;
   document.body.dataset.scope = scope; document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === scope)); }
@@ -358,9 +359,39 @@ function lineChart(id, series, xl, yl){ const W = 520, H = 340, m = {l:50, r:12,
   hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); }); const box = $(id); box.innerHTML = ""; box.appendChild(svg); }
 
 // ---------- forest
-function forest(){ $("forest-note").innerHTML = `The concentration index (CI) ranks residents by a socio-economic variable (low → high) and reads how much of the supply the bottom x % receive. +1 = everything at the top, 0 = proportional, −1 = everything at the bottom. Dots are estimates, bars are 95 % bootstrap bands (${fmt(M.boot)} resamples of ${UNITS}); filled dots do not cross zero. For yes/no and share outcomes the Erreygers-corrected index is shown.`;
-  const outs = M.outcomes.map(o => o.key), ranks = M.ranks.map(r => r.key); const rows = []; ranks.forEach(r => outs.forEach(o => { const b = B(r,o); if (b) rows.push({...b, lab: OL[o], grp: RL[r].label}); }));
-  const rowH = 17, lab = 215, W = 760, H = rows.length*rowH + ranks.length*16 + 30, lo = Math.min(-0.2, ...rows.map(x => x.lo)) - 0.05, hi = Math.max(0.3, ...rows.map(x => x.hi)) + 0.05, X = v => lab + (v-lo)/(hi-lo)*(W-lab-30);
+// ---------- within-area re-estimation (client side, same estimators as scripts/concentration_explorer.py)
+let FW = "all", FD = null;
+function wranksJS(r, w){ const n = r.length, o = [...r.keys()].sort((a,b) => r[a]-r[b] || a-b), W = w.reduce((s,x) => s+x, 0), out = new Array(n); let cum = 0, i = 0;
+  while (i < n){ let j = i; while (j+1 < n && r[o[j+1]] === r[o[i]]) j++; let sw = 0; for (let k = i; k <= j; k++) sw += w[o[k]]; for (let k = i; k <= j; k++) out[o[k]] = (cum + sw/2)/W; cum += sw; i = j+1; } return out; }
+function concJS(h, r, w){ const W = w.reduce((s,x) => s+x, 0), H = h.reduce((s,x) => s+x, 0); if (!(H > 0) || !(W > 0)) return NaN; const R = wranksJS(r, w), mu = H/W; let mR = 0; for (let i = 0; i < w.length; i++) mR += w[i]*R[i]; mR /= W; let t = 0; for (let i = 0; i < w.length; i++) t += w[i]*(h[i]/w[i] - mu)*(R[i] - mR); return 2*t/W/mu; }
+function errJS(y, r, w){ const W = w.reduce((s,x) => s+x, 0), R = wranksJS(r, w); let t = 0; for (let i = 0; i < w.length; i++) t += w[i]*y[i]*(R[i]-0.5); return 8*t/W; }
+function rng32(seed){ let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function bootJS(h, r, w, fn, reps){ const n = h.length, rnd = rng32(2026), out = []; for (let b = 0; b < reps; b++){ const hh = [], rr = [], ww = []; for (let i = 0; i < n; i++){ const k = Math.floor(rnd()*n); hh.push(h[k]); rr.push(r[k]); ww.push(w[k]); } const c = fn(hh, rr, ww); if (!isNaN(c)) out.push(c); } out.sort((a,b) => a-b); return out.length ? [out[Math.floor(out.length*.025)], out[Math.floor(out.length*.975)]] : [NaN, NaN]; }
+function curveJS(h, r, w, k=40){ const o = [...r.keys()].sort((a,b) => r[a]-r[b] || a-b), W = w.reduce((s,x) => s+x, 0), H = Math.max(h.reduce((s,x) => s+x, 0), 1e-9), cw = [0], ch = [0]; let a = 0, b = 0; o.forEach(i => { a += w[i]; b += h[i]; cw.push(a/W); ch.push(b/H); });
+  const interp = p => { let j = 1; while (j < cw.length && cw[j] < p) j++; if (j >= cw.length) return 1; const x0 = cw[j-1], x1 = cw[j]; return x1 === x0 ? ch[j] : ch[j-1] + (ch[j]-ch[j-1])*(p-x0)/(x1-x0); };
+  return Array.from({length:k+1}, (_,i) => [i/k, interp(i/k)]); }
+function fifthsJS(h, r, w){ const o = [...r.keys()].sort((a,b) => r[a]-r[b] || a-b), W = w.reduce((s,x) => s+x, 0), out = [0,0,0,0,0]; let cum = 0; o.forEach(i => { cum += w[i]; const q = Math.min(4, Math.max(0, Math.ceil(cum/W*5 - 1e-9) - 1)); out[q] += h[i]; }); return out; }
+const OUTV = u => ({ch:u.ch, kw:u.kw, kwh:u.kwh, trx:u.trx, ev:u.ev, sites:u.sites, dc:u.dc});
+function buildFD(){ if (FW === "all"){ FD = null; return; } const us = U.filter(u => u.parent === FW && u.pop > 0), w = us.map(u => u.pop), reps = 600;
+  const valid = M.ranks.filter(rk => { const v = us.map(u => rk.key === "npov" ? u.pov : u[rk.key]); return v.every(x => x != null && !isNaN(x)) && new Set(v).size > 1; }).map(rk => rk.key);
+  const Bm = {}, Cv = {}, Qf = {};
+  valid.forEach(rk => { const r = us.map(u => rk === "npov" ? -u.pov : u[rk]); Cv[rk] = {}; Qf[rk] = {};
+    M.outcomes.forEach(o => { let h, fn; if (o.key === "has"){ h = us.map(u => u.ch > 0 ? 1 : 0); fn = errJS; } else if (o.key === "within10"){ h = us.map(u => u.within10/100); fn = errJS; } else { h = us.map(u => OUTV(u)[o.key] || 0); fn = concJS; }
+      const ci = fn(h, r, w); if (isNaN(ci)) return; const [lo, hi] = bootJS(h, r, w, fn, reps); Bm[rk + "|" + o.key] = {rank:rk, outcome:o.key, ci, lo, hi, signif: !(lo <= 0 && hi >= 0)};
+      if (o.key !== "has" && o.key !== "within10"){ Cv[rk][o.key] = curveJS(h, r, w); Qf[rk][o.key] = fifthsJS(h, r, w); } }); });
+  FD = {n: us.length, ranks: valid, B: Bm, curves: Cv, fifths: Qf, reps, name: FW, nAll: M.ranks.length}; }
+const FB = (r, o) => FD ? FD.B[r + "|" + o] : B(r, o);
+function withinInit(){ const sel = $("f-within"); if (sel.dataset.scope === S) return; sel.dataset.scope = S; FW = "all"; FD = null;
+  const cnt = {}; U.forEach(u => { cnt[u.parent] = (cnt[u.parent] || 0) + 1; }); const minN = NAT ? 8 : 12;
+  const opts = Object.keys(cnt).filter(k => cnt[k] >= minN).sort((a,b) => a.localeCompare(b));
+  sel.innerHTML = `<option value="all">All ${fmt(U.length)} ${UNITS} (${M.n_parents} ${PARENTS})</option>` + opts.map(k => `<option value="${esc(k)}">${esc(k)} · ${cnt[k]} ${UNITS}</option>`).join("");
+  sel.onchange = () => { FW = sel.value; buildFD(); forest(); curveInit(); }; }
+function forest(){ withinInit(); $("forest-note").innerHTML = `The concentration index (CI) ranks residents by a socio-economic variable (low → high) and reads how much of the supply the bottom x % receive. +1 = everything at the top, 0 = proportional, −1 = everything at the bottom. Dots are estimates, bars are 95 % bootstrap bands (${fmt(M.boot)} resamples of ${UNITS}); filled dots do not cross zero. For yes/no and share outcomes the Erreygers-corrected index is shown.`;
+  const outs = M.outcomes.map(o => o.key), ranks = FD ? FD.ranks : M.ranks.map(r => r.key); const rows = []; ranks.forEach(r => outs.forEach(o => { const b = FB(r,o); if (b) rows.push({...b, lab: OL[o], grp: RL[r].label}); }));
+  const skipped = FD ? M.ranks.filter(r => !FD.ranks.includes(r.key)).map(r => r.label) : [];
+  $("f-within-note").innerHTML = FD ? `${FD.n} ${UNITS} inside ${esc(FD.name)} re-estimated in the browser (${FD.reps} bootstrap resamples, seed 2026).${skipped.length ? ` <b>Not estimable here:</b> ${skipped.join(", ")} — ${NAT ? "no variation" : "these are district-level BPS variables, identical for every sub-district of one district"}.` : ""}` : `Pick a ${PARENT} to re-estimate every index inside it; ${NAT ? "socio-economic variables are district-level, so they vary within a province" : "spending, HDI and poverty are district-level, so inside one district only density and EV ownership can rank sub-districts"}.`;
+  if (!rows.length){ $("forest").innerHTML = `<div class="note">No index can be estimated inside ${esc(FD ? FD.name : "")}.</div>`; $("forest-leg").innerHTML = ""; $("f-take").innerHTML = ""; return; }
+  const rowH = FD ? 22 : 17, lab = 215, W = 760, H = rows.length*rowH + ranks.length*16 + 30, lo = Math.min(-0.2, ...rows.map(x => x.lo)) - 0.05, hi = Math.max(0.3, ...rows.map(x => x.hi)) + 0.05, X = v => lab + (v-lo)/(hi-lo)*(W-lab-30);
   const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, role:"img"}); [-0.5,-0.25,0,0.25,0.5,0.75].filter(v => v > lo && v < hi).forEach(v => { el("line", {x1:X(v), x2:X(v), y1:0, y2:H-24, stroke: v ? css("--grid") : css("--fg3")}, svg); el("text", {x:X(v), y:H-8, "text-anchor":"middle"}, svg).textContent = (v>0?"+":"") + v; });
   el("text", {x:X(hi)-4, y:12, "text-anchor":"end", "font-size":11}, svg).textContent = "→ supply concentrated at the TOP of the ranking"; el("text", {x:lab+4, y:12, "font-size":11}, svg).textContent = "← at the BOTTOM";
   let y = 18, g0 = null; rows.forEach(r => { if (r.grp !== g0){ y += 16; el("text", {x:4, y:y-3, "font-weight":700, "font-size":11.5, fill:css("--fg")}, svg).textContent = "Ranked by " + r.grp; g0 = r.grp; }
@@ -370,12 +401,15 @@ function forest(){ $("forest-note").innerHTML = `The concentration index (CI) ra
   $("forest").innerHTML = ""; $("forest").appendChild(svg);
   $("forest-leg").innerHTML = `<span><i class="dot" style="background:var(--s1)"></i>Placement & capacity</span>${NAT ? "" : `<span><i class="dot" style="background:var(--s2)"></i>Use & demand (kWh, sessions, EV owners)</span>`}<span><i class="dot" style="background:var(--s3)"></i>Erreygers (yes/no, share)</span><span class="sig">● filled = 95 % band excludes 0 · ○ hollow = not significant</span>`;
   const nsig = rows.filter(r => r.signif && r.ci > 0).length, exCh = B("exp","ch");
+  if (FD){ const neg = rows.filter(r => r.signif && r.ci < 0).length, dCh = FB("dens","ch"), lead = rows.filter(r => r.signif).sort((a,b) => Math.abs(b.ci) - Math.abs(a.ci))[0];
+    $("f-take").innerHTML = `<b>Inside ${esc(FD.name)} (${FD.n} ${UNITS}): ${nsig} of ${rows.length} indices are positive and significant${neg ? `, ${neg} negative` : ""}.</b> ${dCh ? `Chargers vs density ${sgn(dCh.ci)}${dCh.signif ? "" : " (n.s.)"}: ${dCh.signif && dCh.ci > 0 ? "supply sits in the denser " + UNITS : dCh.signif ? "supply sits in the sparser " + UNITS : "no measurable tilt by density"}. ` : ""}${lead ? `Strongest tilt: ${lead.lab} by ${lead.grp} (${sgn(lead.ci)}). ` : "No index is distinguishable from zero at this sample size. "}Within-${PARENT} bands are wide (${FD.n} units); read the sign, not the third decimal.`; return; }
   $("f-take").innerHTML = NAT ? `<b>${nsig} of ${rows.length} indices are positive and significant.</b> Whatever you rank residents by and whatever you count, supply sits with the advantaged — and the tilt grows from units (${sgn(exCh.ci)}) to capacity (${sgn(B("exp","kw").ci)}) to reach (${sgn(B("exp","within10").ci)}).` : `<b>Placement is income-neutral (${sgn(exCh.ci)}, hollow dot), but capacity (${sgn(B("exp","kw").ci)}) and use (${sgn(B("exp","kwh").ci)}) are not.</b> ${nsig} of ${rows.length} indices are positive and significant — the ones that fail are about <i>where units stand</i>, the ones that pass are about <i>how big they are and who uses them</i>.`; }
 
 // ---------- curve
-function curveInit(){ const cvR = $("cv-rank"), cvO = $("cv-out"); cvR.innerHTML = M.ranks.map(r => `<option value="${r.key}">${r.label}</option>`).join(""); cvO.innerHTML = M.outcomes.filter(o => o.key !== "has").map(o => `<option value="${o.key}">${o.label}</option>`).join(""); drawCurve(); }
-function drawCurve(){ const r = $("cv-rank").value, o = $("cv-out").value, pts = D.curves[r][o], b = B(r,o); lineChart("curve", [{pts, col:"--s1", name:OL[o], lab:`CI ${sgn(b.ci)}${b.signif?"":" (n.s.)"}`, at:[70, 40]}], `Cumulative share of residents, ranked by ${RL[r].label} (low → high)`, `Cumulative share of ${OL[o]}`);
-  const q = D.Q[r]; $("curve-note").innerHTML = `Bottom fifth (${RL[r].low}) gets <b>${pct(100*q[0][o]/q.reduce((s,x)=>s+x[o],0))}</b>, top fifth (${RL[r].high}) <b>${pct(100*q[4][o]/q.reduce((s,x)=>s+x[o],0))}</b> of ${OL[o]}. Band ${sgn(b.lo)} to ${sgn(b.hi)}.`; }
+function curveInit(){ const cvR = $("cv-rank"), cvO = $("cv-out"), ranks = FD ? M.ranks.filter(r => FD.ranks.includes(r.key)) : M.ranks; cvR.innerHTML = ranks.map(r => `<option value="${r.key}">${r.label}</option>`).join(""); cvO.innerHTML = M.outcomes.filter(o => o.key !== "has" && o.key !== "within10").map(o => `<option value="${o.key}">${o.label}</option>`).join(""); drawCurve(); }
+function drawCurve(){ const r = $("cv-rank").value, o = $("cv-out").value; if (!r){ $("curve").innerHTML = ""; $("curve-note").textContent = ""; return; } const pts = FD ? FD.curves[r][o] : D.curves[r][o], b = FB(r,o); if (!pts || !b){ $("curve").innerHTML = ""; $("curve-note").textContent = `No ${OL[o]} inside ${esc(FD ? FD.name : "")}.`; return; }
+  lineChart("curve", [{pts, col:"--s1", name:OL[o], lab:`CI ${sgn(b.ci)}${b.signif?"":" (n.s.)"}`, at:[70, 40]}], `Cumulative share of residents${FD ? " of " + esc(FD.name) : ""}, ranked by ${RL[r].label} (low → high)`, `Cumulative share of ${OL[o]}`);
+  const f = FD ? FD.fifths[r][o] : D.Q[r].map(x => x[o]), tot = f.reduce((s,x) => s+x, 0) || 1; $("curve-note").innerHTML = `Bottom fifth (${RL[r].low}) gets <b>${pct(100*f[0]/tot)}</b>, top fifth (${RL[r].high}) <b>${pct(100*f[4]/tot)}</b> of ${OL[o]}${FD ? " in " + esc(FD.name) : ""}. Band ${sgn(b.lo)} to ${sgn(b.hi)}.`; }
 
 // ---------- quintiles
 function barChart(vals, labels, col, title, fmtv){ const W = 340, H = 200, m = {l:44, r:8, t:26, b:34}, pw = W-m.l-m.r, ph = H-m.t-m.b, top = Math.max(...vals, 1e-9)*1.15, Y = v => m.t + (1-v/top)*ph, bw = pw/vals.length; const svg = el("svg", {viewBox:`0 0 ${W} ${H}`, role:"img", "aria-label":title}); el("text", {x:m.l, y:14, "font-weight":600, fill:css("--fg")}, svg).textContent = title;
