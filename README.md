@@ -46,13 +46,20 @@ SPKLU dibangun dari **koordinat eksak stasiun** dan **waktu tempuh jaringan jala
 dijatuhkan ke 634 desa, kebutuhan = penduduk Kontur 2023 per desa; keluaran Gini antar desa/kab/kota (kesetaraan) dan indeks
 konsentrasi terhadap kepadatan, pengeluaran per kapita, IPM (ekuitas), kuintil, metropolitan vs luar metropolitan.
 
-Dua mode otomatis di `ttm/compute.py`: **waktu tempuh** bila `ttm/input/west_java_ttm_car.csv[.gz]` ada (ambang 15/30 menit,
-lapisan "desa terjangkau ≤30 mnt" mereplikasi `WestJava_Access30_Car.png`); bila belum, **jarak garis lurus** (5/10 km) sebagai
-ukuran antara yang diberi label di halaman.
+Dua mode otomatis di `ttm/compute.py`: **waktu tempuh** bila `ttm/input/west_java_ttm_car.csv[.gz]` ada (ambang 10/30 menit,
+uji 7 dan 15; lapisan "desa terjangkau ≤30 mnt" mereplikasi `WestJava_Access30_Car.png`); bila belum, **jarak garis lurus** (5/10 km)
+sebagai ukuran antara yang diberi label di halaman. Matriks r5r supervisor (4,41 juta pasangan, gzip 17 MB) kini ada di
+`ttm/input/west_java_ttm_car.csv.gz`. Karena GADM 4.1 masih memakai kode desa lama (Pangandaran = 3207 Ciamis, dll.),
+`ttm/crosswalk.py` memetakan 98 dari 114 id GADM yang tak cocok ke kode BPS 2020 (`ttm/input/id_crosswalk.csv`); 135 desa
+tanpa baris memakai nilai desa ber-baris terdekat ≤5 km (ditandai di JSON). Mode waktu tempuh juga menghitung **tangga layanan
+RQ1**: anak tangga 1 = terjangkau ≤10 menit, anak tangga 2 = kecukupan daya **E2SFCA** (catchment biner 10 menit, kW per rumah
+tangga, RT = penduduk ÷ 3,6, ambang 0,03 kW/RT; penyebut N2 rumah tangga yang bergantung pada charging publik belum ada, jadi
+anak tangga 2 dibaca lewat distribusinya, bukan levelnya).
 
 ```bash
 pip install numpy shapely h3 openpyxl
 python3 ttm/prepare_villages.py --villages /path/JfrAziz-indonesia-district   # -> ttm/input/
+python3 ttm/crosswalk.py                                                       # -> ttm/input/id_crosswalk.csv (id GADM -> BPS)
 python3 ttm/compute.py --kontur /path/kontur_population_ID_20231101.gpkg      # -> ttm/ttm.json (+ cache village_pop.csv)
 python3 ttm/inject.py                                                          # pasang tab (idempoten)
 ```
