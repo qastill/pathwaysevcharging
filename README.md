@@ -98,6 +98,12 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 
 ## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
 
+**Satu halaman cerita dengan sakelar Indonesia / Jawa Barat:** `python3 analysis/charging_equity_render.py` →
+**`analysis/charging_equity_en.html`** (`#national` / `#jabar`). Menambah infografis di atas bukti yang sama: hero
+dengan ikon, alur 4 langkah (unequal → inequitable → where → what it takes), waffle "jika ada 100 penduduk" untuk kuintil
+termiskin/tengah/terkaya (≤10 km · 10–25 km · >25 km), tangga kuintil piktogram, **kesenjangan antar-provinsi** (lollipop
+34 provinsi vs nilai nasional, 6 metrik), *slope chart* porsi penduduk → porsi charger, dan jangkauan per pulau.
+
 **Halaman bukti berbahasa Inggris (dua lingkup, satu estimator):** `scripts/concentration_explorer.py jabar|national` →
 `analysis/concentration_explorer_<scope>.json`, lalu `analysis/concentration_explorer_render.py <scope>` →
 **`analysis/concentration_jabar_en.html`** (629 kecamatan, pemakaian & pemilik EV) dan **`analysis/concentration_national_en.html`**
