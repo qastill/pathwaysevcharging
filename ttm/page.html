@@ -60,6 +60,15 @@
 
 <div class="kpis" id="ttKpi"></div>
 
+<div class="card" id="ttLadderCard" style="margin-bottom:15px;display:none">
+ <h3>🪜 Tangga layanan (RQ1) — <span>anak tangga 1 jangkauan ≤10 menit (uji 7 dan 15), anak tangga 2 kecukupan daya E2SFCA</span></h3>
+ <div class="grid2" style="margin:0">
+  <div><div id="ttLadder"></div></div>
+  <div><div class="tablewrap" id="ttLadderTbl"></div></div>
+ </div>
+ <div class="note" id="ttLadderNote" style="margin-top:8px"></div>
+</div>
+
 <div class="grid31">
  <div class="card">
   <h3>🗺️ Peta desa — <span id="ttMapTitle">akses ke SPKLU terdekat</span></h3>
@@ -69,6 +78,8 @@
     <button data-l="access" class="active">Akses terdekat</button>
     <button data-l="far" id="ttBtnFar">Charger terjangkau</button>
     <button data-l="villages30" id="ttBtnV30">Desa terjangkau ≤30 mnt</button>
+    <button data-l="cap" id="ttBtnCap">Daya E2SFCA</button>
+    <button data-l="rung" id="ttBtnRung">Tangga layanan</button>
     <button data-l="chargers">Charger di desa</button>
     <button data-l="dens">Kepadatan penduduk</button>
    </div>

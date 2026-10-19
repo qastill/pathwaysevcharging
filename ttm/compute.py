@@ -2,7 +2,8 @@
 
 Dua mode, dipilih otomatis:
   TTM     bila ttm/input/west_java_ttm_car.csv[.gz] ada (keluaran r5r supervisor: from_id,to_id,travel_time_p50,
-          menit, mobil, maks 60 menit): waktu tempuh ke desa ber-SPKLU terdekat, charger terjangkau <=15/30 menit,
+          menit, mobil, maks 60 menit): waktu tempuh ke desa ber-SPKLU terdekat, charger terjangkau <=10/30 menit (uji 7/15),
+          E2SFCA kW per rumah tangga (catchment 7/10/15 menit) dan tangga layanan anak tangga 1-2,
           desa terjangkau <=30 menit (replikasi peta WestJava_Access30_Car.png).
   JARAK   bila belum ada: jarak garis lurus (km) ke lokasi SPKLU terdekat dan charger dalam 5/10 km. Ukuran antara,
           diberi label; bukan pengganti waktu tempuh.
@@ -17,6 +18,7 @@ Keluaran: ttm/ttm.json (ringkasan, tabel kab/kota & metropolitan, nilai per desa
 """
 import argparse, csv, gzip, json, math, os, sqlite3, sys
 import numpy as np
+from scipy import sparse
 import h3
 from shapely.geometry import shape, Point
 from shapely.strtree import STRtree
@@ -26,6 +28,8 @@ INP = os.path.join(ROOT, "ttm", "input")
 ap = argparse.ArgumentParser()
 ap.add_argument("--kontur", default=None)
 ap.add_argument("--pop-cache", default=os.path.join(INP, "village_pop.csv"))
+ap.add_argument("--hh-size", type=float, default=3.6, help="jiwa per rumah tangga (BPS 2020 Jabar ~3,6) untuk E2SFCA")
+ap.add_argument("--kw-per-hh", type=float, default=0.03, help="ambang kecukupan daya E2SFCA, kW per rumah tangga")
 a = ap.parse_args()
 
 V = list(csv.DictReader(open(os.path.join(INP, "villages.csv"))))
@@ -73,8 +77,13 @@ dens = pop / np.maximum(V_area := np.array([v["area_km2"] for v in V]), 0.01)
 ttm_path = next((p for p in (os.path.join(INP, "west_java_ttm_car.csv.gz"), os.path.join(INP, "west_java_ttm_car.csv")) if os.path.exists(p)), None)
 spk_ids = set(SP)
 if ttm_path:
-    MODE = "ttm"; UNIT = "menit"; TH = (15, 30); CUT = 60
-    best = np.full(n, np.inf); c15 = np.zeros(n); c30 = np.zeros(n); v30 = np.zeros(n); seen = np.zeros(n, bool)
+    MODE = "ttm"; UNIT = "menit"; TH = (10, 30); CUT = 60; REACH_T = (7, 10, 15, 30)
+    # crosswalk id GADM 4.1 -> BPS 2020 (ttm/crosswalk.py)
+    CW = {}
+    cwp = os.path.join(INP, "id_crosswalk.csv")
+    if os.path.exists(cwp):
+        CW = {r["gadm_id"]: r["bps_id"] for r in csv.DictReader(open(cwp)) if r["bps_id"]}
+    FI, TI, TT = [], [], []
     unknown_from, unknown_to, rows = set(), set(), 0
     op = gzip.open if ttm_path.endswith(".gz") else open
     with op(ttm_path, "rt") as f:
@@ -82,24 +91,52 @@ if ttm_path:
         tcol = "travel_time_p50" if "travel_time_p50" in rd.fieldnames else [c for c in rd.fieldnames if c.startswith("travel_time")][0]
         for r in rd:
             rows += 1
-            fi = vid.get(str(r["from_id"]).strip())
-            if fi is None: unknown_from.add(r["from_id"]); continue
+            a_, b_ = str(r["from_id"]).strip(), str(r["to_id"]).strip()
+            fi = vid.get(a_); fi = vid.get(CW.get(a_, "")) if fi is None else fi
+            if fi is None: unknown_from.add(a_); continue
+            ti = vid.get(b_); ti = vid.get(CW.get(b_, "")) if ti is None else ti
+            if ti is None: unknown_to.add(b_); continue
             t = r[tcol]
             if t in ("", "NA"): continue
-            t = float(t); seen[fi] = True
-            if t <= 30: v30[fi] += 1
-            to = str(r["to_id"]).strip()
-            if to not in spk_ids:
-                if to not in vid: unknown_to.add(to)
-                continue
-            c = SP[to]["chargers"]
-            if t < best[fi]: best[fi] = t
-            if t <= 15: c15[fi] += c
-            if t <= 30: c30[fi] += c
-    print("TTM baris %d; asal tak dikenal %d; tujuan tak dikenal %d; desa tanpa baris %d" % (rows, len(unknown_from), len(unknown_to), int((~seen).sum())))
+            FI.append(fi); TI.append(ti); TT.append(float(t))
+    FI = np.array(FI, np.int32); TI = np.array(TI, np.int32); TT = np.array(TT, np.float32)
+    seen = np.zeros(n, bool); seen[FI] = True
+    is_sp = np.array([v["id"] in SP for v in V])
+    kw_v = np.array([SP[v["id"]]["kw"] if v["id"] in SP else 0.0 for v in V])
+    # waktu ke desa ber-SPKLU terdekat; charger terjangkau per ambang; desa terjangkau <=30
+    best = np.full(n, np.inf); tosp = is_sp[TI]
+    np.minimum.at(best, FI[tosp], TT[tosp])
+    reach_ch = {}
+    for T in REACH_T:
+        m = tosp & (TT <= T); c = np.zeros(n); np.add.at(c, FI[m], chg[TI[m]]); reach_ch[T] = c
+    v30 = np.zeros(n); np.add.at(v30, FI[TT <= 30], 1)
+    # E2SFCA (binary catchment): langkah 1 rasio kW per rumah tangga di tiap desa ber-SPKLU, langkah 2 jumlah rasio yang tercapai
+    HH = pop / a.hh_size
+    cap = {}
+    for T in (7, 10, 15):
+        m = TT <= T
+        M = sparse.csr_matrix((np.ones(m.sum(), np.float32), (FI[m], TI[m])), shape=(n, n))
+        demand = np.asarray(M.T @ HH).ravel()                      # rumah tangga dalam catchment tiap desa tujuan j
+        R = np.where(demand > 0, kw_v / np.maximum(demand, 1e-9), 0.0)
+        cap[T] = np.asarray(M @ R).ravel()                         # kW per rumah tangga yang tercapai dari desa i
+    # desa tanpa baris (GADM/BPS tak cocok): nilai diambil dari desa ber-baris terdekat <= 5 km, ditandai
+    imputed = 0; dropped = 0
+    sx = np.radians(np.array([v["lon"] for v in V])); sy = np.radians(np.array([v["lat"] for v in V]))
+    for i in np.where(~seen)[0]:
+        d = 6371.0 * np.arccos(np.clip(np.sin(sy[i]) * np.sin(sy) + np.cos(sy[i]) * np.cos(sy) * np.cos(sx - sx[i]), -1, 1)); d[~seen] = np.inf
+        j = int(np.argmin(d))
+        if d[j] <= 5:
+            best[i] = best[j]; v30[i] = v30[j]
+            for T in REACH_T: reach_ch[T][i] = reach_ch[T][j]
+            for T in cap: cap[T][i] = cap[T][j]
+            imputed += 1
+        else: dropped += 1
+    print("TTM baris %d; asal tak dikenal %d; tujuan tak dikenal %d; desa tanpa baris %d (diimputasi %d, tak terjangkau %d)"
+          % (rows, len(unknown_from), len(unknown_to), int((~seen).sum()), imputed, dropped))
     access = best                      # menit ke desa ber-SPKLU terdekat; inf = >60 menit / tak terjangkau
-    near, far = c15, c30
-    extra = dict(villages30=v30.tolist(), rows=rows, unknown_from=len(unknown_from), unknown_to=len(unknown_to), unseen=int((~seen).sum()))
+    near, far = reach_ch[TH[0]], reach_ch[TH[1]]
+    extra = dict(villages30=v30.tolist(), rows=rows, unknown_from=len(unknown_from), unknown_to=len(unknown_to), unseen=int((~seen).sum()),
+                 imputed=imputed, dropped=dropped, crosswalk=len(CW), hh_size=a.hh_size, kw_per_hh=a.kw_per_hh)
 else:
     MODE = "jarak"; UNIT = "km"; TH = (5, 10); CUT = 50
     sx = np.radians(np.array([s["lon"] for s in SITES])); sy = np.radians(np.array([s["lat"] for s in SITES]))
@@ -224,13 +261,49 @@ for m, (label, _) in list(METRO.items()) + [("luar", ("Luar metropolitan", None)
                        gini_far=wgini(far[sel], pop[sel]) if far[sel].sum() > 0 else None))
 summary["metros"] = metros
 
+if MODE == "ttm":
+    # jangkauan menurut ambang (RQ1 anak tangga 1: <=10 menit, uji 7 dan 15; 30 = replikasi peta supervisor)
+    summary["reach"] = {str(T): dict(pop=round(float(pop[acc_cap <= T].sum())), share=round(float(pop[acc_cap <= T].sum() / P), 4), villages=int((acc_cap <= T).sum()),
+                                     chargers_mean=round(float(np.sum(reach_ch[T] * pop) / P), 1)) for T in REACH_T}
+    # kecukupan daya E2SFCA (anak tangga 2): kW per rumah tangga dalam catchment waktu tempuh, ambang kw_per_hh
+    summary["e2sfca"] = {}
+    for T, A in cap.items():
+        suff = A >= a.kw_per_hh
+        summary["e2sfca"][str(T)] = dict(pop_sufficient=round(float(pop[suff].sum())), share=round(float(pop[suff].sum() / P), 4), villages=int(suff.sum()),
+                                         median_pop=round(float(np.interp(0.5, np.cumsum(pop[np.argsort(A)]) / P, np.sort(A))), 4),
+                                         mean_pop=round(float(np.sum(A * pop) / P), 4), gini=wgini(A, pop),
+                                         ci_density=conc_index(A, rank_dens, pop))
+        if SOSEK: summary["e2sfca"][str(T)].update(ci_expend=conc_index(A[jb], exp_r[jb], pop[jb]), ci_ipm=conc_index(A[jb], ipm_r[jb], pop[jb]),
+                                                   ci_suff_expend=erreygers(suff[jb].astype(float), exp_r[jb], pop[jb], 0, 1))
+    A10 = cap[10]; rung = np.where(acc_cap > 10, 0, np.where(A10 >= a.kw_per_hh, 2, 1))
+    summary["ladder"] = dict(th_min=10, kw_per_hh=a.kw_per_hh, hh_size=a.hh_size,
+                             rungs=[dict(rung=k, label=l, pop=round(float(pop[rung == k].sum())), share=round(float(pop[rung == k].sum() / P), 4), villages=int((rung == k).sum()))
+                                    for k, l in ((0, "tidak terjangkau (>10 menit)"), (1, "terjangkau, daya tidak cukup"), (2, "terjangkau dan daya cukup"))])
+    for k, row in kabs.items():
+        m = kcode == k; pk = max(pop[m].sum(), 1)
+        row.update(reach7=round(float(pop[m & (acc_cap <= 7)].sum() / pk), 4), reach15=round(float(pop[m & (acc_cap <= 15)].sum() / pk), 4),
+                   suff10=round(float(pop[m & (A10 >= a.kw_per_hh)].sum() / pk), 4), cap10_med=round(float(np.interp(0.5, np.cumsum(pop[m][np.argsort(A10[m])]) / pk, np.sort(A10[m]))), 4))
+    for mrow in summary["metros"]:
+        sel = np.array([metro_of(k) == mrow["key"] for k in kcode]); pm = max(pop[sel].sum(), 1)
+        mrow.update(reach7=round(float(pop[sel & (acc_cap <= 7)].sum() / pm), 4), reach15=round(float(pop[sel & (acc_cap <= 15)].sum() / pm), 4),
+                    suff10=round(float(pop[sel & (A10 >= a.kw_per_hh)].sum() / pm), 4))
+    if SOSEK:
+        o = np.argsort(exp_r[jb], kind="stable"); cp = np.cumsum(pop[jb][o]) / pop[jb].sum()
+        for q, qrow in enumerate(summary["quintiles_expend"]):
+            sel = (cp > q / 5) & (cp <= (q + 1) / 5); idx = np.where(jb)[0][o][sel]; pq = max(pop[idx].sum(), 1)
+            qrow.update(reach7=round(float(pop[idx][acc_cap[idx] <= 7].sum() / pq), 4), reach15=round(float(pop[idx][acc_cap[idx] <= 15].sum() / pq), 4),
+                        suff10=round(float(pop[idx][A10[idx] >= a.kw_per_hh].sum() / pq), 4), cap10_mean=round(float(np.sum(A10[idx] * pop[idx]) / pq), 4))
+
 # ----------------------------------------------------------------- per desa (untuk peta)
 villages = [[v["id"], round(float(acc_cap[i]), 1) if np.isfinite(access[i]) else None, int(near[i]), int(far[i]), round(float(pop[i])),
-             int(chg[i]), (int(extra["villages30"][i]) if MODE == "ttm" else None), round(v["area_km2"], 2)] for i, v in enumerate(V)]
-out = dict(summary=summary, kabs=kk, village_cols=["id", "access", "near", "far", "pop", "chargers", "villages30", "area"], villages=villages,
+             int(chg[i]), (int(extra["villages30"][i]) if MODE == "ttm" else None), round(v["area_km2"], 2),
+             (round(float(cap[10][i]), 4) if MODE == "ttm" else None), (int(rung[i]) if MODE == "ttm" else None)] for i, v in enumerate(V)]
+out = dict(summary=summary, kabs=kk, village_cols=["id", "access", "near", "far", "pop", "chargers", "villages30", "area", "cap10", "rung"], villages=villages,
            names={v["id"]: [v["village"], v["district"], v["regency"]] for v in V})
 json.dump(out, open(os.path.join(ROOT, "ttm", "ttm.json"), "w"), separators=(",", ":"), ensure_ascii=False)
 print("mode:", MODE, "| penduduk %.2f jt | <=%d %s: %.1f%% | <=%d %s: %.1f%% | Gini charger terjangkau %.3f | CI~kepadatan %.3f"
       % (P / 1e6, TH[0], UNIT, 100 * summary["pop_within1"] / P, TH[1], UNIT, 100 * summary["pop_within2"] / P, summary["gini_far"], ci["density"]))
+if MODE == "ttm": print("jangkauan:", {T: r["share"] for T, r in summary["reach"].items()}, "| E2SFCA cukup (>=%.2f kW/RT):" % a.kw_per_hh, {T: r["share"] for T, r in summary["e2sfca"].items()},
+                       "| tangga:", [(r["rung"], r["share"]) for r in summary["ladder"]["rungs"]])
 if SOSEK: print("CI~pengeluaran (Jabar) %.3f | CI~IPM %.3f | kuintil: %s" % (ci["expend"], ci["ipm"], [(q["q"], q["share2"]) for q in summary["quintiles_expend"]]))
 print("ttm/ttm.json %.0f KB" % (os.path.getsize(os.path.join(ROOT, "ttm", "ttm.json")) / 1024))
