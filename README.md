@@ -98,6 +98,15 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 
 ## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
 
+**Halaman bukti berbahasa Inggris (dua lingkup, satu estimator):** `scripts/concentration_explorer.py jabar|national` →
+`analysis/concentration_explorer_<scope>.json`, lalu `analysis/concentration_explorer_render.py <scope>` →
+**`analysis/concentration_jabar_en.html`** (629 kecamatan, pemakaian & pemilik EV) dan **`analysis/concentration_national_en.html`**
+(508 kab/kota, akses ≤10/≥25 km). Isi: 10 kartu bukti otomatis dengan implikasi ke proposal, peta kuintil, Lorenz + HHI/CR,
+forest plot CI × 5 peringkat × 6 pasokan dengan pita bootstrap 1.000, kurva konsentrasi, kuintil, sebaran gelembung + Spearman,
+CI di dalam tiap provinsi/kab, dekomposisi Theil (antar/dalam provinsi, kota–kabupaten, metropolitan, Jawa–luar Jawa, pulau),
+tabel ketahanan subset, defisit menuju rata-rata, tabel provinsi/kab, metode & glosarium. Masukan nasional yang di-vendor:
+`data/bps_profil_kabkota_2024.csv` dan `data/kabkota_bps.geojson` (BPS 2024 via MercyCantik/UAS-VISDAT-222313205).
+
 Dua halaman interaktif mandiri (semua ukuran dihitung ulang di browser dari `data/jabar_kecamatan_spklu.geojson`):
 `analysis/concentration_dashboard.html` (Bahasa Indonesia, `python3 analysis/concentration_dashboard_render.py`) dan
 **`analysis/concentration_dashboard_en.html`** (English, `python3 analysis/concentration_dashboard_en_render.py`) — versi
