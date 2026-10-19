@@ -27,11 +27,11 @@ TEMPLATE = r"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta 
 <style>
 :root{--bg:#fcfcfb;--fg:#0b0b0b;--fg2:#52514e;--fg3:#7d7b75;--line:#e4e2dc;--panel:#f4f3ef;--grid:#ebe9e3;--chip:#e9e7e1;--side:#f4f3ef;
  --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--zero:#d9d7d0;--hatch:#bdbab2;--good:#0ca30c;--crit:#d03b3b;--mid:#f0efec;
- --q1:#cde2fb;--q2:#9ec5f4;--q3:#5598e7;--q4:#256abf;--q5:#104281;--display:"Archivo",system-ui,sans-serif;--body:"Source Sans 3",system-ui,sans-serif}
+ --q1:#cde2fb;--q2:#9ec5f4;--q3:#5598e7;--q4:#256abf;--q5:#104281;--q6:#2a1a5e;--display:"Archivo",system-ui,sans-serif;--body:"Source Sans 3",system-ui,sans-serif}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1a19;--fg:#fff;--fg2:#c3c2b7;--fg3:#8f8d85;--line:#34332f;--panel:#232321;--grid:#2c2b28;--chip:#2e2d2a;--side:#202020;
- --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--zero:#3a3936;--hatch:#5a5853;--mid:#383835;--q1:#184f95;--q2:#256abf;--q3:#3987e5;--q4:#6da7ec;--q5:#b7d3f6;color-scheme:dark}}
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--zero:#3a3936;--hatch:#5a5853;--mid:#383835;--q1:#184f95;--q2:#256abf;--q3:#3987e5;--q4:#6da7ec;--q5:#b7d3f6;--q6:#eef4ff;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#1a1a19;--fg:#fff;--fg2:#c3c2b7;--fg3:#8f8d85;--line:#34332f;--panel:#232321;--grid:#2c2b28;--chip:#2e2d2a;--side:#202020;
- --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--zero:#3a3936;--hatch:#5a5853;--mid:#383835;--q1:#184f95;--q2:#256abf;--q3:#3987e5;--q4:#6da7ec;--q5:#b7d3f6;color-scheme:dark}
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--zero:#3a3936;--hatch:#5a5853;--mid:#383835;--q1:#184f95;--q2:#256abf;--q3:#3987e5;--q4:#6da7ec;--q5:#b7d3f6;--q6:#eef4ff;color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.4;margin:0;display:grid;grid-template-columns:250px minmax(0,1fr);overflow:hidden}
@@ -176,7 +176,7 @@ ul.m{margin:0;padding-left:18px;font-size:12.5px;color:var(--fg2)}ul.m li{margin
 </section>
 
 <section class="ch" data-ch="travel">
- <h2><span class="n">04</span>Who can reach a charger in 10 minutes by car?</h2>
+ <h2><span class="n">04</span>Who can reach a charger in 10 minutes, and is there enough power when they do?</h2>
  <p class="note" id="tt-note"></p>
  <div class="controls"><label>Layer <select id="tt-layer"><option value="min">Minutes by car to the nearest village with a charger</option><option value="rung">Service ladder rung (0 / 1 / 2)</option><option value="unreached">Residents beyond 10 minutes (people, not area)</option><option value="dens">Residents per km²</option></select></label><label>Region <select id="tt-region"></select></label><label>Sites <select id="tt-sites"><option value="none">hidden</option><option value="all">all 1,556 sites</option><option value="PLN">PLN only</option><option value="nonPLN">partner only</option><option value="fast">≥ 50 kW (fast)</option><option value="available">status: available</option><option value="offline">status: offline mode</option></select></label><span class="note" id="tt-meta"></span></div>
  <div class="row c21"><div class="panel" style="position:relative"><div class="chart" id="tt-map"></div><div class="mapleg" id="tt-leg"></div></div>
@@ -429,15 +429,15 @@ function rest(){ const rob = D.G.robust; $("robust").innerHTML = `<table><thead>
   <h3 style="margin-top:8px">Limits</h3><ul class="m"><li>Containment ≠ reach: a charger across a boundary serves neighbours.</li><li>Corridor (toll-road) chargers are counted where they sit.</li><li>${NAT ? "Chargers counted regardless of uptime; distance is straight-line." : "One month of transactions; EV owners proxied by completed PLN home-charger applications."}</li></ul>`; }
 
 // ---------- chapters (one at a time)
-const CH = [["overview","Overview","The question, five numbers, the story"],["people","100 residents","Poorest vs richest fifth, one square per person"],["gap","The gap","Provinces / districts ranked; who holds more than their share"],["map","Map","Where the supply sits"],["travel","Travel time","10-minute reach by car; service ladder rungs 1–2"],["fifths","Fifths","Five equal groups of residents"],["inequitable","Follow advantage?","Concentration indices with 95 % bands"],["sources","Sources","Between vs within; cities, metros, Java"],["evidence","Evidence","Six findings, robustness, what it takes"],["method","Method","Data, estimators, limits, glossary"]];
+const CH = [["overview","Overview","The question, five numbers, the story"],["people","100 residents","Poorest vs richest fifth, one square per person"],["gap","The gap","Provinces / districts ranked; who holds more than their share"],["map","Map","Where the supply sits"],["travel","Reach & capacity","10-min reach by car, E2SFCA power; rungs 0–2"],["fifths","Fifths","Five equal groups of residents"],["inequitable","Follow advantage?","Concentration indices with 95 % bands"],["sources","Sources","Between vs within; cities, metros, Java"],["evidence","Evidence","Six findings, robustness, what it takes"],["method","Method","Data, estimators, limits, glossary"]];
 let CUR_CH = "overview";
 // ---------- travel time (r5r matrix, West Java + Jakarta + Tangerang pilot)
-let TTV = null, TTN = null, TTG = null, TTS = null, ttBusy = false, ttSvg = null, ttVB = null, ttSel = "all", ttPaths = new Map(), ttKabBox = new Map(), ttSiteG = null, ttPX = null, ttPY = null;
+let ttCuts = null, TTV = null, TTN = null, TTG = null, TTS = null, ttBusy = false, ttSvg = null, ttVB = null, ttSel = "all", ttPaths = new Map(), ttKabBox = new Map(), ttSiteG = null, ttPX = null, ttPY = null;
 const RUNGC = ["--crit","--s4","--good"], RUNGL = ["rung 0 · not reachable (> 10 min)", "rung 1 · reachable, capacity short", "rung 2 · reachable and capacity sufficient"];
 const METROL = {jabodetabek:"Jabodetabek", bandung:"Bandung Raya", cirebon:"Cirebon Raya", luar:"outside the metros"};
 function ttKab(code){ return TT.kabs.find(k => k.code === code); }
 function travel(){ const r = TT.reach, l = TT.ladder;
-  $("tt-note").innerHTML = `<b>Purpose · rungs 1–2 of the service ladder (RQ1).</b> Rung 1 <i>reachable</i>: nearest village with a public charger ≤ 10 min by car (r5r, OSM roads, Tuesday 14:00; 7 and 15 min test the threshold); failing it is rung 0. Rung 2 <i>sufficient capacity</i>: ≥ 0.03 kW per household from chargers in the same 10-min catchment (E2SFCA), so rung 2 ⊂ rung 1 <b>by construction</b>, not as a finding. Map area ≠ population: reachable villages look small because they are the dense ones. ${fmt(TT.n_villages)} villages, ${fmt(TT.pop/1e6,1)} M residents (West Java, Jakarta, Tangerang).`;
+  $("tt-note").innerHTML = `<b>Purpose · rungs 1–2 of the service ladder (RQ1).</b> Rung 1 <i>reachable</i>: nearest village with a public charger ≤ 10 min by car (r5r, OSM roads, Tuesday 14:00; 7 and 15 min test the threshold); failing it is rung 0. Rung 2 <i>sufficient capacity</i>: ≥ 0.03 kW per household from chargers in the same 10-min catchment (E2SFCA), so rung 2 ⊂ rung 1 <b>by construction</b>, not as a finding. Map area ≠ population: reachable villages look small because they are dense. Pilot: ${fmt(TT.n_villages)} villages, ${fmt(TT.pop/1e6,1)} M residents, ${TT.kabs.length} districts (Kepulauan Seribu excluded: islands without a road link).`;
   $("tt-big").innerHTML = ["7","10","15","30"].map(t => `<div class="t"><div class="v">${pct(100*r[t].share,0)}</div><div class="l">≤ ${t} min${t === "10" ? " · <b>rung 1</b>" : " by car"}</div></div>`).join("");
   const sel = $("tt-region"); if (!sel.options.length){ sel.innerHTML = `<option value="all">Whole pilot area (${TT.kabs.length} districts)</option>` + [...TT.kabs].sort((a,b) => a.name.localeCompare(b.name)).map(k => `<option value="${k.code}">${esc(k.name)}${k.prov !== "Jawa Barat" ? " · " + esc(k.prov.replace("DKI Jakarta","Jakarta")) : ""}</option>`).join(""); sel.addEventListener("change", () => ttSelect(sel.value)); }
   ttSide(); if (TTV) ttDraw(); else $("tt-map").innerHTML = `<div class="note">Open this chapter to load the village map (6,669 polygons, ≈ 4.7 MB).</div>`; }
@@ -468,7 +468,7 @@ function ttSide(){ const r = TT.reach, l = TT.ladder, A = TT.avg; $("tt-big").st
     <div class="tt-cmp">${cmp("≤ 7 min", k.reach7, A.reach7)}${cmp("≤ 10 min", k.share1, A.share1)}${cmp("≤ 15 min", k.reach15, A.reach15)}${cmp("≤ 30 min", k.share2, A.share2)}<div style="margin-top:3px">bar = this district · tick = pilot average</div></div>
     <div class="tt-read">${read}</div></div>`;
   $("tt-take").innerHTML = `<b>${esc(k.name)}: ${pct(100*k.share1,0)} of residents within 10 minutes (rank ${rank} of ${n}); of those, ${pct(100*capOfReached,0)} also have sufficient capacity.</b> ${cls === "high" ? "Reach is solved; capacity and use are the open questions." : cls === "mid" ? "Served at district scale, not at neighbourhood scale: the last ten minutes are missing for " + fmt(unreached/1e6,2) + " M residents, and capacity is short for most of the rest." : "Reach is missing for " + fmt(unreached/1e6,2) + " M residents (rung 0) and capacity for nearly all who are reached (rung 1)."} Pick "Whole pilot area" or ⟲ to return to the overview.`; }
-function ttSelect(code){ ttSel = code; $("tt-region").value = code; ttSide();
+function ttSelect(code){ ttSel = code; $("tt-region").value = code; ttSide(); ttLegend();
   if (!ttSvg) return; ttPaths.forEach((p, id) => { const kc = p.dataset.k; p.classList.toggle("dim", code !== "all" && kc !== code); p.classList.toggle("sel", code !== "all" && kc === code); });
   if (code === "all") ttReset(); else { const b = ttKabBox.get(code); if (b) ttZoomTo(b); } }
 async function ttLoad(){ if (TTV || ttBusy) return; ttBusy = true; $("tt-map").innerHTML = `<div class="note">Loading 6,669 village polygons…</div>`;
@@ -496,8 +496,11 @@ function ttDraw(){ if (!TTG) return; const key = $("tt-layer").value; let minx=1
   const MW = 1000, k = Math.cos((miny+maxy)/2*Math.PI/180), MH = Math.round(MW*(maxy-miny)/((maxx-minx)*k)), PX = x => (x-minx)/(maxx-minx)*MW, PY = y => (maxy-y)/(maxy-miny)*MH;
   const box = $("tt-map"); const keepVB = ttSvg && ttVB; box.innerHTML = ""; ttSvg = el("svg", {viewBox:`0 0 ${MW} ${MH}`, role:"img", "aria-label":"Travel-time map", "data-w":MW, "data-h":MH}, box); if (!keepVB) ttVB = [0, 0, MW, MH]; ttApply();
   ttPX = PX; ttPY = PY; ttSiteG = null;
-  const MINC = [5, 10, 15, 30, 60], MCOL = ["--q5","--q4","--q3","--q2","--q1"], UNC = [1000, 5000, 15000, 40000, 100000], DNC = [250, 1000, 2500, 5000, 10000];
-  const seq = (x, cuts) => { if (!(x > 0)) return css("--zero"); const i = cuts.findIndex(c => x <= c); return css(["--q1","--q2","--q3","--q4","--q5","--q5"][i < 0 ? 5 : i]); };
+  const MINC = [5, 10, 15, 30, 60], MCOL = ["--q5","--q4","--q3","--q2","--q1"], SIX = ["--q1","--q2","--q3","--q4","--q5","--q6"];
+  const qcuts = vals => { const v = vals.filter(x => x > 0).sort((a,b) => a-b); return [1,2,3,4,5].map(i => v[Math.min(v.length-1, Math.floor(v.length*i/6))]); };   // village sextiles
+  const allV = [...TTV.values()], UNC = qcuts(allV.filter(v => !(v.access != null && v.access <= 10)).map(v => v.pop)), DNC = qcuts(allV.map(v => v.pop/Math.max(v.area||1,.01)));
+  ttCuts = {UNC, DNC};
+  const seq = (x, cuts) => { if (!(x > 0)) return css("--zero"); const i = cuts.findIndex(c => x <= c); return css(SIX[i < 0 ? 5 : i]); };
   const colorOf = v => { if (key === "rung") return v.rung == null ? css("--zero") : css(RUNGC[v.rung]); if (key === "unreached") return v.access != null && v.access <= 10 ? css("--zero") : seq(v.pop, UNC); if (key === "dens") return seq(v.pop/Math.max(v.area||1,.01), DNC); if (v.access == null) return css("--zero"); const i = MINC.findIndex(c => v.access <= c); return css(i < 0 ? "--zero" : MCOL[i]); };
   ttPaths = new Map(); ttKabBox = new Map();
   TTG.forEach(f => { const v = TTV.get(f.properties.id); if (!v) return; const kc = f.properties.k; const p = el("path", {d:geomPath(f.geometry, PX, PY), fill:colorOf(v), stroke:css("--bg"), "stroke-width":0.35, "data-k":kc, "vector-effect":"non-scaling-stroke"}, ttSvg); ttPaths.set(v.id, p);
@@ -515,12 +518,14 @@ function ttDraw(){ if (!TTG) return; const key = $("tt-layer").value; let minx=1
   ttSvg.addEventListener("pointercancel", () => { drag = null; });
   if (ttSel !== "all") ttSelect(ttSel);
   $("tt-meta").textContent = `${fmt(TTG.length)} villages drawn · ${fmt(TT.rows/1e6,2)} M travel-time pairs`;
-  const seqLeg = (cuts, unit, title) => ["--q1","--q2","--q3","--q4","--q5"].map((c,i) => `<div class="sw"><i style="background:var(${c})"></i>${i ? fmt(cuts[i-1]) + "–" + fmt(cuts[i]) : "≤ " + fmt(cuts[0])}${unit}</div>`).join("") + `<div class="sw"><i style="background:var(--q5)"></i>> ${fmt(cuts[4])}${unit}</div>`;
-  $("tt-leg").innerHTML = key === "rung" ? `<div class="tt-leg" style="margin:0">${RUNGC.map((c,i) => `<span><i style="background:var(${c})"></i>${RUNGL[i]}</span>`).join("")}</div><div style="margin-left:10px">rung 1 = ≤ 10 min · rung 2 = rung 1 and ≥ ${TT.ladder.kw_per_hh} kW per household (E2SFCA, same 10-min catchment) · area ≠ population: the small orange/green patches hold ${pct(100*TT.reach["10"].share,0)} of residents</div>`
-    : key === "unreached" ? seqLeg(UNC, "", "") + `<div class="sw"><i style="background:var(--zero)"></i>reached ≤ 10 min</div><div style="margin-left:10px">residents per village beyond the 10-minute line: where the ${fmt(TT.pop*(1-TT.reach["10"].share)/1e6,1)} M unreached people actually live</div>`
-    : key === "dens" ? seqLeg(DNC, "", "") + `<div style="margin-left:10px">residents per km² (Kontur 2023 ÷ village area): why small map areas carry large population shares</div>`
-    : MCOL.map((c,i) => `<div class="sw"><i style="background:var(${c})"></i>${i ? MINC[i-1] + "–" + MINC[i] : "≤ " + MINC[0]} min</div>`).join("") + `<div class="sw"><i style="background:var(--zero)"></i>> 60 / none</div><div style="margin-left:10px">car travel time (p50) to the nearest village with a public charger · dark = close</div>`;
-  ttSites(); }
+  ttLegend(); ttSites(); }
+function ttLegend(){ if (!ttCuts) return; const key = $("tt-layer").value, {UNC, DNC} = ttCuts, MINC = [5, 10, 15, 30, 60], MCOL = ["--q5","--q4","--q3","--q2","--q1"], SIX = ["--q1","--q2","--q3","--q4","--q5","--q6"];
+  const k = ttSel === "all" ? null : ttKab(ttSel), who = k ? esc(k.name) : "the pilot area", reach10 = k ? k.share1 : TT.reach["10"].share, unr = k ? k.pop*(1-k.share1) : TT.pop*(1-TT.reach["10"].share);
+  const seqLeg = cuts => SIX.map((c,i) => `<div class="sw"><i style="background:var(${c})"></i>${i === 0 ? "≤ " + fmt(cuts[0]) : i === 5 ? "> " + fmt(cuts[4]) : fmt(cuts[i-1]) + "–" + fmt(cuts[i])}</div>`).join("");
+  $("tt-leg").innerHTML = key === "rung" ? `<div class="tt-leg" style="margin:0">${RUNGC.map((c,i) => `<span><i style="background:var(${c})"></i>${RUNGL[i]}</span>`).join("")}</div><div style="margin-left:10px">rung 1 = ≤ 10 min · rung 2 = rung 1 and ≥ ${TT.ladder.kw_per_hh} kW per household (E2SFCA, same 10-min catchment) · area ≠ population: in ${who} the orange/green villages hold ${pct(100*reach10,0)} of residents</div>`
+    : key === "unreached" ? seqLeg(UNC) + `<div class="sw"><i style="background:var(--zero)"></i>reached ≤ 10 min</div><div style="margin-left:10px">residents per village beyond the 10-minute line (sextiles of unreached villages): where ${who}'s ${fmt(unr/1e6,2)} M unreached people live</div>`
+    : key === "dens" ? seqLeg(DNC) + `<div style="margin-left:10px">residents per km², sextiles of all 6,669 villages (Kontur 2023 ÷ area): why small map areas carry large population shares</div>`
+    : MCOL.map((c,i) => `<div class="sw"><i style="background:var(${c})"></i>${i ? MINC[i-1] + "–" + MINC[i] : "≤ " + MINC[0]} min</div>`).join("") + `<div class="sw"><i style="background:var(--zero)"></i>> 60 / none</div><div style="margin-left:10px">car travel time (p50) to the nearest village with a public charger · dark = close${k ? ` · ${who}: ${pct(100*reach10,0)} of residents ≤ 10 min` : ""}</div>`; }
 $("tt-layer").addEventListener("change", ttDraw);
 function chapters(){ const nav = $("chapters"); if (!nav.children.length){ nav.innerHTML = CH.map((c,i) => `<button type="button" data-ch="${c[0]}" aria-pressed="false"><span class="k">${String(i).padStart(2,"0")}</span><span><b>${c[1]}</b><small>${c[2]}</small></span></button>`).join(""); nav.querySelectorAll("button").forEach(b => b.addEventListener("click", () => showChapter(b.dataset.ch))); $("prev").addEventListener("click", () => step(-1)); $("next").addEventListener("click", () => step(1)); } }
 function step(d){ const i = CH.findIndex(c => c[0] === CUR_CH); const j = Math.min(CH.length-1, Math.max(0, i + d)); showChapter(CH[j][0]); }
@@ -528,7 +533,7 @@ document.addEventListener("keydown", e => { if (e.target.tagName === "SELECT") r
 function showChapter(ch){ CUR_CH = ch; const c = CH.find(x => x[0] === ch); document.querySelectorAll("section.ch").forEach(s => s.classList.toggle("active", s.dataset.ch === ch)); document.querySelectorAll("#chapters button").forEach(b => b.setAttribute("aria-pressed", b.dataset.ch === ch));
   const i = CH.indexOf(c); $("prev").disabled = i === 0; $("next").disabled = i === CH.length-1; $("pager-pos").textContent = `${i+1} / ${CH.length}`; history.replaceState(null, "", `#${S}/${ch}`);
   document.querySelectorAll("section.ch").forEach(s => { const n = s.querySelector("h2 .n"), j = CH.findIndex(x => x[0] === s.dataset.ch); if (n && j >= 0) n.textContent = String(j).padStart(2,"0"); });
-  if (ch === "travel") ttLoad(); }
+  if (ch === "travel"){ ttLoad(); $("eyebrow").textContent = `Travel-time pilot · ${fmt(TT.n_villages)} villages · ${TT.kabs.length} districts (West Java 27 · Jakarta 5, Kepulauan Seribu excluded · Tangerang 3) · ${fmt(TT.pop/1e6,1)} million residents`; } else hero(); }
 
 // ---------- render all
 function renderAll(scope){ load(scope); hero(); waffles(); stairs(); gap(); evidence(); renderMap(); travel(); forest(); curveInit(); quintInit(); theil(); rest(); chapters(); showChapter(CUR_CH); }
