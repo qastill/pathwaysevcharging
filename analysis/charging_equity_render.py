@@ -43,17 +43,17 @@ h3{font-size:13px;font-weight:600;color:var(--fg2);margin:0 0 6px}
 p{margin:4px 0}
 a{color:var(--s1)}
 /* ---- sidebar */
-.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:18px 14px;gap:14px;overflow:auto}
+.side{background:var(--side);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 14px 12px;gap:10px;overflow:hidden;min-height:0}
 .brand{font-family:var(--display);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3)}
 .seg{display:flex;flex-direction:column;gap:4px}
-.seg button{font:inherit;font-size:13px;font-weight:600;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg2);cursor:pointer;text-align:left}
+.seg button{font:inherit;font-size:13px;font-weight:600;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg2);cursor:pointer;text-align:left}
 .seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .seg button small{display:block;font-weight:400;font-size:11px;opacity:.75}
-.chapters{display:flex;flex-direction:column;gap:2px;flex:1}
-.chapters button{font:inherit;font-size:13px;padding:7px 9px;border:none;border-radius:8px;background:transparent;color:var(--fg2);cursor:pointer;text-align:left;display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:center}
+.chapters{display:flex;flex-direction:column;gap:1px;flex:1;min-height:0;overflow:auto}
+.chapters button{font:inherit;font-size:12.5px;padding:5px 9px;border:none;border-radius:8px;background:transparent;color:var(--fg2);cursor:pointer;text-align:left;display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:center}
 .chapters button .k{font-family:var(--display);font-size:11px;color:var(--fg3);text-align:right}
 .chapters button b{font-weight:600;color:var(--fg)}
-.chapters button small{display:block;font-size:11px;color:var(--fg3);line-height:1.25}
+.chapters button small{display:block;font-size:10.5px;color:var(--fg3);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chapters button:hover{background:var(--chip)}
 .chapters button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}.chapters button[aria-pressed="true"] b,.chapters button[aria-pressed="true"] .k,.chapters button[aria-pressed="true"] small{color:var(--bg)}
 .pager{display:flex;gap:6px;align-items:center;justify-content:space-between;font-size:12px;color:var(--fg3)}
@@ -122,6 +122,10 @@ th{font-weight:600;color:var(--fg2);font-size:11.5px}
 .pos{color:var(--crit);font-weight:600}.neg{color:var(--s3);font-weight:600}
 .bar{display:inline-block;height:7px;border-radius:4px;background:var(--grid);width:60px;vertical-align:middle;margin-right:5px;overflow:hidden}.bar i{display:block;height:100%;background:var(--s1)}
 .mapleg{display:flex;gap:2px;align-items:flex-end;font-size:11px;color:var(--fg2);flex-wrap:wrap}
+.tt-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.tt-tiles .t{background:var(--mid);border-radius:8px;padding:8px 10px;min-width:0}.tt-tiles .v{font-family:var(--display);font-size:22px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums}.tt-tiles .l{font-size:11px;color:var(--fg2);margin-top:3px;line-height:1.25}
+.tt-bar{display:flex;height:26px;border-radius:7px;overflow:hidden;margin:8px 0 4px}.tt-bar div{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden}
+.tt-leg{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--fg2);margin-bottom:6px}.tt-leg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+#tt-table table{font-size:11.5px}#tt-table th,#tt-table td{padding:3px 5px}#tt-table td:first-child{text-align:left}
 .mapleg .sw{display:flex;flex-direction:column;gap:2px}.mapleg .sw i{display:block;width:48px;height:9px}
 ul.m{margin:0;padding-left:18px;font-size:12.5px;color:var(--fg2)}ul.m li{margin:3px 0}ul.m b{color:var(--fg)}
 @media (max-width:980px){body{grid-template-columns:1fr;overflow:auto}.side{flex-direction:row;flex-wrap:wrap}.main{height:auto;overflow:visible}.row.c2,.row.c21,.row.c3,.row.c5,.big,.story,.ev,.evwrap,.waffles{grid-template-columns:1fr}.chapters{flex-direction:row;flex-wrap:wrap}}
@@ -161,6 +165,14 @@ ul.m{margin:0;padding-left:18px;font-size:12.5px;color:var(--fg2)}ul.m li{margin
  <h2><span class="n">03</span>Where the supply is</h2>
  <div class="controls"><label>Layer <select id="layer"></select></label><span class="note" id="map-note"></span></div>
  <div class="row c21"><div class="panel"><div class="chart" id="map"></div><div class="mapleg" id="mapleg"></div></div><div class="panel lists" id="lists" style="overflow:auto"></div></div>
+</section>
+
+<section class="ch" data-ch="travel">
+ <h2><span class="n">04</span>Who can reach a charger in 10 minutes by car?</h2>
+ <div class="controls"><label>Layer <select id="tt-layer"><option value="min">Minutes by car to the nearest village with a charger</option><option value="rung">Service ladder rung (reach, then capacity)</option></select></label><span class="note" id="tt-note"></span></div>
+ <div class="row c21"><div class="panel"><div class="chart" id="tt-map"></div><div class="mapleg" id="tt-leg"></div></div>
+  <div class="panel" style="overflow:auto;gap:8px"><div class="tt-tiles" id="tt-big"></div><div id="tt-ladder"></div><div id="tt-table"></div></div></div>
+ <p class="take" id="tt-take"></p>
 </section>
 
 <section class="ch" data-ch="fifths">
@@ -204,7 +216,7 @@ ul.m{margin:0;padding-left:18px;font-size:12.5px;color:var(--fg2)}ul.m li{margin
 </main>
 <div class="tip" id="tip" hidden></div>
 <script>
-const ALL = __ALL__; const GEOS = __GEO__;
+const ALL = __ALL__; const GEOS = __GEO__; const TT = __TT__;
 const NS = "http://www.w3.org/2000/svg"; const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const fmt = (x, d=0) => (x==null||isNaN(x)) ? "–" : (+x).toLocaleString("en-US", {minimumFractionDigits:d, maximumFractionDigits:d});
 const sgn = x => (x==null||isNaN(x)) ? "–" : (x>0?"+":"") + (+x).toFixed(3);
@@ -408,21 +420,58 @@ function rest(){ const rob = D.G.robust; $("robust").innerHTML = `<table><thead>
   <h3 style="margin-top:8px">Limits</h3><ul class="m"><li>Containment ≠ reach: a charger across a boundary serves neighbours.</li><li>Corridor (toll-road) chargers are counted where they sit.</li><li>${NAT ? "Chargers counted regardless of uptime; distance is straight-line." : "One month of transactions; EV owners proxied by completed PLN home-charger applications."}</li></ul>`; }
 
 // ---------- chapters (one at a time)
-const CH = [["overview","Overview","The question, five numbers, the story"],["people","100 residents","Poorest vs richest fifth, one square per person"],["gap","The gap","Provinces / districts ranked; who holds more than their share"],["map","Map","Where the supply sits"],["fifths","Fifths","Five equal groups of residents"],["inequitable","Follow advantage?","Concentration indices with 95 % bands"],["sources","Sources","Between vs within; cities, metros, Java"],["evidence","Evidence","Six findings, robustness, what it takes"],["method","Method","Data, estimators, limits, glossary"]];
+const CH = [["overview","Overview","The question, five numbers, the story"],["people","100 residents","Poorest vs richest fifth, one square per person"],["gap","The gap","Provinces / districts ranked; who holds more than their share"],["map","Map","Where the supply sits"],["travel","Travel time","10-minute reach by car; service ladder rungs 1–2"],["fifths","Fifths","Five equal groups of residents"],["inequitable","Follow advantage?","Concentration indices with 95 % bands"],["sources","Sources","Between vs within; cities, metros, Java"],["evidence","Evidence","Six findings, robustness, what it takes"],["method","Method","Data, estimators, limits, glossary"]];
 let CUR_CH = "overview";
+// ---------- travel time (r5r matrix, West Java + Jakarta + Tangerang pilot)
+let TTV = null, TTN = null, TTG = null, ttBusy = false;
+const RUNGC = ["--crit","--s4","--good"], RUNGL = ["not reachable (> 10 min)", "reachable, capacity short", "reachable and capacity sufficient"];
+function travel(){ const r = TT.reach, l = TT.ladder, e = TT.e2sfca["10"];
+  $("tt-note").textContent = `Pilot area: ${fmt(TT.n_villages)} villages in West Java, Jakarta and Tangerang · r5r car travel times, Tuesday 14:00 · ${fmt(TT.pop/1e6,1)} M residents`;
+  $("tt-big").innerHTML = ["7","10","15","30"].map(t => `<div class="t"><div class="v">${pct(100*r[t].share,0)}</div><div class="l">of residents ≤ ${t} min by car from a village with a charger${t === "10" ? " · <b>rung 1</b>" : ""}</div></div>`).join("");
+  $("tt-ladder").innerHTML = `<div class="tt-bar">${l.rungs.map((x,i) => `<div style="width:${100*x.share}%;background:var(${RUNGC[i]})" title="${RUNGL[i]}: ${pct(100*x.share,1)}">${x.share > 0.08 ? pct(100*x.share,0) : ""}</div>`).join("")}</div><div class="tt-leg">${l.rungs.map((x,i) => `<span><i style="background:var(${RUNGC[i]})"></i>${RUNGL[i]} · ${pct(100*x.share,1)}</span>`).join("")}</div>`;
+  const row = (name, o) => `<tr><td>${name}</td><td>${pct(100*o.reach7,0)}</td><td><b>${pct(100*o.share1,0)}</b></td><td>${pct(100*o.reach15,0)}</td><td>${pct(100*o.share2,0)}</td><td>${pct(100*o.suff10,1)}</td></tr>`;
+  const q = TT.quintiles;
+  $("tt-table").innerHTML = `<table><thead><tr><th style="text-align:left">Residents within…</th><th>7 min</th><th>10 min</th><th>15 min</th><th>30 min</th><th title="rung 2: E2SFCA capacity sufficient">cap. ok</th></tr></thead><tbody>${TT.metros.map(m => row(m.label, m)).join("")}${q ? row("West Java · poorest fifth", q[0]) + row("West Java · richest fifth", q[4]) : ""}</tbody></table>`;
+  const jb = TT.metros.find(m => m.key === "jabodetabek"), lu = TT.metros.find(m => m.key === "luar");
+  $("tt-take").innerHTML = `<b>${pct(100*r["10"].share,0)} of residents can reach a village with a charger within 10 minutes by car</b> (${pct(100*r["7"].share,0)} at 7 min, ${pct(100*r["15"].share,0)} at 15; the ranking of areas never changes). Jabodetabek ${pct(100*jb.share1,0)} vs outside the metros ${pct(100*lu.share1,0)}; ${q ? `West Java's poorest fifth ${pct(100*q[0].share1,0)} vs richest ${pct(100*q[4].share1,0)}. ` : ""}Rung 2 (E2SFCA capacity ≥ ${l.kw_per_hh} kW per household in 10 min) covers only ${pct(100*l.rungs[2].share,1)} and is near zero by construction: the denominator is every household, not those depending on public charging. What is already readable is its tilt: CI of capacity vs spending <b>${sgn(e.ci_expend)}</b>, vs density ${sgn(e.ci_density)}.`;
+  if (TTV) ttDraw(); else $("tt-map").innerHTML = `<div class="note">Open this chapter to load the village map (6,669 polygons, ≈ 4.7 MB).</div>`; }
+async function ttLoad(){ if (TTV || ttBusy) return; ttBusy = true; $("tt-map").innerHTML = `<div class="note">Loading 6,669 village polygons…</div>`;
+  try { const [j, g] = await Promise.all([fetch("../ttm/ttm.json").then(r => { if (!r.ok) throw new Error("ttm.json " + r.status); return r.json(); }), fetch("../ttm/input/villages_simplified.geojson").then(r => { if (!r.ok) throw new Error("geojson " + r.status); return r.json(); })]);
+    TTV = new Map(j.villages.map(a => { const o = {}; j.village_cols.forEach((c,i) => o[c] = a[i]); return [o.id, o]; })); TTN = j.names; TTG = g.features; ttDraw(); }
+  catch (e){ $("tt-map").innerHTML = `<div class="note">Village map not available here (${esc(e.message)}). It loads on the deployed site, where ttm/ttm.json and the village polygons sit next to this page.</div>`; }
+  ttBusy = false; }
+function ttDraw(){ if (!TTG) return; const key = $("tt-layer").value; let minx=1e9,miny=1e9,maxx=-1e9,maxy=-1e9; const walk = (c, fn) => typeof c[0] === "number" ? fn(c) : c.forEach(x => walk(x, fn));
+  TTG.forEach(f => walk(f.geometry.coordinates, c => { if (c[0]<minx) minx=c[0]; if (c[0]>maxx) maxx=c[0]; if (c[1]<miny) miny=c[1]; if (c[1]>maxy) maxy=c[1]; }));
+  const MW = 1000, k = Math.cos((miny+maxy)/2*Math.PI/180), MH = Math.round(MW*(maxy-miny)/((maxx-minx)*k)), PX = x => (x-minx)/(maxx-minx)*MW, PY = y => (maxy-y)/(maxy-miny)*MH;
+  const box = $("tt-map"); box.innerHTML = ""; const svg = el("svg", {viewBox:`0 0 ${MW} ${MH}`, role:"img", "aria-label":"Travel-time map"}, box);
+  const MINC = [5, 10, 15, 30, 60], MCOL = ["--q5","--q4","--q3","--q2","--q1"];
+  const colorOf = v => { if (key === "rung") return v.rung == null ? css("--zero") : css(RUNGC[v.rung]); if (v.access == null) return css("--zero"); const i = MINC.findIndex(c => v.access <= c); return css(i < 0 ? "--zero" : MCOL[i]); };
+  TTG.forEach(f => { const v = TTV.get(f.properties.id); if (!v) return; const p = el("path", {d:geomPath(f.geometry, PX, PY), fill:colorOf(v), stroke:css("--bg"), "stroke-width":0.35}, svg); const nm = TTN[v.id] || ["","",""];
+    p.addEventListener("pointermove", ev => showTip(ev, `<b>${esc(nm[0])}</b> · ${esc(nm[1])}, ${esc(nm[2])}<br>${fmt(v.pop)} residents · ${v.chargers} chargers here<br>nearest charger village: <b>${v.access == null ? "> 60 min" : fmt(v.access,0) + " min"}</b><br>chargers within 10 min: ${fmt(v.near)} · within 30 min: ${fmt(v.far)}<br>E2SFCA capacity: ${fmt(v.cap10,3)} kW/household · <i>${RUNGL[v.rung]}</i>`)); p.addEventListener("pointerleave", hideTip); });
+  $("tt-leg").innerHTML = key === "rung" ? `<div class="tt-leg" style="margin:0">${RUNGC.map((c,i) => `<span><i style="background:var(${c})"></i>${RUNGL[i]}</span>`).join("")}</div><div style="margin-left:10px">rung 1 = ≤ 10 min · rung 2 = ≥ ${TT.ladder.kw_per_hh} kW per household (E2SFCA, 10-min catchment)</div>`
+    : MCOL.map((c,i) => `<div class="sw"><i style="background:var(${c})"></i>${i ? MINC[i-1] + "–" + MINC[i] : "≤ " + MINC[0]} min</div>`).join("") + `<div class="sw"><i style="background:var(--zero)"></i>> 60 / none</div><div style="margin-left:10px">car travel time (p50) to the nearest village with a public charger</div>`; }
+$("tt-layer").addEventListener("change", ttDraw);
 function chapters(){ const nav = $("chapters"); if (!nav.children.length){ nav.innerHTML = CH.map((c,i) => `<button type="button" data-ch="${c[0]}" aria-pressed="false"><span class="k">${String(i).padStart(2,"0")}</span><span><b>${c[1]}</b><small>${c[2]}</small></span></button>`).join(""); nav.querySelectorAll("button").forEach(b => b.addEventListener("click", () => showChapter(b.dataset.ch))); $("prev").addEventListener("click", () => step(-1)); $("next").addEventListener("click", () => step(1)); } }
 function step(d){ const i = CH.findIndex(c => c[0] === CUR_CH); const j = Math.min(CH.length-1, Math.max(0, i + d)); showChapter(CH[j][0]); }
 document.addEventListener("keydown", e => { if (e.target.tagName === "SELECT") return; if (e.key === "ArrowRight") step(1); if (e.key === "ArrowLeft") step(-1); });
 function showChapter(ch){ CUR_CH = ch; const c = CH.find(x => x[0] === ch); document.querySelectorAll("section.ch").forEach(s => s.classList.toggle("active", s.dataset.ch === ch)); document.querySelectorAll("#chapters button").forEach(b => b.setAttribute("aria-pressed", b.dataset.ch === ch));
-  const i = CH.indexOf(c); $("prev").disabled = i === 0; $("next").disabled = i === CH.length-1; $("pager-pos").textContent = `${i+1} / ${CH.length}`; history.replaceState(null, "", `#${S}/${ch}`); }
+  const i = CH.indexOf(c); $("prev").disabled = i === 0; $("next").disabled = i === CH.length-1; $("pager-pos").textContent = `${i+1} / ${CH.length}`; history.replaceState(null, "", `#${S}/${ch}`);
+  document.querySelectorAll("section.ch").forEach(s => { const n = s.querySelector("h2 .n"), j = CH.findIndex(x => x[0] === s.dataset.ch); if (n && j >= 0) n.textContent = String(j).padStart(2,"0"); });
+  if (ch === "travel") ttLoad(); }
 
 // ---------- render all
-function renderAll(scope){ load(scope); hero(); waffles(); stairs(); gap(); evidence(); renderMap(); forest(); curveInit(); quintInit(); theil(); rest(); chapters(); showChapter(CUR_CH); }
+function renderAll(scope){ load(scope); hero(); waffles(); stairs(); gap(); evidence(); renderMap(); travel(); forest(); curveInit(); quintInit(); theil(); rest(); chapters(); showChapter(CUR_CH); }
 document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => { if (b.dataset.s !== S) renderAll(b.dataset.s); }));
 $("layer").addEventListener("change", renderMap); $("gap-metric").addEventListener("change", gap); $("cv-rank").addEventListener("change", drawCurve); $("cv-out").addEventListener("change", drawCurve); $("q-rank").addEventListener("change", drawQuint);
 { const h = location.hash.slice(1).split("/"); if (h[1] && CH.some(c => c[0] === h[1])) CUR_CH = h[1]; renderAll(h[0] === "jabar" ? "jabar" : "national"); }
 </script></body></html>
 """
-html = TEMPLATE.replace("__ALL__", json.dumps(DATA, ensure_ascii=False, separators=(",", ":"))).replace("__GEO__", json.dumps(GEO, ensure_ascii=False, separators=(",", ":")))
+_tt = json.load(open("ttm/ttm.json", encoding="utf-8"))["summary"]
+assert _tt["mode"] == "ttm", "ttm/ttm.json must be in travel-time mode (run ttm/compute.py with the r5r matrix)"
+TT = dict(reach=_tt["reach"], ladder=_tt["ladder"], e2sfca=_tt["e2sfca"], n_villages=_tt["n_villages"], pop=_tt["pop"], rows=_tt["rows"],
+          metros=[{k: m.get(k) for k in ("key", "label", "pop", "share1", "share2", "reach7", "reach15", "suff10")} for m in _tt["metros"]],
+          quintiles=[{k: q.get(k) for k in ("q", "share1", "share2", "reach7", "reach15", "suff10")} for q in _tt.get("quintiles_expend", [])] or None)
+for m in TT["metros"]: m["label"] = {"Luar metropolitan": "Outside the metros"}.get(m["label"], m["label"])
+html = TEMPLATE.replace("__ALL__", json.dumps(DATA, ensure_ascii=False, separators=(",", ":"))).replace("__GEO__", json.dumps(GEO, ensure_ascii=False, separators=(",", ":"))).replace("__TT__", json.dumps(TT, separators=(",", ":")))
 open("analysis/charging_equity_en.html", "w", encoding="utf-8").write(html)
 print("analysis/charging_equity_en.html %.0f KB" % (len(html.encode()) / 1024))
