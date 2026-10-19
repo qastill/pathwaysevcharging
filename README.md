@@ -98,7 +98,7 @@ memisahkan *kesetaraan* (porsi charger sebanding penduduk) dari *ekuitas* (porsi
 
 ## 🎯 Indeks konsentrasi SPKLU Jawa Barat — kab/kota dan kecamatan
 
-**Satu halaman cerita dengan sakelar Indonesia / Jawa Barat, satu bab per layar** (14 tab bab + *Previous/Next*, posisi di URL `#national/gap`): `python3 analysis/charging_equity_render.py` →
+**Satu halaman cerita dengan sakelar Indonesia / Jawa Barat, satu bab per layar** (navigasi di sisi kiri, 9 bab yang masing-masing muat dalam satu layar tanpa gulir, *Prev/Next* dan tombol ← →, posisi di URL `#national/gap`): `python3 analysis/charging_equity_render.py` →
 **`analysis/charging_equity_en.html`** (`#national` / `#jabar`). Menambah infografis di atas bukti yang sama: hero
 dengan ikon, alur 4 langkah (unequal → inequitable → where → what it takes), waffle "jika ada 100 penduduk" untuk kuintil
 termiskin/tengah/terkaya (≤10 km · 10–25 km · >25 km), tangga kuintil piktogram, **kesenjangan antar-provinsi** (lollipop
