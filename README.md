@@ -54,7 +54,8 @@ sebagai ukuran antara yang diberi label di halaman. Matriks r5r supervisor (4,41
 tanpa baris memakai nilai desa ber-baris terdekat ≤5 km (ditandai di JSON). Mode waktu tempuh juga menghitung **tangga layanan
 RQ1**: anak tangga 1 = terjangkau ≤10 menit, anak tangga 2 = kecukupan daya **E2SFCA** (catchment biner 10 menit, kW per rumah
 tangga, RT = penduduk ÷ 3,6, ambang 0,03 kW/RT; penyebut N2 rumah tangga yang bergantung pada charging publik belum ada, jadi
-anak tangga 2 dibaca lewat distribusinya, bukan levelnya).
+anak tangga 2 dibaca lewat distribusinya, bukan levelnya). Catchment anak tangga 2 sama dengan anak tangga 1, jadi anak tangga 2
+bersarang di dalam anak tangga 1 secara konstruksi: hubungan jangkauan–daya adalah urutan tangga, bukan temuan empiris.
 
 ```bash
 pip install numpy shapely h3 openpyxl
