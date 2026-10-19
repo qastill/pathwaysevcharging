@@ -63,6 +63,7 @@ python3 ttm/prepare_villages.py --villages /path/JfrAziz-indonesia-district   # 
 python3 ttm/crosswalk.py                                                       # -> ttm/input/id_crosswalk.csv (id GADM -> BPS)
 python3 ttm/compute.py --kontur /path/kontur_population_ID_20231101.gpkg      # -> ttm/ttm.json (+ cache village_pop.csv)
 python3 ttm/inject.py                                                          # pasang tab (idempoten)
+python3 analysis/inject_ladder1.py                                             # tab 🪜 Ladder 1 = halaman cerita EN di iframe (idempoten)
 ```
 
 ## 🗺️ Peta Ekuitas — padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia
