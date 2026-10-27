@@ -3530,6 +3530,15 @@ Department of Electrical Engineering, Universitas Indonesia</div>
 <iframe id="ladder1Frame" title="Charging equity story" src="about:blank" data-src="analysis/charging_equity_en.html#jabar/travel" style="width:100%;height:calc(100vh - 150px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
 </div>
 <!-- LADDER1:END -->
+<!-- REBANA:BEGIN -->
+<div class="page" id="p-rebana">
+<div class="card" style="padding:10px 14px;margin-bottom:10px;display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+ <div style="flex:1;min-width:260px"><b>🏭 Powering Rebana — facts, PLN data, projections and ideas (EN/ID)</b><br><span style="font-size:12px;color:var(--mut)">Fourteen one-screen chapters for the 2nd Powering Rebana Workshop (Cirebon, 5–6 Nov 2026): the 13 industrial zones, investment, gateways and power plants from public sources; the RACE for 2030 PhD and its data assets; Rebana-only facts computed from PLN SPKLU transactions, home-charging register and substation loading; three movable 2030 projections; ideas mapped to the Energy, Mobility and Skills work packages. Language switch EN/ID inside; ← → keys to move.</span></div>
+ <a class="dl" href="analysis/rebana_explorer.html" target="_blank" rel="noopener">Open full page ↗</a>
+</div>
+<iframe id="rebanaFrame" title="Powering Rebana explorer" src="about:blank" data-src="analysis/rebana_explorer.html" style="width:100%;height:calc(100vh - 150px);min-height:640px;border:1px solid var(--line);border-radius:12px;background:#fff"></iframe>
+</div>
+<!-- REBANA:END -->
 <div class="page phdp" id="p-phdref">
 <div class="paper">
 
@@ -3723,11 +3732,11 @@ const ASPLAB={keandalan:"Reliability",ketersediaan:"Availability",kejujuran_daya
 const hmc=v=>{if(v==null)return '#eef1f6';const t=(v+1)/2;return `rgb(${Math.round(214-(214-46)*t)},${Math.round(68+(158-68)*t)},${Math.round(60+(91-60)*t)})`;};
 const $=id=>document.getElementById(id);const C={};
 
-const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["keadilan","⚖️ Ekuitas vs Kesetaraan"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["ekuitas","🗺️ Peta Ekuitas"],["parkir","🅿️ Parkir × Charger"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["jaringan","⚡ EV × Jaringan"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["asean","🌏 ASEAN Paper"],["capacity","🔌 Capacity Maps"],["p2p","🤝 P2P Charging"],["library","📚 Perpustakaan"],["resources","🧰 Repositori Riset"],["combine","🔗 Kombinasi"],["summary","Summary"],["phd","🎓 Ikhtisar Disertasi"],["phdequity","⚖️ Kerangka Keadilan"],["phddata","🗃️ Data & Bukti"],["ttm","⏱️ Akses Waktu Tempuh"],["ladder1","🪜 Ladder 1"],["phdref","📖 Referensi Vault"]];
+const TABS=[["overview","Overview"],["national","🇮🇩 Indonesia"],["map","Map"],["equity","Spatial Equity"],["keadilan","⚖️ Ekuitas vs Kesetaraan"],["perception","Perception"],["demand","Demand & Sales"],["policy","Growth & Policy"],["socio","Socio-Economic"],["benchmark","Global Benchmark"],["locint","Location Intelligence"],["ekuitas","🗺️ Peta Ekuitas"],["parkir","🅿️ Parkir × Charger"],["sector","Sector Analysis"],["jraya","Jakarta Raya"],["pelanggan","🏠 Pelanggan EV"],["jaringan","⚡ EV × Jaringan"],["geopeta","🗺️ GeoSPKLU"] /* embed geospklu.html */,["asean","🌏 ASEAN Paper"],["capacity","🔌 Capacity Maps"],["p2p","🤝 P2P Charging"],["library","📚 Perpustakaan"],["resources","🧰 Repositori Riset"],["combine","🔗 Kombinasi"],["summary","Summary"],["phd","🎓 Ikhtisar Disertasi"],["phdequity","⚖️ Kerangka Keadilan"],["phddata","🗃️ Data & Bukti"],["ttm","⏱️ Akses Waktu Tempuh"],["ladder1","🪜 Ladder 1"],["rebana","🏭 Rebana"],["phdref","📖 Referensi Vault"]];
 $('tabs').innerHTML=TABS.map((t,i)=>`<div class="tab${i==0?' active':''}" data-p="${t[0]}">${t[1]}</div>`).join('');
 /* NAV:BEGIN — navigasi dua tingkat: grup -> tab. Tab yang tidak terdaftar jatuh ke grup 'open'. */
 const NAVGROUPS=[
- ["phd","🎓 PhD Monash",["phd","phdequity","phddata","ttm","ladder1","phdref"]],
+ ["phd","🎓 PhD Monash",["phd","phdequity","phddata","ttm","ladder1","rebana","phdref"]],
  ["analisis","📊 Analisis SPKLU",["overview","national","demand","policy","sector","jraya","pelanggan","benchmark","socio","equity","keadilan","perception"]],
  ["peta","🗺️ Peta & Jaringan",["map","locint","ekuitas","parkir","geopeta","jaringan"]],
  ["naskah","📚 Naskah & Perpustakaan",["library","asean","capacity","p2p","summary"]],
@@ -3757,6 +3766,7 @@ document.querySelectorAll('.tab').forEach(tb=>tb.onclick=()=>{
  if(tb.dataset.p==='locint')setTimeout(()=>{if(!window.liMapInit)initLiMap();else{if(window.liMap)window.liMap.invalidateSize();if(window.liCandMap)window.liCandMap.invalidateSize();if(window.srMap)window.srMap.invalidateSize();}},80);
  if(tb.dataset.p==='sector'&&window.initSector)setTimeout(window.initSector,80);
  if(tb.dataset.p==='ttm'&&window.initTTM)setTimeout(window.initTTM,60);
+ if(tb.dataset.p==='rebana'){const f=document.getElementById('rebanaFrame');if(f&&f.dataset.src){f.src=f.dataset.src;delete f.dataset.src;}}
  if(tb.dataset.p==='ladder1'){const f=document.getElementById('ladder1Frame');if(f&&f.dataset.src){f.src=f.dataset.src;delete f.dataset.src;}}
  if(tb.dataset.p==='keadilan'&&window.initKeadilan)setTimeout(window.initKeadilan,60);
  if(tb.dataset.p==='parkir'&&window.initParkir)setTimeout(window.initParkir,60);

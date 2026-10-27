@@ -66,6 +66,20 @@ python3 ttm/inject.py                                                          #
 python3 analysis/inject_ladder1.py                                             # tab 🪜 Ladder 1 = halaman cerita EN di iframe (idempoten)
 ```
 
+## 🏭 Rebana — Powering Rebana explorer (tab di grup PhD Monash)
+
+Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 14 bab (navigasi rel kiri atau tombol ← →),
+sakelar bahasa EN/ID, animasi masuk per bab, dan sumber tiap angka saat kursor diarahkan. Dibuat untuk Workshop Powering Rebana ke-2
+(Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: 13 KPI (6 di Indramayu), investasi, gerbang
+logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE for 2030, aset data disertasi, pengalaman Indramayu
+(bagian 2); fakta khusus Rebana yang dihitung dari Master SPKLU dan transaksi Maret 2026, register charger rumah, dan beban trafo
+GI/gardu (bagian 3); tiga proyeksi 2030 dengan slider, ide per paket kerja Energi/Mobilitas/Keterampilan, permintaan, sumber (bagian 4).
+Data tertanam di dalam berkas (agregat saja); halaman memuat d3 v7 dari cdnjs.
+
+```bash
+python3 analysis/inject_rebana.py    # pasang/perbarui tab 🏭 Rebana (idempoten)
+```
+
 ## 🗺️ Peta Ekuitas — padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia
 
 [EV Equity Roadmap](https://evmap.climateplans.org/) mewarnai piksel 100 m di California dengan dua lapisan
