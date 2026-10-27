@@ -68,7 +68,7 @@ python3 analysis/inject_ladder1.py                                             #
 
 ## 🏭 Rebana — Powering Rebana explorer (tab di grup PhD Monash)
 
-Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 14 bab (navigasi rel kiri atau tombol ← →),
+Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 16 bab (navigasi rel kiri atau tombol ← →),
 sakelar bahasa EN/ID, animasi masuk per bab, dan sumber tiap angka saat kursor diarahkan. Dibuat untuk Workshop Powering Rebana ke-2
 (Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: 13 KPI (6 di Indramayu), investasi, gerbang
 logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE for 2030, aset data disertasi, pengalaman Indramayu
@@ -76,7 +76,25 @@ logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE f
 GI/gardu (bagian 3); tiga proyeksi 2030 dengan slider, ide per paket kerja Energi/Mobilitas/Keterampilan, permintaan, sumber (bagian 4).
 Data tertanam di dalam berkas (agregat saja); halaman memuat d3 v7 dari cdnjs.
 
+Peta memakai Leaflet 1.9.4 (unpkg) di atas peta dasar nyata yang bisa dipilih: CARTO (Positron/Dark Matter mengikuti tema),
+CARTO Voyager, OpenStreetMap, Esri World Imagery, Esri World Topo. Lapisan jaringan (GI, saluran 500/150/70 kV, pembangkit) diambil
+dari `data/grid-id/data_jamali.js` (OSM yang dicocokkan dengan RUPTL 2025–2034) dan diberi warna beban trafo GI April 2022.
+
+Dua bab khusus Indramayu (penugasan penyaji Juni 2023 – Juli 2026 di Indramayu dan ULP Cikedung):
+- **Peta lapangan Indramayu**: 31 kecamatan diwarnai beban rata-rata gardu, jumlah overload, kepadatan penduduk, atau kVA per
+  1.000 jiwa; wilayah kerja 4 ULP (Cikedung, Indramayu, Jatibarang, Haurgeulis) dari ULP pemilik gardu terbanyak per kecamatan;
+  heksagon H3 res 7; GI, transmisi, PLTU Indramayu, SPKLU; empat kecamatan prioritas pertumbuhan UP3 (Sukra, Losarang, Gantar,
+  Krangkeng); klik kecamatan untuk profil.
+- **UP3 Indramayu 2026**: infografis kinerja penjualan Januari–September 2026 dari paparan *Sharing Session Best Practice
+  Penjualan Tenaga Listrik* UP3 Indramayu (15 Okt 2026): 1.187,73 GWh (+9,23%), KPI 110%, pelanggan, daya tersambung, pendapatan,
+  penjualan TM (+40,35%), klaster industri (plastik +51,76 GWh), tiga program lintas bidang, pipeline.
+
+Privasi: gardu distribusi hanya keluar sebagai agregat per kecamatan dan per heksagon (≥3 gardu), tanpa nama/kode/koordinat
+gardu; charger rumah hanya sebagai hitungan per kecamatan.
+
 ```bash
+pip install openpyxl shapely h3
+python3 analysis/rebana_build.py     # data mentah -> analysis/rebana_data.json -> analysis/rebana_explorer.html (dari *_src.html)
 python3 analysis/inject_rebana.py    # pasang/perbarui tab 🏭 Rebana (idempoten)
 ```
 

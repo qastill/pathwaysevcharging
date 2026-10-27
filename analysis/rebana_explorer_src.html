@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Powering Rebana explorer: Rebana facts, PLN operational data, 2030 projections and work-package ideas for the 2nd Powering Rebana Workshop (Cirebon, 5-6 Nov 2026).">
+<title>Powering Rebana Explorer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap">
+<style>
+/* Layout: one screen per chapter; vertical chapter rail on the left, stage in the middle, arrows bottom-right. */
+:root{
+  --bg:#F6F4EE; --panel:#FFFFFF; --fg:#13263A; --muted:#55606E; --line:#DAD6CB; --soft:#ECE8DD;
+  --accent:#C97D0E; --s1:#0F9A96; --s2:#C97D0E; --s3:#7B5EA7; --s4:#C0392B; --ok:#1E8E5A; --warn:#C97D0E; --bad:#C0392B;
+  --navy:#0F2A3D; --navyfg:#F6F4EE; --grid:#E3DFD3;
+  --fd:'Domine',Georgia,serif; --fs:'IBM Plex Sans',Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0E1B26; --panel:#15283A; --fg:#EDEBE4; --muted:#A7B3BE; --line:#28405A; --soft:#1B3146;
+  --accent:#C4821C; --s1:#2FA9A6; --s2:#C4821C; --s3:#9C82D0; --s4:#DC5F4F; --ok:#3DBB7E; --warn:#C4821C; --bad:#DC5F4F;
+  --navy:#0A1823; --navyfg:#EDEBE4; --grid:#243A50; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0E1B26; --panel:#15283A; --fg:#EDEBE4; --muted:#A7B3BE; --line:#28405A; --soft:#1B3146;
+  --accent:#C4821C; --s1:#2FA9A6; --s2:#C4821C; --s3:#9C82D0; --s4:#DC5F4F; --ok:#3DBB7E; --warn:#C4821C; --bad:#DC5F4F;
+  --navy:#0A1823; --navyfg:#EDEBE4; --grid:#243A50; color-scheme:dark }
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--fs);font-size:15px;line-height:1.45;overflow:hidden}
+*{box-sizing:border-box}
+#app{height:100%;display:grid;grid-template-rows:auto 1fr auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{min-width:0;display:flex;align-items:center;gap:14px;padding-block:10px;border-bottom:1px solid var(--line)}
+header .brand{font-family:var(--fd);font-weight:700;font-size:18px;letter-spacing:.2px}
+header .brand span{color:var(--accent)}
+header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{background:transparent;border:0;color:var(--muted);font:600 12.5px var(--fs);padding:6px 12px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+main{min-width:0;display:grid;grid-template-columns:200px 1fr;gap:18px;min-height:0;padding-block:14px}
+nav.rail{min-width:0;display:flex;flex-direction:column;gap:2px;overflow:auto;min-height:0;padding-right:4px}
+nav.rail button{display:flex;align-items:center;gap:10px;background:transparent;border:0;color:var(--muted);font:500 12.5px var(--fs);text-align:left;padding:7px 8px;border-radius:8px;cursor:pointer;line-height:1.2}
+nav.rail button i{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none;transition:transform .3s,background .3s}
+nav.rail button[aria-current="true"]{color:var(--fg);background:var(--soft)}
+nav.rail button[aria-current="true"] i{background:var(--accent);transform:scale(1.4)}
+nav.rail button:focus-visible{outline:2px solid var(--accent)}
+nav.rail .part{font:600 10.5px var(--fs);letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:12px 8px 4px}
+#stage{position:relative;min-height:0;min-width:0}
+.chapter{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr;gap:12px;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none;overflow:auto;min-width:0}
+.chapter.active{opacity:1;transform:none;pointer-events:auto}
+.chead{display:flex;flex-direction:column;gap:4px}
+.eyebrow{font:600 11.5px var(--fs);letter-spacing:2px;text-transform:uppercase;color:var(--s1)}
+h1,h2{font-family:var(--fd);font-weight:700;line-height:1.1;text-wrap:balance;margin:0}
+h2{font-size:clamp(20px,2.4vw,30px)}
+h1{font-size:clamp(28px,4vw,54px)}
+h3{font:600 14px var(--fs);margin:0}
+p{margin:0}
+.lead{color:var(--muted);font-size:clamp(13px,1.2vw,16px);max-width:70ch}
+.body{display:grid;gap:14px;min-height:0;min-width:0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.card.navy{background:var(--navy);color:var(--navyfg);border-color:transparent}
+.card.navy .muted,.card.navy .lbl{color:#BFD8D5}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tile .num{font-family:var(--fd);font-weight:700;font-size:clamp(22px,2.6vw,36px);line-height:1.05;font-variant-numeric:tabular-nums;color:var(--fg)}
+.tile .num.acc{color:var(--accent)}
+.tile .lbl,.lbl{font-size:12px;color:var(--muted);line-height:1.3}
+.muted{color:var(--muted)}
+.src{font-size:11.5px;color:var(--muted);line-height:1.35}
+.rise{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease;transition-delay:calc(var(--i,0)*90ms)}
+.active .rise{opacity:1;transform:none}
+.bar{height:100%;border-radius:4px;transform-origin:left;transform:scaleX(0);transition:transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0)*60ms)}
+.active .bar{transform:scaleX(1)}
+.vbar{width:100%;border-radius:4px 4px 0 0;transform-origin:bottom;transform:scaleY(0);transition:transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0)*40ms)}
+.active .vbar{transform:scaleY(1)}
+.hrow{display:grid;grid-template-columns:minmax(80px,1fr) 3fr auto;gap:10px;align-items:center;font-size:13px}
+.hrow .track{height:14px;background:var(--soft);border-radius:4px;overflow:hidden}
+.hrow .val{font-variant-numeric:tabular-nums;font-weight:600;min-width:52px;text-align:right}
+table{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-numeric:tabular-nums}
+th,td{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:11.5px;letter-spacing:.3px}
+td.r,th.r{text-align:right}
+.tw{overflow:auto;min-width:0}
+svg{max-width:100%;display:block}
+.map path{fill:var(--soft);stroke:var(--bg);stroke-width:1.2;transition:fill .6s;cursor:pointer}
+.map path:hover{stroke:var(--fg)}
+.map .dot{fill:var(--s2);stroke:var(--bg);stroke-width:.6;opacity:0;transition:opacity .4s}
+.active .map .dot{opacity:.9}
+.map text{font:600 10px var(--fs);fill:var(--fg);pointer-events:none}
+.tip{position:absolute;z-index:5;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);pointer-events:none;max-width:260px;display:none}
+.tip b{display:block;margin-bottom:3px}
+.tip .k{color:var(--muted)}
+footer{min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;padding-block:8px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+.arrows{display:flex;gap:6px}
+.arrows button{width:38px;height:34px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;font-size:16px}
+.arrows button:disabled{opacity:.35;cursor:default}
+.arrows button:focus-visible{outline:2px solid var(--accent)}
+.prog{flex:1;height:3px;background:var(--soft);border-radius:2px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .4s}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:11.5px;font-weight:600;border:1px solid var(--line);color:var(--muted);width:max-content}
+.pill.ok{color:var(--ok);border-color:var(--ok)} .pill.warn{color:var(--warn);border-color:var(--warn)} .pill.bad{color:var(--bad);border-color:var(--bad)}
+.gauge{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center}
+.gauge svg{width:92px;height:92px}
+.gauge .arc{fill:none;stroke-width:9;stroke-linecap:round}
+.gauge .bgarc{stroke:var(--soft)}
+.gauge .fgarc{stroke:var(--s1);stroke-dasharray:1 1000;transition:stroke-dasharray 1.1s cubic-bezier(.2,.7,.2,1)}
+.gauge .gnum{font:700 15px var(--fd);fill:var(--fg)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:999px;padding:5px 12px;font:600 12.5px var(--fs);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.tabs button:focus-visible{outline:2px solid var(--accent)}
+.slider{display:grid;gap:4px;font-size:12.5px}
+.slider label{display:flex;justify-content:space-between;gap:8px;color:var(--muted)}
+.slider label b{color:var(--fg);font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.big{font-family:var(--fd);font-weight:700;font-size:clamp(26px,3vw,44px);line-height:1;font-variant-numeric:tabular-nums}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:12.5px}
+.kv dt{color:var(--muted)} .kv dd{margin:0;font-weight:500}
+.kv.two{grid-template-columns:auto 1fr auto 1fr;gap:3px 10px;font-size:12px}
+ul.clean{margin:0;padding-left:18px;font-size:13px;display:grid;gap:4px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.timeline .step{border-top:3px solid var(--s1);padding-top:6px;font-size:12.5px}
+.timeline .step b{display:block;font-size:13px}
+.ph{color:var(--accent);font-weight:600}
+/* Leaflet 1.9.4 (inlined so it also works where external stylesheets are blocked) */
+ .leaflet-pane, .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-tile-container, .leaflet-pane > svg, .leaflet-pane > canvas, .leaflet-zoom-box, .leaflet-image-layer, .leaflet-layer { position: absolute; left: 0; top: 0; } .leaflet-container { overflow: hidden; } .leaflet-tile, .leaflet-marker-icon, .leaflet-marker-shadow { -webkit-user-select: none; -moz-user-select: none; user-select: none; -webkit-user-drag: none; } .leaflet-tile::selection { background: transparent; } .leaflet-safari .leaflet-tile { image-rendering: -webkit-optimize-contrast; } .leaflet-safari .leaflet-tile-container { width: 1600px; height: 1600px; -webkit-transform-origin: 0 0; } .leaflet-marker-icon, .leaflet-marker-shadow { display: block; } .leaflet-container .leaflet-overlay-pane svg { max-width: none !important; max-height: none !important; } .leaflet-container .leaflet-marker-pane img, .leaflet-container .leaflet-shadow-pane img, .leaflet-container .leaflet-tile-pane img, .leaflet-container img.leaflet-image-layer, .leaflet-container .leaflet-tile { max-width: none !important; max-height: none !important; width: auto; padding: 0; } .leaflet-container img.leaflet-tile { mix-blend-mode: plus-lighter; } .leaflet-container.leaflet-touch-zoom { -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; } .leaflet-container.leaflet-touch-drag { -ms-touch-action: pinch-zoom; touch-action: none; touch-action: pinch-zoom; } .leaflet-container.leaflet-touch-drag.leaflet-touch-zoom { -ms-touch-action: none; touch-action: none; } .leaflet-container { -webkit-tap-highlight-color: transparent; } .leaflet-container a { -webkit-tap-highlight-color: rgba(51, 181, 229, 0.4); } .leaflet-tile { filter: inherit; visibility: hidden; } .leaflet-tile-loaded { visibility: inherit; } .leaflet-zoom-box { width: 0; height: 0; -moz-box-sizing: border-box; box-sizing: border-box; z-index: 800; } .leaflet-overlay-pane svg { -moz-user-select: none; } .leaflet-pane { z-index: 400; } .leaflet-tile-pane { z-index: 200; } .leaflet-overlay-pane { z-index: 400; } .leaflet-shadow-pane { z-index: 500; } .leaflet-marker-pane { z-index: 600; } .leaflet-tooltip-pane { z-index: 650; } .leaflet-popup-pane { z-index: 700; } .leaflet-map-pane canvas { z-index: 100; } .leaflet-map-pane svg { z-index: 200; } .leaflet-vml-shape { width: 1px; height: 1px; } .lvml { behavior: url(#default#VML); display: inline-block; position: absolute; } .leaflet-control { position: relative; z-index: 800; pointer-events: visiblePainted; pointer-events: auto; } .leaflet-top, .leaflet-bottom { position: absolute; z-index: 1000; pointer-events: none; } .leaflet-top { top: 0; } .leaflet-right { right: 0; } .leaflet-bottom { bottom: 0; } .leaflet-left { left: 0; } .leaflet-control { float: left; clear: both; } .leaflet-right .leaflet-control { float: right; } .leaflet-top .leaflet-control { margin-top: 10px; } .leaflet-bottom .leaflet-control { margin-bottom: 10px; } .leaflet-left .leaflet-control { margin-left: 10px; } .leaflet-right .leaflet-control { margin-right: 10px; } .leaflet-fade-anim .leaflet-popup { opacity: 0; -webkit-transition: opacity 0.2s linear; -moz-transition: opacity 0.2s linear; transition: opacity 0.2s linear; } .leaflet-fade-anim .leaflet-map-pane .leaflet-popup { opacity: 1; } .leaflet-zoom-animated { -webkit-transform-origin: 0 0; -ms-transform-origin: 0 0; transform-origin: 0 0; } svg.leaflet-zoom-animated { will-change: transform; } .leaflet-zoom-anim .leaflet-zoom-animated { -webkit-transition: -webkit-transform 0.25s cubic-bezier(0,0,0.25,1); -moz-transition: -moz-transform 0.25s cubic-bezier(0,0,0.25,1); transition: transform 0.25s cubic-bezier(0,0,0.25,1); } .leaflet-zoom-anim .leaflet-tile, .leaflet-pan-anim .leaflet-tile { -webkit-transition: none; -moz-transition: none; transition: none; } .leaflet-zoom-anim .leaflet-zoom-hide { visibility: hidden; } .leaflet-interactive { cursor: pointer; } .leaflet-grab { cursor: -webkit-grab; cursor: -moz-grab; cursor: grab; } .leaflet-crosshair, .leaflet-crosshair .leaflet-interactive { cursor: crosshair; } .leaflet-popup-pane, .leaflet-control { cursor: auto; } .leaflet-dragging .leaflet-grab, .leaflet-dragging .leaflet-grab .leaflet-interactive, .leaflet-dragging .leaflet-marker-draggable { cursor: move; cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing; } .leaflet-marker-icon, .leaflet-marker-shadow, .leaflet-image-layer, .leaflet-pane > svg path, .leaflet-tile-container { pointer-events: none; } .leaflet-marker-icon.leaflet-interactive, .leaflet-image-layer.leaflet-interactive, .leaflet-pane > svg path.leaflet-interactive, svg.leaflet-image-layer.leaflet-interactive path { pointer-events: visiblePainted; pointer-events: auto; } .leaflet-container { background: #ddd; outline-offset: 1px; } .leaflet-container a { color: #0078A8; } .leaflet-zoom-box { border: 2px dotted #38f; background: rgba(255,255,255,0.5); } .leaflet-container { font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; font-size: 12px; font-size: 0.75rem; line-height: 1.5; } .leaflet-bar { box-shadow: 0 1px 5px rgba(0,0,0,0.65); border-radius: 4px; } .leaflet-bar a { background-color: #fff; border-bottom: 1px solid #ccc; width: 26px; height: 26px; line-height: 26px; display: block; text-align: center; text-decoration: none; color: black; } .leaflet-bar a, .leaflet-control-layers-toggle { background-position: 50% 50%; background-repeat: no-repeat; display: block; } .leaflet-bar a:hover, .leaflet-bar a:focus { background-color: #f4f4f4; } .leaflet-bar a:first-child { border-top-left-radius: 4px; border-top-right-radius: 4px; } .leaflet-bar a:last-child { border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; border-bottom: none; } .leaflet-bar a.leaflet-disabled { cursor: default; background-color: #f4f4f4; color: #bbb; } .leaflet-touch .leaflet-bar a { width: 30px; height: 30px; line-height: 30px; } .leaflet-touch .leaflet-bar a:first-child { border-top-left-radius: 2px; border-top-right-radius: 2px; } .leaflet-touch .leaflet-bar a:last-child { border-bottom-left-radius: 2px; border-bottom-right-radius: 2px; } .leaflet-control-zoom-in, .leaflet-control-zoom-out { font: bold 18px 'Lucida Console', Monaco, monospace; text-indent: 1px; } .leaflet-touch .leaflet-control-zoom-in, .leaflet-touch .leaflet-control-zoom-out { font-size: 22px; } .leaflet-control-layers { box-shadow: 0 1px 5px rgba(0,0,0,0.4); background: #fff; border-radius: 5px; } .leaflet-control-layers-toggle { background-image: url(images/layers.png); width: 36px; height: 36px; } .leaflet-retina .leaflet-control-layers-toggle { background-image: url(images/layers-2x.png); background-size: 26px 26px; } .leaflet-touch .leaflet-control-layers-toggle { width: 44px; height: 44px; } .leaflet-control-layers .leaflet-control-layers-list, .leaflet-control-layers-expanded .leaflet-control-layers-toggle { display: none; } .leaflet-control-layers-expanded .leaflet-control-layers-list { display: block; position: relative; } .leaflet-control-layers-expanded { padding: 6px 10px 6px 6px; color: #333; background: #fff; } .leaflet-control-layers-scrollbar { overflow-y: scroll; overflow-x: hidden; padding-right: 5px; } .leaflet-control-layers-selector { margin-top: 2px; position: relative; top: 1px; } .leaflet-control-layers label { display: block; font-size: 13px; font-size: 1.08333em; } .leaflet-control-layers-separator { height: 0; border-top: 1px solid #ddd; margin: 5px -10px 5px -6px; } .leaflet-default-icon-path { background-image: url(images/marker-icon.png); } .leaflet-container .leaflet-control-attribution { background: #fff; background: rgba(255, 255, 255, 0.8); margin: 0; } .leaflet-control-attribution, .leaflet-control-scale-line { padding: 0 5px; color: #333; line-height: 1.4; } .leaflet-control-attribution a { text-decoration: none; } .leaflet-control-attribution a:hover, .leaflet-control-attribution a:focus { text-decoration: underline; } .leaflet-attribution-flag { display: inline !important; vertical-align: baseline !important; width: 1em; height: 0.6669em; } .leaflet-left .leaflet-control-scale { margin-left: 5px; } .leaflet-bottom .leaflet-control-scale { margin-bottom: 5px; } .leaflet-control-scale-line { border: 2px solid #777; border-top: none; line-height: 1.1; padding: 2px 5px 1px; white-space: nowrap; -moz-box-sizing: border-box; box-sizing: border-box; background: rgba(255, 255, 255, 0.8); text-shadow: 1px 1px #fff; } .leaflet-control-scale-line:not(:first-child) { border-top: 2px solid #777; border-bottom: none; margin-top: -2px; } .leaflet-control-scale-line:not(:first-child):not(:last-child) { border-bottom: 2px solid #777; } .leaflet-touch .leaflet-control-attribution, .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { box-shadow: none; } .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar { border: 2px solid rgba(0,0,0,0.2); background-clip: padding-box; } .leaflet-popup { position: absolute; text-align: center; margin-bottom: 20px; } .leaflet-popup-content-wrapper { padding: 1px; text-align: left; border-radius: 12px; } .leaflet-popup-content { margin: 13px 24px 13px 20px; line-height: 1.3; font-size: 13px; font-size: 1.08333em; min-height: 1px; } .leaflet-popup-content p { margin: 17px 0; margin: 1.3em 0; } .leaflet-popup-tip-container { width: 40px; height: 20px; position: absolute; left: 50%; margin-top: -1px; margin-left: -20px; overflow: hidden; pointer-events: none; } .leaflet-popup-tip { width: 17px; height: 17px; padding: 1px; margin: -10px auto 0; pointer-events: auto; -webkit-transform: rotate(45deg); -moz-transform: rotate(45deg); -ms-transform: rotate(45deg); transform: rotate(45deg); } .leaflet-popup-content-wrapper, .leaflet-popup-tip { background: white; color: #333; box-shadow: 0 3px 14px rgba(0,0,0,0.4); } .leaflet-container a.leaflet-popup-close-button { position: absolute; top: 0; right: 0; border: none; text-align: center; width: 24px; height: 24px; font: 16px/24px Tahoma, Verdana, sans-serif; color: #757575; text-decoration: none; background: transparent; } .leaflet-container a.leaflet-popup-close-button:hover, .leaflet-container a.leaflet-popup-close-button:focus { color: #585858; } .leaflet-popup-scrolled { overflow: auto; } .leaflet-oldie .leaflet-popup-content-wrapper { -ms-zoom: 1; } .leaflet-oldie .leaflet-popup-tip { width: 24px; margin: 0 auto; -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678)"; filter: progid:DXImageTransform.Microsoft.Matrix(M11=0.70710678, M12=0.70710678, M21=-0.70710678, M22=0.70710678); } .leaflet-oldie .leaflet-control-zoom, .leaflet-oldie .leaflet-control-layers, .leaflet-oldie .leaflet-popup-content-wrapper, .leaflet-oldie .leaflet-popup-tip { border: 1px solid #999; } .leaflet-div-icon { background: #fff; border: 1px solid #666; } .leaflet-tooltip { position: absolute; padding: 6px; background-color: #fff; border: 1px solid #fff; border-radius: 3px; color: #222; white-space: nowrap; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; pointer-events: none; box-shadow: 0 1px 3px rgba(0,0,0,0.4); } .leaflet-tooltip.leaflet-interactive { cursor: pointer; pointer-events: auto; } .leaflet-tooltip-top:before, .leaflet-tooltip-bottom:before, .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { position: absolute; pointer-events: none; border: 6px solid transparent; background: transparent; content: ""; } .leaflet-tooltip-bottom { margin-top: 6px; } .leaflet-tooltip-top { margin-top: -6px; } .leaflet-tooltip-bottom:before, .leaflet-tooltip-top:before { left: 50%; margin-left: -6px; } .leaflet-tooltip-top:before { bottom: 0; margin-bottom: -12px; border-top-color: #fff; } .leaflet-tooltip-bottom:before { top: 0; margin-top: -12px; margin-left: -6px; border-bottom-color: #fff; } .leaflet-tooltip-left { margin-left: -6px; } .leaflet-tooltip-right { margin-left: 6px; } .leaflet-tooltip-left:before, .leaflet-tooltip-right:before { top: 50%; margin-top: -6px; } .leaflet-tooltip-left:before { right: 0; margin-right: -12px; border-left-color: #fff; } .leaflet-tooltip-right:before { left: 0; margin-left: -12px; border-right-color: #fff; } @media print { .leaflet-control { -webkit-print-color-adjust: exact; print-color-adjust: exact; } } 
+.lmap{position:relative;flex:1;min-height:240px;border-radius:10px;overflow:hidden;background:var(--soft);z-index:0}
+.lmap .leaflet-container,.lmap.leaflet-container{font-family:var(--fs);background:var(--soft)}
+.leaflet-bar a,.leaflet-bar a:hover{background:var(--panel);color:var(--fg);border-bottom-color:var(--line)}
+.leaflet-bar{border:1px solid var(--line)!important;box-shadow:none!important}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--panel) 80%,transparent)!important;color:var(--muted)!important;font-size:10px}
+.leaflet-control-attribution a{color:var(--muted)!important}
+.leaflet-tooltip.klabel{background:transparent;border:0;box-shadow:none;padding:0;font:600 11px var(--fs);color:var(--fg);text-shadow:0 0 3px var(--bg),0 0 3px var(--bg),0 0 2px var(--bg)}
+.leaflet-tooltip.klabel.small{font-size:9.5px;font-weight:600}
+.leaflet-tooltip.klabel:before{display:none}
+.maplegend{position:absolute;left:10px;bottom:24px;z-index:800;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:11px;max-width:230px;box-shadow:0 6px 18px rgba(0,0,0,.14);line-height:1.35}
+.maplegend .ramp{height:8px;border-radius:4px;margin:5px 0 2px}
+.maplegend .sw{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 5px 0 0;vertical-align:-1px}
+.maplegend .sw.ln{width:14px;height:0;border-radius:0;border-top:2.5px dashed;vertical-align:3px}
+.mapchips{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.chipset{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.chipset .lbl{margin-right:2px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:999px;padding:3px 9px;font:600 11.5px var(--fs);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.chip[aria-pressed="true"]{color:var(--fg);border-color:var(--fg);background:var(--soft)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0}
+.tlbar{height:10px;border-radius:5px;background:rgba(255,255,255,.15);overflow:hidden;margin-top:4px}
+.tlbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--s1),var(--accent));border-radius:5px;transition:width 1.4s cubic-bezier(.2,.7,.2,1)}
+.active .tlbar i{width:var(--w)}
+@media (max-width:900px){
+  .body{grid-template-columns:1fr!important}
+  .maplegend{max-width:160px;font-size:10px;padding:5px 7px;left:6px;bottom:20px}
+  .lmap{min-height:320px!important}
+  .kv.two{grid-template-columns:auto 1fr}
+  main{grid-template-columns:1fr;gap:10px}
+  nav.rail{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+  nav.rail .part{display:none}
+  nav.rail button{white-space:nowrap;font-size:12px;padding:6px 8px}
+  .chapter{position:relative;height:100%}
+  .timeline{grid-template-columns:1fr 1fr}
+}
+@media (prefers-reduced-motion: reduce){ .chapter,.rise,.bar,.vbar,.gauge .fgarc,.map path,nav.rail button i{transition:none} }
+</style>
+<style>body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="brand">Powering <span>Rebana</span></div>
+  <div class="meta" id="hmeta"></div>
+  <div class="seg" role="group" aria-label="Language">
+    <button id="lang-en" aria-pressed="true">EN</button>
+    <button id="lang-id" aria-pressed="false">ID</button>
+  </div>
+</header>
+<main>
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+  <div id="stage"><div class="tip" id="tip"></div></div>
+</main>
+<footer>
+  <span id="fnote"></span>
+  <div class="prog"><i id="progbar"></i></div>
+  <span id="count"></span>
+  <div class="arrows"><button id="prev" aria-label="Previous chapter">←</button><button id="next" aria-label="Next chapter">→</button></div>
+</footer>
+</div>
+<script id="data" type="application/json">/*__DATA__*/</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+const D = JSON.parse(document.getElementById('data').textContent);
+let lang = 'en';
+try{ lang = localStorage.getItem('pr-lang') || 'en'; }catch(e){}
+const t = (o)=> (typeof o==='string'? o : (o[lang] ?? o.en));
+const nf = (v,d=0)=> new Intl.NumberFormat(lang==='id'?'id-ID':'en-US',{maximumFractionDigits:d,minimumFractionDigits:d}).format(v);
+const cf = (v)=> new Intl.NumberFormat(lang==='id'?'id-ID':'en-US',{notation:'compact',maximumFractionDigits:1}).format(v);
+const css = (n)=> getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const REGCOL = {'Kab. Subang':'--s1','Kab. Indramayu':'--s2','Kab. Majalengka':'--s3','Kab. Cirebon':'--s4','Kab. Sumedang':'--s1','Kab. Kuningan':'--s3','Kota Cirebon':'--s4'};
+const el=(tag,cls,html)=>{const e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e;};
+const tip=document.getElementById('tip');
+function showTip(ev,html){ tip.innerHTML=html; tip.style.display='block'; const st=document.getElementById('stage').getBoundingClientRect(); let x=ev.clientX-st.left+14, y=ev.clientY-st.top+14; if(x+270>st.width) x=ev.clientX-st.left-280; if(y+120>st.height) y=ev.clientY-st.top-110; tip.style.left=x+'px'; tip.style.top=y+'px'; }
+function hideTip(){ tip.style.display='none'; }
+function countUp(node,to,dec,suffix){ const dur=1100, t0=performance.now(); const fmt=v=>nf(v,dec)+(suffix||''); if(matchMedia('(prefers-reduced-motion: reduce)').matches){node.textContent=fmt(to);return;} (function f(now){ const p=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-p,3); node.textContent=fmt(to*e); if(p<1) requestAnimationFrame(f);})(t0); }
+function tile(num,label,opts={}){ const d=el('div','tile rise'); d.style.setProperty('--i',opts.i||0); const n=el('div','num'+(opts.acc?' acc':'')); n.dataset.to=num; n.dataset.dec=opts.dec||0; n.dataset.suf=opts.suf||''; n.dataset.pre=opts.pre||''; n.textContent=(opts.pre||'')+nf(num,opts.dec||0)+(opts.suf||''); d.append(n, el('div','lbl',label)); return d; }
+function hbar(label,val,max,color,i,fmt){ const r=el('div','hrow rise'); r.style.setProperty('--i',i); const tr=el('div','track'); const b=el('div','bar'); b.style.width=(100*val/max)+'%'; b.style.background=`var(${color})`; b.style.setProperty('--i',i); tr.append(b); r.append(el('div',null,label),tr,el('div','val',fmt?fmt(val):nf(val))); return r; }
+
+/* ---------- copy ---------- */
+const C = {
+ header:{en:'2nd Powering Rebana Workshop · Hotel Santika Cirebon · 5–6 Nov 2026 · Dr. Qashtalani Haramaini (Monash University Indonesia · Ariel Liebman RACE for 2030 PhD · PLN)', id:'Workshop Powering Rebana ke-2 · Hotel Santika Cirebon · 5–6 Nov 2026 · Dr. Qashtalani Haramaini (Monash University Indonesia · PhD Ariel Liebman RACE for 2030 · PLN)'},
+ fnote:{en:'Arrow keys or ← → to move between chapters. Hover any mark for its source.', id:'Tombol panah atau ← → untuk pindah bab. Arahkan kursor ke grafik untuk melihat sumbernya.'},
+ parts:[{en:'Rebana in numbers',id:'Rebana dalam angka'},{en:'What I bring',id:'Yang saya bawa'},{en:'PLN data facts',id:'Fakta data PLN'},{en:'Projections and ideas',id:'Proyeksi dan ide'}],
+};
+
+/* ---------- chapters ---------- */
+const CH = [
+{ id:'hero', part:0, nav:{en:'The zone',id:'Kawasan'}, render(root){
+  root.append(head({en:'Powering Rebana · evidence, ideas and a data offer',id:'Powering Rebana · bukti, ide, dan tawaran data'},
+    {en:'Rebana in facts, data and projections',id:'Rebana dalam fakta, data, dan proyeksi'},
+    {en:'What the public record and PLN’s operational data say about the zone today, what that implies for 2030, and where one RACE for 2030 PhD plugs into the Energy, Mobility and Skills work packages.',id:'Apa kata catatan publik dan data operasional PLN tentang kawasan ini hari ini, apa artinya untuk 2030, dan di mana satu PhD RACE for 2030 bisa masuk ke paket kerja Energi, Mobilitas, dan Keterampilan.'},true));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.15fr) minmax(0,1fr)';
+  const mapCard=el('div','card'); mapCard.append(el('h3',null,t({en:'Seven regencies and cities · colour = realised investment 2025 · chargers, substations, lines and plants on a live basemap',id:'Tujuh kabupaten/kota · warna = realisasi investasi 2025 · SPKLU, gardu induk, transmisi, dan pembangkit di peta dasar nyata'})));
+  const mapBox=el('div','lmap'); mapBox.style.minHeight='260px'; mapCard.append(mapBox);
+  mapCard.append(el('p','src',t({en:'Sources: BKPM realisation via BP Rebana (Kuningan and Kota Cirebon reported combined, 2.12 T); PLN UID Jawa Barat SPKLU transactions, March 2026; GI, lines and plants from OpenStreetMap matched to RUPTL 2025–2034; GI loading April 2022.',id:'Sumber: realisasi BKPM via BP Rebana (Kuningan dan Kota Cirebon dilaporkan gabungan, 2,12 T); transaksi SPKLU PLN UID Jawa Barat, Maret 2026; GI, saluran, dan pembangkit dari OpenStreetMap yang dicocokkan dengan RUPTL 2025–2034; beban GI April 2022.'})));
+  const right=el('div'); right.style.display='grid'; right.style.gap='10px'; right.style.alignContent='start';
+  const tiles=el('div','tiles');
+  tiles.append(tile(13,t({en:'designated industrial zones (KPI)',id:'kawasan peruntukan industri (KPI)'}),{i:0,acc:true}),tile(43913,t({en:'hectares of industrial land',id:'hektare lahan industri'}),{i:1}),tile(10.2,t({en:'million people, ~19% of West Java',id:'juta jiwa, ~19% Jawa Barat'}),{i:2,dec:1}),tile(36.67,t({en:'Rp trillion realised investment 2025 (+58%)',id:'Rp triliun realisasi investasi 2025 (+58%)'}),{i:3,dec:2}),tile(1.78,t({en:'million jobs targeted by 2030',id:'juta lapangan kerja target 2030'}),{i:4,dec:2}),tile(7.44,t({en:'% growth targeted by 2030 (5.53% in Q3 2025)',id:'% pertumbuhan target 2030 (5,53% pada TW3 2025)'}),{i:5,dec:2,suf:'%'}));
+  right.append(tiles);
+  const who=el('div','card navy rise'); who.style.setProperty('--i',6);
+  who.innerHTML=`<h3>${t({en:'Presenter',id:'Penyaji'})}</h3><p><b>Dr. Qashtalani Haramaini, S.T., M.T.</b></p><p class="muted">${t({en:'PhD candidate, Monash University Indonesia · Ariel Liebman RACE for 2030 PhD Program · PT PLN (Persero) · Founder, Electra Skill Academy',id:'Kandidat PhD, Monash University Indonesia · Program PhD Ariel Liebman RACE for 2030 · PT PLN (Persero) · Pendiri Electra Skill Academy'})}</p><p class="muted">${t({en:'Supervisors: Dr Alyas Widita · Dr Elizabeth Taylor',id:'Pembimbing: Dr Alyas Widita · Dr Elizabeth Taylor'})}</p>`;
+  right.append(who);
+  b.append(mapCard,right); root.append(b);
+  requestAnimationFrame(()=>rebanaMap(mapBox,'hero'));
+}},
+{ id:'zones', part:0, nav:{en:'13 industrial zones',id:'13 KPI'}, render(root){
+  root.append(head({en:'Part 1 · The thirteen industrial zones',id:'Bagian 1 · Tiga belas kawasan industri'},{en:'Six of the thirteen zones sit in Indramayu',id:'Enam dari tiga belas KPI berada di Indramayu'},{en:'Area in hectares; the five zones without a published area share the remaining 11,434 ha equally here and are hatched.',id:'Luas dalam hektare; lima KPI tanpa luas resmi berbagi sisa 11.434 ha secara rata dan diarsir.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.5fr) minmax(0,1fr)';
+  const card=el('div','card'); const box=el('div'); box.style.flex='1'; box.style.minHeight='240px'; card.append(box);
+  card.append(el('div','legend',`<span><i style="background:var(--s1)"></i>Subang</span><span><i style="background:var(--s2)"></i>Indramayu</span><span><i style="background:var(--s3)"></i>Majalengka</span><span><i style="background:var(--s4)"></i>Cirebon</span>`));
+  const right=el('div'); right.style.display='grid'; right.style.gap='10px'; right.style.alignContent='start';
+  right.append(tile(15308,t({en:'ha in the four Indramayu zones with a published area, 35% of Rebana before Tukdana and Krangkeng',id:'ha di empat KPI Indramayu yang luasnya terbit, 35% Rebana sebelum Tukdana dan Krangkeng dihitung'}),{i:0,acc:true}),
+    tile(272429,t({en:'workers projected for Losarang alone, beside the Balongan refinery (150,000 bpd)',id:'tenaga kerja proyeksi Losarang saja, di samping kilang Balongan (150.000 bph)'}),{i:1}),
+    tile(8,t({en:'of 13 zones reported operating in 2026; Kertajati Aerocity (3,480 ha) 72% occupied; KI Patimban 62% occupied, proposed KEK',id:'dari 13 KPI dilaporkan beroperasi 2026; Kertajati Aerocity (3.480 ha) terisi 72%; KI Patimban terisi 62%, diusulkan KEK'}),{i:2,pre:''}));
+  right.append(el('p','src',t({en:'Sources: rebana.id KPI pages; Disperindag Jabar via Radar Majalengka; CNBC Indonesia zone list (2020); BP Rebana 2026.',id:'Sumber: laman KPI rebana.id; Disperindag Jabar via Radar Majalengka; daftar KPI CNBC Indonesia (2020); BP Rebana 2026.'})));
+  b.append(card,right); root.append(b);
+  requestAnimationFrame(()=>drawTreemap(box));
+}},
+{ id:'invest', part:0, nav:{en:'Investment',id:'Investasi'}, render(root){
+  root.append(head({en:'Part 1 · Investment momentum',id:'Bagian 1 · Momentum investasi'},{en:'Realised investment grew 58% in 2025, half of it in Subang',id:'Realisasi investasi naik 58% pada 2025, separuhnya di Subang'},{en:'Money follows the port and the toll road, not the designated hectares: Indramayu holds six zones but 9% of the 2025 money.',id:'Uang mengikuti pelabuhan dan jalan tol, bukan hektare yang ditetapkan: Indramayu punya enam KPI tetapi hanya 9% dana 2025.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1fr) minmax(0,1.3fr)';
+  const c1=el('div','card'); c1.append(el('h3',null,t({en:'Realised investment, Rp trillion',id:'Realisasi investasi, Rp triliun'})));
+  const vb=el('div'); vb.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:end;flex:1;min-height:170px';
+  const mx=40; const cols=['--s3','--s1','--s2'];
+  D.invest.forEach((r,i)=>{ const col=el('div'); col.style.cssText='display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:end'; const v=el('div',null,`<b>${nf(r.value_T,2)}</b>`); const bw=el('div'); bw.style.cssText='width:70%;height:'+(100*r.value_T/mx)+'%'; const bar=el('div','vbar'); bar.style.background=`var(${cols[i]})`; bar.style.height='100%'; bar.style.setProperty('--i',i); bw.append(bar); col.append(v,bw,el('div','lbl',r.period)); col.addEventListener('mousemove',e=>showTip(e,`<b>${r.period}</b>Rp ${nf(r.value_T,2)} T<br><span class="k">${r.note}</span>`)); col.addEventListener('mouseleave',hideTip); vb.append(col); });
+  c1.append(vb, el('p','src',t({en:'2024 derived from the reported +57.67%. 2026 H1 alone is ~30% of all investment entering West Java (Rp 21.59 T to Q2).',id:'2024 diturunkan dari laporan +57,67%. Semester I 2026 saja ~30% dari seluruh investasi Jawa Barat (Rp 21,59 T hingga TW2).'})));
+  const c2=el('div','card'); c2.append(el('h3',null,t({en:'2025 realisation by regency, Rp trillion',id:'Realisasi 2025 per kabupaten, Rp triliun'})));
+  const rows=D.regions.filter(r=>r.invest_2025_T).sort((a,b)=>b.invest_2025_T-a.invest_2025_T); const lst=el('div'); lst.style.cssText='display:grid;gap:8px';
+  rows.forEach((r,i)=>lst.append(hbar(r.region.replace('Kab. ',''),r.invest_2025_T,18.2,r.region==='Kab. Indramayu'?'--s2':'--s1',i,v=>nf(v,2))));
+  lst.append(hbar('Kuningan + Kota Cirebon',2.12,18.2,'--s3',5,v=>nf(v,2)));
+  c2.append(lst);
+  const tl=el('div','tiles'); tl.append(tile(5.53,t({en:'% Rebana growth Q3 2025, above West Java and national',id:'% pertumbuhan Rebana TW3 2025, di atas Jabar dan nasional'}),{i:6,dec:2,suf:'%',acc:true}),tile(600,t({en:'Rp trillion economic potential, ~20% of West Java GRDP (provincial estimate)',id:'Rp triliun potensi ekonomi, ~20% PDRB Jabar (estimasi provinsi)'}),{i:7,pre:'~'}));
+  c2.append(tl, el('p','src',t({en:'Sources: BKPM via BP Rebana (Rp 36.67 T, +57.67%); Pemprov Jabar; detik Jabar; ANTARA. Other outlets quote Rp 33.67 T for a different cut-off.',id:'Sumber: BKPM via BP Rebana (Rp 36,67 T, +57,67%); Pemprov Jabar; detik Jabar; ANTARA. Media lain mengutip Rp 33,67 T untuk batas waktu berbeda.'})));
+  b.append(c1,c2); root.append(b);
+}},
+{ id:'gates', part:0, nav:{en:'Gateways',id:'Gerbang logistik'}, render(root){
+  root.append(head({en:'Part 1 · The gateways, reality check',id:'Bagian 1 · Gerbang logistik, cek realitas'},{en:'The port is filling, the airport is not, the toll road is the real corridor',id:'Pelabuhan mulai terisi, bandara belum, jalan tol adalah koridor sesungguhnya'},{en:'Each ring shows the latest measured value against its capacity or target.',id:'Tiap cincin menunjukkan nilai terukur terbaru terhadap kapasitas atau targetnya.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='repeat(auto-fit,minmax(min(100%,230px),1fr))';
+  const G=[
+   {n:'Patimban Port',v:204774,m:600000,u:{en:'CBU vehicles 2025 vs 600,000/yr capacity target',id:'kendaraan CBU 2025 vs target kapasitas 600.000/thn'},x:{en:'Container operations began July 2026 at 250,000 TEU. 63,086 export units in H1 2026.',id:'Operasi peti kemas mulai Juli 2026, kapasitas 250.000 TEU. 63.086 unit ekspor pada semester I 2026.'},s:'Patimban operator via Kompas, YKIP, Indonesia Shipping Gazette',st:'ok'},
+   {n:'Kertajati Airport',v:48000,m:2500000,u:{en:'passengers 2025 vs 2.5 M target',id:'penumpang 2025 vs target 2,5 juta'},x:{en:'Domestic flights paused from July 2025; hajj (17,620 pilgrims, 2026) is the anchor traffic.',id:'Penerbangan domestik terhenti sejak Juli 2025; haji (17.620 jemaah, 2026) jadi lalu lintas utama.'},s:'Kemenhub Hubud 2025, BPS Jabar, Indoaviation',st:'bad'},
+   {n:'Cipali Toll',v:60000,m:109350,u:{en:'normal-day vehicles vs 109,350 Christmas 2025 peak',id:'kendaraan hari normal vs puncak Natal 2025 109.350'},x:{en:'Normal day implied from Astra Infra holiday reports (+18% to +94% over normal). Where Rebana charging happens today.',id:'Hari normal diturunkan dari laporan libur Astra Infra (+18% s.d. +94% dari normal). Di sinilah pengisian EV Rebana terjadi hari ini.'},s:'Astra Infra via Bisnis, ANTARA (derived)',st:'warn'},
+   {n:'Cisumdawu Toll',v:21078,m:23229,u:{en:'Lebaran 2025 peak-day vehicles vs 23,229 design traffic',id:'kendaraan puncak Lebaran 2025 vs LHR desain 23.229'},x:{en:'Bandung to Kertajati in about an hour; completes the airport’s hinterland link.',id:'Bandung ke Kertajati sekitar satu jam; melengkapi akses hinterland bandara.'},s:'CKJT via ANTARA, BPJT 2019',st:'ok'}];
+  G.forEach((g,i)=>{ const c=el('div','card rise'); c.style.setProperty('--i',i); const p=g.v/g.m; const gg=el('div','gauge'); const r=36,circ=2*Math.PI*r; gg.innerHTML=`<svg viewBox="0 0 92 92" aria-label="${g.n} ${Math.round(p*100)}%"><circle class="arc bgarc" cx="46" cy="46" r="${r}"/><circle class="arc fgarc" cx="46" cy="46" r="${r}" transform="rotate(-90 46 46)" data-dash="${(p*circ).toFixed(1)} ${circ.toFixed(1)}" style="stroke:var(--${g.st==='bad'?'s4':g.st==='warn'?'s2':'s1'})"/><text class="gnum" x="46" y="51" text-anchor="middle">${Math.round(p*100)}%</text></svg>`;
+    const txt=el('div'); txt.innerHTML=`<h3>${g.n}</h3><div class="big">${cf(g.v)}</div><div class="lbl">${t(g.u)}</div>`; gg.append(txt); c.append(gg, el('p',null,t(g.x)), el('span','pill '+g.st,g.st==='ok'?t({en:'on track',id:'sesuai jalur'}):g.st==='warn'?t({en:'estimate',id:'estimasi'}):t({en:'far below target',id:'jauh di bawah target'})), el('p','src',t({en:'Source: ',id:'Sumber: '})+g.s)); b.append(c); });
+  root.append(b);
+  const note=el('div','card navy rise'); note.style.setProperty('--i',5); note.innerHTML=`<p>${t({en:'<b>Implication for Mobility WP2 and WP4:</b> freight and private mobility in Rebana are corridor-shaped. A demand model that starts from resident population will miss the pass-through traffic that already dominates charging energy (see “Charging in Rebana”).',id:'<b>Implikasi untuk WP2 dan WP4 Mobilitas:</b> mobilitas barang dan pribadi di Rebana berbentuk koridor. Model permintaan yang berangkat dari penduduk tetap akan melewatkan lalu lintas lintasan yang sudah mendominasi energi pengisian (lihat “Pengisian EV di Rebana”).'})}</p>`; root.append(note);
+}},
+{ id:'power', part:0, nav:{en:'Power today',id:'Listrik hari ini'}, render(root){
+  root.append(head({en:'Part 1 · Power on the coast',id:'Bagian 1 · Pembangkit di pesisir'},{en:'2.65 GW of coal already sits inside the zone; solar is still a plan',id:'2,65 GW PLTU sudah berada di dalam kawasan; surya masih rencana'},{en:'Generation inside the seven regencies, megawatts. Planned solar is shown hatched.',id:'Pembangkit di dalam tujuh kabupaten/kota, megawatt. PLTS rencana diarsir.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.4fr) minmax(0,1fr)';
+  const c=el('div','card'); c.append(el('h3',null,t({en:'Installed and planned capacity by plant, MW',id:'Kapasitas terpasang dan rencana per pembangkit, MW'})));
+  const lst=el('div'); lst.style.cssText='display:grid;gap:9px';
+  D.power.forEach((p,i)=>{ const col=p.type==='Coal'?'--s4':p.type==='Hydro'?'--s1':'--s2'; const r=hbar(p.plant,p.mw,1000,col,i); if(p.type.includes('planned')){ r.querySelector('.bar').style.backgroundImage='repeating-linear-gradient(135deg,transparent 0 4px,rgba(255,255,255,.45) 4px 8px)'; } r.addEventListener('mousemove',e=>showTip(e,`<b>${p.plant}</b>${p.mw} MW · ${p.type}<br><span class="k">${p.regency} · ${p.note}</span>`)); r.addEventListener('mouseleave',hideTip); lst.append(r); });
+  c.append(lst, el('div','legend',`<span><i style="background:var(--s4)"></i>${t({en:'Coal',id:'Batu bara'})}</span><span><i style="background:var(--s1)"></i>${t({en:'Hydro',id:'Air'})}</span><span><i style="background:var(--s2)"></i>${t({en:'Solar (planned)',id:'Surya (rencana)'})}</span>`), el('p','src',t({en:'Sources: Cirebon Power, CNBC Indonesia (Cirebon-1 early retirement cancelled Dec 2025), PJB/PLN Indonesia Power (Indramayu 3×330 MW since 2011), Kontan (PLN–Masdar Jatigede MoU 2025), RMOL (Gantar 100 MW plan, 2024).',id:'Sumber: Cirebon Power, CNBC Indonesia (pensiun dini Cirebon-1 dibatalkan Des 2025), PJB/PLN Indonesia Power (Indramayu 3×330 MW sejak 2011), Kontan (MoU PLN–Masdar Jatigede 2025), RMOL (rencana Gantar 100 MW, 2024).'})));
+  const r=el('div'); r.style.cssText='display:grid;gap:10px;align-content:start';
+  r.append(tile(8516,t({en:'MW clean generation targeted for West Java in RUPTL 2025–2034',id:'MW pembangkit bersih target Jawa Barat dalam RUPTL 2025–2034'}),{i:0,acc:true}),tile(19460,t({en:'MVA of substation capacity to be added in West Java by 2034',id:'MVA kapasitas gardu induk yang ditambah di Jawa Barat hingga 2034'}),{i:1}),tile(192,t({en:'GW renewable potential in West Java (Dinas ESDM Jabar, all technologies)',id:'GW potensi energi terbarukan Jawa Barat (Dinas ESDM Jabar, semua teknologi)'}),{i:2}));
+  const n=el('div','card navy rise'); n.style.setProperty('--i',3); n.innerHTML=`<p>${t({en:'<b>Why it matters for Energy WP6:</b> the retirement of Cirebon-1 was to be replaced by 346 MW PLTS, 770 MW PLTS+BESS and 1,000 MW wind. The reversal leaves those replacements unassigned; Rebana’s industrial roofs and the pantura coast are the obvious host.',id:'<b>Mengapa penting untuk WP6 Energi:</b> pensiun Cirebon-1 semula akan diganti PLTS 346 MW, PLTS+BESS 770 MW, dan PLTB 1.000 MW. Pembatalan itu membuat pengganti tersebut belum berpemilik; atap industri Rebana dan pesisir pantura adalah tuan rumah yang paling masuk akal.'})}</p>`; r.append(n);
+  b.append(c,r); root.append(b);
+}},
+{ id:'race', part:1, nav:{en:'The RACE PhD',id:'PhD RACE'}, render(root){
+  root.append(head({en:'Part 2 · The Ariel Liebman RACE for 2030 PhD Program',id:'Bagian 2 · Program PhD Ariel Liebman RACE for 2030'},{en:'Nine PLN engineers doing industry-embedded PhDs, now pointed at Rebana',id:'Sembilan insinyur PLN menempuh PhD berbasis industri, kini diarahkan ke Rebana'},{en:'Launched 24 July 2025 by Monash University Indonesia, RACE for 2030 CRC and PLN in honour of Professor Ariel Liebman. Powering Rebana lets scholars tie their research to the zone’s energy questions.',id:'Diluncurkan 24 Juli 2025 oleh Monash University Indonesia, RACE for 2030 CRC, dan PLN untuk mengenang Profesor Ariel Liebman. Powering Rebana memungkinkan para scholar mengaitkan risetnya dengan persoalan energi kawasan.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1fr) minmax(0,1fr)';
+  const l=el('div'); l.style.cssText='display:grid;gap:10px;align-content:start';
+  const tl=el('div','tiles'); tl.append(tile(9,t({en:'fully funded PhD places, all first-cohort scholars are PLN employees',id:'beasiswa PhD penuh, seluruh kohor pertama pegawai PLN'}),{i:0,acc:true}),tile(48000,t({en:'AUD per scholar from RACE for 2030 for living costs and research',id:'AUD per scholar dari RACE for 2030 untuk biaya hidup dan riset'}),{i:1,pre:''}),tile(25000,t({en:'AUD per scholar from PLN for international mobility, plus full tuition from Monash',id:'AUD per scholar dari PLN untuk mobilitas internasional, plus bebas biaya kuliah dari Monash'}),{i:2}),tile(3.5,t({en:'years: 3 at the BSD campus plus a 6-month immersion in Melbourne',id:'tahun: 3 di kampus BSD plus imersi 6 bulan di Melbourne'}),{i:3,dec:1}));
+  l.append(tl);
+  const tm=el('div','card rise'); tm.style.setProperty('--i',4); tm.innerHTML=`<h3>${t({en:'Timeline',id:'Lini masa'})}</h3><div class="timeline"><div class="step"><b>24 Jul 2025</b>${t({en:'Program launched at Monash Indonesia',id:'Program diluncurkan di Monash Indonesia'})}</div><div class="step"><b>Nov 2025</b>${t({en:'First scholars welcomed on campus',id:'Scholar pertama disambut di kampus'})}</div><div class="step"><b>10–11 Aug 2026</b>${t({en:'1st Powering Rebana Workshop, BSD',id:'Workshop Powering Rebana ke-1, BSD'})}</div><div class="step"><b>5–6 Nov 2026</b>${t({en:'2nd Workshop, Cirebon: validate WPs, form working groups',id:'Workshop ke-2, Cirebon: validasi WP, bentuk kelompok kerja'})}</div></div>`;
+  l.append(tm);
+  const r=el('div'); r.style.cssText='display:grid;gap:10px;align-content:start';
+  const imp=el('div','card rise'); imp.style.setProperty('--i',5); imp.innerHTML=`<h3>${t({en:'What the program changes',id:'Apa yang diubah program ini'})}</h3><ul class="clean"><li>${t({en:'<b>Research questions set jointly</b> by Monash, RACE for 2030 and PLN, so each thesis answers a live utility problem.',id:'<b>Pertanyaan riset ditetapkan bersama</b> Monash, RACE for 2030, dan PLN, sehingga tiap disertasi menjawab persoalan nyata utilitas.'})}</li><li>${t({en:'<b>Operational data stays in the loop:</b> scholars work inside PLN with transaction, asset and loading records that outside researchers rarely see.',id:'<b>Data operasional tetap dalam lingkaran:</b> scholar bekerja di dalam PLN dengan catatan transaksi, aset, dan pembebanan yang jarang terjangkau peneliti luar.'})}</li><li>${t({en:'<b>Portfolio:</b> renewable integration, distributed energy and storage, network resilience, EV charging, home energy management, just transitions.',id:'<b>Portofolio:</b> integrasi EBT, energi terdistribusi dan penyimpanan, ketahanan jaringan, pengisian EV, manajemen energi rumah, transisi berkeadilan.'})}</li><li>${t({en:'<b>Return path:</b> scholars go back to PLN, so findings land in RUPTL, UID planning and estate connection decisions.',id:'<b>Jalur kembali:</b> scholar kembali ke PLN, sehingga temuan masuk ke RUPTL, perencanaan UID, dan keputusan sambungan kawasan.'})}</li></ul>`;
+  const me=el('div','card navy rise'); me.style.setProperty('--i',6); me.innerHTML=`<h3>${t({en:'Where my thesis sits',id:'Posisi disertasi saya'})}</h3><p>${t({en:'<i>Pathways to Advancing Sustainable Transportation: Spatial Equity and Public Perception of EV Charging Infrastructure in Indonesia.</i> It maps the three Powering Rebana themes: charging demand and grid scoping (Mobility WP3–WP5), solar-charging coincidence and hosting capacity (Energy WP6), and the vocational pipeline for charging and distribution technicians (Skills WP2, WP4).',id:'<i>Pathways to Advancing Sustainable Transportation: Spatial Equity and Public Perception of EV Charging Infrastructure in Indonesia.</i> Ia memetakan tiga tema Powering Rebana: permintaan pengisian dan pelingkupan jaringan (WP3–WP5 Mobilitas), kebetulan surya–pengisian dan kapasitas penampung (WP6 Energi), serta pipa vokasi teknisi pengisian dan distribusi (WP2, WP4 Keterampilan).'})}</p><p class="src" style="color:#BFD8D5">${t({en:'Sources: Monash University Indonesia program page and news (Jul and Nov 2025), RACE for 2030, AIC Powering Rebana article, workshop Terms of Reference.',id:'Sumber: laman program dan berita Monash University Indonesia (Jul dan Nov 2025), RACE for 2030, artikel AIC Powering Rebana, Kerangka Acuan workshop.'})}</p>`;
+  r.append(imp,me); b.append(l,r); root.append(b);
+}},
+{ id:'phd', part:1, nav:{en:'My research assets',id:'Aset riset saya'}, render(root){
+  root.append(head({en:'Part 2 · The dissertation and its data',id:'Bagian 2 · Disertasi dan datanya'},{en:'Four research questions on one operational data stack',id:'Empat pertanyaan riset di atas satu tumpukan data operasional'},{en:'Who is really served by public charging, measured with travel time, grid capacity and equity indices rather than counts per province.',id:'Siapa yang benar-benar terlayani pengisian publik, diukur dengan waktu tempuh, kapasitas jaringan, dan indeks keadilan, bukan jumlah per provinsi.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1fr) minmax(0,1fr)';
+  const l=el('div'); l.style.cssText='display:grid;gap:10px;align-content:start';
+  const rq=el('div','card rise'); rq.innerHTML=`<h3>${t({en:'Research questions',id:'Pertanyaan riset'})}</h3><ul class="clean"><li><b>RQ1</b> ${t({en:'How far is public charging from where people live, in road travel time, and how much power is behind it (a two-rung service ladder: reach, then E2SFCA power adequacy)?',id:'Seberapa jauh pengisian publik dari tempat tinggal, dalam waktu tempuh jalan, dan berapa daya di baliknya (tangga layanan dua anak tangga: jangkauan, lalu kecukupan daya E2SFCA)?'})}</li><li><b>RQ2</b> ${t({en:'Is provision unequal, and is it inequitable? Lorenz/Gini for equality, concentration indices against expenditure and HDI for equity.',id:'Apakah penyediaan tidak merata, dan apakah tidak adil? Lorenz/Gini untuk kesetaraan, indeks konsentrasi terhadap pengeluaran dan IPM untuk ekuitas.'})}</li><li><b>RQ3</b> ${t({en:'What drives perceived service quality: reliability and availability, or amenities? Aspect-based sentiment on 894 reviewed sites.',id:'Apa yang menentukan kualitas layanan yang dirasakan: keandalan dan ketersediaan, atau fasilitas? Sentimen per aspek pada 894 lokasi yang diulas.'})}</li><li><b>RQ4</b> ${t({en:'How do Indonesia’s metropolitan areas differ on equality versus equity of access, village by village, with an r5r travel-time matrix?',id:'Bagaimana kawasan metropolitan Indonesia berbeda pada kesetaraan vs ekuitas akses, desa per desa, dengan matriks waktu tempuh r5r?'})}</li></ul>`;
+  l.append(rq);
+  const f=el('div','card navy rise'); f.style.setProperty('--i',1); f.innerHTML=`<h3>${t({en:'Findings so far (West Java, March 2026)',id:'Temuan sejauh ini (Jawa Barat, Maret 2026)'})}</h3><ul class="clean"><li>${t({en:'Chargers sit in 177 of 629 sub-districts; the poorest quintile has 69% of its people in sub-districts without one.',id:'Charger ada di 177 dari 629 kecamatan; kuintil termiskin punya 69% penduduknya di kecamatan tanpa charger.'})}</li><li>${t({en:'Charging <i>use</i> is pro-rich (concentration index +0.385) even where charger <i>placement</i> is not (+0.095).',id:'<i>Pemakaian</i> pengisian pro-kaya (indeks konsentrasi +0,385) meski <i>penempatan</i> charger tidak (+0,095).'})}</li><li>${t({en:'Installed chargers average 124 kW, the fleet can take 89 kW, but 35 kW actually flows: power is not the binding constraint, siting is.',id:'Charger terpasang rata-rata 124 kW, armada sanggup 89 kW, tetapi yang mengalir 35 kW: daya bukan pengikatnya, penempatan yang mengikat.'})}</li><li>${t({en:'Sites near a substation sell 4.6× more energy; charging peaks 13:00–16:00, so 52% of energy could come straight from on-site PV.',id:'Lokasi dekat gardu induk menjual energi 4,6× lebih banyak; pengisian memuncak 13.00–16.00, sehingga 52% energi bisa langsung dari PV di lokasi.'})}</li></ul>`;
+  l.append(f);
+  const r=el('div'); r.style.cssText='display:grid;gap:10px;align-content:start';
+  const tl=el('div','tiles'); [[636,{en:'SPKLU units in the West Java master register (348 sites)',id:'unit SPKLU dalam register induk Jawa Barat (348 lokasi)'}],[101020,{en:'metered charging sessions, 2.26 GWh, one month',id:'sesi pengisian terukur, 2,26 GWh, satu bulan'}],[3691,{en:'home-charger connection applications, geocoded to villages',id:'permohonan sambungan charger rumah, ter-geocode ke desa'}],[53797,{en:'distribution transformers with loading, unbalance and coordinates',id:'gardu distribusi dengan beban, ketidakseimbangan, dan koordinat'}],[371,{en:'20 kV feeders reconstructed for PyPSA hosting-capacity studies',id:'penyulang 20 kV direkonstruksi untuk studi kapasitas penampung PyPSA'}],[3212,{en:'SPKLU nationally (June 2026) with 29 months of energy sales',id:'SPKLU nasional (Juni 2026) dengan 29 bulan penjualan energi'}]].forEach((x,i)=>tl.append(tile(x[0],t(x[1]),{i:i+2,acc:i===0})));
+  r.append(el('h3','rise',t({en:'Data assets I can bring to the working groups',id:'Aset data yang bisa saya bawa ke kelompok kerja'})),tl, el('p','src rise',t({en:'All PLN datasets are used under internal access; aggregate outputs are shareable, site-level outputs need a data agreement with PLN UID Jawa Barat.',id:'Semua dataset PLN dipakai dengan akses internal; keluaran agregat bisa dibagikan, keluaran tingkat lokasi memerlukan perjanjian data dengan PLN UID Jawa Barat.'})));
+  b.append(l,r); root.append(b);
+}},
+{ id:'indramayu', part:1, nav:{en:'Indramayu',id:'Indramayu'}, render(root){
+  root.append(head({en:'Part 2 · Field experience in Indramayu',id:'Bagian 2 · Pengalaman lapangan di Indramayu'},{en:'Indramayu runs the tightest distribution network in West Java',id:'Indramayu menjalankan jaringan distribusi paling padat beban di Jawa Barat'},{en:'What years on the ground in the regency add to the data: the network, the people and the institutions that six industrial zones will depend on.',id:'Apa yang ditambahkan bertahun-tahun di lapangan terhadap data: jaringan, orang, dan lembaga yang akan menopang enam kawasan industri.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1fr) minmax(0,1.2fr)';
+  const l=el('div'); l.style.cssText='display:grid;gap:10px;align-content:start';
+  const ex=el('div','card rise'); ex.innerHTML=`<h3>${t({en:'Experience',id:'Pengalaman'})}</h3><ul class="clean"><li>${t({en:'<b>June 2023 – July 2026, three years with PLN UP3 Indramayu</b>, in Indramayu and at ULP Cikedung: distribution operations, technical service (yantek) and P2TL field work across the regency’s four ULP.',id:'<b>Juni 2023 – Juli 2026, tiga tahun di PLN UP3 Indramayu</b>, di Indramayu dan ULP Cikedung: operasi distribusi, pelayanan teknik (yantek), dan P2TL di empat ULP kabupaten ini.'})}</li><li>${t({en:'Electra Skill Academy in-person classes in Indramayu and Cirebon: 4-day, 32-hour technician courses with PLN-recognised certificates.',id:'Kelas tatap muka Electra Skill Academy di Indramayu dan Cirebon: kursus teknisi 4 hari, 32 jam, bersertifikat yang diakui PLN.'})}</li><li>${t({en:'Career sharing at Politeknik Negeri Indramayu (Polindra) on PLN Group careers and competency certification.',id:'Sharing karier di Politeknik Negeri Indramayu (Polindra) tentang karier PLN Group dan sertifikasi kompetensi.'})}</li><li>${t({en:'Working knowledge of the Balongan refinery load, the 990 MW Sukra plant and the Losarang, Patrol and Balongan zone sites.',id:'Pengetahuan kerja tentang beban kilang Balongan, PLTU Sukra 990 MW, dan lokasi KPI Losarang, Patrol, dan Balongan.'})}</li></ul><p class="src">${t({en:'The next two chapters map this network and show what it sold in 2026.',id:'Dua bab berikutnya memetakan jaringan ini dan menunjukkan penjualannya pada 2026.'})}</p>`;
+  l.append(ex);
+  const tl=el('div','tiles'); tl.append(tile(6,t({en:'of 13 Rebana zones are in Indramayu',id:'dari 13 KPI Rebana ada di Indramayu'}),{i:1,acc:true}),tile(1.95,t({en:'million people; largest rice producer in West Java (energy–water–agriculture nexus, WP8)',id:'juta jiwa; produsen beras terbesar Jawa Barat (neksus energi–air–pertanian, WP8)'}),{i:2,dec:2}),tile(59.33,t({en:'Rp million GRDP per capita 2025, above the West Java average, carried by refinery and power',id:'Rp juta PDRB per kapita 2025, di atas rata-rata Jabar, ditopang kilang dan listrik'}),{i:3,dec:2}));
+  l.append(tl);
+  const r=el('div','card'); r.append(el('h3',null,t({en:'Distribution transformers by PLN service unit (UP3), measured units',id:'Gardu distribusi per unit layanan PLN (UP3), gardu terukur'})));
+  const tw=el('div','tw'); const tb=el('table'); tb.innerHTML=`<tr><th>UP3</th><th class="r">${t({en:'Transformers',id:'Gardu'})}</th><th class="r">MVA</th><th class="r">${t({en:'Avg load',id:'Beban rata'})}</th><th class="r">${t({en:'Overload ≥100%',id:'Overload ≥100%'})}</th><th class="r">${t({en:'Alert 80–100%',id:'Waspada 80–100%'})}</th><th class="r">${t({en:'Unbalance P1',id:'Unbalance P1'})}</th></tr>`;
+  const ref=[{up3:'Bandung (ref.)',gardu:2468,mva:842,measured:2445,avg_load_pct:42.5,overload:8,overload_pct:0.3,waspada:35,unbalance_p1:59},{up3:'West Java, 17 UP3',gardu:43481,mva:7957,measured:41401,avg_load_pct:48.1,overload:1364,overload_pct:3.3,waspada:3910,unbalance_p1:2251}];
+  [...D.gardu.sort((a,b)=>b.avg_load_pct-a.avg_load_pct),...ref].forEach(g=>{ const tr=el('tr'); const hot=g.up3==='INDRAMAYU'||g.up3==='CIREBON'; tr.innerHTML=`<td><b>${g.up3}</b></td><td class="r">${nf(g.gardu)}</td><td class="r">${nf(g.mva)}</td><td class="r" style="${g.avg_load_pct>55?'color:var(--bad);font-weight:600':''}">${nf(g.avg_load_pct,1)}%</td><td class="r" style="${g.overload_pct>5?'color:var(--bad);font-weight:600':''}">${nf(g.overload)} (${nf(g.overload_pct,1)}%)</td><td class="r">${nf(g.waspada)}</td><td class="r">${nf(g.unbalance_p1)}</td>`; if(hot) tr.style.background='var(--soft)'; tb.append(tr); });
+  tw.append(tb); r.append(tw);
+  r.append(el('p',null,t({en:'<b>Indramayu has the highest average transformer loading of all 17 UP3 (63.6%) and Cirebon the highest overload share (11.7%).</b> The first megawatts of new industrial load in Losarang, Patrol or Balongan will land on a network that is already the most stressed in the province.',id:'<b>Indramayu memiliki beban rata-rata gardu tertinggi dari 17 UP3 (63,6%) dan Cirebon porsi overload tertinggi (11,7%).</b> Megawatt pertama beban industri baru di Losarang, Patrol, atau Balongan akan jatuh pada jaringan yang sudah paling tertekan se-provinsi.'})));
+  r.append(el('p','src',t({en:'Source: PLN UID Jawa Barat distribution transformer loading register (53,797 rows, 77% with measurements), joined to Jabar_Asset/SSOT; computed by the presenter. West Java average load is the measured-row mean.',id:'Sumber: register beban gardu distribusi PLN UID Jawa Barat (53.797 baris, 77% terukur), digabung dengan Jabar_Asset/SSOT; dihitung penyaji. Beban rata-rata Jabar = rerata baris terukur.'})));
+  b.append(l,r); root.append(b);
+}},
+{ id:'idmmap', part:1, nav:{en:'Indramayu field map',id:'Peta lapangan Indramayu'}, render(root){
+  const U=Object.fromEntries(D.idm_ulp.map(u=>[u.ulp,u]));
+  root.append(head({en:'Part 2 · Three years on the ground, June 2023 – July 2026',id:'Bagian 2 · Tiga tahun di lapangan, Juni 2023 – Juli 2026'},{en:'Indramayu and Cikedung, kecamatan by kecamatan',id:'Indramayu dan Cikedung, kecamatan demi kecamatan'},{en:'31 kecamatan coloured by what the PLN registers measure, over a real CARTO, OpenStreetMap or Esri basemap. ULP service areas are drawn from which ULP owns most transformers in each kecamatan. Click a kecamatan for its profile.',id:'31 kecamatan diwarnai menurut ukuran register PLN, di atas peta dasar nyata CARTO, OpenStreetMap, atau Esri. Wilayah kerja ULP digambar dari ULP pemilik gardu terbanyak di tiap kecamatan. Klik kecamatan untuk melihat profilnya.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.75fr) minmax(0,1fr)';
+  const mc=el('div','card'); const chips=el('div'); const mb=el('div','lmap'); mb.style.minHeight='300px'; mc.append(chips,mb);
+  mc.append(el('p','src',t({en:'Sources: PLN UID Jawa Barat transformer register (1,638 UP3 Indramayu transformers with valid coordinates, aggregated; no single transformer is shown), UP2B substation loading April 2022, GI and line geometry from OpenStreetMap matched to RUPTL 2025–2034, kecamatan boundaries HDX-BPS 2020 with Kontur 2023 population, UP3 Indramayu growth-priority map (Oct 2026).',id:'Sumber: register gardu PLN UID Jawa Barat (1.638 gardu UP3 Indramayu berkoordinat valid, diagregasi; tidak ada gardu tunggal yang ditampilkan), beban GI UP2B April 2022, geometri GI dan saluran dari OpenStreetMap yang dicocokkan dengan RUPTL 2025–2034, batas kecamatan HDX-BPS 2020 dengan penduduk Kontur 2023, peta prioritas pertumbuhan UP3 Indramayu (Okt 2026).'})));
+  const r=el('div'); r.style.cssText='display:grid;gap:10px;align-content:start;min-width:0';
+  const tl=el('div','card navy rise'); tl.innerHTML=`<h3>${t({en:'My posting',id:'Penugasan saya'})}</h3><div class="tlbar"><i style="--w:100%"></i></div><div style="display:flex;justify-content:space-between;font-size:12px"><span>Jun 2023</span><span>Jul 2026</span></div><p style="font-size:13px">${t({en:'Three years with PLN UP3 Indramayu, in Indramayu and at ULP Cikedung: the western-central belt of Cikedung, Terisi, Kroya, Kandanghaur, Losarang, Tukdana and Bangodua, fed from GI Cikedung (2 × 60 MVA, 39% peak in 2022, the most headroom in the regency).',id:'Tiga tahun di PLN UP3 Indramayu, di Indramayu dan ULP Cikedung: sabuk barat-tengah Cikedung, Terisi, Kroya, Kandanghaur, Losarang, Tukdana, dan Bangodua, dipasok GI Cikedung (2 × 60 MVA, puncak 39% pada 2022, ruang terbesar di kabupaten ini).'})}</p>`;
+  const ug=el('div'); ug.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:8px';
+  ['Cikedung','Indramayu','Jatibarang','Haurgeulis'].forEach((n,i)=>{ const u=U[n]; if(!u) return; const c=el('div','tile rise'); c.style.setProperty('--i',i+1); c.style.borderLeft=`4px solid var(${ULPCOL[n]})`;
+    c.innerHTML=`<div style="display:flex;justify-content:space-between;gap:6px;align-items:center"><b style="font-size:13px">ULP ${n}</b>${n==='Cikedung'||n==='Indramayu'?`<span class="pill ok" style="font-size:10.5px">${t({en:'my posting',id:'penugasan'})}</span>`:''}</div><div class="num" style="font-size:22px">${nf(u.load,1)}%</div><div class="lbl">${t({en:'avg transformer load',id:'beban rata gardu'})} · ${nf(u.gardu)} ${t({en:'units',id:'unit'})} · ${nf(u.mva,1)} MVA · ${u.ol} overload</div>`; ug.append(c); });
+  const pf=el('div','card rise'); pf.style.setProperty('--i',5); pf.setAttribute('aria-live','polite');
+  r.append(tl,ug,pf); b.append(mc,r); root.append(b);
+  requestAnimationFrame(()=>idmMap(mb,pf,chips));
+}},
+{ id:'idmsales', part:1, nav:{en:'UP3 Indramayu 2026',id:'UP3 Indramayu 2026'}, render(root){
+  const S=D.sales;
+  root.append(head({en:'Part 2 · What the network sells: UP3 Indramayu, January–September 2026',id:'Bagian 2 · Apa yang dijual jaringan: UP3 Indramayu, Januari–September 2026'},{en:'Sales up 9.2%, medium-voltage industry up 40%, plastics doing most of it',id:'Penjualan naik 9,2%, industri tegangan menengah naik 40%, sebagian besar dari plastik'},{en:'The demand side of the same network: the UP3’s own figures, shared with every UP3 in UID Jawa Barat on 15 October 2026.',id:'Sisi permintaan dari jaringan yang sama: angka UP3 sendiri, dibagikan ke seluruh UP3 se-UID Jawa Barat pada 15 Oktober 2026.'}));
+  const tl=el('div','tiles');
+  tl.append(tile(1187.73,t({en:'GWh sold Jan–Sep 2026, +9.23% (+100.34 GWh) on 2025',id:'GWh terjual Jan–Sep 2026, +9,23% (+100,34 GWh) dari 2025'}),{i:0,dec:2,acc:true}),
+    tile(110,t({en:'% of the September 2026 sales KPI: 80.49 GWh against 60.15 target',id:'% capaian KPI penjualan September 2026: 80,49 GWh dari target 60,15'}),{i:1,suf:'%'}),
+    tile(641906,t({en:'customers, +3.79% (+23,433)',id:'pelanggan, +3,79% (+23.433)'}),{i:2}),
+    tile(771.68,t({en:'MVA connected, +9.20% (+65.04 MVA)',id:'MVA tersambung, +9,20% (+65,04 MVA)'}),{i:3,dec:2}),
+    tile(1142.18,t({en:'Rp billion revenue, +20.53% (+Rp 194.56 bn)',id:'Rp miliar pendapatan, +20,53% (+Rp 194,56 M)'}),{i:4,dec:2}));
+  root.append(tl);
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.15fr) minmax(0,1fr) minmax(0,.9fr)';
+  const c1=el('div','card'); c1.append(el('h3',null,t({en:'Cumulative energy sales, GWh',id:'Penjualan energi kumulatif, GWh'}))); const cb=el('div'); cb.style.cssText='height:210px;position:relative'; c1.append(cb);
+  const tm=el('div'); tm.style.cssText='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:end;height:96px';
+  S.tm.forEach((v,i)=>{ const col=el('div'); col.style.cssText='display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:2px;font-size:11.5px'; const w=el('div'); w.style.cssText='width:56%;height:'+(100*v/260)+'%'; const bar=el('div','vbar'); bar.style.cssText='height:100%;background:'+(i===2?'var(--s1)':'var(--muted)'); bar.style.setProperty('--i',i+3); w.append(bar); col.append(el('b',null,nf(v,2)),w,el('span','lbl',String(2024+i))); tm.append(col); });
+  c1.append(el('h3',null,t({en:'Medium-voltage (TM) customers, GWh Jan–Sep · +40.35% in 2026',id:'Pelanggan tegangan menengah (TM), GWh Jan–Sep · +40,35% pada 2026'})),tm);
+  const c2=el('div','card'); c2.append(el('h3',null,t({en:'Industrial clusters, GWh Jan–Sep 2025 → 2026',id:'Klaster industri, GWh Jan–Sep 2025 → 2026'}))); const db=el('div'); c2.append(db);
+  const tf=el('div'); tf.style.cssText='display:flex;flex-wrap:wrap;gap:6px'; S.tariff.forEach(x=>tf.append(el('span','pill '+(x.d>=0?'ok':'bad'),`${x.t} ${x.d>=0?'+':''}${nf(x.d,2)} GWh (${x.p>=0?'+':''}${nf(x.p,2)}%)`)));
+  c2.append(el('p','lbl',t({en:'Plastics alone add 51.76 GWh, 95% of the cluster growth. By tariff, I3 industry adds 62.07 GWh while tariff L falls 14.00 GWh.',id:'Plastik sendiri menambah 51,76 GWh, 95% pertumbuhan klaster. Menurut tarif, industri I3 menambah 62,07 GWh sedangkan tarif L turun 14,00 GWh.'})),tf);
+  const c3=el('div'); c3.style.cssText='display:grid;gap:10px;align-content:start;min-width:0';
+  const pg=el('div','card rise'); pg.style.setProperty('--i',5); pg.append(el('h3',null,t({en:'Three cross-function programs, realisation vs target',id:'Tiga program lintas bidang, realisasi vs target'})));
+  S.programs.forEach(p=>{ const r=34,circ=2*Math.PI*r, f=Math.min(1,p.pct/125); const g=el('div','gauge'); g.innerHTML=`<svg viewBox="0 0 92 92" aria-label="${p.n} ${p.pct}%"><circle class="arc bgarc" cx="46" cy="46" r="${r}"/><circle class="arc fgarc" cx="46" cy="46" r="${r}" transform="rotate(-90 46 46)" data-dash="${(f*circ).toFixed(1)} ${circ.toFixed(1)}" style="stroke:var(--s1)"/><text class="gnum" x="46" y="51" text-anchor="middle">${nf(p.pct,1)}%</text></svg>`;
+    const tx=el('div'); tx.innerHTML=`<b style="font-size:13px">${p.n}</b><div class="lbl">${p.m}: ${nf(p.real)} / ${nf(p.target)} ${p.u}</div><div class="lbl">${p.f}</div>`; g.append(tx); pg.append(g); });
+  const pl=el('div','card navy rise'); pl.style.setProperty('--i',6); pl.innerHTML=`<h3>${t({en:'Pipeline identified, not yet connected',id:'Pipeline teridentifikasi, belum tersambung'})}</h3><dl class="kv">${S.pipeline.map(p=>`<dt style="color:#BFD8D5">${p.n} (${nf(p.e)})</dt><dd>${nf(p.v,p.u==='kVA'?2:1)} ${p.u}</dd>`).join('')}</dl><p class="lbl" style="color:#BFD8D5">${t({en:'Losarang and Krangkeng are named as the new industrial growth points; Sukra, Losarang, Gantar and Krangkeng are the four priority kecamatan on the map.',id:'Losarang dan Krangkeng disebut sebagai titik pertumbuhan industri baru; Sukra, Losarang, Gantar, dan Krangkeng adalah empat kecamatan prioritas di peta.'})}</p>`;
+  c3.append(pg,pl); b.append(c1,c2,c3); root.append(b);
+  root.append(el('p','src',t({en:'Source: ',id:'Sumber: '})+S.source+t({en:'. Cluster rows do not add up to the cluster totals (228.06 → 282.69 GWh) because the deck itemises only the largest categories. Medium-voltage totals and cluster totals use different bases, as in the deck.',id:'. Baris klaster tidak menjumlah ke total klaster (228,06 → 282,69 GWh) karena paparan hanya merinci kategori terbesar. Total TM dan total klaster memakai basis berbeda, sesuai paparan.'})));
+  requestAnimationFrame(()=>{ cumChart(cb); dumbbell(db); });
+}},
+
+{ id:'charging', part:2, nav:{en:'Charging in Rebana',id:'Pengisian EV di Rebana'}, render(root){
+  const T=D.totals;
+  root.append(head({en:'Part 3 · Facts the consortium does not have yet',id:'Bagian 3 · Fakta yang belum dimiliki konsorsium'},{en:'Rebana’s EV charging is a corridor economy: 73% of the energy is sold at toll rest areas',id:'Pengisian EV Rebana adalah ekonomi koridor: 73% energi terjual di rest area tol'},{en:'Every public charger in the seven regencies and every metered session of March 2026, from the PLN UID Jawa Barat register.',id:'Semua charger publik di tujuh kabupaten/kota dan semua sesi terukur Maret 2026, dari register PLN UID Jawa Barat.'}));
+  const tl=el('div','tiles'); tl.append(tile(T.reb_units,t({en:'SPKLU units in Rebana, 20% of West Java’s 636; 109 PLN, 20 partners',id:'unit SPKLU di Rebana, 20% dari 636 Jawa Barat; 109 PLN, 20 mitra'}),{i:0,acc:true}),tile(T.reb_kw/1000,t({en:'MW installed charger capacity (44 ultra-fast units)',id:'MW kapasitas charger terpasang (44 unit ultra-fast)'}),{i:1,dec:1}),tile(T.reb_trx.n,t({en:'sessions in March 2026 (13.6% of West Java)',id:'sesi pada Maret 2026 (13,6% Jawa Barat)'}),{i:2}),tile(T.reb_trx.kwh/1000,t({en:'MWh sold, Rp 910 million, 25.4 kWh and 41 minutes per session (median)',id:'MWh terjual, Rp 910 juta, 25,4 kWh dan 41 menit per sesi (median)'}),{i:3,dec:0}),tile(T.home_reb,t({en:'home-charger applications in Rebana of 3,691 in West Java (2.4%): local adoption is tiny',id:'permohonan charger rumah di Rebana dari 3.691 di Jawa Barat (2,4%): adopsi lokal masih kecil'}),{i:4}));
+  root.append(tl);
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr)';
+  const mc=el('div','card'); mc.append(el('h3',null,t({en:'Charging sites, bubble = March 2026 sessions',id:'Lokasi SPKLU, gelembung = sesi Maret 2026'}))); const mb=el('div','lmap'); mb.style.minHeight='220px'; mc.append(mb);
+  const hc=el('div','card'); hc.append(el('h3',null,t({en:'Sessions by hour of day',id:'Sesi per jam'}))); const hb=el('div'); hb.style.cssText='flex:1;min-height:150px;display:grid;grid-template-columns:repeat(24,1fr);gap:2px;align-items:end';
+  const mh=Math.max(...D.hourly.map(h=>h.sessions));
+  D.hourly.forEach((h,i)=>{ const w=el('div'); w.style.cssText='height:'+(100*h.sessions/mh)+'%;position:relative'; const v=el('div','vbar'); v.style.cssText='height:100%;background:'+(h.hour>=13&&h.hour<=17?'var(--s2)':'var(--s1)'); v.style.setProperty('--i',i); w.append(v); w.addEventListener('mousemove',e=>showTip(e,`<b>${String(h.hour).padStart(2,'0')}:00</b>${nf(h.sessions)} ${t({en:'sessions',id:'sesi'})}`)); w.addEventListener('mouseleave',hideTip); hb.append(w); });
+  hc.append(hb, el('div','lbl',t({en:'00 → 23 h. Peak 13:00–17:00 (amber) is solar noon: PV on site can serve it directly.',id:'00 → 23. Puncak 13.00–17.00 (kuning tua) adalah tengah hari surya: PV di lokasi bisa melayaninya langsung.'})));
+  const lc=el('div','card'); lc.append(el('h3',null,t({en:'Energy by site type, MWh',id:'Energi per jenis lokasi, MWh'}))); const ll=el('div'); ll.style.cssText='display:grid;gap:7px';
+  const LT={'Rest Area Tol':{en:'Toll rest area',id:'Rest area tol'},'Kantor / Unit Layanan PLN':{en:'PLN office',id:'Kantor PLN'},'F&B / Kafe / Leisure Retail':{en:'Café / retail',id:'Kafe / ritel'},'Publik / Pemerintah / Transportasi':{en:'Public / transport',id:'Publik / transportasi'},'Hotel / Hospitality':{en:'Hotel',id:'Hotel'},'Mall / Retail / Supermarket':{en:'Mall',id:'Mal'},'Perumahan / Township':{en:'Housing',id:'Perumahan'},'Wisata / Leisure':{en:'Tourism',id:'Wisata'}};
+  D.loc.forEach((r,i)=>{ const h=hbar(t(LT[r.type]||{en:r.type,id:r.type}),r.mwh,256,i===0?'--s2':'--s1',i,v=>nf(v,1)); h.style.fontSize='12px'; h.addEventListener('mousemove',e=>showTip(e,`<b>${r.type}</b>${nf(r.sessions)} ${t({en:'sessions',id:'sesi'})} · ${nf(r.mwh,1)} MWh`)); h.addEventListener('mouseleave',hideTip); ll.append(h); });
+  lc.append(ll, el('p','src',t({en:'Source: PLN UID Jawa Barat transaction detail, March 2026 (101,020 sessions province-wide), filtered to the 7 kab/kota; computed by the presenter.',id:'Sumber: rincian transaksi PLN UID Jawa Barat, Maret 2026 (101.020 sesi se-provinsi), disaring ke 7 kab/kota; dihitung penyaji.'})));
+  b.append(mc,hc,lc); root.append(b);
+  requestAnimationFrame(()=>rebanaMap(mb,'charging'));
+}},
+{ id:'regions', part:2, nav:{en:'By regency',id:'Per kabupaten'}, render(root){
+  root.append(head({en:'Part 3 · The seven regencies side by side',id:'Bagian 3 · Tujuh kabupaten/kota berdampingan'},{en:'Kab. Cirebon carries a third of charging; Kuningan and Sumedang almost none',id:'Kab. Cirebon menanggung sepertiga pengisian; Kuningan dan Sumedang nyaris nol'},{en:'Public record and PLN data in one table. Hover a column header for its source.',id:'Catatan publik dan data PLN dalam satu tabel. Arahkan kursor ke judul kolom untuk sumbernya.'}));
+  const c=el('div','card'); const tw=el('div','tw'); const tb=el('table');
+  const cols=[['region',{en:'Regency / city',id:'Kabupaten / kota'},null,{en:'',id:''}],['population_m',{en:'Population (M)',id:'Penduduk (jt)'},2,{en:'BPS / Disdukcapil 2024',id:'BPS / Disdukcapil 2024'}],['kpi_zones',{en:'Zones',id:'KPI'},0,{en:'rebana.id',id:'rebana.id'}],['invest_2025_T',{en:'Invest 2025 (Rp T)',id:'Investasi 2025 (Rp T)'},2,{en:'BKPM via BP Rebana',id:'BKPM via BP Rebana'}],['pdrb_capita_2025_jt',{en:'GRDP/capita 2025 (Rp M)',id:'PDRB/kapita 2025 (Rp jt)'},2,{en:'BPS via Databoks; blank = not found',id:'BPS via Databoks; kosong = tidak ditemukan'}],['expenditure_capita_2025_k',{en:'Spending/capita (Rp k)',id:'Pengeluaran/kapita (Rp rb)'},0,{en:'BPS 2025 (HDI component)',id:'BPS 2025 (komponen IPM)'}],['spklu_units',{en:'SPKLU',id:'SPKLU'},0,{en:'PLN Master SPKLU Mar 2026',id:'Master SPKLU PLN Mar 2026'}],['spklu_kw',{en:'kW',id:'kW'},0,{en:'PLN Master SPKLU Mar 2026',id:'Master SPKLU PLN Mar 2026'}],['sessions_mar26',{en:'Sessions Mar 26',id:'Sesi Mar 26'},0,{en:'PLN transaction detail',id:'Rincian transaksi PLN'}],['mwh_mar26',{en:'MWh Mar 26',id:'MWh Mar 26'},1,{en:'PLN transaction detail',id:'Rincian transaksi PLN'}],['home_charger_apps',{en:'Home chargers',id:'Charger rumah'},0,{en:'PLN home-charging register to Jun 2026',id:'Register charger rumah PLN s.d. Jun 2026'}]];
+  const hr=el('tr'); cols.forEach(c=>{ const th=el('th',c[2]!=null?'r':'',t(c[1])); if(t(c[3])) { th.addEventListener('mousemove',e=>showTip(e,`<b>${t(c[1])}</b><span class="k">${t(c[3])}</span>`)); th.addEventListener('mouseleave',hideTip);} hr.append(th); }); tb.append(hr);
+  const tot={}; D.regions.forEach(r=>{ const tr=el('tr'); cols.forEach(c=>{ const v=r[c[0]]; const td=el('td',c[2]!=null?'r':''); td.textContent= v==null? (c[0]==='invest_2025_T'?'—':'—') : (c[2]!=null? nf(v,c[2]) : v); if(c[0]==='region') td.innerHTML=`<b>${v}</b>`; tr.append(td); if(typeof v==='number'&&c[2]!=null&&!['pdrb_capita_2025_jt','expenditure_capita_2025_k'].includes(c[0])) tot[c[0]]=(tot[c[0]]||0)+v; }); tb.append(tr); });
+  const tr=el('tr'); tr.style.fontWeight='700'; cols.forEach(c=>{ const td=el('td',c[2]!=null?'r':''); td.textContent= c[0]==='region'? t({en:'Rebana total',id:'Total Rebana'}) : c[0]==='invest_2025_T'? nf(36.67,2) : (tot[c[0]]!=null? nf(tot[c[0]],c[2]) : ''); tr.append(td); }); tb.append(tr);
+  tw.append(tb); c.append(tw);
+  const cmp=el('div','tiles'); cmp.append(tile(636,t({en:'SPKLU units in all West Java (Rebana 129)',id:'unit SPKLU se-Jawa Barat (Rebana 129)'}),{i:0}),tile(2260,t({en:'MWh sold in West Java in March 2026 (Rebana 348)',id:'MWh terjual di Jawa Barat Maret 2026 (Rebana 348)'}),{i:1}),tile(3691,t({en:'home-charger applications in West Java (Rebana 90)',id:'permohonan charger rumah di Jawa Barat (Rebana 90)'}),{i:2}),tile(13.3,t({en:'MWh per month per 100,000 people in Kab. Cirebon vs 0.8 in Kuningan: a 17× spread inside one zone',id:'MWh per bulan per 100.000 jiwa di Kab. Cirebon vs 0,8 di Kuningan: rentang 17× di dalam satu kawasan'}),{i:3,dec:1,acc:true}));
+  c.append(cmp, el('p','src',t({en:'Kuningan and Kota Cirebon 2025 investment is reported combined (Rp 2.12 T). Sumedang population is a BPS estimate. GRDP per capita for Kab. Cirebon, Subang and Kuningan was not found in a 2025 release.',id:'Investasi 2025 Kuningan dan Kota Cirebon dilaporkan gabungan (Rp 2,12 T). Penduduk Sumedang estimasi BPS. PDRB per kapita Kab. Cirebon, Subang, dan Kuningan tidak ditemukan dalam rilis 2025.'})));
+  root.append(c);
+}},
+{ id:'grid', part:2, nav:{en:'Grid headroom',id:'Ruang jaringan'}, render(root){
+  const tot=D.giup3.reduce((a,g)=>({n:a.n+g.trafo,mva:a.mva+g.mva,pk:a.pk+g.peak_mva,ge:a.ge+g.trafo_ge80}),{n:0,mva:0,pk:0,ge:0});
+  root.append(head({en:'Part 3 · Substation headroom around the zones',id:'Bagian 3 · Ruang gardu induk di sekitar kawasan'},{en:'16 of 55 substation transformers already run above 80% at peak',id:'16 dari 55 trafo gardu induk sudah di atas 80% saat puncak'},{en:'Every 150/20 kV and 70/20 kV transformer in the Cirebon, Indramayu and Sumedang units plus the Subang substations of the Purwakarta unit, sorted by peak loading (April 2022 snapshot, the most recent full register available to me).',id:'Semua trafo 150/20 kV dan 70/20 kV di unit Cirebon, Indramayu, Sumedang, plus gardu induk Subang di unit Purwakarta, diurutkan menurut beban puncak (potret April 2022, register lengkap terbaru yang saya pegang).'}));
+  const tl=el('div','tiles'); tl.append(tile(tot.mva,t({en:'MVA of transformer capacity serving the zone',id:'MVA kapasitas trafo yang melayani kawasan'}),{i:0}),tile(Math.round(tot.pk),t({en:'MVA at peak, 62% average loading',id:'MVA saat puncak, pembebanan rata-rata 62%'}),{i:1}),tile(Math.round(0.8*tot.mva-tot.pk),t({en:'MVA of headroom before every transformer reaches 80%, about 0.9 ha of estate per MVA at full build-out',id:'MVA ruang sebelum semua trafo mencapai 80%, kira-kira 0,9 ha kawasan per MVA saat terbangun penuh'}),{i:2,acc:true}),tile(tot.ge,t({en:'transformers ≥80% at peak (670 MVA): Subang, Sragi, Jatibarang, Babakan, Arjawinangun',id:'trafo ≥80% saat puncak (670 MVA): Subang, Sragi, Jatibarang, Babakan, Arjawinangun'}),{i:3}));
+  root.append(tl);
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.6fr) minmax(0,1fr)';
+  const c=el('div','card'); c.append(el('h3',null,t({en:'Peak loading per transformer, % of rating (hover for substation)',id:'Beban puncak per trafo, % dari rating (arahkan kursor untuk gardu induk)'})));
+  const box=el('div'); box.style.cssText='flex:1;min-height:180px;display:grid;grid-template-columns:repeat(55,1fr);gap:2px;align-items:end';
+  const gi=[...D.gi].sort((a,b)=>b.peak_pct-a.peak_pct);
+  gi.forEach((g,i)=>{ const w=el('div'); w.style.cssText='height:'+Math.max(2,g.peak_pct)+'%;position:relative'; const v=el('div','vbar'); v.style.cssText='height:100%;background:'+(g.peak_pct>=80?'var(--s4)':g.peak_pct>=60?'var(--s2)':'var(--s1)'); v.style.setProperty('--i',i); w.append(v); w.addEventListener('mousemove',e=>showTip(e,`<b>GI ${g.gi} · ${t({en:'trafo',id:'trafo'})} ${g.trafo}</b>${g.mva} MVA · ${g.voltage} kV · UP3 ${g.up3}<br>${t({en:'peak',id:'puncak'})} ${nf(g.peak_pct,1)}% · ${t({en:'average',id:'rata-rata'})} ${nf(g.avg_pct,1)}%<br><span class="k">${g.area}</span>`)); w.addEventListener('mouseleave',hideTip); box.append(w); });
+  c.append(box, el('div','legend',`<span><i style="background:var(--s4)"></i>≥80% (16)</span><span><i style="background:var(--s2)"></i>60–80%</span><span><i style="background:var(--s1)"></i>&lt;60%</span>`), el('p','src',t({en:'Source: PLN UID Jawa Barat / UP2B monthly substation transformer report, April 2022 (sheet TOTAL TRAFO); customer-owned transformers excluded; computed by the presenter. A 2026 refresh is the first data ask (see “Asks & sources”).',id:'Sumber: laporan bulanan trafo GI PLN UID Jawa Barat / UP2B, April 2022 (sheet TOTAL TRAFO); trafo milik pelanggan dikecualikan; dihitung penyaji. Pembaruan 2026 adalah permintaan data pertama (lihat “Permintaan & sumber”).'})));
+  const r=el('div','card'); r.append(el('h3',null,t({en:'By service unit',id:'Per unit layanan'})));
+  const tw=el('div','tw'); const tb=el('table'); tb.innerHTML=`<tr><th>UP3</th><th class="r">${t({en:'Trafo',id:'Trafo'})}</th><th class="r">MVA</th><th class="r">${t({en:'Peak',id:'Puncak'})}</th><th class="r">≥80%</th></tr>`;
+  D.giup3.forEach(g=>{ const tr=el('tr'); tr.innerHTML=`<td><b>${g.up3.replace('PURWAKARTA(Subang GI)','Subang GIs')}</b></td><td class="r">${g.trafo}</td><td class="r">${nf(g.mva)}</td><td class="r" style="${g.peak_pct>=65?'color:var(--bad);font-weight:600':''}">${nf(g.peak_pct,1)}%</td><td class="r">${g.trafo_ge80}</td>`; tb.append(tr); });
+  tw.append(tb); r.append(tw);
+  r.append(el('p',null,t({en:'<b>Reading for Energy WP6:</b> the planned GI Patimban (2×60 MVA), GI Kertajati (2×60 MVA), GI Subang Baru (3×60 MVA) and GI Balongan add about 420 MVA. Against a full build-out demand of 2,200–6,600 MVA (see “Projections 2030”) that is a first step, which is why on-site solar and storage inside the estates are not optional.',id:'<b>Bacaan untuk WP6 Energi:</b> rencana GI Patimban (2×60 MVA), GI Kertajati (2×60 MVA), GI Subang Baru (3×60 MVA), dan GI Balongan menambah sekitar 420 MVA. Dibandingkan kebutuhan terbangun penuh 2.200–6.600 MVA (lihat “Proyeksi 2030”) itu baru langkah awal, karena itu PLTS dan penyimpanan di dalam kawasan bukan pilihan tambahan.'})));
+  b.append(c,r); root.append(b);
+}},
+{ id:'project', part:3, nav:{en:'Projections 2030',id:'Proyeksi 2030'}, render(root){
+  root.append(head({en:'Part 4 · Three projections you can move',id:'Bagian 4 · Tiga proyeksi yang bisa digeser'},{en:'What 2030 looks like under assumptions you choose',id:'Seperti apa 2030 dengan asumsi yang Anda pilih'},{en:'Scenario arithmetic from measured 2026 baselines, not forecasts. Move the sliders; every number recomputes.',id:'Aritmetika skenario dari basis terukur 2026, bukan ramalan. Geser slider; semua angka dihitung ulang.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='repeat(auto-fit,minmax(min(100%,280px),1fr))';
+  // 1 charging
+  const c1=el('div','card rise'); c1.innerHTML=`<h3>${t({en:'Public charging energy in Rebana',id:'Energi pengisian publik di Rebana'})}</h3><p class="lbl">${t({en:'Baseline 348 MWh in March 2026 (4.2 GWh/yr). National SPKLU energy grew 4.7× from March 2025 to March 2026; the slider is the annual growth you expect from here.',id:'Basis 348 MWh pada Maret 2026 (4,2 GWh/thn). Energi SPKLU nasional naik 4,7× dari Maret 2025 ke Maret 2026; slider adalah pertumbuhan tahunan yang Anda harapkan mulai sekarang.'})}</p><div class="slider"><label>${t({en:'Annual growth',id:'Pertumbuhan tahunan'})} <b id="g1v">60%</b></label><input type="range" id="g1" min="10" max="150" value="60" step="5"></div><div class="big" id="p1"></div><div class="lbl">${t({en:'GWh per year in 2030',id:'GWh per tahun pada 2030'})}</div><div id="p1c" style="flex:1;min-height:90px"></div><div class="lbl" id="p1n"></div>`;
+  // 2 load
+  const c2=el('div','card rise'); c2.style.setProperty('--i',1); c2.innerHTML=`<h3>${t({en:'Industrial load at full build-out',id:'Beban industri saat terbangun penuh'})}</h3><p class="lbl">${t({en:'43,913 ha × a gross load density. Indonesian estates plan 50–150 kVA per gross hectare depending on the industry mix.',id:'43.913 ha × kepadatan beban kotor. Kawasan industri Indonesia merencanakan 50–150 kVA per hektare kotor tergantung bauran industri.'})}</p><div class="slider"><label>${t({en:'Load density',id:'Kepadatan beban'})} <b id="g2v">100 kVA/ha</b></label><input type="range" id="g2" min="30" max="200" value="100" step="10"></div><div class="slider"><label>${t({en:'Share built by 2030',id:'Porsi terbangun 2030'})} <b id="g2bv">30%</b></label><input type="range" id="g2b" min="10" max="100" value="30" step="5"></div><div class="big" id="p2"></div><div class="lbl" id="p2l"></div><div id="p2c" style="display:grid;gap:6px;margin-top:4px"></div>`;
+  // 3 PV
+  const c3=el('div','card rise'); c3.style.setProperty('--i',2); c3.innerHTML=`<h3>${t({en:'Rooftop solar on the estates',id:'PLTS atap di kawasan'})}</h3><p class="lbl">${t({en:'Roof share of gross land × usable roof × 1 MWp/ha × 1,450 kWh/kWp (pantura yield) × 0.8 kg CO₂/kWh grid factor.',id:'Porsi atap dari lahan kotor × atap terpakai × 1 MWp/ha × 1.450 kWh/kWp (hasil pantura) × faktor emisi jaringan 0,8 kg CO₂/kWh.'})}</p><div class="slider"><label>${t({en:'Roof share of land',id:'Porsi atap dari lahan'})} <b id="g3v">35%</b></label><input type="range" id="g3" min="15" max="50" value="35" step="5"></div><div class="slider"><label>${t({en:'Usable roof',id:'Atap terpakai'})} <b id="g3bv">50%</b></label><input type="range" id="g3b" min="20" max="80" value="50" step="10"></div><div class="big" id="p3"></div><div class="lbl" id="p3l"></div>`;
+  b.append(c1,c2,c3); root.append(b);
+  root.append(el('p','src rise',t({en:'Assumptions are the presenter’s and are shown beside each slider; baselines: PLN transaction detail March 2026, rebana.id land area, PLN substation register April 2022, national SPKLU energy series 2024–2026. Change any assumption with the slider rather than trusting the default.',id:'Asumsi milik penyaji dan ditampilkan di samping tiap slider; basis: rincian transaksi PLN Maret 2026, luas lahan rebana.id, register GI PLN April 2022, deret energi SPKLU nasional 2024–2026. Ubah asumsi dengan slider, jangan hanya percaya nilai bawaan.'})));
+  const base=347.8*12/1000;
+  function upd(){ const g=+c1.querySelector('#g1').value/100; c1.querySelector('#g1v').textContent=Math.round(g*100)+'%'; const v30=base*Math.pow(1+g,4); c1.querySelector('#p1').textContent=nf(v30,1); c1.querySelector('#p1n').textContent=t({en:`≈ ${nf(v30/4.2,1)}× today · about ${nf(v30*1e6/365/25.4/24/0.5/1000,0)}k sessions a day at today’s 25 kWh`,id:`≈ ${nf(v30/4.2,1)}× hari ini · sekitar ${nf(v30*1e6/365/25.4/24/0.5/1000,0)} ribu sesi per hari pada 25 kWh hari ini`}); const box=c1.querySelector('#p1c'); box.innerHTML=''; const ys=[2026,2027,2028,2029,2030]; const mx=v30; const gr=el('div'); gr.style.cssText='display:grid;grid-template-columns:repeat(5,1fr);gap:8px;align-items:end;height:100%'; ys.forEach((y,i)=>{ const v=base*Math.pow(1+g,i); const col=el('div'); col.style.cssText='display:flex;flex-direction:column;justify-content:end;height:100%;align-items:center;gap:2px;font-size:11px'; const w=el('div'); w.style.cssText='width:70%;height:'+(100*v/mx)+'%'; const bar=el('div'); bar.style.cssText='height:100%;border-radius:4px 4px 0 0;background:'+(i===4?'var(--s2)':'var(--s1)'); w.append(bar); col.append(el('div',null,nf(v,1)),w,el('div','lbl',String(y))); gr.append(col); }); box.append(gr);
+    const d=+c2.querySelector('#g2').value, sh=+c2.querySelector('#g2b').value/100; c2.querySelector('#g2v').textContent=d+' kVA/ha'; c2.querySelector('#g2bv').textContent=Math.round(sh*100)+'%'; const full=43913*d/1000, by30=full*sh; c2.querySelector('#p2').textContent=nf(by30,0)+' MVA'; c2.querySelector('#p2l').textContent=t({en:`new industrial demand by 2030 (full build-out ${nf(full,0)} MVA) vs 463 MVA headroom today and ~420 MVA of planned substations`,id:`permintaan industri baru pada 2030 (terbangun penuh ${nf(full,0)} MVA) vs ruang 463 MVA hari ini dan ~420 MVA GI rencana`}); const pc=c2.querySelector('#p2c'); pc.innerHTML=''; const mx2=Math.max(full,2580); [[t({en:'Demand 2030',id:'Permintaan 2030'}),by30,'--s2'],[t({en:'Full build-out',id:'Terbangun penuh'}),full,'--s4'],[t({en:'Existing GI capacity',id:'Kapasitas GI ada'}),2580,'--s1'],[t({en:'Headroom + planned GI',id:'Ruang + GI rencana'}),883,'--s3']].forEach((x,i)=>{ const h=hbar(x[0],x[1],mx2,x[2],0,v=>nf(v,0)); h.classList.remove('rise'); h.style.fontSize='12px'; h.querySelector('.bar').style.transition='width .4s'; pc.append(h); });
+    const rs=+c3.querySelector('#g3').value/100, us=+c3.querySelector('#g3b').value/100; c3.querySelector('#g3v').textContent=Math.round(rs*100)+'%'; c3.querySelector('#g3bv').textContent=Math.round(us*100)+'%'; const mwp=43913*rs*us; const gwh=mwp*1.45; c3.querySelector('#p3').textContent=nf(mwp/1000,2)+' GWp'; c3.querySelector('#p3l').textContent=t({en:`≈ ${nf(gwh/1000,2)} TWh/yr, ${nf(gwh*0.8/1000,0)} kt CO₂/yr avoided, ${nf(mwp/192,1)}× the Cirata floating plant; about ${nf(100*gwh/(by30*0.6*8760/1000),0)}% of the 2030 industrial demand above at a 60% load factor`,id:`≈ ${nf(gwh/1000,2)} TWh/thn, ${nf(gwh*0.8/1000,0)} kt CO₂/thn terhindar, ${nf(mwp/192,1)}× PLTS terapung Cirata; sekitar ${nf(100*gwh/(by30*0.6*8760/1000),0)}% dari permintaan industri 2030 di atas pada faktor beban 60%`}); }
+  root.querySelectorAll('input[type=range]').forEach(i=>i.addEventListener('input',upd)); upd();
+}},
+{ id:'ideas', part:3, nav:{en:'Ideas → work packages',id:'Ide → paket kerja'}, render(root){
+  root.append(head({en:'Part 4 · Ideas mapped to the work packages',id:'Bagian 4 · Ide yang dipetakan ke paket kerja'},{en:'Where this data and this PhD plug into the validation blocks',id:'Di mana data dan PhD ini masuk ke blok validasi'},{en:'Pick a theme. Each card names the work package, the idea, what I bring, and the data still needed.',id:'Pilih tema. Tiap kartu menyebut paket kerja, ide, yang saya bawa, dan data yang masih dibutuhkan.'}));
+  const tabs=el('div','tabs'); const grid=el('div','body'); grid.style.gridTemplateColumns='repeat(auto-fit,minmax(min(100%,270px),1fr))'; grid.style.alignContent='start';
+  const TH={energy:{n:{en:'Energy, Resources & Industry',id:'Energi, Sumber Daya & Industri'},items:[
+    {wp:'WP1 · WP3',i:{en:'Site screening that starts from the grid, not the land',id:'Penyaringan lokasi yang berangkat dari jaringan, bukan lahan'},b:{en:'Substation headroom map (55 transformers), 371 reconstructed 20 kV feeders, pvlib yield for the pantura coast.',id:'Peta ruang GI (55 trafo), 371 penyulang 20 kV terekonstruksi, hasil pvlib untuk pesisir pantura.'},d:{en:'2026 substation report; estate masterplans with plot-level load.',id:'Laporan GI 2026; masterplan kawasan dengan beban per kavling.'}},
+    {wp:'WP6',i:{en:'Solar + storage + charging pilot at a Cipali rest area',id:'Pilot PLTS + penyimpanan + pengisian di rest area Cipali'},b:{en:'Rest areas sell 73% of Rebana charging energy and peak at solar noon; 52% of energy is PV-servable without a battery.',id:'Rest area menjual 73% energi pengisian Rebana dan memuncak tengah hari surya; 52% energi bisa dilayani PV tanpa baterai.'},d:{en:'Rest-area roof and land availability; Astra Infra / Jasa Marga partnership.',id:'Ketersediaan atap dan lahan rest area; kemitraan Astra Infra / Jasa Marga.'}},
+    {wp:'WP6',i:{en:'Hosting-capacity study for the Indramayu and Subang feeders',id:'Studi kapasitas penampung untuk penyulang Indramayu dan Subang'},b:{en:'PyPSA feeder model validated against PLN network length (87–96%); 289 transformers with measured 20 kV voltage as validation targets.',id:'Model penyulang PyPSA tervalidasi terhadap panjang jaringan PLN (87–96%); 289 trafo dengan tegangan 20 kV terukur sebagai target validasi.'},d:{en:'Conductor impedances, SCADA load curves.',id:'Impedansi penghantar, kurva beban SCADA.'}},
+    {wp:'WP7 · WP8',i:{en:'Battery second life for the BYD cluster; irrigation pumping as flexible load',id:'Baterai bekas untuk klaster BYD; pompa irigasi sebagai beban fleksibel'},b:{en:'EV registration and home-charging register by village; Indramayu agricultural load knowledge.',id:'Register EV dan charger rumah per desa; pengetahuan beban pertanian Indramayu.'},d:{en:'BYD battery chemistry and warranty data; PJT II irrigation schedules.',id:'Data kimia dan garansi baterai BYD; jadwal irigasi PJT II.'}}]},
+   mobility:{n:{en:'Sustainable Mobility & Connectivity',id:'Mobilitas Berkelanjutan & Konektivitas'},items:[
+    {wp:'WP3',i:{en:'EV adoption baseline for the seven regencies',id:'Basis adopsi EV untuk tujuh kabupaten/kota'},b:{en:'90 home-charger applications and 13,691 sessions located to the sub-district; brand mix (BYD leads).',id:'90 permohonan charger rumah dan 13.691 sesi terlokasi hingga kecamatan; bauran merek (BYD memimpin).'},d:{en:'Samsat vehicle registrations by regency and fuel type.',id:'Registrasi kendaraan Samsat per kabupaten dan jenis bahan bakar.'}},
+    {wp:'WP4',i:{en:'Spatial charging demand model with travel time, not counts',id:'Model permintaan pengisian spasial dengan waktu tempuh, bukan jumlah'},b:{en:'r5r travel-time matrix (4.4 million village pairs), E2SFCA power adequacy, H3 equity layers already built for West Java.',id:'Matriks waktu tempuh r5r (4,4 juta pasangan desa), kecukupan daya E2SFCA, lapisan ekuitas H3 sudah dibangun untuk Jawa Barat.'},d:{en:'OD matrices from toll gates; Patimban truck flows.',id:'Matriks asal-tujuan dari gerbang tol; arus truk Patimban.'}},
+    {wp:'WP5',i:{en:'Grid integration scoping for depot and truck charging at Patimban',id:'Pelingkupan integrasi jaringan untuk pengisian depo dan truk di Patimban'},b:{en:'Sites near substations sell 4.6× more energy; headroom table for the Subang substations (4 of 13 already ≥80%).',id:'Lokasi dekat GI menjual 4,6× lebih banyak; tabel ruang GI Subang (4 dari 13 sudah ≥80%).'},d:{en:'Port vehicle-flow forecasts; GI Patimban commissioning date.',id:'Prakiraan arus kendaraan pelabuhan; tanggal operasi GI Patimban.'}},
+    {wp:'WP2 · WP6',i:{en:'Corridor-economy diagnostic: who pays for charging, residents or pass-through traffic?',id:'Diagnostik ekonomi koridor: siapa yang membayar pengisian, warga atau lalu lintas lintasan?'},b:{en:'Session-level data with site type and hour; perception corpus of 894 reviewed sites.',id:'Data tingkat sesi dengan jenis lokasi dan jam; korpus persepsi 894 lokasi.'},d:{en:'Plate-origin sample at rest areas.',id:'Sampel asal pelat di rest area.'}}]},
+   skills:{n:{en:'Skills & Workforce Development',id:'Keterampilan & Tenaga Kerja'},items:[
+    {wp:'WP1',i:{en:'Green-skills gap register for 380 electricity occupations',id:'Register kesenjangan keterampilan hijau untuk 380 okupasi ketenagalistrikan'},b:{en:'Electra Skill Academy career map (16 pathways, 380 KKNI occupations from the ESDM standard, 1,117 modules).',id:'Peta karier Electra Skill Academy (16 jalur, 380 okupasi KKNI dari standar ESDM, 1.117 modul).'},d:{en:'Estate tenant hiring plans; SMK graduate tracer data.',id:'Rencana rekrutmen tenant kawasan; data tracer lulusan SMK.'}},
+    {wp:'WP2 · WP4',i:{en:'SMK → Polindra → industry pathway for charging and distribution technicians',id:'Jalur SMK → Polindra → industri untuk teknisi pengisian dan distribusi'},b:{en:'Running 32-hour technician classes in Indramayu and Cirebon; Polindra relationship; PLN competency certification experience.',id:'Menjalankan kelas teknisi 32 jam di Indramayu dan Cirebon; relasi Polindra; pengalaman sertifikasi kompetensi PLN.'},d:{en:'Dinas Pendidikan SMK enrolment by program; LSP capacity.',id:'Data siswa SMK per program dari Dinas Pendidikan; kapasitas LSP.'}},
+    {wp:'WP3',i:{en:'Gender barriers in electricity field work: a baseline from training cohorts',id:'Hambatan gender dalam pekerjaan lapangan kelistrikan: basis dari kohor pelatihan'},b:{en:'Enrolment and completion records from an online academy with thousands of learners.',id:'Catatan pendaftaran dan kelulusan dari akademi daring dengan ribuan peserta.'},d:{en:'Consent and ethics clearance; tenant HR data.',id:'Persetujuan dan izin etik; data SDM tenant.'}},
+    {wp:'WP5',i:{en:'Placement monitoring with verifiable certificates',id:'Pemantauan penempatan dengan sertifikat terverifikasi'},b:{en:'QR-verifiable certificate system already in production; can carry a placement follow-up.',id:'Sistem sertifikat ber-QR sudah berjalan; bisa membawa tindak lanjut penempatan.'},d:{en:'Agreement with estate operators to report hires.',id:'Kesepakatan dengan pengelola kawasan untuk melaporkan rekrutmen.'}}]}};
+  let cur='energy';
+  function draw(){ tabs.innerHTML=''; Object.keys(TH).forEach(k=>{ const bt=el('button',null,t(TH[k].n)); bt.setAttribute('aria-pressed',String(k===cur)); bt.addEventListener('click',()=>{cur=k;draw();}); tabs.append(bt); }); grid.innerHTML=''; TH[cur].items.forEach((it,i)=>{ const c=el('div','card rise'); c.style.setProperty('--i',i); c.innerHTML=`<span class="pill">${it.wp}</span><h3>${t(it.i)}</h3><p style="font-size:13px"><b>${t({en:'I bring:',id:'Saya bawa:'})}</b> ${t(it.b)}</p><p class="lbl"><b>${t({en:'Still needed:',id:'Masih perlu:'})}</b> ${t(it.d)}</p>`; grid.append(c); }); grid.classList.remove('active'); void grid.offsetWidth; grid.classList.add('active'); }
+  draw(); root.append(tabs,grid);
+  const n=el('div','card navy rise'); n.style.setProperty('--i',5); n.innerHTML=`<p>${t({en:'<b>Cross-cutting idea (Deep Dive 2, research data framework):</b> a Rebana Data Commons. This page is its seed: every number carries its source, PLN aggregates are shareable, and the PhD scholars become its first curators.',id:'<b>Ide lintas tema (Deep Dive 2, kerangka data riset):</b> Rebana Data Commons. Halaman ini benihnya: tiap angka membawa sumbernya, agregat PLN bisa dibagikan, dan para scholar PhD menjadi kurator pertamanya.'})}</p>`; root.append(n);
+}},
+{ id:'asks', part:3, nav:{en:'Asks & sources',id:'Permintaan & sumber'}, render(root){
+  root.append(head({en:'Part 4 · What I ask of the working groups',id:'Bagian 4 · Yang saya minta dari kelompok kerja'},{en:'Three data agreements, two pilot sites, one working-group seat',id:'Tiga perjanjian data, dua lokasi pilot, satu kursi kelompok kerja'},{en:'Concrete next steps for 5–6 November, then the sources behind every chapter.',id:'Langkah konkret untuk 5–6 November, lalu sumber di balik tiap bab.'}));
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1fr) minmax(0,1.2fr)';
+  const l=el('div','card rise'); l.innerHTML=`<h3>${t({en:'Asks',id:'Permintaan'})}</h3><ol class="clean"><li>${t({en:'<b>PLN UID Jawa Barat:</b> a 2026 refresh of the substation and feeder loading register for the Rebana units, released as aggregates to the consortium.',id:'<b>PLN UID Jawa Barat:</b> pembaruan 2026 register beban GI dan penyulang untuk unit-unit Rebana, dirilis sebagai agregat ke konsorsium.'})}</li><li>${t({en:'<b>BP Rebana and estate operators:</b> plot-level masterplans with planned connected load, so the build-out projection stops being a density assumption.',id:'<b>BP Rebana dan pengelola kawasan:</b> masterplan per kavling dengan rencana daya tersambung, agar proyeksi terbangun tidak lagi asumsi kepadatan.'})}</li><li>${t({en:'<b>Bappeda Jabar and Samsat:</b> vehicle registrations by regency and fuel type, 2022–2026.',id:'<b>Bappeda Jabar dan Samsat:</b> registrasi kendaraan per kabupaten dan jenis bahan bakar, 2022–2026.'})}</li><li>${t({en:'<b>Pilot sites:</b> one Cipali rest area (solar + storage + charging) and one Indramayu zone feeder (hosting capacity).',id:'<b>Lokasi pilot:</b> satu rest area Cipali (PLTS + penyimpanan + pengisian) dan satu penyulang KPI Indramayu (kapasitas penampung).'})}</li><li>${t({en:'<b>Working groups:</b> a seat in Mobility (WP3–WP5) as data lead, and contributor roles in Energy WP6 and Skills WP2/WP4.',id:'<b>Kelompok kerja:</b> kursi di Mobilitas (WP3–WP5) sebagai data lead, dan peran kontributor di WP6 Energi serta WP2/WP4 Keterampilan.'})}</li></ol>`;
+  const r=el('div','card rise'); r.style.setProperty('--i',1); r.style.fontSize='12px'; r.innerHTML=`<h3>${t({en:'Sources',id:'Sumber'})}</h3><ul class="clean" style="font-size:12px">
+<li><b>Rebana:</b> rebana.id (KPI and estate pages), Perpres 87/2021, Bappeda Jabar, investasi.jabarprov.go.id, BP Rebana / BKPM 2025 realisation (detik Jabar, ANTARA, Tintahijau), Kompas, CNBC Indonesia, Radar Majalengka (Disperindag Jabar), Wikipedia (2019 population).</li>
+<li><b>${t({en:'Gateways',id:'Gerbang'})}:</b> Patimban operator reports via Kompas, YKIP, Indonesia Shipping Gazette; Kemenhub Hubud 2025; BPS Jabar; Astra Infra via Bisnis; CKJT via ANTARA; BPJT.</li>
+<li><b>BYD Subang:</b> Kompas Otomotif, CNN Indonesia, detik Oto, Sindonews/Gaikindo (24,877 units Apr–Aug 2026), SSIA investor presentations (Smartpolitan 2,717 ha).</li>
+<li><b>${t({en:'Power',id:'Listrik'})}:</b> CNBC Indonesia and Kompas (Cirebon-1), PJB/PLN Indonesia Power, Kontan (Jatigede, Masdar), RMOL (Gantar), RUPTL 2025–2034 West Java figures via Jabarnews, IESR (192 GW).</li>
+<li><b>${t({en:'Demographics',id:'Demografi'})}:</b> BPS and Disdukcapil 2024 via Databoks; BPS 2025 expenditure and GRDP per capita via Databoks; BPS Jabar unemployment (Goodstats, detik).</li>
+<li><b>${t({en:'PhD program',id:'Program PhD'})}:</b> Monash University Indonesia (program page, Jul and Nov 2025 news), RACE for 2030, AIC Powering Rebana article, workshop Terms of Reference.</li>
+<li><b>${t({en:'PLN operational data (computed by the presenter)',id:'Data operasional PLN (dihitung penyaji)'})}:</b> Master SPKLU and transaction detail March 2026, home-charging register to June 2026, national SPKLU register June 2026 with 2024–2026 energy sales, distribution transformer register (53,797 rows), UP2B substation report April 2022. ${t({en:'Internal data; aggregates only on this page.',id:'Data internal; hanya agregat di halaman ini.'})}</li>
+<li><b>${t({en:'Projections',id:'Proyeksi'})}:</b> ${t({en:'presenter’s scenario arithmetic; assumptions shown beside each slider.',id:'aritmetika skenario penyaji; asumsi ditampilkan di samping tiap slider.'})}</li></ul>`;
+  b.append(l,r); root.append(b);
+}}
+];
+
+/* ---------- shared drawing ---------- */
+function head(eyebrow,title,lead,hero){ const h=el('div','chead'); h.append(el('div','eyebrow',t(eyebrow)), el(hero?'h1':'h2',null,t(title))); if(lead) h.append(el('p','lead',t(lead))); return h; }
+/* ---------- real basemaps (Leaflet + CARTO / OSM / Esri) ---------- */
+const OSMA='© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+const BASE={
+ carto:{n:'CARTO',u:()=>isDark()?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',a:OSMA+' © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',sd:'abcd'},
+ voyager:{n:'CARTO Voyager',u:()=>'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',a:OSMA+' © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',sd:'abcd'},
+ osm:{n:'OpenStreetMap',u:()=>'https://tile.openstreetmap.org/{z}/{x}/{y}.png',a:OSMA,sd:'abc'},
+ esri:{n:'Esri imagery',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',sd:'abc'},
+ topo:{n:'Esri topo',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors',sd:'abc'}
+};
+function isDark(){ const th=document.documentElement.getAttribute('data-theme'); return th? th==='dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+let baseChoice='carto'; try{ baseChoice=localStorage.getItem('pr-base')||'carto'; }catch(e){}
+const reduce=()=>matchMedia('(prefers-reduced-motion: reduce)').matches;
+function newMap(box){
+  if(!window.L){ box.innerHTML=`<p class="lbl" style="padding:14px">${t({en:'The map library did not load. Check the connection and reload.',id:'Pustaka peta gagal dimuat. Periksa koneksi lalu muat ulang.'})}</p>`; return null; }
+  const m=L.map(box,{zoomControl:true,scrollWheelZoom:false,zoomSnap:0.25,attributionControl:true});
+  m.attributionControl.setPrefix(false);
+  m._base=null; m.setBase=(k)=>{ if(!BASE[k]) k='carto'; if(m._base) m.removeLayer(m._base); const b=BASE[k]; m._base=L.tileLayer(b.u(),{attribution:b.a,maxZoom:19,subdomains:b.sd,detectRetina:true}).addTo(m); m._base.bringToBack(); baseChoice=k; try{ localStorage.setItem('pr-base',k);}catch(e){} };
+  m.setBase(baseChoice); box._lmap=m; return m;
+}
+function mapChips(m,overlays,extra){
+  const wrap=el('div','mapchips');
+  const bs=el('div','chipset'); bs.append(el('span','lbl',t({en:'Basemap',id:'Peta dasar'})));
+  Object.entries(BASE).forEach(([k,b])=>{ const bt=el('button','chip',b.n); bt.setAttribute('aria-pressed',String(k===baseChoice)); bt.addEventListener('click',()=>{ m.setBase(k); bs.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',String(x===bt))); }); bs.append(bt); });
+  const ls=el('div','chipset'); ls.append(el('span','lbl',t({en:'Layers',id:'Lapisan'})));
+  overlays.forEach(o=>{ const bt=el('button','chip',`<i style="background:${o.c}"></i>${o.n}`); bt.setAttribute('aria-pressed',String(!!o.on)); if(o.on) o.l.addTo(m); bt.addEventListener('click',()=>{ const on=bt.getAttribute('aria-pressed')!=='true'; bt.setAttribute('aria-pressed',String(on)); if(on) o.l.addTo(m); else m.removeLayer(o.l); if(o.after) o.after(on); }); ls.append(bt); });
+  wrap.append(bs,ls); if(extra) wrap.append(extra); return wrap;
+}
+function hoverTip(layer,html){ layer.on('mousemove',e=>showTip(e.originalEvent,typeof html==='function'?html():html)); layer.on('mouseout',hideTip); layer.on('click',e=>showTip(e.originalEvent,typeof html==='function'?html():html)); }
+const KV={ '500 kV':{c:'--s4',w:2.6}, '150 kV':{c:'--s3',w:1.8}, '70 kV':{c:'--muted',w:1.2} };
+function gridLayers(){
+  const G=D.grid;
+  const lines=L.layerGroup(G.lines.map(l=>{ const s=KV[l.kv]||KV['70 kV']; const pl=L.polyline(l.c.map(p=>[p[1],p[0]]),{color:css(s.c),weight:s.w,opacity:.85,interactive:true}); hoverTip(pl,`<b>${t({en:'Transmission line',id:'Saluran transmisi'})} ${l.kv}</b><span class="k">OSM · RUPTL 2025–2034 match</span>`); return pl; }));
+  const gi=L.layerGroup(G.gi.map(g=>{ const ld=g.load; const col=ld? (ld.max_pct>=80?css('--s4'):ld.max_pct>=60?css('--s2'):css('--s1')) : css('--navy'); const mk=L.circleMarker([g.la,g.lo],{radius:ld?6.5:4.5,color:css('--bg'),weight:1.6,fillColor:col,fillOpacity:1});
+    hoverTip(mk,()=>`<b>GI ${g.name}</b>${g.v.join(' · ')} kV · ${nf(g.mva)} MVA (RUPTL)${ld?`<br>${t({en:'Peak loading April 2022',id:'Beban puncak April 2022'})}: ${nf(ld.peak_pct,1)}% ${t({en:'average',id:'rata-rata'})}, ${nf(ld.max_pct,1)}% ${t({en:'busiest trafo',id:'trafo terpadat'})} · ${ld.trafo} trafo`:`<br><span class="k">${t({en:'no 2022 loading row in my register',id:'tidak ada baris beban 2022 di register saya'})}</span>`}`); return mk; }));
+  const GC={PLTU:'--s4',PLTGU:'--s2',PLTG:'--s2',PLTA:'--s1',PLTP:'--s3',PLTS:'--s2'};
+  const gen=L.layerGroup(G.gen.filter(g=>g.mw).map(g=>{ const mk=L.circleMarker([g.la,g.lo],{radius:Math.max(5,Math.sqrt(g.mw)/2.4),color:css('--bg'),weight:1.4,fillColor:css(GC[g.type]||'--muted'),fillOpacity:.85});
+    hoverTip(mk,`<b>${g.name}</b>${g.type} · ${nf(g.mw)} MW<br><span class="k">OSM / RUPTL power-plant register</span>`); return mk; }));
+  return {lines,gi,gen};
+}
+function kabLayer(mode){
+  const byR=Object.fromEntries(D.regions.map(r=>[r.region,r]));
+  const ramp=d3.scaleSequential(d3.interpolateRgb(css('--soft'),css('--s1'))).domain([0,18.2]);
+  const lay=L.geoJSON({type:'FeatureCollection',features:D.kab.map(k=>({type:'Feature',properties:{region:k.region},geometry:k.geometry}))},{
+    style:f=>{ const r=byR[f.properties.region]; return mode==='hero'?{color:css('--fg'),weight:1.2,opacity:.55,fillColor:ramp(r.invest_2025_T??1.06),fillOpacity:.55}:{color:css('--fg'),weight:1.1,opacity:.5,fillOpacity:0,dashArray:'4 4'}; },
+    onEachFeature:(f,ly)=>{ const r=byR[f.properties.region];
+      ly.bindTooltip(f.properties.region.replace('Kab. ',''),{permanent:true,direction:'center',className:'klabel'});
+      hoverTip(ly,`<b>${r.region}</b><span class="k">${t({en:'Population',id:'Penduduk'})}</span> ${nf(r.population_m,2)} M<br><span class="k">${t({en:'Investment 2025',id:'Investasi 2025'})}</span> ${r.invest_2025_T?'Rp '+nf(r.invest_2025_T,2)+' T':t({en:'reported combined 2.12 T',id:'dilaporkan gabungan 2,12 T'})}<br><span class="k">${t({en:'Industrial zones',id:'KPI'})}</span> ${r.kpi_zones}<br><span class="k">SPKLU</span> ${r.spklu_units} · ${nf(r.spklu_kw)} kW<br><span class="k">${t({en:'Sessions Mar 2026',id:'Sesi Mar 2026'})}</span> ${nf(r.sessions_mar26)} · ${nf(r.mwh_mar26,1)} MWh`);
+      if(mode==='hero'){ ly.on('mouseover',()=>ly.setStyle({weight:2.4,opacity:.9})); ly.on('mouseout',()=>lay.resetStyle(ly)); } } });
+  return lay;
+}
+const SITECOL=s=>s.t==='Rest Area Tol'?css('--s2'):css('--s1');
+function spkluLayer(scale){
+  const r=d3.scaleSqrt().domain([0,d3.max(D.sites,s=>s.s)]).range([3,scale||20]);
+  return L.layerGroup(D.sites.map(s=>{ const mk=L.circleMarker([s.la,s.lo],{radius:r(s.s),color:css('--bg'),weight:1.2,fillColor:SITECOL(s),fillOpacity:.82});
+    hoverTip(mk,`<b>${s.n}</b>${s.k} · ${s.t}<br>${nf(s.s)} ${t({en:'sessions',id:'sesi'})} · ${nf(s.e/1000,1)} MWh (${t({en:'March 2026',id:'Maret 2026'})})`); return mk; }));
+}
+function mapLegend(html){ const d=el('div','maplegend'); d.innerHTML=html; L.DomEvent.disableClickPropagation(d); return d; }
+function rebanaMap(box,mode){
+  const m=newMap(box); if(!m) return;
+  const kab=kabLayer(mode).addTo(m); const g=gridLayers(); const sp=spkluLayer(mode==='hero'?14:22);
+  const ov= mode==='hero'
+   ? [{n:t({en:'Public chargers',id:'SPKLU'}),l:sp,c:css('--s2'),on:true},{n:t({en:'Substations (GI)',id:'Gardu induk'}),l:g.gi,c:css('--navy'),on:true},{n:t({en:'Transmission',id:'Transmisi'}),l:g.lines,c:css('--s3'),on:true},{n:t({en:'Power plants',id:'Pembangkit'}),l:g.gen,c:css('--s4'),on:true}]
+   : [{n:t({en:'Charging sites',id:'Lokasi SPKLU'}),l:sp,c:css('--s2'),on:true},{n:t({en:'Substations (GI)',id:'Gardu induk'}),l:g.gi,c:css('--navy'),on:false},{n:t({en:'Transmission',id:'Transmisi'}),l:g.lines,c:css('--s3'),on:false}];
+  box.parentNode.insertBefore(mapChips(m,ov),box);
+  m.fitBounds(kab.getBounds(),{padding:[8,8]});
+  const leg= mode==='hero'
+   ? `<b>${t({en:'Realised investment 2025',id:'Realisasi investasi 2025'})}</b><div class="ramp" style="background:linear-gradient(90deg,${css('--soft')},${css('--s1')})"></div><div style="display:flex;justify-content:space-between"><span>Rp 0</span><span>Rp 18.2 T</span></div><div style="margin-top:4px"><i class="sw" style="background:${css('--s2')}"></i>SPKLU · <i class="sw" style="background:${css('--s4')}"></i>${t({en:'GI ≥80% peak',id:'GI ≥80% puncak'})}</div>`
+   : `<b>${t({en:'Bubble = sessions, March 2026',id:'Gelembung = sesi, Maret 2026'})}</b><div><i class="sw" style="background:${css('--s2')}"></i>${t({en:'Toll rest area',id:'Rest area tol'})}</div><div><i class="sw" style="background:${css('--s1')}"></i>${t({en:'Other site types',id:'Jenis lokasi lain'})}</div>`;
+  box.append(mapLegend(leg));
+}
+
+/* ---------- Indramayu field map ---------- */
+const ULPCOL={Cikedung:'--s2',Indramayu:'--s1',Jatibarang:'--s3',Haurgeulis:'--s4'};
+const METRICS={
+  load:{n:{en:'Avg transformer load',id:'Beban rata-rata gardu'},f:k=>k.load,d:[35,80],c:'--s4',fmt:v=>nf(v,1)+'%'},
+  ol:{n:{en:'Overloaded transformers',id:'Gardu overload'},f:k=>k.ol,d:[0,19],c:'--s4',fmt:v=>nf(v)},
+  dens:{n:{en:'Population density',id:'Kepadatan penduduk'},f:k=>k.dens,d:[300,2500],c:'--s1',fmt:v=>nf(v)+'/km²'},
+  kva:{n:{en:'kVA per 1,000 people',id:'kVA per 1.000 jiwa'},f:k=>k.kva_per_1k,d:[0,120],c:'--s3',fmt:v=>nf(v,1)}
+};
+function idmMap(box,panel,chipHost){
+  const m=newMap(box); if(!m) return;
+  let metric='load';
+  const ramp=()=>{ const M=METRICS[metric]; return d3.scaleSequential(d3.interpolateRgb(css('--soft'),css(M.c))).domain(M.d).clamp(true); };
+  let sel=null;
+  const kec=L.geoJSON({type:'FeatureCollection',features:D.idm_kec.map(k=>({type:'Feature',properties:k,geometry:k.geometry}))},{
+    style:f=>{ const k=f.properties, v=METRICS[metric].f(k); return {color:k.priority?css('--accent'):css('--fg'),weight:k.priority?2.6:.8,opacity:k.priority?1:.45,dashArray:k.priority?'6 4':null,fillColor:v==null?css('--soft'):ramp()(v),fillOpacity:.62}; },
+    onEachFeature:(f,ly)=>{ const k=f.properties;
+      ly.bindTooltip(k.kec,{permanent:true,direction:'center',className:'klabel small'});
+      hoverTip(ly,()=>`<b>Kec. ${k.kec}</b>${t(METRICS[metric].n)}: ${METRICS[metric].f(k)==null?'—':METRICS[metric].fmt(METRICS[metric].f(k))}<br><span class="k">ULP ${k.ulp||'—'}${k.priority?' · '+t({en:'UP3 growth priority',id:'prioritas pertumbuhan UP3'}):''}${k.kpi?' · KPI Rebana':''}</span>`);
+      ly.on('click',()=>{ sel=k; profile(k); }); } }).addTo(m);
+  const ulp=L.geoJSON({type:'FeatureCollection',features:D.idm_ulp.map(u=>({type:'Feature',properties:u,geometry:u.geometry}))},{
+    style:f=>({color:css(ULPCOL[f.properties.ulp]||'--fg'),weight:f.properties.ulp==='Cikedung'?4:2.6,opacity:.95,fill:false}),interactive:false});
+  const hr=d3.scaleSequential(d3.interpolateRgb(css('--soft'),css('--s4'))).domain([35,85]).clamp(true);
+  const hex=L.layerGroup(D.idm_hex.map(h=>{ const pg=L.polygon(h.b.map(p=>[p[1],p[0]]),{color:css('--bg'),weight:.6,fillColor:h.load==null?css('--soft'):hr(h.load),fillOpacity:.8});
+    hoverTip(pg,`<b>${t({en:'H3 cell ~5 km²',id:'Sel H3 ~5 km²'})}</b>${h.n} ${t({en:'transformers',id:'gardu'})} · ${nf(h.mva,2)} MVA<br>${t({en:'avg load',id:'beban rata'})} ${h.load==null?'—':nf(h.load,1)+'%'} · ${h.ol} overload`); return pg; }));
+  const g=gridLayers(); const sp=spkluLayer(16);
+  const pois=L.layerGroup([
+    {n:'PLTU Indramayu 3×330 MW',ll:D.grid.gen.find(x=>x.name==='PLTU Indramayu'),c:'--s4',d:{en:'Sumuradem, Kec. Sukra · operated by PLN Indonesia Power',id:'Sumuradem, Kec. Sukra · dioperasikan PLN Indonesia Power'}},
+  ].filter(p=>p.ll).map(p=>{ const mk=L.circleMarker([p.ll.la,p.ll.lo],{radius:11,color:css('--bg'),weight:2,fillColor:css(p.c),fillOpacity:.95}); hoverTip(mk,`<b>${p.n}</b><span class="k">${t(p.d)}</span>`); return mk; }));
+  const ov=[{n:t({en:'ULP service areas',id:'Wilayah kerja ULP'}),l:ulp,c:css('--s2'),on:true},{n:t({en:'Transformer hexes',id:'Heksagon gardu'}),l:hex,c:css('--s4'),on:false,after:on=>{ if(on) kec.setStyle({fillOpacity:.08}); else kec.setStyle(f=>({...kec.options.style(f)})); }},
+    {n:t({en:'Substations (GI)',id:'Gardu induk'}),l:g.gi,c:css('--navy'),on:true},{n:t({en:'Transmission',id:'Transmisi'}),l:g.lines,c:css('--s3'),on:true},{n:'SPKLU',l:sp,c:css('--s2'),on:false},{n:'PLTU',l:pois,c:css('--s4'),on:true}];
+  const msel=el('div','chipset'); msel.append(el('span','lbl',t({en:'Colour by',id:'Warna menurut'})));
+  Object.entries(METRICS).forEach(([k,M])=>{ const bt=el('button','chip',t(M.n)); bt.setAttribute('aria-pressed',String(k===metric)); bt.addEventListener('click',()=>{ metric=k; msel.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',String(x===bt))); kec.setStyle(kec.options.style); legend(); }); msel.append(bt); });
+  chipHost.append(mapChips(m,ov,msel));
+  const lg=mapLegend(''); box.append(lg);
+  function legend(){ const M=METRICS[metric]; lg.innerHTML=`<b>${t(M.n)}</b><div class="ramp" style="background:linear-gradient(90deg,${css('--soft')},${css(M.c)})"></div><div style="display:flex;justify-content:space-between"><span>${M.fmt(M.d[0])}</span><span>${M.fmt(M.d[1])}+</span></div><div style="margin-top:4px"><i class="sw ln" style="border-color:${css('--accent')}"></i>${t({en:'UP3 growth priority (Sukra, Losarang, Gantar, Krangkeng)',id:'Prioritas pertumbuhan UP3 (Sukra, Losarang, Gantar, Krangkeng)'})}</div>`; }
+  legend();
+  function profile(k){ const pc=(v,d=1)=>v==null?'—':nf(v,d);
+    panel.innerHTML=`<div class="eyebrow">Kec. ${k.kec} · ULP ${k.ulp||'—'}</div><div class="tags">${k.priority?`<span class="pill warn">${t({en:'UP3 growth priority',id:'Prioritas pertumbuhan UP3'})}</span>`:''}${k.kpi?`<span class="pill">KPI Rebana</span>`:''}</div>
+    <dl class="kv two"><dt>${t({en:'Population (2023)',id:'Penduduk (2023)'})}</dt><dd>${nf(k.pop)}</dd><dt>${t({en:'Density',id:'Kepadatan'})}</dt><dd>${nf(k.dens)} /km²</dd><dt>${t({en:'Transformers in register',id:'Gardu dalam register'})}</dt><dd>${nf(k.gardu)} · ${pc(k.mva)} MVA</dd><dt>${t({en:'Avg load (measured)',id:'Beban rata (terukur)'})}</dt><dd>${k.load==null?'—':nf(k.load,1)+'%'} <span class="muted">(${k.measured})</span></dd><dt>${t({en:'Overload ≥100%',id:'Overload ≥100%'})}</dt><dd>${k.ol}</dd><dt>${t({en:'Alert 80–100%',id:'Waspada 80–100%'})}</dt><dd>${k.wp}</dd><dt>${t({en:'Unbalance priority 1',id:'Unbalance prioritas 1'})}</dt><dd>${k.p1}</dd><dt>kVA / 1.000</dt><dd>${pc(k.kva_per_1k)}</dd><dt>SPKLU</dt><dd>${k.spklu} · ${nf(k.sessions)} ${t({en:'sessions Mar 2026',id:'sesi Mar 2026'})}</dd><dt>${t({en:'Home chargers',id:'Charger rumah'})}</dt><dd>${k.home}</dd></dl>`; }
+  const start=D.idm_kec.find(k=>k.kec==='Cikedung'); profile(start);
+  const kb=kec.getBounds();
+  if(reduce()) m.fitBounds(kb,{padding:[6,6]}); else { m.fitBounds(L.geoJSON({type:'FeatureCollection',features:D.kab.map(k=>({type:'Feature',geometry:k.geometry}))}).getBounds()); setTimeout(()=>m.flyToBounds(kb,{padding:[6,6],duration:1.6}),450); }
+}
+
+/* ---------- small d3 helpers for the sales infographic ---------- */
+function cumChart(box){
+  box.innerHTML=''; const S=D.sales.cum; const W=Math.max(300,box.clientWidth||520), H=Math.max(180,Math.min(260,box.clientHeight||210)), m={l:44,r:98,t:14,b:24};
+  const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('width','100%').attr('role','img').attr('aria-label','Cumulative energy sales, UP3 Indramayu');
+  const x=d3.scalePoint().domain(d3.range(9)).range([m.l,W-m.r]); const y=d3.scaleLinear().domain([0,1300]).range([H-m.b,m.t]);
+  const MO=lang==='id'?['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep']:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep'];
+  y.ticks(4).forEach(v=>{ svg.append('line').attr('x1',m.l).attr('x2',W-m.r).attr('y1',y(v)).attr('y2',y(v)).attr('stroke',css('--grid')); svg.append('text').attr('x',m.l-6).attr('y',y(v)+4).attr('text-anchor','end').attr('fill',css('--muted')).style('font-size','11px').text(nf(v)); });
+  MO.forEach((mo,i)=>svg.append('text').attr('x',x(i)).attr('y',H-6).attr('text-anchor','middle').attr('fill',css('--muted')).style('font-size','11px').text(mo));
+  const line=d3.line().x((d,i)=>x(i)).y(d=>y(d));
+  [['2024','--muted'],['2026','--s1']].forEach(([k,c])=>{ const p=svg.append('path').attr('d',line(S[k])).attr('fill','none').attr('stroke',css(c)).attr('stroke-width',k==='2026'?3:2).attr('stroke-linecap','round').attr('stroke-linejoin','round');
+    const L0=p.node().getTotalLength(); if(!reduce()) p.attr('stroke-dasharray',`${L0} ${L0}`).attr('stroke-dashoffset',L0).transition().duration(1400).ease(d3.easeCubicOut).attr('stroke-dashoffset',0);
+    svg.append('circle').attr('cx',x(8)).attr('cy',y(S[k][8])).attr('r',4.5).attr('fill',css(c)).attr('stroke',css('--panel')).attr('stroke-width',2);
+    svg.append('text').attr('x',x(8)+8).attr('y',y(S[k][8])+(k==='2026'?-2:12)).attr('fill',css('--fg')).style('font-size','11.5px').style('font-weight',600).text(`${k} ${nf(S[k][8],1)}`); });
+  svg.append('circle').attr('cx',x(8)).attr('cy',y(S['2025'][8])).attr('r',4.5).attr('fill',css('--s3')).attr('stroke',css('--panel')).attr('stroke-width',2);
+  svg.append('text').attr('x',x(8)+8).attr('y',y(S['2025'][8])+5).attr('fill',css('--fg')).style('font-size','11.5px').style('font-weight',600).text(`2025 ${nf(S['2025'][8],1)}`);
+  const hov=svg.append('line').attr('y1',m.t).attr('y2',H-m.b).attr('stroke',css('--line')).style('opacity',0);
+  svg.append('rect').attr('x',m.l).attr('y',m.t).attr('width',W-m.l-m.r).attr('height',H-m.t-m.b).attr('fill','transparent')
+   .on('mousemove',e=>{ const [px]=d3.pointer(e); const i=Math.max(0,Math.min(8,Math.round((px-m.l)/((W-m.l-m.r)/8)))); hov.attr('x1',x(i)).attr('x2',x(i)).style('opacity',1);
+     const mon=k=>i===0?S[k][0]:S[k][i]-S[k][i-1]; showTip(e,`<b>${MO[i]}</b>2026: ${nf(S['2026'][i],2)} GWh <span class="k">(${t({en:'month',id:'bulan'})} ${nf(mon('2026'),2)})</span><br>2024: ${nf(S['2024'][i],2)} GWh <span class="k">(${t({en:'month',id:'bulan'})} ${nf(mon('2024'),2)})</span>${i===8?`<br>2025: ${nf(S['2025'][8],2)} GWh`:''}`); })
+   .on('mouseleave',()=>{ hov.style('opacity',0); hideTip(); });
+}
+function dumbbell(box){
+  box.innerHTML=''; const rows=D.sales.cluster.filter(r=>r[0]!=='Other').sort((a,b)=>b[2]-a[2]); const W=Math.max(300,box.clientWidth||420), rh=20, m={l:118,r:58,t:6,b:18}; const H=m.t+m.b+rh*rows.length;
+  const NM={Plastics:'Plastik',Ceramics:'Keramik','Oil & gas':'Minyak & gas','Mall & dept. store':'Mal & toserba',Hospitals:'Rumah sakit',Footwear:'Sepatu','Rice mills':'Penggilingan beras',Schools:'Sekolah',Textiles:'Tekstil',Offices:'Perkantoran',Hotels:'Hotel'};
+  const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('width','100%').attr('role','img').attr('aria-label','Industrial cluster sales 2025 vs 2026');
+  const x=d3.scaleLinear().domain([0,120]).range([m.l,W-m.r]);
+  [0,40,80,120].forEach(v=>{ svg.append('line').attr('x1',x(v)).attr('x2',x(v)).attr('y1',m.t).attr('y2',H-m.b).attr('stroke',css('--grid')); svg.append('text').attr('x',x(v)).attr('y',H-4).attr('text-anchor','middle').attr('fill',css('--muted')).style('font-size','10.5px').text(nf(v)); });
+  rows.forEach((r,i)=>{ const cy=m.t+rh*i+rh/2, d=r[2]-r[1];
+    svg.append('text').attr('x',m.l-8).attr('y',cy+4).attr('text-anchor','end').attr('fill',css('--fg')).style('font-size','11.5px').text(lang==='id'?(NM[r[0]]||r[0]):r[0]);
+    const ln=svg.append('line').attr('x1',x(r[1])).attr('x2',x(r[1])).attr('y1',cy).attr('y2',cy).attr('stroke',css(d>=0?'--s1':'--s4')).attr('stroke-width',3).attr('stroke-linecap','round');
+    ln.transition().delay(i*70).duration(reduce()?0:800).attr('x2',x(r[2]));
+    svg.append('circle').attr('cx',x(r[1])).attr('cy',cy).attr('r',4.5).attr('fill',css('--muted'));
+    svg.append('circle').attr('cx',x(r[1])).attr('cy',cy).attr('r',5.5).attr('fill',css(d>=0?'--s1':'--s4')).attr('stroke',css('--panel')).attr('stroke-width',1.5).transition().delay(i*70).duration(reduce()?0:800).attr('cx',x(r[2]));
+    svg.append('text').attr('x',W-m.r+6).attr('y',cy+4).attr('fill',css(d>=0?'--fg':'--bad')).style('font-size','11px').style('font-weight',600).text((d>=0?'+':'')+nf(d,2));
+    svg.append('rect').attr('x',0).attr('y',cy-rh/2).attr('width',W).attr('height',rh).attr('fill','transparent').on('mousemove',e=>showTip(e,`<b>${lang==='id'?(NM[r[0]]||r[0]):r[0]}</b>Jan–Sep 2025: ${nf(r[1],2)} GWh<br>Jan–Sep 2026: ${nf(r[2],2)} GWh<br>${(d>=0?'+':'')+nf(d,2)} GWh`)).on('mouseleave',hideTip); });
+}
+
+function drawTreemap(box){ box.innerHTML=''; const W=box.clientWidth||600, H=Math.max(220,box.clientHeight||300); const rest=11434/5; const data={children:D.zones.map(z=>({name:z.zone,reg:z.regency,ha:z.area_ha||rest,np:!z.area_ha}))}; const root=d3.hierarchy(data).sum(d=>d.ha).sort((a,b)=>b.value-a.value); d3.treemap().size([W,H]).paddingInner(3)(root); const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('role','img').attr('aria-label','Treemap of the 13 zones by area');
+  const defs=svg.append('defs'); const pat=defs.append('pattern').attr('id','hatch').attr('width',6).attr('height',6).attr('patternUnits','userSpaceOnUse').attr('patternTransform','rotate(45)'); pat.append('rect').attr('width',6).attr('height',6).attr('fill',css('--bg')); pat.append('rect').attr('width',2).attr('height',6).attr('fill',css('--muted')).attr('opacity',.5);
+  const g=svg.selectAll('g').data(root.leaves()).join('g').attr('transform',d=>`translate(${d.x0},${d.y0})`);
+  const col=d=>{ const r=d.data.reg; return r.includes('Subang')?'--s1':r.includes('Indramayu')?'--s2':r.includes('Majalengka')?'--s3':'--s4'; };
+  g.append('rect').attr('width',d=>d.x1-d.x0).attr('height',d=>d.y1-d.y0).attr('rx',4).attr('fill',d=>d.data.np?'url(#hatch)':`var(${col(d)})`).attr('stroke',d=>d.data.np?`var(${col(d)})`:'none').attr('stroke-width',1.5).style('opacity',0).transition().delay((d,i)=>i*60).duration(500).style('opacity',1);
+  g.append('text').attr('x',6).attr('y',16).style('font',`600 ${12}px var(--fs)`).style('fill',d=>d.data.np?css('--fg'):'#FFFFFF').text(d=>(d.x1-d.x0)>70?d.data.name:'');
+  g.append('text').attr('x',6).attr('y',31).style('font',`${11}px var(--fs)`).style('fill',d=>d.data.np?css('--muted'):'#FFFFFF').style('opacity',.9).text(d=>(d.x1-d.x0)>70&&(d.y1-d.y0)>36?(d.data.np?'n/p':nf(d.data.ha)+' ha'):'');
+  g.on('mousemove',(e,d)=>showTip(e,`<b>${d.data.name}</b>${d.data.reg}<br>${d.data.np?t({en:'area not published (drawn at 1/5 of the unassigned 11,434 ha)',id:'luas belum terbit (digambar 1/5 dari 11.434 ha yang belum dialokasikan)'}):nf(d.data.ha)+' ha'}`)).on('mouseleave',hideTip);
+}
+
+/* ---------- app ---------- */
+const stage=document.getElementById('stage'), rail=document.getElementById('rail');
+let cur=0; const panels=[];
+function build(){ panels.forEach(p=>p.remove()); panels.length=0; rail.innerHTML=''; let lastPart=-1;
+  CH.forEach((c,i)=>{ if(c.part!==lastPart){ rail.append(el('div','part',t(C.parts[c.part]))); lastPart=c.part; } const bt=el('button',null,`<i></i><span>${t(c.nav)}</span>`); bt.addEventListener('click',()=>go(i)); rail.append(bt);
+    const p=el('section','chapter'); p.id='ch-'+c.id; p.setAttribute('aria-hidden','true'); stage.append(p); panels.push(p); });
+  document.getElementById('hmeta').textContent=t(C.header); document.getElementById('fnote').textContent=t(C.fnote);
+  document.getElementById('lang-en').setAttribute('aria-pressed',String(lang==='en')); document.getElementById('lang-id').setAttribute('aria-pressed',String(lang==='id'));
+  show(cur,true); }
+function show(i,force){ panels.forEach((p,j)=>{ if(j===i){ if(force||!p.dataset.built){ p.querySelectorAll('.lmap').forEach(m=>m._lmap&&m._lmap.remove()); p.innerHTML=''; CH[i].render(p); p.dataset.built='1'; p.style.gridTemplateRows=[...p.children].map(c=>c.classList.contains('body')?'minmax(min-content,1fr)':'auto').join(' '); }
+ setTimeout(()=>p.querySelectorAll('.lmap').forEach(m=>m._lmap&&m._lmap.invalidateSize()),80); p.classList.add('active'); p.setAttribute('aria-hidden','false'); p.querySelectorAll('.num[data-to]').forEach(n=>{ const to=+n.dataset.to; n.textContent=n.dataset.pre; countUp({set textContent(v){ n.textContent=n.dataset.pre+v; }},to,+n.dataset.dec,n.dataset.suf); }); p.querySelectorAll('.fgarc').forEach(a=>{ a.style.strokeDasharray='1 1000'; requestAnimationFrame(()=>requestAnimationFrame(()=>{ a.style.strokeDasharray=a.dataset.dash; })); }); } else { p.classList.remove('active'); p.setAttribute('aria-hidden','true'); } });
+  rail.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-current',String(j===i))); const b=rail.querySelectorAll('button')[i]; if(b) b.scrollIntoView({block:'nearest',inline:'nearest'});
+  document.getElementById('count').textContent=(i+1)+' / '+CH.length; document.getElementById('progbar').style.width=(100*(i+1)/CH.length)+'%';
+  document.getElementById('prev').disabled=i===0; document.getElementById('next').disabled=i===CH.length-1; hideTip();
+  const id=CH[i].id; if(location.hash.slice(1)!==id){ try{ history.replaceState(null,'','#'+id);}catch(e){} } }
+function go(i){ cur=Math.max(0,Math.min(CH.length-1,i)); show(cur); }
+document.getElementById('prev').addEventListener('click',()=>go(cur-1)); document.getElementById('next').addEventListener('click',()=>go(cur+1));
+document.addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return; if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); go(cur+1);} if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1);} });
+function setLang(l){ lang=l; try{ localStorage.setItem('pr-lang',l);}catch(e){} panels.forEach(p=>delete p.dataset.built); build(); }
+document.getElementById('lang-en').addEventListener('click',()=>setLang('en')); document.getElementById('lang-id').addEventListener('click',()=>setLang('id'));
+window.addEventListener('hashchange',()=>{ const i=CH.findIndex(c=>c.id===location.hash.slice(1)); if(i>=0&&i!==cur) go(i); });
+let rt; window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(()=>{ const p=panels[cur]; if(p&&p.querySelector('.lmap')){ p.querySelectorAll('.lmap').forEach(m=>m._lmap&&m._lmap.invalidateSize()); panels.forEach((q,j)=>{ if(j!==cur) delete q.dataset.built; }); return; } panels.forEach(q=>delete q.dataset.built); show(cur,true); },200); });
+const start=CH.findIndex(c=>c.id===location.hash.slice(1)); cur=start>=0?start:0; build();
+})();
+</script>
+
+</body>
+</html>
