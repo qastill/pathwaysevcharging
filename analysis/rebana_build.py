@@ -9,12 +9,13 @@ Langkah:
      charger rumah hanya sebagai hitungan per kecamatan.
   3. Tanam JSON ke analysis/rebana_explorer_src.html (penanda /*__DATA__*/) -> analysis/rebana_explorer.html.
 
-    pip install openpyxl shapely h3
+    pip install openpyxl shapely h3 pvlib pandas
     python3 analysis/rebana_build.py           # lalu python3 analysis/inject_rebana.py bila tab belum terpasang
 """
 import collections, json, os, re, warnings
-import openpyxl, h3
-from shapely.geometry import shape, Point, mapping
+import math
+import openpyxl, h3, pvlib, pandas as pd
+from shapely.geometry import shape, Point, LineString, mapping
 from shapely.ops import unary_union
 from shapely.strtree import STRtree
 
@@ -63,7 +64,7 @@ D["year"] = [{"year": y, "units": n} for y, n in sorted(yr.items())]
 # ---------- 2. Transaksi Maret 2026 ----------
 wb = openpyxl.load_workbook("Detail Transaksi SPKLU Jawa Barat - Maret 2026 (Tagging).xlsx", read_only=True)
 it = wb.worksheets[0].iter_rows(values_only=True); H = {h: i for i, h in enumerate(next(it))}
-tj = collections.Counter(); tr = collections.Counter(); hour = collections.Counter()
+tj = collections.Counter(); tr = collections.Counter(); hour = collections.Counter(); hk_rest = collections.Counter(); hk_all = collections.Counter()
 loc = collections.defaultdict(collections.Counter); kab = collections.defaultdict(collections.Counter)
 site = {}
 for r in it:
@@ -75,7 +76,8 @@ for r in it:
     if not k: continue
     tr["n"] += 1; tr["kwh"] += e; tr["rp"] += rp
     kab[k]["n"] += 1; kab[k]["kwh"] += e; kab[k]["rp"] += rp
-    hour[int(r[H["Jam"]] or 0)] += 1
+    hour[int(r[H["Jam"]] or 0)] += 1; hk_all[int(r[H["Jam"]] or 0)] += e
+    if r[H["Jenis Titik Lokasi"]] == "Rest Area Tol": hk_rest[int(r[H["Jam"]] or 0)] += e
     loc[r[H["Jenis Titik Lokasi"]]]["n"] += 1; loc[r[H["Jenis Titik Lokasi"]]]["kwh"] += e
     sid = r[H["ID SPKLU"]]
     if sid not in site:
@@ -264,6 +266,67 @@ D["idm_hex"] = [{"b": [[round(lng, 4), round(lat, 4)] for lat, lng in h3.cell_to
                  "load": round(a["pb"] / a["pbn"], 1) if a["pbn"] else None, "ol": a["ol"]} for c, a in hexes.items() if a["n"] >= 3]
 D["idm_meta"] = {"gardu_valid": len(idm), "gardu_total": int(up3["INDRAMAYU"]["n"]), "hex_min": 3}
 
+# ---------- 10. Paket kerja: lapisan analitis se-Rebana ----------
+REBKAB = {"Cirebon": "Kab. Cirebon", "Kota Cirebon": "Kota Cirebon", "Indramayu": "Kab. Indramayu", "Subang": "Kab. Subang",
+          "Majalengka": "Kab. Majalengka", "Kuningan": "Kab. Kuningan", "Sumedang": "Kab. Sumedang"}
+KPI_KEC = {("Indramayu", k) for k in KPIKEC} | {("Majalengka", "Kertajati"), ("Majalengka", "Jatitujuh"), ("Majalengka", "Jatiwangi"), ("Subang", "Pusakanagara")}
+LAT0 = -6.6
+def xy(lon, lat): return ((lon - 108.0) * 111.32 * math.cos(math.radians(LAT0)), (lat - LAT0) * 110.57)
+def km(a, b): return math.dist(xy(*a), xy(*b))
+gi_head = []
+for g in D["grid"]["gi"]:
+    if "load" in g:
+        L = g["load"]; hr = 0.8 * L["mva"] - L["mva"] * L["peak_pct"] / 100
+        gi_head.append({"name": g["name"], "lo": g["lo"], "la": g["la"], "head": round(hr, 1), "peak": L["peak_pct"], "mva": L["mva"]})
+hv = [LineString([xy(*p) for p in l["c"]]) for l in D["grid"]["lines"] if l["kv"] in ("150 kV", "500 kV")]
+hvtree = STRtree(hv)
+sitepts = [(s["lo"], s["la"]) for s in D["sites"]] + [(u["lo"], u["la"]) for u in units]
+idmload = {k["kec"]: k for k in D["idm_kec"]}
+RK = []
+for f in json.load(open("data/jabar_kecamatan_spklu.geojson"))["features"]:
+    p = f["properties"]
+    if p["kab"] not in REBKAB: continue
+    g = shape(f["geometry"]); c = g.representative_point(); cc = (c.x, c.y)
+    gi_ok = [x for x in gi_head if x["head"] >= 20]
+    ng = min(gi_ok, key=lambda x: km(cc, (x["lo"], x["la"])))
+    pxy = Point(xy(*cc)); dl = min(hv[i].distance(pxy) for i in hvtree.query(pxy.buffer(80))) if len(hvtree.query(pxy.buffer(80))) else 99
+    ds = min(km(cc, q) for q in sitepts)
+    il = idmload.get(p["kec"]) if p["kab"] == "Indramayu" else None
+    RK.append({"code": p["code"], "kec": p["kec"], "kab": REBKAB[p["kab"]], "pop": p["pop"], "dens": p["dens"], "ipm": p["ipm"], "exp": p["exp"], "pov": p["pov"],
+               "ch": p["ch"], "kwh": p["kwh"], "trx": p["trx"], "lo": round(c.x, 4), "la": round(c.y, 4),
+               "d_gi": round(km(cc, (ng["lo"], ng["la"])), 1), "gi": ng["name"], "gi_head": ng["head"], "d_hv": round(dl, 1), "d_spklu": round(ds, 1),
+               "load": il["load"] if il else None, "kpi": (p["kab"], p["kec"]) in KPI_KEC, "priority": bool(il and il["priority"]),
+               "area": round(p["pop"] / p["dens"], 1) if p["dens"] else None, "geometry": rnd(g, 0.0015)})
+D["rk"] = RK; D["gi_head"] = gi_head
+# cakupan SPKLU 10 km + pemilihan rakus 12 lokasi baru (kandidat = titik pusat kecamatan dengan GI ber-ruang ≥20 MVA dalam 20 km)
+R = 10.0; totpop = sum(k["pop"] for k in RK)
+cov = {k["code"] for k in RK if k["d_spklu"] <= R}
+base_share = sum(k["pop"] for k in RK if k["code"] in cov) / totpop
+picks = []; covered = set(cov)
+for _ in range(12):
+    best = None
+    for c in RK:
+        if c["d_gi"] > 20: continue
+        gain = sum(k["pop"] for k in RK if k["code"] not in covered and km((c["lo"], c["la"]), (k["lo"], k["la"])) <= R)
+        if best is None or gain > best[1]: best = (c, gain)
+    c, gain = best
+    if gain <= 0: break
+    newc = {k["code"] for k in RK if k["code"] not in covered and km((c["lo"], c["la"]), (k["lo"], k["la"])) <= R}
+    covered |= newc
+    picks.append({"code": c["code"], "kec": c["kec"], "kab": c["kab"], "lo": c["lo"], "la": c["la"], "gain": gain, "gi": c["gi"], "d_gi": c["d_gi"],
+                  "gi_head": c["gi_head"], "share": round(sum(k["pop"] for k in RK if k["code"] in covered) / totpop, 4), "new": sorted(newc)})
+D["cover"] = {"radius_km": R, "base_share": round(base_share, 4), "totpop": totpop, "picks": picks,
+              "base_codes": sorted(cov), "uncov_poor": round(sum(k["pop"] for k in RK if k["code"] not in cov and k["pov"] >= 11) / totpop, 4)}
+# profil rest area per jam (kWh rata-rata per hari, Maret 2026: 31 hari) + profil PV pvlib (clear-sky Ineichen, pantura)
+times = pd.date_range("2026-01-01", "2026-12-31 23:00", freq="h", tz="Asia/Jakarta")
+loc_ = pvlib.location.Location(-6.45, 108.2, tz="Asia/Jakarta", altitude=10)
+ghi = loc_.get_clearsky(times)["ghi"]
+shape_h = ghi.groupby(ghi.index.hour).mean(); shape_h = (shape_h / shape_h.sum()).round(5).tolist()
+rest_sites = [s for s in D["sites"] if s["t"] == "Rest Area Tol"]
+D["pv"] = {"rest_kwh_day": [round(hk_rest[h] / 31, 1) for h in range(24)], "all_kwh_day": [round(hk_all[h] / 31, 1) for h in range(24)],
+           "pv_shape": shape_h, "yield_kwh_kwp_yr": 1450, "rest_sites": rest_sites,
+           "assume": {"capex_pv_rp_kwp": 10_000_000, "capex_bess_rp_kwh": 6_000_000, "tariff_rp_kwh": 1444.70, "ef_kg_kwh": 0.80, "bess_eff": 0.90}}
+
 # ---------- 9. Angka publik dan UP3 Indramayu (paparan internal 15 Okt 2026) ----------
 D["zones"] = [{"zone": z, "regency": r, "area_ha": a} for z, r, a in [
     ("Cipali Subang Barat", "Kab. Subang", 10408), ("Losarang", "Kab. Indramayu", 6170), ("Cipali Subang Timur", "Kab. Subang", 4806),
@@ -298,6 +361,15 @@ D["sales"] = {
     "pipeline": [{"n": "New industrial connections", "e": 15, "v": 231.095, "u": "MVA"}, {"n": "Industrial upgrades", "e": 8, "v": 73.379, "u": "MVA"},
                  {"n": "LV upgrades", "e": 23, "v": 712.55, "u": "kVA"}, {"n": "Housing (± units)", "e": 1112, "v": 1.297, "u": "MVA"}],
 }
+D["skills"] = {
+    "jobs_target_2030": 1_780_000, "losarang_jobs": 272_429, "kertajati_jobs": 57_457, "byd_jobs": 20_000, "jobs_per_ha": 200,
+    "smk_unemp_jabar_may26": 10.64, "tpt_jabar_may26": 6.61,
+    "polindra": [["Rekayasa Perangkat Lunak (D4)", 477], ["Perancangan Manufaktur (D4)", 418], ["Teknik Informatika (D3)", 411], ["Keperawatan (D3)", 330], ["Sistem Informasi Kota Cerdas (D4)", 319]],
+    "electra": {"occupations": 380, "pathways": 16, "modules": 1117, "class_hours": 32},
+    "up3_new_customers_2026": 14911, "up3_mva_growth": 65.04,
+    "nodes": [["Lohbener", "Indramayu", "Politeknik Negeri Indramayu (Polindra)"], ["Arjawinangun", "Cirebon", "ITB Kampus Cirebon"],
+              ["Jatinangor", "Sumedang", "Unpad, ITB Jatinangor, IPDN"], ["Indramayu", "Indramayu", "Electra Skill Academy class (Indramayu)"],
+              ["Kesambi", "Kota Cirebon", "Electra Skill Academy class (Cirebon)"], ["Kertajati", "Majalengka", "Kertajati Aerocity training hub (proposed)"]]}
 T = D["totals"] = {"jabar_units": len(jabar), "reb_units": len(units), "reb_kw": sum(u["kw"] for u in units), "jabar_trx": dict(tj), "reb_trx": dict(tr),
                    "reb_sites": len(site), "reb_sites_nocoord": nosite, "home_jabar": home_all, "home_reb": sum(home.values()), "nat_units": nat_units}
 

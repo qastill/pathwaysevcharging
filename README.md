@@ -68,7 +68,7 @@ python3 analysis/inject_ladder1.py                                             #
 
 ## 🏭 Rebana — Powering Rebana explorer (tab di grup PhD Monash)
 
-Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 16 bab (navigasi rel kiri atau tombol ← →),
+Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 20 bab (navigasi rel kiri atau tombol ← →),
 sakelar bahasa EN/ID, animasi masuk per bab, dan sumber tiap angka saat kursor diarahkan. Dibuat untuk Workshop Powering Rebana ke-2
 (Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: 13 KPI (6 di Indramayu), investasi, gerbang
 logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE for 2030, aset data disertasi, pengalaman Indramayu
@@ -89,11 +89,22 @@ Dua bab khusus Indramayu (penugasan penyaji Juni 2023 – Juli 2026 di Indramayu
   Penjualan Tenaga Listrik* UP3 Indramayu (15 Okt 2026): 1.187,73 GWh (+9,23%), KPI 110%, pelanggan, daya tersambung, pendapatan,
   penjualan TM (+40,35%), klaster industri (plastik +51,76 GWh), tiga program lintas bidang, pipeline.
 
+Empat paket kerja yang sudah berjalan sebagai model interaktif (bagian 4, menggantikan bab ide lama), dihitung di
+`analysis/rebana_build.py` bagian 10 atas 190 kecamatan Rebana:
+- **Peta lokasi berbasis jaringan (Energi WP1·WP3)**: skor 0–100 per kecamatan dari ruang GI terdekat (80% rating − puncak 2022),
+  jarak SUTT 150/500 kV, kepadatan, status KPI, dan kemiskinan; bobot bisa digeser, daftar pendek 10 teratas berubah langsung.
+- **Pilot PLTS + baterai + pengisian di rest area tol (Energi WP6)**: beban per jam terukur 19 lokasi rest area (Maret 2026) vs profil
+  surya pvlib (clear-sky Ineichen, 6,45°LS, diskalakan 1.450 kWh/kWp/thn); simulasi baterai per jam, cakupan surya, CO₂, capex, balik modal.
+- **12 lokasi SPKLU berikutnya (Mobilitas WP3–WP5)**: cakupan maksimal rakus, warga ≤10 km dari SPKLU 66,9% → 89,8%; kandidat hanya
+  bila ada GI dengan ruang ≥20 MVA dalam 20 km.
+- **Model tenaga kerja kelistrikan (Keterampilan WP1·WP2·WP4·WP5)**: 40,6 lapangan kerja/ha (rasio rebana.id, = 1,78 juta pada
+  43.913 ha) menjadi kebutuhan teknisi per tahun, kohor, dan jangkauan 30 km simpul pelatihan atas kecamatan KPI.
+
 Privasi: gardu distribusi hanya keluar sebagai agregat per kecamatan dan per heksagon (≥3 gardu), tanpa nama/kode/koordinat
 gardu; charger rumah hanya sebagai hitungan per kecamatan.
 
 ```bash
-pip install openpyxl shapely h3
+pip install openpyxl shapely h3 pvlib pandas
 python3 analysis/rebana_build.py     # data mentah -> analysis/rebana_data.json -> analysis/rebana_explorer.html (dari *_src.html)
 python3 analysis/inject_rebana.py    # pasang/perbarui tab 🏭 Rebana (idempoten)
 ```
