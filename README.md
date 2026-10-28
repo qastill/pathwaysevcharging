@@ -68,9 +68,9 @@ python3 analysis/inject_ladder1.py                                             #
 
 ## 🏭 Rebana — Powering Rebana explorer (tab di grup PhD Monash)
 
-Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 25 bab (navigasi rel kiri atau tombol ← →),
+Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 24 bab (navigasi rel kiri atau tombol ← →),
 sakelar bahasa EN/ID, animasi masuk per bab, dan sumber tiap angka saat kursor diarahkan. Dibuat untuk Workshop Powering Rebana ke-2
-(Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: 13 KPI (6 di Indramayu), investasi, gerbang
+(Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: peta 13 KPI dengan proyeksi kebutuhan listrik tahunan saat terbangun penuh (6 di Indramayu, setara beberapa kali penjualan UP3 Indramayu), investasi, gerbang
 logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE for 2030, aset data disertasi, pengalaman Indramayu
 (bagian 2); fakta khusus Rebana yang dihitung dari Master SPKLU dan transaksi Maret 2026, register charger rumah, dan beban trafo
 GI/gardu (bagian 3); tiga proyeksi 2030 dengan slider, ide per paket kerja Energi/Mobilitas/Keterampilan, permintaan, sumber (bagian 4).
