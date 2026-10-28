@@ -9,12 +9,12 @@ Langkah:
      charger rumah hanya sebagai hitungan per kecamatan.
   3. Tanam JSON ke analysis/rebana_explorer_src.html (penanda /*__DATA__*/) -> analysis/rebana_explorer.html.
 
-    pip install openpyxl shapely h3 pvlib pandas
+    pip install openpyxl shapely h3 pvlib pandas xlrd
     python3 analysis/rebana_build.py           # lalu python3 analysis/inject_rebana.py bila tab belum terpasang
 """
 import collections, json, os, re, warnings
 import math
-import openpyxl, h3, pvlib, pandas as pd
+import openpyxl, h3, pvlib, xlrd, pandas as pd
 from shapely.geometry import shape, Point, LineString, mapping
 from shapely.ops import unary_union
 from shapely.strtree import STRtree
@@ -67,6 +67,7 @@ it = wb.worksheets[0].iter_rows(values_only=True); H = {h: i for i, h in enumera
 tj = collections.Counter(); tr = collections.Counter(); hour = collections.Counter(); hk_rest = collections.Counter(); hk_all = collections.Counter()
 loc = collections.defaultdict(collections.Counter); kab = collections.defaultdict(collections.Counter)
 site = {}
+EVX = {"day": collections.defaultdict(collections.Counter), "pow": [], "price": collections.Counter(), "dur": collections.Counter(), "tag": collections.defaultdict(set), "conn": collections.Counter()}
 for r in it:
     e = r[H["Energi (kWh)"]]
     if e is None: continue
@@ -78,6 +79,15 @@ for r in it:
     kab[k]["n"] += 1; kab[k]["kwh"] += e; kab[k]["rp"] += rp
     hour[int(r[H["Jam"]] or 0)] += 1; hk_all[int(r[H["Jam"]] or 0)] += e
     if r[H["Jenis Titik Lokasi"]] == "Rest Area Tol": hk_rest[int(r[H["Jam"]] or 0)] += e
+    dd = r[H["Tanggal"]]; dkey = dd.strftime("%Y-%m-%d") if hasattr(dd, "strftime") else str(dd)[:10]
+    EVX["day"][dkey]["n"] += 1; EVX["day"][dkey]["kwh"] += e
+    if r[H["Jenis Titik Lokasi"]] == "Rest Area Tol": EVX["day"][dkey]["rest"] += e
+    ikw = kw(r[H["Daya Charger"]]); mins = fnum(r[H["Durasi (menit)"]])
+    if ikw and mins > 1 and e > 0.5: EVX["pow"].append((ikw, min(e / (mins / 60), ikw * 1.05)))
+    EVX["price"][int(fnum(r[H["Rp per kWh"]]))] += 1
+    EVX["dur"][min(int(mins // 15), 8)] += 1
+    EVX["tag"][str(r[H["Tagging SPKLU"]]).split(" ")[0]].add(r[H["ID SPKLU"]])
+    EVX["conn"]["CHAdeMO" if "CHADEMO" in str(r[H["Connector"]]).upper() else "AC Type 2" if "TYPE 2" in str(r[H["Connector"]]).upper() else "CCS2"] += 1
     loc[r[H["Jenis Titik Lokasi"]]]["n"] += 1; loc[r[H["Jenis Titik Lokasi"]]]["kwh"] += e
     sid = r[H["ID SPKLU"]]
     if sid not in site:
@@ -91,16 +101,16 @@ D["sites"] = sorted([{**s, "e": round(s["e"], 1)} for s in site.values() if s["l
 nosite = sum(1 for s in site.values() if s["la"] is None)
 
 # ---------- 3. Register charger rumah (hitungan per kab & per kecamatan; tanpa titik) ----------
-home_all = 0; home = collections.Counter(); home_pts = []
+home_all = 0; home = collections.Counter(); home_pts = []; brand_reb = collections.Counter(); brand_all = collections.Counter()
 with open("Data pelanggan EV.txt", encoding="utf-8", errors="ignore") as f:
     hdr = f.readline().rstrip("\n").split("\t"); H = {h: i for i, h in enumerate(hdr)}
     for line in f:
         p = line.rstrip("\n").split("\t")
         if len(p) < len(hdr) - 2: continue
-        home_all += 1
+        home_all += 1; brand_all[str(p[H["Jenis Kendaraan"]]).strip() or "?"] += 1
         k = norm(p[H["Kabupaten"]]) if H["Kabupaten"] < len(p) else None
         if not k: continue
-        home[k] += 1
+        home[k] += 1; brand_reb[str(p[H["Jenis Kendaraan"]]).strip() or "?"] += 1
         try: home_pts.append((float(p[H["Long"]]), float(p[H["Lat"]])))
         except Exception: pass
 
@@ -326,6 +336,94 @@ rest_sites = [s for s in D["sites"] if s["t"] == "Rest Area Tol"]
 D["pv"] = {"rest_kwh_day": [round(hk_rest[h] / 31, 1) for h in range(24)], "all_kwh_day": [round(hk_all[h] / 31, 1) for h in range(24)],
            "pv_shape": shape_h, "yield_kwh_kwp_yr": 1450, "rest_sites": rest_sites,
            "assume": {"capex_pv_rp_kwp": 10_000_000, "capex_bess_rp_kwh": 6_000_000, "tariff_rp_kwh": 1444.70, "ef_kg_kwh": 0.80, "bess_eff": 0.90}}
+
+# ---------- 11. Ekosistem EV dan ekuitas akses (riset disertasi) ----------
+REBK = {"3208": "Kab. Kuningan", "3209": "Kab. Cirebon", "3210": "Kab. Majalengka", "3211": "Kab. Sumedang", "3212": "Kab. Indramayu", "3213": "Kab. Subang", "3274": "Kota Cirebon"}
+TT = json.load(open("ttm/ttm.json"))
+KEXP = {k["code"]: k.get("expend") for k in TT["kabs"]}
+def vill(pref):
+    return [{"id": v[0], "acc": v[1], "pop": v[4], "ch": v[5], "area": v[7], "cap": v[8], "rung": v[9]} for v in TT["villages"] if v[0][:4] in pref and v[1] is not None and v[4] > 0]
+VR = vill(set(REBK)); VJ = vill({k["code"] for k in TT["kabs"] if k["prov"] == "Jawa Barat"})
+def wshare(V, f): P = sum(v["pop"] for v in V); return round(sum(v["pop"] for v in V if f(v)) / P, 4)
+def ci(V, h, rank):
+    V = sorted(V, key=rank); P = sum(v["pop"] for v in V); mu = sum(v["pop"] * h(v) for v in V) / P
+    if mu == 0: return None
+    acc = 0.0; cov = 0.0
+    for v in V:
+        w = v["pop"] / P; r = acc + w / 2; acc += w; cov += w * (h(v) - mu) * (r - 0.5)
+    return round(2 * cov / mu, 3)
+def lorenz(V, h):
+    V = sorted(V, key=lambda v: h(v) / v["pop"]); P = sum(v["pop"] for v in V); Hs = sum(h(v) for v in V)
+    pts = [(0.0, 0.0)]; cp = ch = 0.0; g = 0.0
+    for v in V:
+        p0, c0 = cp, ch; cp += v["pop"] / P; ch += h(v) / Hs; g += (cp - p0) * (ch + c0)
+        pts.append((cp, ch))
+    step = max(1, len(pts) // 60); out = pts[::step] + [pts[-1]]
+    return {"pts": [[round(a, 4), round(b, 4)] for a, b in out], "gini": round(1 - g, 3)}
+dens = lambda v: v["pop"] / max(v["area"], 0.05)
+def quint(V):
+    V = sorted(V, key=dens); P = sum(v["pop"] for v in V); out = [[] for _ in range(5)]; acc = 0
+    for v in V:
+        q = min(4, int(5 * (acc + v["pop"] / 2) / P)); out[q].append(v); acc += v["pop"]
+    res = []
+    for i, Q in enumerate(out):
+        pq = sum(v["pop"] for v in Q)
+        res.append({"q": i + 1, "pop": pq, "r10": wshare(Q, lambda v: v["acc"] <= 10), "r15": wshare(Q, lambda v: v["acc"] <= 15),
+                    "r30": wshare(Q, lambda v: v["acc"] <= 30), "per100k": round(100000 * sum(v["ch"] for v in Q) / pq, 2),
+                    "dens": round(sorted(dens(v) for v in Q)[len(Q) // 2])})
+    return res
+def bucket(V):
+    E = [(0, 10), (10, 15), (15, 30), (30, 60), (60, 1e9)]
+    return [wshare(V, lambda v, a=a, b=b: (a < v["acc"] <= b) or (a == 0 and v["acc"] <= b)) for a, b in E]
+def summ(V):
+    return {"villages": len(V), "pop": sum(v["pop"] for v in V), "chargers": sum(v["ch"] for v in V), "vil_with": sum(1 for v in V if v["ch"] > 0),
+            "r7": wshare(V, lambda v: v["acc"] <= 7), "r10": wshare(V, lambda v: v["acc"] <= 10), "r15": wshare(V, lambda v: v["acc"] <= 15), "r30": wshare(V, lambda v: v["acc"] <= 30),
+            "rung": [wshare(V, lambda v, k=k: v["rung"] == k) for k in (0, 1, 2)], "buckets": bucket(V),
+            "lor_ch": lorenz(V, lambda v: v["ch"]),
+            "ci": {"ch_density": ci(V, lambda v: v["ch"] / v["pop"], dens), "r15_density": ci(V, lambda v: 1.0 if v["acc"] <= 15 else 0.0, dens),
+                   "ch_expend": ci(V, lambda v: v["ch"] / v["pop"], lambda v: (KEXP.get(v["id"][:4]) or 0, dens(v))),
+                   "r15_expend": ci(V, lambda v: 1.0 if v["acc"] <= 15 else 0.0, lambda v: (KEXP.get(v["id"][:4]) or 0, dens(v)))},
+            "quint": quint(V)}
+EQ = {"rebana": summ(VR), "jabar": summ(VJ), "kabs": []}
+for code, name in REBK.items():
+    Vk = [v for v in VR if v["id"][:4] == code]; kk = next(k for k in TT["kabs"] if k["code"] == code)
+    EQ["kabs"].append({"code": code, "name": name, "villages": len(Vk), "pop": sum(v["pop"] for v in Vk), "chargers": sum(v["ch"] for v in Vk),
+                       "r10": wshare(Vk, lambda v: v["acc"] <= 10), "r15": wshare(Vk, lambda v: v["acc"] <= 15), "r30": wshare(Vk, lambda v: v["acc"] <= 30),
+                       "rung": [wshare(Vk, lambda v, k=k: v["rung"] == k) for k in (0, 1, 2)], "buckets": bucket(Vk), "median": kk.get("median"),
+                       "per100k": kk.get("per100k"), "expend": kk.get("expend"), "ipm": kk.get("ipm"), "p0": kk.get("p0")})
+# agregat desa -> kecamatan (kode BPS 7 digit) untuk peta
+kv = collections.defaultdict(list)
+for v in VR: kv["id" + v["id"][:7]].append(v)
+for k in D["rk"]:
+    Vk = kv.get(k["code"])
+    if Vk:
+        P = sum(v["pop"] for v in Vk)
+        k["t_mean"] = round(sum(v["pop"] * v["acc"] for v in Vk) / P, 1); k["t_r15"] = wshare(Vk, lambda v: v["acc"] <= 15)
+        k["t_r10"] = wshare(Vk, lambda v: v["acc"] <= 10); k["t_rung2"] = wshare(Vk, lambda v: v["rung"] == 2); k["t_vil"] = len(Vk)
+EQ["ttm_meta"] = {"router": "r5r (R5) car travel-time matrix, village to village", "villages_dropped_no_access": sum(1 for v in TT["villages"] if v[0][:4] in REBK and v[1] is None),
+                  "kw_per_hh": TT["summary"]["kw_per_hh"], "hh_size": TT["summary"]["hh_size"], "pop_source": "Kontur 2023", "boundary": "HDX-BPS 2020"}
+D["eq"] = EQ
+# pemakaian: deret harian, tangga daya, harga, durasi, tag utilisasi, konektor
+pw = EVX["pow"]; PB = [(0, 11), (11, 30), (30, 60), (60, 100), (100, 400)]
+D["evuse"] = {"day": [{"d": k, "n": v["n"], "kwh": round(v["kwh"], 1), "rest": round(v["rest"], 1)} for k, v in sorted(EVX["day"].items())],
+              "pow": [{"band": f"{a}–{b if b < 400 else '+'} kW", "n": len([1 for i, d in pw if a < i <= b]),
+                       "inst": round(sum(i for i, d in pw if a < i <= b) / max(1, len([1 for i, d in pw if a < i <= b])), 1),
+                       "deliv": round(sum(d for i, d in pw if a < i <= b) / max(1, len([1 for i, d in pw if a < i <= b])), 1)} for a, b in PB],
+              "pow_all": {"inst": round(sum(i for i, d in pw) / len(pw), 1), "deliv": round(sum(d for i, d in pw) / len(pw), 1)},
+              "price": sorted([[k, v] for k, v in EVX["price"].items() if v >= 20], key=lambda x: -x[1])[:5],
+              "dur": [EVX["dur"][i] for i in range(9)], "tag": {k: len(v) for k, v in EVX["tag"].items()}, "conn": dict(EVX["conn"])}
+# pemilik EV: register charger rumah (merek) + master pelanggan KBLBB per UP3 (hanya hitungan)
+wbx = xlrd.open_workbook("DataMasterPelangganKBLBB (2).xls"); shx = wbx.sheets()[0]; hx = {h: i for i, h in enumerate(shx.row_values(0))}
+up3c = collections.Counter(str(shx.cell_value(r, hx["UNITAP"])) for r in range(1, shx.nrows))
+D["evown"] = {"brand_reb": brand_reb.most_common(8), "brand_all": brand_all.most_common(8), "home_reb": sum(home.values()), "home_all": home_all,
+              "kblbb_total": shx.nrows - 1, "kblbb_up3": up3c.most_common(), "kblbb_rebana": sum(up3c.get(c, 0) for c in ("53CRB", "53IDM", "53SMD"))}
+# ruang GI per kabupaten (titik GI di dalam poligon kab)
+kpoly = [(k["region"], shape(k["geometry"])) for k in D["kab"]]
+gk = collections.defaultdict(lambda: {"head": 0.0, "gi": []})
+for g in gi_head:
+    for name, pg in kpoly:
+        if pg.contains(Point(g["lo"], g["la"])): gk[name]["head"] += g["head"]; gk[name]["gi"].append([g["name"], g["head"]])
+D["gi_kab"] = [{"region": r["region"], "head": round(gk[r["region"]]["head"], 1), "gi": gk[r["region"]]["gi"], "pop_m": r["population_m"]} for r in D["regions"]]
 
 # ---------- 9. Angka publik dan UP3 Indramayu (paparan internal 15 Okt 2026) ----------
 D["zones"] = [{"zone": z, "regency": r, "area_ha": a} for z, r, a in [
