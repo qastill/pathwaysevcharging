@@ -97,6 +97,11 @@ mencocokkan kode gardu pelanggan dengan register gardu PLN berkoordinat (gardu m
 hanya terpetakan di tingkat ULP), lalu mengekspor agregat saja: per kabupaten, ULP, kecamatan, heksagon H3 res 7, tarif, pita daya,
 pita balik modal, dan sebar daya–kWh tanpa identitas. Tidak ada nama, ID, atau alamat pelanggan di halaman.
 
+Setiap bab dijamin muat satu layar tanpa gulir di layar ≥900 px: setelah digambar, tinggi alaminya diukur; bila melebihi panggung,
+bab diperkecil dengan `transform: scale` (lebar/tinggi tata letak diperbesar 1/z, batas bawah 0,55) dan grafik digambar ulang pada lebar
+baru; bab peta hanya di-skala tanpa dibuat ulang agar Leaflet tetap interaktif. Bab pelanggan besar, lokasi berbasis jaringan, dan 12
+lokasi SPKLU disusun tiga kolom supaya skala tetap ≥0,7 di 1366×768. Di ponsel (<900 px) bab tetap bisa digulir.
+
 Rel bab di kiri bisa dilipat (tombol di kiri judul atau tombol `[`) menjadi deretan titik berwarna per bagian; pilihan disimpan di browser.
 
 Empat paket kerja yang sudah berjalan sebagai model interaktif (bagian 4, menggantikan bab ide lama), dihitung di
