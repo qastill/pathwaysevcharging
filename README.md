@@ -68,7 +68,7 @@ python3 analysis/inject_ladder1.py                                             #
 
 ## 🏭 Rebana — Powering Rebana explorer (tab di grup PhD Monash)
 
-Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 24 bab (navigasi rel kiri atau tombol ← →),
+Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 25 bab (navigasi rel kiri atau tombol ← →),
 sakelar bahasa EN/ID, animasi masuk per bab, dan sumber tiap angka saat kursor diarahkan. Dibuat untuk Workshop Powering Rebana ke-2
 (Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: peta 13 KPI dengan proyeksi kebutuhan listrik tahunan saat terbangun penuh (6 di Indramayu, setara beberapa kali penjualan UP3 Indramayu), investasi, gerbang
 logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE for 2030, aset data disertasi, pengalaman Indramayu
@@ -88,6 +88,16 @@ Dua bab khusus Indramayu (penugasan penyaji Juni 2023 – Juli 2026 di Indramayu
 - **UP3 Indramayu 2026**: infografis kinerja penjualan Januari–September 2026 dari paparan *Sharing Session Best Practice
   Penjualan Tenaga Listrik* UP3 Indramayu (15 Okt 2026): 1.187,73 GWh (+9,23%), KPI 110%, pelanggan, daya tersambung, pendapatan,
   penjualan TM (+40,35%), klaster industri (plastik +51,76 GWh), tiga program lintas bidang, pipeline.
+
+Bab **Pelanggan besar** (bagian 3) memetakan pelanggan tegangan menengah Rebana dari ekstrak penagihan OLAP UID Jawa Barat yang
+dipublikasikan di repo `qastill/envisorcrm` (`data.json`: pelanggan TM yang kena denda kVArh tiga bulan terakhir, dengan kWh rata-rata,
+daya, tagihan, denda, dan kode gardu pemasok). `analysis/rebana_build.py` bagian 12 membaca berkas itu dari `ENVISOR_JSON`,
+`../qastill/envisorcrm/data.json`, atau `../envisorcrm/data.json` (bila tidak ada, agregat dari build sebelumnya dipertahankan),
+mencocokkan kode gardu pelanggan dengan register gardu PLN berkoordinat (gardu milik pelanggan tidak ada di register, jadi sebagian
+hanya terpetakan di tingkat ULP), lalu mengekspor agregat saja: per kabupaten, ULP, kecamatan, heksagon H3 res 7, tarif, pita daya,
+pita balik modal, dan sebar daya–kWh tanpa identitas. Tidak ada nama, ID, atau alamat pelanggan di halaman.
+
+Rel bab di kiri bisa dilipat (tombol di kiri judul atau tombol `[`) menjadi deretan titik berwarna per bagian; pilihan disimpan di browser.
 
 Empat paket kerja yang sudah berjalan sebagai model interaktif (bagian 4, menggantikan bab ide lama), dihitung di
 `analysis/rebana_build.py` bagian 10 atas 190 kecamatan Rebana:

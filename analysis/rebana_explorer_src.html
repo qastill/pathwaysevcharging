@@ -34,14 +34,28 @@ header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:0;white-space:
 .seg button{background:transparent;border:0;color:var(--muted);font:600 12.5px var(--fs);padding:6px 12px;cursor:pointer}
 .seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
 .seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-main{min-width:0;display:grid;grid-template-columns:200px 1fr;gap:18px;min-height:0;padding-block:14px}
+main{--railw:172px;min-width:0;display:grid;grid-template-columns:var(--railw) 1fr;gap:16px;min-height:0;padding-block:12px;transition:grid-template-columns .35s cubic-bezier(.2,.7,.2,1),gap .35s}
+main.collapsed{--railw:30px;gap:12px}
 nav.rail{min-width:0;display:flex;flex-direction:column;gap:2px;overflow:auto;min-height:0;padding-right:4px}
-nav.rail button{display:flex;align-items:center;gap:10px;background:transparent;border:0;color:var(--muted);font:500 12.5px var(--fs);text-align:left;padding:7px 8px;border-radius:8px;cursor:pointer;line-height:1.2}
+nav.rail button{display:flex;align-items:center;gap:9px;background:transparent;border:0;color:var(--muted);font:500 12px var(--fs);text-align:left;padding:5px 7px;border-radius:8px;cursor:pointer;line-height:1.2;transition:background .2s,color .2s}
+nav.rail button:hover{color:var(--fg);background:var(--soft)}
+nav.rail button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 nav.rail button i{width:8px;height:8px;border-radius:50%;background:var(--line);flex:none;transition:transform .3s,background .3s}
 nav.rail button[aria-current="true"]{color:var(--fg);background:var(--soft)}
 nav.rail button[aria-current="true"] i{background:var(--accent);transform:scale(1.4)}
 nav.rail button:focus-visible{outline:2px solid var(--accent)}
-nav.rail .part{font:600 10.5px var(--fs);letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);padding:12px 8px 4px}
+nav.rail .part{flex:none;font:600 10px var(--fs);letter-spacing:1.4px;text-transform:uppercase;color:var(--muted);padding:10px 7px 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav.rail button{flex:none}
+main.collapsed nav.rail{padding-right:0}
+main.collapsed nav.rail button{justify-content:center;padding:6px 0;gap:0}
+main.collapsed nav.rail button span{display:none}
+main.collapsed nav.rail button i{width:9px;height:9px;background:var(--pc,var(--line));opacity:.45}
+main.collapsed nav.rail button[aria-current="true"] i{opacity:1;background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+main.collapsed nav.rail .part{font-size:0;padding:0;margin:7px 8px 5px;height:1px;background:var(--line)}
+.icon{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;flex:none}
+.icon:focus-visible{outline:2px solid var(--accent)}
+.icon svg{width:16px;height:16px;transition:transform .3s}
+.icon[aria-expanded="false"] svg{transform:rotate(180deg)}
 #stage{position:relative;min-height:0;min-width:0}
 .chapter{position:absolute;inset:0;display:grid;grid-template-rows:auto 1fr;gap:12px;opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease;pointer-events:none;overflow:auto;min-width:0}
 .chapter.active{opacity:1;transform:none;pointer-events:auto}
@@ -54,7 +68,8 @@ h3{font:600 14px var(--fs);margin:0}
 p{margin:0}
 .lead{color:var(--muted);font-size:clamp(13px,1.2vw,16px);max-width:70ch}
 .body{display:grid;gap:14px;min-height:0;min-width:0}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:8px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;min-width:0;display:flex;flex-direction:column;gap:8px;transition:box-shadow .25s,border-color .25s}
+.card:hover{box-shadow:0 8px 26px rgba(15,38,58,.07);border-color:color-mix(in srgb,var(--line) 60%,var(--accent))}
 .card.navy{background:var(--navy);color:var(--navyfg);border-color:transparent}
 .card.navy .muted,.card.navy .lbl{color:#BFD8D5}
 .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:10px}
@@ -179,6 +194,8 @@ select:focus-visible{outline:2px solid var(--accent)}
   nav.rail{flex-direction:row;overflow-x:auto;padding-bottom:4px}
   nav.rail .part{display:none}
   nav.rail button{white-space:nowrap;font-size:12px;padding:6px 8px}
+  main{--railw:auto!important}
+  main.collapsed nav.rail .part{height:auto;width:1px;margin:4px 3px;align-self:stretch}
   .chapter{position:relative;height:100%}
   .chapter:not(.active){display:none}
   #stage{overflow:auto}
@@ -191,6 +208,7 @@ select:focus-visible{outline:2px solid var(--accent)}
 <body>
 <div id="app">
 <header>
+  <button class="icon" id="railtoggle" aria-expanded="true" aria-controls="rail"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/><path d="M13 3v10" opacity=".45"/></svg></button>
   <div class="brand">Powering <span>Rebana</span></div>
   <div class="meta" id="hmeta"></div>
   <div class="seg" role="group" aria-label="Language">
@@ -450,6 +468,70 @@ const CH = [
   const cmp=el('div','tiles'); cmp.append(tile(636,t({en:'SPKLU units in all West Java (Rebana 129)',id:'unit SPKLU se-Jawa Barat (Rebana 129)'}),{i:0}),tile(2260,t({en:'MWh sold in West Java in March 2026 (Rebana 348)',id:'MWh terjual di Jawa Barat Maret 2026 (Rebana 348)'}),{i:1}),tile(3691,t({en:'home-charger applications in West Java (Rebana 90)',id:'permohonan charger rumah di Jawa Barat (Rebana 90)'}),{i:2}),tile(13.3,t({en:'MWh per month per 100,000 people in Kab. Cirebon vs 0.8 in Kuningan: a 17× spread inside one zone',id:'MWh per bulan per 100.000 jiwa di Kab. Cirebon vs 0,8 di Kuningan: rentang 17× di dalam satu kawasan'}),{i:3,dec:1,acc:true}));
   c.append(cmp, el('p','src',t({en:'Kuningan and Kota Cirebon 2025 investment is reported combined (Rp 2.12 T). Sumedang population is a BPS estimate. GRDP per capita for Kab. Cirebon, Subang and Kuningan was not found in a 2025 release.',id:'Investasi 2025 Kuningan dan Kota Cirebon dilaporkan gabungan (Rp 2,12 T). Penduduk Sumedang estimasi BPS. PDRB per kapita Kab. Cirebon, Subang, dan Kuningan tidak ditemukan dalam rilis 2025.'})));
   root.append(c);
+}},
+{ id:'bigload', part:2, nav:{en:'Large customers',id:'Pelanggan besar'}, render(root){
+  const B=D.big; if(!B){ root.append(head({en:'Part 3',id:'Bagian 3'},{en:'Large customers',id:'Pelanggan besar'},{en:'No large-customer extract was available at build time.',id:'Ekstrak pelanggan besar tidak tersedia saat build.'})); return; }
+  const T=B.tot, gwh=T.kwh/1e6, yr=gwh*12, idmY=D.sales.cum['2026'][8]/9*12, idm=B.kab.find(k=>k.region==='Kab. Indramayu');
+  root.append(head({en:`Part 3 · Where the big load sits: ${nf(T.n)} medium-voltage customers, ${B.period}`,id:`Bagian 3 · Di mana beban besar berada: ${nf(T.n)} pelanggan tegangan menengah, ${B.period}`},
+    {en:'Large customers in Rebana, mapped to the transformer that feeds them',id:'Pelanggan besar Rebana, dipetakan ke gardu yang memasoknya'},
+    {en:`PLN’s own billing extract (OLAP UID Jawa Barat): every medium-voltage customer in the seven regencies that paid a reactive-power (kVArh) penalty in the last three months, with its monthly kWh, connected power and bill. ${nf(100*T.geo/T.n)}% are placed at the PLN transformer that feeds them; the rest sit at their ULP. No names are shown.`,
+     id:`Ekstrak penagihan PLN sendiri (OLAP UID Jawa Barat): seluruh pelanggan tegangan menengah di tujuh kabupaten/kota yang kena denda daya reaktif (kVArh) tiga bulan terakhir, dengan kWh bulanan, daya tersambung, dan tagihannya. ${nf(100*T.geo/T.n)}% ditempatkan di gardu PLN pemasoknya; sisanya di ULP-nya. Tidak ada nama yang ditampilkan.`}));
+  const tl=el('div','tiles');
+  tl.append(tile(T.n,t({en:'MV customers with a kVArh penalty, 7 regencies',id:'pelanggan TM kena denda kVArh, 7 kab/kota'}),{i:0,acc:true}),
+    tile(gwh,t({en:'GWh per month they buy (≈ '+nf(yr)+' GWh/yr)',id:'GWh per bulan yang mereka beli (≈ '+nf(yr)+' GWh/thn)'}),{i:1,dec:1}),
+    tile(T.mva,t({en:'MVA connected power',id:'MVA daya tersambung'}),{i:2,dec:0}),
+    tile(T.tagihan/1e9,t({en:'Rp billion billed per month',id:'Rp miliar tagihan per bulan'}),{i:3,dec:1}),
+    tile(T.denda/1e9,t({en:'Rp billion kVArh penalty per month · '+nf(T.c3)+' chronic (3 of 3 months)',id:'Rp miliar denda kVArh per bulan · '+nf(T.c3)+' kronis (3 dari 3 bulan)'}),{i:4,dec:2}));
+  root.append(tl);
+  const b=el('div','body'); b.style.gridTemplateColumns='minmax(0,1.5fr) minmax(0,1fr)';
+  const mc=el('div','card'); const chips=el('div'); const mb=el('div','lmap'); mb.style.minHeight='300px'; mc.append(chips,mb);
+  mc.append(el('p','src',t({en:`Source: ${B.source}, ${B.period} (generated ${B.generated}); ${nf(B.n_jabar)} customers province-wide, ${nf(T.n)} in Rebana. Location = coordinates of the PLN distribution transformer whose code matches the customer’s feeding transformer in the UID Jawa Barat register; customer-owned transformers are not in that register, so ${nf(T.n-T.geo)} customers appear only in the ULP bubbles. Kecamatan boundaries HDX-BPS 2020.`,
+    id:`Sumber: ${B.source}, ${B.period} (dibuat ${B.generated}); ${nf(B.n_jabar)} pelanggan se-provinsi, ${nf(T.n)} di Rebana. Lokasi = koordinat gardu distribusi PLN yang kodenya cocok dengan gardu pemasok pelanggan di register UID Jawa Barat; gardu milik pelanggan tidak ada di register itu, sehingga ${nf(T.n-T.geo)} pelanggan hanya muncul di gelembung ULP. Batas kecamatan HDX-BPS 2020.`})));
+  const r=el('div'); r.style.cssText='display:grid;gap:10px;align-content:start;min-width:0';
+  const pf=el('div','card rise'); pf.setAttribute('aria-live','polite');
+  const prof=(name,sub,a)=>{ const tt=Object.entries(a.kwh_t||{}).sort((x,y)=>y[1]-x[1]); pf.innerHTML=`<h3>${name}</h3><div class="lbl">${sub}</div><dl class="kv two"><dt>${t({en:'Customers',id:'Pelanggan'})}</dt><dd>${nf(a.n)}</dd><dt>kWh/${t({en:'month',id:'bln'})}</dt><dd>${cf(a.kwh)}</dd><dt>MVA</dt><dd>${nf(a.mva,1)}</dd><dt>${t({en:'Bill',id:'Tagihan'})}</dt><dd>Rp ${cf(a.tagihan)}</dd><dt>${t({en:'Penalty',id:'Denda'})}</dt><dd>Rp ${cf(a.denda)}/${t({en:'mo',id:'bln'})}</dd><dt>${t({en:'Chronic',id:'Kronis'})}</dt><dd>${nf(a.c3)}</dd></dl><div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">${tt.map(([k,v])=>`<span class="pill" style="font-size:10.5px">${k} · ${a.tarif[k]} · ${cf(v)} kWh</span>`).join('')}</div>`; };
+  prof(t({en:'All seven regencies',id:'Seluruh tujuh kabupaten/kota'}),t({en:'Click a kecamatan or ULP bubble for its profile',id:'Klik kecamatan atau gelembung ULP untuk profilnya'}),T);
+  const kc=el('div','card rise'); kc.style.setProperty('--i',1); kc.append(el('h3',null,t({en:'kWh per month by regency and tariff',id:'kWh per bulan menurut kabupaten dan tarif'})));
+  const TC={I2:'--s1',I3:'--s2',B3:'--s3',lain:'--s4'}; const mx=d3.max(B.kab,k=>k.kwh);
+  B.kab.slice().sort((x,y)=>y.kwh-x.kwh).forEach((k,i)=>{ const row=el('div','hrow rise'); row.style.setProperty('--i',i+2); const tr=el('div','track'); tr.style.cssText='display:flex;height:14px';
+    ['I2','I3','B3','lain'].forEach(tg=>{ const v=k.kwh_t[tg]||0; if(!v) return; const s=el('div','bar'); s.style.cssText=`width:${100*v/mx}%;height:100%;background:var(${TC[tg]})`; s.style.setProperty('--i',i+2); s.title=`${tg}: ${cf(v)} kWh · ${k.tarif[tg]} ${t({en:'customers',id:'pelanggan'})}`; tr.append(s); });
+    row.append(el('div',null,`${k.region.replace('Kab. ','')} <span class="muted">${k.n}</span>`),tr,el('div','val',cf(k.kwh))); kc.append(row); });
+  kc.append(el('div','lbl',`<i class="sw" style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--s1)"></i> I2 ${t({en:'industry ≤200 kVA',id:'industri ≤200 kVA'})} · <i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--s2)"></i> I3 ${t({en:'industry >200 kVA',id:'industri >200 kVA'})} · <i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--s3)"></i> B3 ${t({en:'business',id:'bisnis'})} · <i style="display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--s4)"></i> ${t({en:'other (P2, S2, I3P)',id:'lainnya (P2, S2, I3P)'})}`));
+  const sc=el('div','card rise'); sc.style.setProperty('--i',3); sc.append(el('h3',null,t({en:'Connected power vs monthly energy · colour = utilisation hours',id:'Daya tersambung vs energi bulanan · warna = jam nyala'}))); const sb=el('div'); sb.style.cssText='min-height:170px;position:relative'; sc.append(sb);
+  sc.append(el('p','lbl',t({en:`Median ${nf(B.jam_med)} full-load hours a month: most plants run one shift. Points above the median line use their connection harder; a cluster of large, low-hour connections is a sign of idle or seasonal capacity.`,id:`Median ${nf(B.jam_med)} jam nyala per bulan: kebanyakan pabrik satu shift. Titik di atas garis median memakai sambungannya lebih keras; gerombolan sambungan besar berjam rendah adalah tanda kapasitas menganggur atau musiman.`})));
+  const nv=el('div','card navy rise'); nv.style.setProperty('--i',4);
+  const fast=B.roi.filter(x=>x.b==='≤6'||x.b==='7–12').reduce((s,x)=>s+x.n,0);
+  nv.innerHTML=`<h3>${t({en:'What this adds to the workshop',id:'Apa yang ditambahkan ke lokakarya'})}</h3><ul class="clean"><li>${t({en:`<b>Scale:</b> these ${nf(T.n)} connections buy ≈${nf(yr)} GWh a year, ${nf(100*idm.kwh*12/1e6/idmY,1)}% of UP3 Indramayu’s annualised 2026 sales from Indramayu alone — the industrial base the zone already has, located.`,id:`<b>Skala:</b> ${nf(T.n)} sambungan ini membeli ≈${nf(yr)} GWh per tahun; dari Indramayu saja ${nf(100*idm.kwh*12/1e6/idmY,1)}% dari penjualan UP3 Indramayu 2026 yang disetahunkan — basis industri yang sudah dimiliki kawasan, dengan lokasinya.`})}</li><li>${t({en:`<b>Power quality (Energy WP):</b> Rp ${nf(T.denda*12/1e9,1)} bn a year leaves as reactive-power penalties; ${nf(T.kvar)} kVAR of capacitor banks (≈Rp ${nf(T.invest/1e9,1)} bn) would pay back within a year for ${nf(fast)} customers and free transformer and feeder capacity.`,id:`<b>Kualitas daya (WP Energi):</b> Rp ${nf(T.denda*12/1e9,1)} M per tahun hilang sebagai denda daya reaktif; ${nf(T.kvar)} kVAR bank kapasitor (≈Rp ${nf(T.invest/1e9,1)} M) balik modal kurang dari setahun untuk ${nf(fast)} pelanggan dan membebaskan kapasitas gardu dan penyulang.`})}</li><li>${t({en:'<b>Skills WP:</b> capacitor-bank sizing, installation and tuning is a concrete technician curriculum with a paying customer list.',id:'<b>WP Keterampilan:</b> perhitungan, pemasangan, dan penyetelan bank kapasitor adalah kurikulum teknisi konkret dengan daftar pelanggan yang siap membayar.'})}</li></ul>`;
+  r.append(pf,kc,sc,nv); b.append(mc,r); root.append(b);
+  const m=newMap(mb); if(!m) return; m.fitBounds(L.geoJSON({type:'FeatureCollection',features:D.kab.map(k=>({type:'Feature',geometry:k.geometry}))}).getBounds(),{padding:[6,6]});
+  const kmax=d3.max(Object.values(B.kec),a=>a.kwh); const ramp=d3.scaleSequential(d3.interpolateRgb(css('--soft'),css('--s2'))).domain([0,Math.sqrt(kmax)]);
+  const kecL=L.geoJSON({type:'FeatureCollection',features:D.rk.map(k=>({type:'Feature',properties:{...k,a:B.kec[k.code]},geometry:k.geometry}))},{
+    style:f=>{ const a=f.properties.a; return {color:css('--fg'),weight:.5,opacity:.35,fillColor:a?ramp(Math.sqrt(a.kwh)):'transparent',fillOpacity:a?.72:0}; },
+    onEachFeature:(f,ly)=>{ const k=f.properties, a=k.a; hoverTip(ly,()=>`<b>Kec. ${k.kec}</b>${k.kab}<br>${a?`${nf(a.n)} ${t({en:'customers',id:'pelanggan'})} · ${cf(a.kwh)} kWh/${t({en:'mo',id:'bln'})} · ${nf(a.mva,1)} MVA`:t({en:'no customer placed here',id:'tidak ada pelanggan terpetakan'})}`);
+      ly.on('click',()=>{ if(a) prof('Kec. '+k.kec,k.kab+' · '+t({en:'placed by feeding transformer',id:'menurut gardu pemasok'}),a); }); ly.on('mouseover',()=>ly.setStyle({weight:2,opacity:.9})); ly.on('mouseout',()=>kecL.resetStyle(ly)); } });
+  const rs=d3.scaleSqrt().domain([0,d3.max(B.ulp,u=>u.kwh)]).range([6,30]);
+  const ulpL=L.layerGroup(B.ulp.map(u=>{ const mk=L.circleMarker([u.la,u.lo],{radius:rs(u.kwh),color:css('--bg'),weight:1.5,fillColor:css('--s1'),fillOpacity:.78});
+    hoverTip(mk,`<b>ULP ${u.name}</b>${u.region}<br>${nf(u.n)} ${t({en:'customers',id:'pelanggan'})} · ${cf(u.kwh)} kWh/${t({en:'mo',id:'bln'})} · ${nf(u.mva,1)} MVA<br><span class="k">${t({en:'penalty',id:'denda'})} Rp ${cf(u.denda)}/${t({en:'mo',id:'bln'})} · ${u.geo}/${u.n} ${t({en:'placed',id:'terpetakan'})}</span>`); mk.on('click',()=>prof('ULP '+u.name,u.region+' · '+t({en:'all customers of the ULP',id:'seluruh pelanggan ULP'}),u)); return mk; }));
+  const hmax=d3.max(B.hex,h=>h.kwh); const hexL=L.layerGroup(B.hex.map(h=>{ const pg=L.polygon(h.b.map(p=>[p[1],p[0]]),{color:css('--s4'),weight:.6,fillColor:css('--s4'),fillOpacity:.15+.65*Math.sqrt(h.kwh/hmax)}); hoverTip(pg,`<b>${t({en:'Hex ~5 km²',id:'Heksagon ~5 km²'})}</b>${nf(h.n)} ${t({en:'customers',id:'pelanggan'})} · ${cf(h.kwh)} kWh/${t({en:'mo',id:'bln'})} · ${nf(h.mva,1)} MVA`); return pg; }));
+  const gl=gridLayers();
+  chips.append(mapChips(m,[{n:t({en:'Kecamatan kWh',id:'kWh kecamatan'}),l:kecL,c:css('--s2'),on:true},{n:t({en:'ULP totals',id:'Total ULP'}),l:ulpL,c:css('--s1'),on:true},{n:t({en:'Hex ~5 km²',id:'Heksagon ~5 km²'}),l:hexL,c:css('--s4'),on:false},{n:t({en:'GI & lines',id:'GI & saluran'}),l:L.layerGroup([gl.lines,gl.gi]),c:css('--s3'),on:false}]));
+  kecL.bringToBack();
+  mb.append(mapLegend(`<b>${t({en:'Large-customer kWh per month',id:'kWh pelanggan besar per bulan'})}</b><div class="ramp" style="background:linear-gradient(90deg,${css('--soft')},${css('--s2')})"></div><div style="display:flex;justify-content:space-between"><span>0</span><span>${cf(kmax)}</span></div><div style="margin-top:4px"><i class="sw" style="background:${css('--s1')}"></i>${t({en:'ULP bubble = all its customers',id:'Gelembung ULP = seluruh pelanggannya'})}</div>`));
+  requestAnimationFrame(()=>{ const W=Math.max(300,sb.clientWidth), Hh=180, ml=44, mr=8, mt=8, mbt=26; sb.innerHTML='';
+    const svg=d3.select(sb).append('svg').attr('width',W).attr('height',Hh).attr('viewBox',`0 0 ${W} ${Hh}`);
+    const P=B.pts.filter(p=>p[0]>0&&p[1]>0); const x=d3.scaleLog().domain([d3.min(P,p=>p[0])*0.9,d3.max(P,p=>p[0])*1.1]).range([ml,W-mr]); const y=d3.scaleLog().domain([d3.min(P,p=>p[1])*0.8,d3.max(P,p=>p[1])*1.2]).range([Hh-mbt,mt]);
+    const col=j=>j<80?css('--s4'):j<160?css('--s2'):css('--s1');
+    svg.append('g').attr('transform',`translate(0,${Hh-mbt})`).call(d3.axisBottom(x).ticks(5,'~s')).selectAll('text').style('font-size','10px').style('fill',css('--muted'));
+    svg.append('g').attr('transform',`translate(${ml},0)`).call(d3.axisLeft(y).ticks(4,'~s')).selectAll('text').style('font-size','10px').style('fill',css('--muted'));
+    svg.selectAll('.domain,.tick line').style('stroke',css('--line'));
+    svg.append('text').attr('x',W-mr).attr('y',Hh-4).attr('text-anchor','end').style('font-size','10px').style('fill',css('--muted')).text('kVA');
+    svg.append('text').attr('x',ml+4).attr('y',mt+8).style('font-size','10px').style('fill',css('--muted')).text('kWh/'+t({en:'month',id:'bln'}));
+    const med=B.jam_med; svg.append('line').attr('x1',x(x.domain()[0])).attr('x2',x(x.domain()[1])).attr('y1',y(x.domain()[0]*med)).attr('y2',y(x.domain()[1]*med)).attr('stroke',css('--fg')).attr('stroke-dasharray','4 3').attr('opacity',.5);
+    const RG=D.regions.map(r=>r.region);
+    svg.selectAll('circle').data(P).join('circle').attr('cx',p=>x(p[0])).attr('cy',p=>y(p[1])).attr('r',0).attr('fill',p=>col(p[2])).attr('opacity',.75).attr('stroke',css('--bg')).attr('stroke-width',.5)
+      .on('mousemove',(e,p)=>showTip(e,`<b>${p[3]} · ${nf(p[0])} kVA</b>${cf(p[1])} kWh/${t({en:'mo',id:'bln'})} · ${nf(p[2])} ${t({en:'h full-load',id:'jam nyala'})}<br><span class="k">${RG[p[4]]||''} · ${t({en:'penalised',id:'kena denda'})} ${p[5]}/3 ${t({en:'months',id:'bulan'})}</span>`)).on('mouseleave',hideTip)
+      .transition().delay((p,i)=>i*1.2).duration(400).attr('r',3.2);
+    const lg=svg.append('g').attr('transform',`translate(${W-mr-170},${mt})`); [[css('--s4'),'<80 h'],[css('--s2'),'80–160 h'],[css('--s1'),'>160 h']].forEach(([c,l],i)=>{ lg.append('circle').attr('cx',i*58).attr('cy',4).attr('r',3.5).attr('fill',c); lg.append('text').attr('x',i*58+7).attr('y',8).style('font-size','10px').style('fill',css('--muted')).text(l); }); });
 }},
 { id:'grid', part:2, nav:{en:'Grid headroom',id:'Ruang jaringan'}, render(root){
   const tot=D.giup3.reduce((a,g)=>({n:a.n+g.trafo,mva:a.mva+g.mva,pk:a.pk+g.peak_mva,ge:a.ge+g.trafo_ge80}),{n:0,mva:0,pk:0,ge:0});
@@ -986,12 +1068,17 @@ function dumbbell(box){
 }
 
 /* ---------- app ---------- */
-const stage=document.getElementById('stage'), rail=document.getElementById('rail');
+const stage=document.getElementById('stage'), rail=document.getElementById('rail'), mainEl=document.querySelector('main'), railToggle=document.getElementById('railtoggle');
+const PARTCOL=['--accent','--s1','--s2','--s3','--s4'];
+let railCollapsed=false; try{ railCollapsed=localStorage.getItem('pr-rail')==='1'; }catch(e){}
+function applyRail(){ mainEl.classList.toggle('collapsed',railCollapsed); railToggle.setAttribute('aria-expanded',String(!railCollapsed)); railToggle.title=railCollapsed?t({en:'Show chapter list',id:'Tampilkan daftar bab'}):t({en:'Collapse chapter list',id:'Lipat daftar bab'}); railToggle.setAttribute('aria-label',railToggle.title); }
+railToggle.addEventListener('click',()=>{ railCollapsed=!railCollapsed; try{ localStorage.setItem('pr-rail',railCollapsed?'1':'0'); }catch(e){} applyRail(); setTimeout(()=>window.dispatchEvent(new Event('resize')),380); });
+applyRail();
 let cur=0; const panels=[];
 function build(){ panels.forEach(p=>p.remove()); panels.length=0; rail.innerHTML=''; let lastPart=-1;
-  CH.forEach((c,i)=>{ if(c.part!==lastPart){ rail.append(el('div','part',t(C.parts[c.part]))); lastPart=c.part; } const bt=el('button',null,`<i></i><span>${t(c.nav)}</span>`); bt.addEventListener('click',()=>go(i)); rail.append(bt);
+  CH.forEach((c,i)=>{ if(c.part!==lastPart){ rail.append(el('div','part',t(C.parts[c.part]))); lastPart=c.part; } const bt=el('button',null,`<i></i><span>${t(c.nav)}</span>`); bt.title=t(c.nav); bt.style.setProperty('--pc',`var(${PARTCOL[c.part]||'--s1'})`); bt.addEventListener('click',()=>go(i)); rail.append(bt);
     const p=el('section','chapter'); p.id='ch-'+c.id; p.setAttribute('aria-hidden','true'); stage.append(p); panels.push(p); });
-  document.getElementById('hmeta').textContent=t(C.header); document.getElementById('fnote').textContent=t(C.fnote);
+  document.getElementById('hmeta').textContent=t(C.header); document.getElementById('fnote').textContent=t(C.fnote); applyRail();
   document.getElementById('lang-en').setAttribute('aria-pressed',String(lang==='en')); document.getElementById('lang-id').setAttribute('aria-pressed',String(lang==='id'));
   show(cur,true); }
 function show(i,force){ panels.forEach((p,j)=>{ if(j===i){ p.classList.add('active'); if(force||!p.dataset.built){ p.querySelectorAll('.lmap').forEach(m=>m._lmap&&m._lmap.remove()); p.innerHTML=''; try{ CH[i].render(p); }catch(err){ console.error(err); p.append(el('p','lbl',t({en:'This chapter could not be drawn: ',id:'Bab ini gagal digambar: '})+err.message)); } p.dataset.built='1'; p.style.gridTemplateRows=[...p.children].map(c=>c.classList.contains('body')?'minmax(min-content,1fr)':'auto').join(' '); }
@@ -1002,7 +1089,7 @@ function show(i,force){ panels.forEach((p,j)=>{ if(j===i){ p.classList.add('acti
   const id=CH[i].id; if(location.hash.slice(1)!==id){ try{ history.replaceState(null,'','#'+id);}catch(e){} } }
 function go(i){ cur=Math.max(0,Math.min(CH.length-1,i)); show(cur); }
 document.getElementById('prev').addEventListener('click',()=>go(cur-1)); document.getElementById('next').addEventListener('click',()=>go(cur+1));
-document.addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return; if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); go(cur+1);} if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1);} });
+document.addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return; if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){ e.preventDefault(); go(cur+1);} if(e.key==='ArrowLeft'||e.key==='PageUp'){ e.preventDefault(); go(cur-1);} if(e.key==='['){ railToggle.click(); } });
 function setLang(l){ lang=l; try{ localStorage.setItem('pr-lang',l);}catch(e){} panels.forEach(p=>delete p.dataset.built); build(); }
 document.getElementById('lang-en').addEventListener('click',()=>setLang('en')); document.getElementById('lang-id').addEventListener('click',()=>setLang('id'));
 window.addEventListener('hashchange',()=>{ const i=CH.findIndex(c=>c.id===location.hash.slice(1)); if(i>=0&&i!==cur) go(i); });

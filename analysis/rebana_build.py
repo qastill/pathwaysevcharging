@@ -471,6 +471,87 @@ D["skills"] = {
 T = D["totals"] = {"jabar_units": len(jabar), "reb_units": len(units), "reb_kw": sum(u["kw"] for u in units), "jabar_trx": dict(tj), "reb_trx": dict(tr),
                    "reb_sites": len(site), "reb_sites_nocoord": nosite, "home_jabar": home_all, "home_reb": sum(home.values()), "nat_units": nat_units}
 
+# ---------- 12. Pelanggan besar (TM) Rebana: Envisor CRM (OLAP Jabar, 3 bulan terakhir) ----------
+# Sumber: repo qastill/envisorcrm data.json ({meta, leads, hierarchy}); pelanggan TM yang kena denda kVArh.
+# Privasi: nama/ID/alamat pelanggan tidak pernah diekspor; titik hanya sebagai agregat kecamatan, heksagon H3 res 7,
+# dan gelembung ULP; sebar (scatter) tanpa identitas. Lokasi = koordinat gardu PLN yang namanya cocok dengan kode
+# gardu pelanggan (gardu milik pelanggan tidak ada di register, sehingga sebagian hanya terpetakan pada tingkat ULP).
+ENV_PATHS = [os.environ.get("ENVISOR_JSON", ""), "../qastill/envisorcrm/data.json", "../envisorcrm/data.json", "data/envisor_data.json"]
+env_path = next((p for p in ENV_PATHS if p and os.path.exists(p)), None)
+ULPKAB = {53311: "Kota Cirebon", 53331: "Kab. Cirebon", 53351: "Kab. Cirebon", 53321: "Kab. Kuningan", 53371: "Kab. Kuningan",
+          53401: "Kab. Indramayu", 53402: "Kab. Indramayu", 53403: "Kab. Indramayu", 53404: "Kab. Indramayu",
+          53411: "Kab. Subang", 53421: "Kab. Subang", 53425: "Kab. Subang", 53511: "Kab. Sumedang", 53517: "Kab. Sumedang",
+          53521: "Kab. Majalengka", 53527: "Kab. Majalengka"}
+if env_path is None:
+    old = json.load(open(OUT_JSON)) if os.path.exists(OUT_JSON) else {}
+    D["big"] = old.get("big"); print("envisor data.json tidak ditemukan; D['big'] dipertahankan dari build sebelumnya")
+else:
+    ENV = json.load(open(env_path)); leads = [l for l in ENV["leads"] if l.get("ulp_num") in ULPKAB]
+    def gname(s):
+        s = re.sub(r"^\d{5}\s*", "", str(s or "").upper()); return re.sub(r"^GD\s*", "", s).strip()
+    it = openpyxl.load_workbook("Gardu_Beban_Lokasi_JABAR.xlsx", read_only=True)["DATA_GARDU"].iter_rows(values_only=True); H = {h: i for i, h in enumerate(next(it))}
+    G = {}; GN = collections.defaultdict(list); ulppts = collections.defaultdict(list)
+    for r in it:
+        code = str(r[H["ULP_KODE"]] or "").strip()
+        if not code.isdigit() or int(code) not in ULPKAB: continue
+        la, lo = r[H["LATITUDE"]], r[H["LONGITUDE"]]
+        if r[H["STATUS_KOORDINAT"]] != "VALID" or not la or not lo: la, lo = r[H["LAT_SSOT"]], r[H["LONG_SSOT"]]
+        try: la, lo = float(la), float(lo)
+        except Exception: continue
+        if not (-7.3 < la < -5.9 and 107.3 < lo < 109): continue
+        n = str(r[H["NAMA_GARDU"]] or "").strip().upper()
+        G.setdefault((code, n), (lo, la)); GN[n].append((code, lo, la)); ulppts[int(code)].append((lo, la))
+    for l in leads:
+        n = gname(l.get("gardu")); code = str(l["ulp_num"]); l["_pt"] = None
+        if not n: continue
+        if (code, n) in G: l["_pt"] = G[(code, n)]
+        else:
+            c = [(cc, lo, la) for cc, lo, la in GN.get(n, []) if ULPKAB.get(int(cc)) == ULPKAB[l["ulp_num"]]]
+            if c: l["_pt"] = c[0][1:]
+    kecf = [f for f in json.load(open("data/jabar_kecamatan_spklu.geojson"))["features"] if f["properties"]["kab"] in ("Cirebon", "Kota Cirebon", "Indramayu", "Subang", "Majalengka", "Kuningan", "Sumedang")]
+    kpolys = [shape(f["geometry"]) for f in kecf]; ktree = STRtree(kpolys)
+    def kcode(lo, la):
+        p = Point(lo, la)
+        for i in ktree.query(p):
+            if kpolys[i].contains(p): return kecf[i]["properties"]["code"]
+    kwh = lambda l: fnum(l.get("kwh_avg")); REGS = [r["region"] for r in D["regions"]]
+    def agg():
+        return {"n": 0, "kwh": 0.0, "mva": 0.0, "denda": 0.0, "tagihan": 0.0, "kvar": 0.0, "invest": 0.0, "c3": 0, "geo": 0, "tarif": collections.Counter(), "kwh_t": collections.Counter()}
+    def add(a, l):
+        a["n"] += 1; a["kwh"] += kwh(l); a["mva"] += fnum(l["daya_va"]) / 1e6; a["denda"] += fnum(l["denda_avg"]); a["tagihan"] += fnum(l["tagihan"])
+        a["kvar"] += fnum(l["kvar_rec"]); a["invest"] += fnum(l["invest_est"]); a["c3"] += 1 if l.get("months") == 3 else 0; a["geo"] += 1 if l["_pt"] else 0
+        tg = l["tarif"] if l["tarif"] in ("I2", "I3", "B3") else "lain"; a["tarif"][tg] += 1; a["kwh_t"][tg] += kwh(l)
+    def out(a, **k):
+        return dict(n=a["n"], kwh=round(a["kwh"]), mva=round(a["mva"], 2), denda=round(a["denda"]), tagihan=round(a["tagihan"]), kvar=round(a["kvar"]), invest=round(a["invest"]),
+                    c3=a["c3"], geo=a["geo"], tarif=dict(a["tarif"]), kwh_t={k2: round(v) for k2, v in a["kwh_t"].items()}, **k)
+    tot = agg(); bk = collections.defaultdict(agg); bu = collections.defaultdict(agg); bc = collections.defaultdict(agg); bh = collections.defaultdict(agg); bt = collections.defaultdict(agg)
+    bands = [("≤200 kVA", 0, 200), ("200–500 kVA", 200, 500), ("0.5–1 MVA", 500, 1000), ("1–3 MVA", 1000, 3000), (">3 MVA", 3000, 1e9)]
+    bb = collections.defaultdict(agg); roi = collections.defaultdict(agg); pts = []
+    for l in leads:
+        add(tot, l); add(bk[ULPKAB[l["ulp_num"]]], l); add(bu[l["ulp_num"]], l); add(bt[l["tarif"]], l)
+        kva = fnum(l["daya_va"]) / 1000
+        add(bb[next(b for b, lo_, hi in bands if lo_ < kva <= hi or (lo_ == 0 and kva <= hi))], l)
+        rb = fnum(l["roi_bulan"]); add(roi["≤6" if rb <= 6 else "7–12" if rb <= 12 else "13–24" if rb <= 24 else ">24"], l)
+        if l["_pt"]:
+            kc = kcode(*l["_pt"])
+            if kc: add(bc[kc], l)
+            add(bh[h3.latlng_to_cell(l["_pt"][1], l["_pt"][0], 7)], l)
+        pts.append([round(kva), round(kwh(l)), round(fnum(l["jam_nyala"]), 1), l["tarif"], REGS.index(ULPKAB[l["ulp_num"]]) if ULPKAB[l["ulp_num"]] in REGS else -1, l.get("months") or 0])
+    mkeys = [k for k in ("denda_jan", "denda_feb", "denda_mar") if k in leads[0]]
+    ulpname = {l["ulp_num"]: l["ulp"] for l in leads}
+    def med(v): v = sorted(v); return v[len(v) // 2]
+    D["big"] = {"period": ENV["meta"].get("period_label"), "generated": ENV["meta"].get("generated"), "months": ENV["meta"].get("months_short"), "n_jabar": len(ENV["leads"]),
+                "tot": out(tot), "kab": [out(bk[r], region=r) for r in REGS if r in bk],
+                "ulp": [out(bu[c], code=c, name=ulpname[c], region=ULPKAB[c], lo=round(med([p[0] for p in ulppts[c]]), 4), la=round(med([p[1] for p in ulppts[c]]), 4)) for c in sorted(bu) if ulppts[c]],
+                "kec": {c: out(a) for c, a in bc.items()},
+                "hex": [{"b": [[round(lng, 4), round(lat, 4)] for lat, lng in h3.cell_to_boundary(c)], "n": a["n"], "kwh": round(a["kwh"]), "mva": round(a["mva"], 2), "denda": round(a["denda"])} for c, a in bh.items()],
+                "tarif": [out(bt[k], t=k) for k in sorted(bt, key=lambda k: -bt[k]["kwh"])],
+                "band": [out(bb[b], b=b) for b, _, _ in bands if b in bb], "roi": [out(roi[b], b=b) for b in ("≤6", "7–12", "13–24", ">24") if b in roi],
+                "denda_m": [round(sum(fnum(l.get(k)) for l in leads)) for k in mkeys], "pts": pts,
+                "top": [{"tarif": l["tarif"], "kva": round(fnum(l["daya_va"]) / 1000), "kwh": round(kwh(l)), "region": ULPKAB[l["ulp_num"]], "ulp": l["ulp"], "jam": round(fnum(l["jam_nyala"]))} for l in sorted(leads, key=lambda l: -kwh(l))[:8]],
+                "jam_med": round(med([fnum(l["jam_nyala"]) for l in leads]), 1), "source": ENV["meta"].get("source")}
+    print("big:", len(leads), "pelanggan TM Rebana;", tot["geo"], "terpetakan ke gardu;", len(bc), "kecamatan;", len(bh), "heksagon")
+
 json.dump(D, open(OUT_JSON, "w"), separators=(",", ":"), ensure_ascii=False)
 src = open(SRC, encoding="utf-8").read(); assert src.count("/*__DATA__*/") == 1
 open(DST, "w", encoding="utf-8").write(src.replace("/*__DATA__*/", json.dumps(D, separators=(",", ":"), ensure_ascii=False)))
