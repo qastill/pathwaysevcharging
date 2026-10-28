@@ -68,7 +68,7 @@ python3 analysis/inject_ladder1.py                                             #
 
 ## 🏭 Rebana — Powering Rebana explorer (tab di grup PhD Monash)
 
-Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 20 bab (navigasi rel kiri atau tombol ← →),
+Tab **🏭 Rebana** menyematkan `analysis/rebana_explorer.html`: satu halaman satu layar, 25 bab (navigasi rel kiri atau tombol ← →),
 sakelar bahasa EN/ID, animasi masuk per bab, dan sumber tiap angka saat kursor diarahkan. Dibuat untuk Workshop Powering Rebana ke-2
 (Hotel Santika Cirebon, 5–6 November 2026) atas permintaan Dr Alyas Widita. Isinya: 13 KPI (6 di Indramayu), investasi, gerbang
 logistik, pembangkit (bagian 1, sumber publik); program PhD Ariel Liebman RACE for 2030, aset data disertasi, pengalaman Indramayu
@@ -100,11 +100,22 @@ Empat paket kerja yang sudah berjalan sebagai model interaktif (bagian 4, mengga
 - **Model tenaga kerja kelistrikan (Keterampilan WP1·WP2·WP4·WP5)**: 40,6 lapangan kerja/ha (rasio rebana.id, = 1,78 juta pada
   43.913 ha) menjadi kebutuhan teknisi per tahun, kohor, dan jangkauan 30 km simpul pelatihan atas kecamatan KPI.
 
+Bagian **Ekosistem EV & ekuitas** (lima bab, `analysis/rebana_build.py` bagian 11):
+- **Ekosistem EV, pabrik sampai colokan**: rantai BYD Subang → Patimban → pemilik (register charger rumah dan master pelanggan
+  KBLBB, hitungan saja) → SPKLU → pemakaian → ruang GI; porsi Rebana dari Jawa Barat per mata rantai; energi SPKLU nasional 29 bulan; merek EV.
+- **Cara SPKLU dipakai**: sesi harian Maret 2026 (puncak Lebaran ~5× hari biasa, porsi rest area), tangga daya terpasang vs mengalir,
+  tag utilisasi, konektor, harga efektif per kWh, kelayakan bisnis charger (slider), model P2P naskah 3.
+- **Siapa yang terlayani (ekuitas)**: waktu tempuh r5r dari 1.981 desa Rebana (`ttm/ttm.json`): porsi ≤10/15/30 menit vs Jawa Barat,
+  tangga layanan tiga anak tangga (E2SFCA), kuintil kepadatan desa, peta kecamatan porsi ≤15 menit.
+- **Kesetaraan vs ekuitas per kabupaten**: kurva Lorenz charger per desa (Gini), indeks konsentrasi terhadap kepadatan dan pengeluaran,
+  sebaran waktu tempuh per kabupaten.
+- **Beban EV vs ruang jaringan**: skenario armada 2030 (bawaan 68.000 mobil = porsi penduduk dari target nasional 2 juta) vs ruang GI per kabupaten.
+
 Privasi: gardu distribusi hanya keluar sebagai agregat per kecamatan dan per heksagon (≥3 gardu), tanpa nama/kode/koordinat
-gardu; charger rumah hanya sebagai hitungan per kecamatan.
+gardu; charger rumah dan pelanggan KBLBB hanya sebagai hitungan.
 
 ```bash
-pip install openpyxl shapely h3 pvlib pandas
+pip install openpyxl shapely h3 pvlib pandas xlrd
 python3 analysis/rebana_build.py     # data mentah -> analysis/rebana_data.json -> analysis/rebana_explorer.html (dari *_src.html)
 python3 analysis/inject_rebana.py    # pasang/perbarui tab 🏭 Rebana (idempoten)
 ```
