@@ -152,6 +152,8 @@ platform visualisasi data bersama. ur-scape belum punya versi web, jadi repo ini
 - **Paket QGIS** `urscape/west-java-layers-qgis.zip` — 23 lapisan yang sama sebagai GeoTIFF (EPSG:4326, nodata −9999, metadata di tag) + GeoJSON
   titik SPKLU (nasional Jun 2026, PLN Jabar Mar 2026). Tarik `.tif` ke QGIS; bisa diekspor ulang ke ur-scape lewat plugin resmi
   *ur-scapeDataImporter* (resolusi C, location West Java) bila ingin jalur QGIS.
+- **Laporan insight** `analysis/rebana_insights.html` — bacaan naratif kawasan Rebana (pengisian EV, akses & keadilan, kesiapan GI/gardu, prioritas
+  lokasi, implikasi tiga tema workshop, metode & batasan); semua angka dari `rebana_data.json` + `ttm/ttm.json`.
 - **Halaman web** `analysis/urscape_explorer.html` (`#rebana` = langsung zoom Rebana) — lapisan yang sama dirender di browser (Leaflet +
   CARTO, warna ramp mengikuti tema), nilai sel saat kursor diarahkan, legenda + sitasi, tombol unduh paket. Payload
   `analysis/urscape_layers.json` (~350 KB: nilai asli float32 + kuantisasi 8-bit, zlib). Basemap Esri gray/OSM/imagery tanpa API key
