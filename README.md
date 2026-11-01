@@ -140,11 +140,13 @@ python3 analysis/inject_rebana.py    # pasang/perbarui tab 🏭 Rebana (idempote
 Workshop Powering Rebana ke-1 menyepakati [ur-scape](https://ur-scape.com) (FCL/ETH Zürich, aplikasi desktop Unity, MIT) sebagai
 platform visualisasi data bersama. ur-scape belum punya versi web, jadi repo ini memasok dua hal dari data yang sama:
 
-- **Paket ur-scape** `urscape/ur-scape-west-java.zip` — 23 lapisan grid 0,5′ (~0,9 km) site "West Java":
+- **Paket ur-scape** `urscape/ur-scape-west-java.zip` — 28 lapisan grid 0,5′ (~0,9 km) site "West Java":
   grup *EV Charging* (SPKLU Charge.IN Jun 2026, energi/sesi/utilisasi PLN Jabar Mar 2026, waktu tempuh ke charger terdekat,
   charger ≤10/≤30 menit, kelas akses, E2SFCA kW/RT, tangga layanan — semuanya dari `ttm/ttm.json`), *Society and Economy*
   (penduduk Kontur; 190 kecamatan Rebana: IPM, kemiskinan, pengeluaran, jarak GI/charger, headroom GI dari `analysis/rebana_data.json`),
-  *Power Grid* (GI, beban puncak GI, pembangkit, transmisi 70/150/500 kV dari `data/grid-id/data_jamali.js`).
+  *Power Grid* (GI, beban puncak GI, pembangkit, transmisi 70/150/500 kV dari `data/grid-id/data_jamali.js`), *Insights* (Charger Siting Priority 0–100 =
+  0,5·kebutuhan [waktu tempuh & jarak ke charger] + 0,25·permintaan [log penduduk] + 0,25·kesiapan jaringan [headroom GI]; Population Beyond 30 min = access gap;
+  Coverage Model Picks; Rebana KPI Kecamatan; Transformer Overload Share Indramayu).
   Pasang ke ur-scape siapa pun: `python3 install.py <folder Data ur-scape>` (idempoten; menyalin `Sites/West Java/` dan menambah
   grup ke `layers.csv` + `citations.csv`). Format gridnya persis keluaran plugin QGIS *ur-scapeDataImporter*, jadi **tidak perlu QGIS**.
 - **Paket QGIS** `urscape/west-java-layers-qgis.zip` — 23 lapisan yang sama sebagai GeoTIFF (EPSG:4326, nodata −9999, metadata di tag) + GeoJSON

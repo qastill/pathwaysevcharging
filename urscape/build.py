@@ -152,6 +152,41 @@ for f in J["transmission"]["features"]:
             if c: v[c[1], c[0]] = max(v[c[1], c[0]], cat); m[c[1], c[0]] = True
 add("Transmission Lines", "Power Grid", (255, 230, 150), cit, v, m, categories=["70 kV", "150 kV", "500 kV"])
 
+# ---------------- 5. Insights (lapisan turunan yang menjawab pertanyaan) ----------------
+print("insights")
+G = "Insights"
+nz = lambda x: (x - x.min()) / (x.max() - x.min() + 1e-9)
+# 5a. Prioritas penempatan charger per kecamatan Rebana: kebutuhan (waktu tempuh & jarak ke charger) x permintaan (penduduk)
+#     x kesiapan jaringan (headroom GI). 0-100, makin tinggi makin layak dibangun duluan.
+rk["need"] = (nz(rk["t_mean"]) + nz(rk["d_spklu"])) / 2
+rk["prio"] = (100 * (0.5 * rk["need"] + 0.25 * nz(np.log(rk["pop"])) + 0.25 * nz(rk["gi_head"]))).round(1)
+rk["kpi_cls"] = np.where(rk["priority"], 2, np.where(rk["kpi"], 1, np.nan))
+hp = cells_of_polygons(rk, ["prio", "kpi_cls"])
+add("Charger Siting Priority", G, (255, 80, 40),
+    "Siting priority 0-100 per Rebana kecamatan = 0.5 x need (mean of normalised population-weighted travel time to nearest charger and distance to charger) "
+    "+ 0.25 x demand (normalised log population) + 0.25 x grid readiness (normalised substation headroom). Inputs: analysis/rebana_data.json (rk)",
+    *to_grid(hp, "prio"), units="score 0-100")
+add("Rebana KPI Kecamatan", G, (255, 210, 60), "Kecamatan hosting designated Rebana industrial zones (KPI) and the four priority zones; analysis/rebana_data.json (rk.kpi, rk.priority)",
+    *to_grid(hp, "kpi_cls"), categories=["Hosts a KPI zone", "Priority KPI zone"])
+# 5b. Access gap: penduduk desa yang charger terdekatnya > 30 menit (DV riset: kebutuhan yang belum terlayani)
+geo["gap"] = np.where(geo["access"].fillna(999) > 30, geo["pop"], np.nan)
+hg = cells_of_polygons(geo, ["gap"])
+add("Population Beyond 30 min", G, (255, 60, 120),
+    f"Access gap: residents (Kontur 2023) of villages whose nearest public charger is more than 30 min by car or unreachable within {S['cut']} min; NoData = village within 30 min. ttm/ttm.json",
+    *to_grid(hg, "gap"), units="people")
+# 5c. Usulan lokasi model cakupan 10 km (greedy, rebana_data cover.picks): tiap titik = tambahan penduduk yang masuk radius 10 km
+cp = pd.DataFrame(D["cover"]["picks"])
+add("Coverage Model Picks", G, (120, 255, 120),
+    f"Greedy 10-km coverage model: the next kecamatan centroids that add the most Rebana residents within {D['cover']['radius_km']:.0f} km of a charger "
+    f"(baseline share {D['cover']['base_share']:.0%}); value = residents newly covered. analysis/rebana_build.py", *point_grid(cp, "lo", "la", "gain"), units="residents newly covered")
+# 5d. Trafo distribusi overload (Indramayu, H3 res 7): persen trafo >100% beban
+from shapely.geometry import Polygon
+hx = gpd.GeoDataFrame([{"ol_pct": 100.0 * h["ol"] / max(h["n"], 1), "load": h["load"], "geometry": Polygon(h["b"])} for h in D["idm_hex"]], crs="EPSG:4326")
+hh = cells_of_polygons(hx, ["ol_pct", "load"])
+add("Transformer Overload Share", G, (255, 140, 0),
+    f"Share of measured distribution transformers loaded above 100% per H3 res-7 hexagon (~5 km2), PLN UP3 Indramayu register ({D['idm_meta']['gardu_valid']} transformers); aggregated, no transformer identities",
+    *to_grid(hh, "ol_pct"), units="% of transformers")
+
 # ---------------- tulis paket ur-scape ----------------
 print("writing ur-scape package")
 for L in LAYERS: write_grid(L)
