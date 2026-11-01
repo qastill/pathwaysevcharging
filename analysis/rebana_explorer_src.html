@@ -918,8 +918,8 @@ function wpSitingScores(W){ const cl=v=>Math.max(0,Math.min(1,v)); const L0=Math
 /* ---------- real basemaps (Leaflet + CARTO / OSM / Esri) ---------- */
 const OSMA='© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
 const BASE={
- carto:{n:'CARTO',u:()=>isDark()?'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png':'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',a:OSMA+' © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',sd:'abcd'},
- voyager:{n:'CARTO Voyager',u:()=>'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',a:OSMA+' © <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',sd:'abcd'},
+ carto:{n:'Esri gray',u:()=>isDark()?'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}':'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors',sd:'abc',mz:16},
+ voyager:{n:'Esri streets',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors',sd:'abc'},
  osm:{n:'OpenStreetMap',u:()=>'https://tile.openstreetmap.org/{z}/{x}/{y}.png',a:OSMA,sd:'abc'},
  esri:{n:'Esri imagery',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',sd:'abc'},
  topo:{n:'Esri topo',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Esri, HERE, Garmin, FAO, NOAA, USGS, © OpenStreetMap contributors',sd:'abc'}
@@ -931,7 +931,7 @@ function newMap(box){
   if(!window.L){ box.innerHTML=`<p class="lbl" style="padding:14px">${t({en:'The map library did not load. Check the connection and reload.',id:'Pustaka peta gagal dimuat. Periksa koneksi lalu muat ulang.'})}</p>`; return null; }
   const m=L.map(box,{zoomControl:true,scrollWheelZoom:false,zoomSnap:0.25,attributionControl:true});
   m.attributionControl.setPrefix(false);
-  m._base=null; m.setBase=(k)=>{ if(!BASE[k]) k='carto'; if(m._base) m.removeLayer(m._base); const b=BASE[k]; m._base=L.tileLayer(b.u(),{attribution:b.a,maxZoom:19,subdomains:b.sd,detectRetina:true}).addTo(m); m._base.bringToBack(); baseChoice=k; try{ localStorage.setItem('pr-base',k);}catch(e){} };
+  m._base=null; m.setBase=(k)=>{ if(!BASE[k]) k='carto'; if(m._base) m.removeLayer(m._base); const b=BASE[k]; m._base=L.tileLayer(b.u(),{attribution:b.a,maxZoom:19,maxNativeZoom:b.mz||19,subdomains:b.sd,detectRetina:!b.mz}).addTo(m); m._base.bringToBack(); baseChoice=k; try{ localStorage.setItem('pr-base',k);}catch(e){} };
   m.setBase(baseChoice); box._lmap=m; return m;
 }
 function mapChips(m,overlays,extra){

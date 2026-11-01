@@ -40,7 +40,7 @@ window.buildKdDyn=function(Y,K){
   if(typeof L!=='undefined'&&$('kdLisaMap')){
    if(lisaMap){lisaMap.remove();lisaMap=null;}
    lisaMap=L.map('kdLisaMap',{preferCanvas:true,scrollWheelZoom:false}).setView([-2.5,118],4);
-   L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO · geoBoundaries · Kontur · PLN',maxZoom:19}).addTo(lisaMap);
+   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri © OSM · geoBoundaries · Kontur · PLN',maxZoom:19,maxNativeZoom:16}).addTo(lisaMap);
    const order={ns:0,LH:1,HL:2,LL:3,HH:4};
    S.kab.slice().sort((a,b)=>order[a.cls]-order[b.cls]).forEach(k=>{
     const r=Math.max(3,Math.min(22,Math.sqrt(k.pop/6e4)));

@@ -88,7 +88,7 @@
   gxMapInit=true;
   const map=L.map('gxMap',{scrollWheelZoom:false}).setView([-6.75,107.4],9);
   window.gxMap=map;
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',maxZoom:18}).addTo(map);
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri, © OpenStreetMap',maxZoom:18,maxNativeZoom:16}).addTo(map);
   const lHot=L.layerGroup(), lEV=L.layerGroup(), lSP=L.layerGroup();
   X.mapHot.forEach(h=>L.circleMarker([h[0],h[1]],{radius:h[2]>=100?3.4:2.4,color:h[2]>=100?'#8a1f1a':'#d6443c',
     weight:0,fillOpacity:h[2]>=100?.75:.5}).bindPopup(`<b>Gardu ${h[3]} kVA</b><br>Beban puncak: <b>${h[2]}%</b><br>${h[2]>=100?'⛔ Overload':'⚠️ Waspada'}`).addTo(lHot));

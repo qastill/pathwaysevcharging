@@ -118,8 +118,8 @@
   if(inited){ map.invalidateSize(); return; }
   inited=true;
   map=L2.map('capMap',{scrollWheelZoom:false}).setView([-6.75,107.4],8);
-  L2.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-   {attribution:'© OpenStreetMap © CARTO',maxZoom:16}).addTo(map);
+  L2.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+   {attribution:'© Esri © OpenStreetMap',maxZoom:16}).addTo(map);
   cellLyr=L2.layerGroup().addTo(map);
   gapLyr=L2.layerGroup(); spkluLyr=L2.layerGroup(); evLyr=L2.layerGroup();
 
@@ -200,8 +200,8 @@
  function initRuleMap(){
   if(rinit){rmap.invalidateSize();return;} rinit=true;
   rmap=L2.map('capRuleMap',{scrollWheelZoom:false}).setView([-6.75,107.4],8);
-  L2.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-   {attribution:'© OpenStreetMap © CARTO',maxZoom:16}).addTo(rmap);
+  L2.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+   {attribution:'© Esri © OpenStreetMap',maxZoom:16}).addTo(rmap);
   rbase=L2.layerGroup().addTo(rmap); rlayer=L2.layerGroup().addTo(rmap);
   rspklu=L2.layerGroup().addTo(rmap);
   CL.filter(c=>c.ev>0&&c.chg===0).forEach(c=>
