@@ -5,7 +5,7 @@ Data/Sites/<site>/ dan mengonversinya sendiri ke .bin saat pertama dibuka. Skrip
 langsung dari: master SPKLU nasional, transaksi PLN Jabar Mar 2026, ttm/ttm.json (akses desa), analysis/rebana_data.json
 (kecamatan Rebana + GI), data/grid-id/data_jamali.js (GI, pembangkit, transmisi).
 
-    pip install numpy pandas openpyxl geopandas pyogrio shapely
+    pip install numpy pandas openpyxl geopandas pyogrio shapely rasterio
     python3 urscape/build.py            # -> urscape/out/Sites/West Java/*.csv, layers_add.csv, citations_add.csv,
                                         #    urscape/ur-scape-west-java.zip, analysis/urscape_layers.json (payload web)
 """
@@ -168,6 +168,33 @@ with zipfile.ZipFile("urscape/ur-scape-west-java.zip", "w", zipfile.ZIP_DEFLATED
     for dp, _, fs in os.walk(OUT):
         for fn in fs: z.write(os.path.join(dp, fn), os.path.relpath(os.path.join(dp, fn), OUT))
 print("zip:", os.path.getsize("urscape/ur-scape-west-java.zip") // 1024, "KB")
+
+# ---------------- paket QGIS: GeoTIFF per lapisan + titik SPKLU (urscape/west-java-layers-qgis.zip) ----------------
+print("writing QGIS package (GeoTIFF)")
+import rasterio
+from rasterio.transform import from_origin
+QDIR = f"{OUT}/qgis"; os.makedirs(QDIR, exist_ok=True)
+tr = from_origin(WEST, NORTH, RES, RES)
+for L in LAYERS:
+    arr = np.where(L["mask"], L["values"], -9999).astype("float32")
+    tags = dict(layer=L["name"], group=L["group"], units=L.get("units") or "", citation=L["citation"], source=SRC,
+                categories="; ".join(f"{i+1}={c}" for i, c in enumerate(L["categories"])) if L.get("categories") else "")
+    fn = f"{QDIR}/{re.sub(r'[^A-Za-z0-9]+', '_', L['name']).strip('_')}.tif"
+    with rasterio.open(fn, "w", driver="GTiff", height=CY, width=CX, count=1, dtype="float32", crs="EPSG:4326", transform=tr,
+                       nodata=-9999, compress="deflate") as dst:
+        dst.write(arr, 1); dst.update_tags(**tags); dst.set_band_description(1, L["name"])
+pts = gpd.GeoDataFrame(d[["ID SPKLU", "Nama SPKLU", "Alamat", "Kapasitas (kW)", "Status", "Jumlah Charger", "Jumlah Connector", "Kategori", "Latitude", "Longitude"]],
+                       geometry=gpd.points_from_xy(d.Longitude, d.Latitude), crs="EPSG:4326")
+pts = pts.cx[WEST:EAST, SOUTH:NORTH]; pts.to_file(f"{QDIR}/spklu_stations_jun2026.geojson", driver="GeoJSON")
+rj = gpd.GeoDataFrame(r, geometry=gpd.points_from_xy(r.Longitude, r.Latitude), crs="EPSG:4326"); rj.to_file(f"{QDIR}/spklu_pln_jabar_mar2026.geojson", driver="GeoJSON")
+open(f"{QDIR}/README.md", "w").write("# West Java layers for QGIS\n\nGeoTIFF (EPSG:4326, 0.5 arc-minute cells, nodata -9999) of the 23 ur-scape layers + SPKLU points.\n"
+    "Drag the .tif files into QGIS; layer name, units, citation and category codes are in the file tags (Layer Properties > Metadata). "
+    "To push any of them into ur-scape through its official QGIS plugin, use GIS/Plugins/ur-scapeDataImporter from the ur-scape download "
+    "(resolution 'C', location 'West Java'); the ur-scape package in this repo already contains the same grids.\n\n"
+    f"Source: {SRC}\n{REPO_URL}\n")
+with zipfile.ZipFile("urscape/west-java-layers-qgis.zip", "w", zipfile.ZIP_DEFLATED) as z:
+    for fn in sorted(os.listdir(QDIR)): z.write(os.path.join(QDIR, fn), fn)
+print("qgis zip:", os.path.getsize("urscape/west-java-layers-qgis.zip") // 1024, "KB")
 
 # ---------------- payload web (analysis/urscape_layers.json) ----------------
 # tiap layer: nilai dikuantisasi 8-bit (1..255, 0 = NoData) antara lo..hi (persentil 2-98 utk numerik), zlib+base64

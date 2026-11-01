@@ -61,8 +61,8 @@ function legend(){
 function buildMap(){
  if(map)return;
  map=L.map('ttMap',{preferCanvas:true}).setView([-6.6,107.3],8);
- L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap, © CARTO',maxZoom:18}).addTo(map);
- L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',{pane:'overlayPane',maxZoom:18}).addTo(map);
+ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri, © OpenStreetMap',maxZoom:18,maxNativeZoom:16}).addTo(map);
+ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}',{pane:'overlayPane',maxZoom:18,maxNativeZoom:16}).addTo(map);
  layer=L.geoJSON(GJ,{style:styleOf,onEachFeature:(f,ly)=>{ly.on('click',()=>{const r=VI.get(f.properties.id);if(!r)return;const nm=D.names[r.id]||['','',''];
   ly.bindPopup(`<b>${esc(nm[0])}</b><br>Kec. ${esc(nm[1])}, ${esc(nm[2])}<br><span style="color:${MUT}">kode ${r.id}</span><hr style="margin:5px 0;border:none;border-top:1px solid #eee">
    ${isTTM()?'Waktu ke desa ber-SPKLU terdekat':'Jarak ke SPKLU terdekat'}: <b>${r.access==null?(isTTM()?'> 60 mnt':'—'):f1(r.access)+' '+unit()}</b><br>

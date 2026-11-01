@@ -17,7 +17,7 @@ body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--fs)}
 header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
 header .brand{font:700 18px var(--fd)}header .brand span{color:var(--accent)}
 header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:200px}
-header a.btn{border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--fg);text-decoration:none;font-weight:600;font-size:12.5px;background:var(--panel)}
+header a.btn,header select.btn{border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--fg);text-decoration:none;font-weight:600;font-size:12.5px;background:var(--panel)}
 header a.btn.primary{background:var(--accent);color:#fff;border-color:transparent}
 main{display:grid;grid-template-columns:300px 1fr;min-height:0}
 aside{border-right:1px solid var(--line);overflow:auto;padding:10px 12px;background:var(--panel)}
@@ -47,8 +47,10 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
 <header>
   <div class="brand">ur-scape · <span>West Java</span> layers</div>
   <div class="meta" id="meta">Loading layers…</div>
+  <select id="basesel" class="btn" aria-label="Basemap"></select>
   <a class="btn" href="rebana_explorer.html">Rebana explorer</a>
   <a class="btn" href="https://ur-scape.com" target="_blank" rel="noopener">ur-scape.com</a>
+  <a class="btn" href="../urscape/west-java-layers-qgis.zip" download>QGIS GeoTIFF (zip)</a>
   <a class="btn primary" href="../urscape/ur-scape-west-java.zip" download>Download ur-scape package (zip)</a>
 </header>
 <main>
@@ -65,9 +67,17 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
 (async function(){
   const P = await (await fetch('urscape_layers.json')).json();
   const dark = () => document.documentElement.dataset.theme==='dark' || (document.documentElement.dataset.theme!=='light' && matchMedia('(prefers-color-scheme: dark)').matches);
-  const map = L.map('mapdiv',{zoomControl:true,attributionControl:true}).fitBounds([[P.south,P.west],[P.north,P.east]]);
-  const base = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark()?'dark_all':'light_all'}/{z}/{x}/{y}{r}.png`,{maxZoom:18,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>base.setUrl(`https://{s}.basemaps.cartocdn.com/${dark()?'dark_all':'light_all'}/{z}/{x}/{y}{r}.png`));
+  const map = L.map('mapdiv',{zoomControl:true,attributionControl:true}).fitBounds(location.hash==='#rebana'?[[-7.15,107.45],[-6.05,108.85]]:[[P.south,P.west],[P.north,P.east]]);
+  const BASE={
+    gray:{n:'Esri gray',u:()=>`https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${dark()?'Dark':'Light'}_Gray_Base/MapServer/tile/{z}/{y}/{x}`,a:'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors',mz:16},
+    osm:{n:'OpenStreetMap',u:()=>'https://tile.openstreetmap.org/{z}/{x}/{y}.png',a:'© OpenStreetMap contributors',mz:19},
+    streets:{n:'Esri streets',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Esri, HERE, Garmin, © OpenStreetMap contributors',mz:19},
+    imagery:{n:'Esri imagery',u:()=>'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',a:'Tiles © Esri — Source: Esri, Maxar, Earthstar Geographics',mz:19}};
+  let base=null, baseKey='gray'; try{ baseKey=localStorage.getItem('urs-base')||'gray'; }catch(e){}
+  const setBase=k=>{ if(!BASE[k]) k='gray'; if(base) map.removeLayer(base); const b=BASE[k]; base=L.tileLayer(b.u(),{attribution:b.a,maxZoom:18,maxNativeZoom:b.mz}).addTo(map); base.bringToBack(); baseKey=k; try{localStorage.setItem('urs-base',k);}catch(e){} };
+  setBase(baseKey);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setBase(baseKey));
+  const sel=document.getElementById('basesel'); for(const k in BASE){ const o=document.createElement('option'); o.value=k; o.textContent=BASE[k].n; sel.appendChild(o);} sel.value=baseKey; sel.onchange=e=>setBase(e.target.value);
   document.getElementById('meta').textContent = `${P.layers.length} layers · ${P.cx}×${P.cy} cells of 0.5′ (~0.9 km) · same grids as the ur-scape site "West Java" · generated ${P.generated.slice(0,4)}-${P.generated.slice(4)}`;
 
   const b64 = s => { const bin=atob(s); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i); return u; };
@@ -113,8 +123,6 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
     read.innerHTML=`<div style="color:var(--muted)">${cur.name}</div><b>${cur.categories?cur.categories[Math.round(v)-1]:fmt(v)+' '+(cur.units||'')}</b><div style="color:var(--muted);font-size:11px">${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}</div>`; });
   map.on('mouseout',()=>read.hidden=true);
   const first=P.layers.find(l=>l.name==='Travel Time to Nearest Charger')||P.layers[0]; show(first,first.btn);
-  // Rebana view shortcut via #rebana
-  if(location.hash==='#rebana') map.fitBounds([[-7.15,107.45],[-6.05,108.85]]);
 })();
 </script>
 </body>

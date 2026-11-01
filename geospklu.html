@@ -1210,17 +1210,15 @@ function nameOf(lon, lat) {
 var map = null, mapReady = false;
 
 function styleFor(theme) {
-  var base = theme === 'dark' ? 'dark_all' : 'light_all';
+  var base = theme === 'dark' ? 'World_Dark_Gray_Base' : 'World_Light_Gray_Base';
   return {
     version: 8,
     glyphs: 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf',
     sources: {
       bm: {
-        type: 'raster', tileSize: 256, maxzoom: 19,
-        tiles: ['https://a.basemaps.cartocdn.com/' + base + '/{z}/{x}/{y}.png',
-                'https://b.basemaps.cartocdn.com/' + base + '/{z}/{x}/{y}.png',
-                'https://c.basemaps.cartocdn.com/' + base + '/{z}/{x}/{y}.png'],
-        attribution: '© OpenStreetMap · © CARTO · analisis ArcGIS Pro'
+        type: 'raster', tileSize: 256, maxzoom: 16,
+        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/' + base + '/MapServer/tile/{z}/{y}/{x}'],
+        attribution: '© Esri · © OpenStreetMap · analisis ArcGIS Pro'
       }
     },
     layers: [{ id: 'bm', type: 'raster', source: 'bm' }]

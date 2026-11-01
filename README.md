@@ -147,9 +147,13 @@ platform visualisasi data bersama. ur-scape belum punya versi web, jadi repo ini
   *Power Grid* (GI, beban puncak GI, pembangkit, transmisi 70/150/500 kV dari `data/grid-id/data_jamali.js`).
   Pasang ke ur-scape siapa pun: `python3 install.py <folder Data ur-scape>` (idempoten; menyalin `Sites/West Java/` dan menambah
   grup ke `layers.csv` + `citations.csv`). Format gridnya persis keluaran plugin QGIS *ur-scapeDataImporter*, jadi **tidak perlu QGIS**.
+- **Paket QGIS** `urscape/west-java-layers-qgis.zip` — 23 lapisan yang sama sebagai GeoTIFF (EPSG:4326, nodata −9999, metadata di tag) + GeoJSON
+  titik SPKLU (nasional Jun 2026, PLN Jabar Mar 2026). Tarik `.tif` ke QGIS; bisa diekspor ulang ke ur-scape lewat plugin resmi
+  *ur-scapeDataImporter* (resolusi C, location West Java) bila ingin jalur QGIS.
 - **Halaman web** `analysis/urscape_explorer.html` (`#rebana` = langsung zoom Rebana) — lapisan yang sama dirender di browser (Leaflet +
   CARTO, warna ramp mengikuti tema), nilai sel saat kursor diarahkan, legenda + sitasi, tombol unduh paket. Payload
-  `analysis/urscape_layers.json` (~350 KB: nilai asli float32 + kuantisasi 8-bit, zlib).
+  `analysis/urscape_layers.json` (~350 KB: nilai asli float32 + kuantisasi 8-bit, zlib). Basemap Esri gray/OSM/imagery tanpa API key
+  (tile gratis CARTO sudah dimatikan — semua peta di repo ini dipindah ke Esri Light Gray pada PR yang sama).
 
 ```bash
 pip install numpy pandas openpyxl geopandas pyogrio shapely

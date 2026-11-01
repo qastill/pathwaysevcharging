@@ -91,7 +91,7 @@ function legendHtml(){
 /* ---------- peta ---------- */
 function initMap(){
  map=L.map('emMap',{preferCanvas:true}).setView([-2.3,118],5);
- L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'© OSM © CARTO · Kontur Population · geoBoundaries · PLN',maxZoom:19}).addTo(map);
+ L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',{attribution:'© Esri © OSM · Kontur Population · geoBoundaries · PLN',maxZoom:19,maxNativeZoom:16}).addTo(map);
  canvas=L.canvas({padding:.4});
  // popup lewat pencarian sel H3 di titik klik — tidak bergantung pada hit-test kanvas per poligon
  map.on('click',e=>{const c=cellIndex.get(h3.latLngToCell(e.latlng.lat,e.latlng.lng,cellRes));
