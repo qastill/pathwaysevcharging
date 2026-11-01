@@ -135,6 +135,31 @@ python3 analysis/rebana_build.py     # data mentah -> analysis/rebana_data.json 
 python3 analysis/inject_rebana.py    # pasang/perbarui tab 🏭 Rebana (idempoten)
 ```
 
+## 🧊 ur-scape — site "West Java" untuk platform bersama workshop Rebana
+
+Workshop Powering Rebana ke-1 menyepakati [ur-scape](https://ur-scape.com) (FCL/ETH Zürich, aplikasi desktop Unity, MIT) sebagai
+platform visualisasi data bersama. ur-scape belum punya versi web, jadi repo ini memasok dua hal dari data yang sama:
+
+- **Paket ur-scape** `urscape/ur-scape-west-java.zip` — 23 lapisan grid 0,5′ (~0,9 km) site "West Java":
+  grup *EV Charging* (SPKLU Charge.IN Jun 2026, energi/sesi/utilisasi PLN Jabar Mar 2026, waktu tempuh ke charger terdekat,
+  charger ≤10/≤30 menit, kelas akses, E2SFCA kW/RT, tangga layanan — semuanya dari `ttm/ttm.json`), *Society and Economy*
+  (penduduk Kontur; 190 kecamatan Rebana: IPM, kemiskinan, pengeluaran, jarak GI/charger, headroom GI dari `analysis/rebana_data.json`),
+  *Power Grid* (GI, beban puncak GI, pembangkit, transmisi 70/150/500 kV dari `data/grid-id/data_jamali.js`).
+  Pasang ke ur-scape siapa pun: `python3 install.py <folder Data ur-scape>` (idempoten; menyalin `Sites/West Java/` dan menambah
+  grup ke `layers.csv` + `citations.csv`). Format gridnya persis keluaran plugin QGIS *ur-scapeDataImporter*, jadi **tidak perlu QGIS**.
+- **Halaman web** `analysis/urscape_explorer.html` (`#rebana` = langsung zoom Rebana) — lapisan yang sama dirender di browser (Leaflet +
+  CARTO, warna ramp mengikuti tema), nilai sel saat kursor diarahkan, legenda + sitasi, tombol unduh paket. Payload
+  `analysis/urscape_layers.json` (~350 KB: nilai asli float32 + kuantisasi 8-bit, zlib).
+
+```bash
+pip install numpy pandas openpyxl geopandas pyogrio shapely
+python3 urscape/build.py     # -> urscape/out/ (grid CSV UTF-16), urscape/ur-scape-west-java.zip, analysis/urscape_layers.json
+```
+
+Rasterisasi memakai titik tengah sel (poligon desa/kecamatan) atau penjumlahan per sel (titik), sehingga desa kecil di kota bisa
+tertutup tetangganya — sifat grid ur-scape, bukan kesalahan data. Resolusi lebih halus (level "D" 300 m) tinggal mengubah `RES` di
+`urscape/build.py` (berkas ±10× lebih besar).
+
 ## 🗺️ Peta Ekuitas — padanan EV Equity Roadmap (UC Berkeley) untuk Indonesia
 
 [EV Equity Roadmap](https://evmap.climateplans.org/) mewarnai piksel 100 m di California dengan dua lapisan

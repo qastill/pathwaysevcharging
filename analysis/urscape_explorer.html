@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="The ur-scape 'West Java' site layers (EV charging, village travel-time access, Rebana kecamatan, Jamali power grid) rendered in the browser, with the ur-scape package to download.">
+<title>West Java Layers</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#F6F4EE;--panel:#FFFFFF;--fg:#13263A;--muted:#55606E;--line:#DAD6CB;--soft:#ECE8DD;--accent:#C97D0E;--fd:'Domine',Georgia,serif;--fs:'IBM Plex Sans',Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--fs)}
+#app{height:100%;display:grid;grid-template-rows:auto 1fr}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header .brand{font:700 18px var(--fd)}header .brand span{color:var(--accent)}
+header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:200px}
+header a.btn{border:1px solid var(--line);border-radius:999px;padding:6px 12px;color:var(--fg);text-decoration:none;font-weight:600;font-size:12.5px;background:var(--panel)}
+header a.btn.primary{background:var(--accent);color:#fff;border-color:transparent}
+main{display:grid;grid-template-columns:300px 1fr;min-height:0}
+aside{border-right:1px solid var(--line);overflow:auto;padding:10px 12px;background:var(--panel)}
+aside h3{font:600 10.5px var(--fs);letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);margin:14px 0 4px}
+aside h3:first-child{margin-top:4px}
+.layer{display:flex;width:100%;align-items:center;gap:8px;padding:5px 6px;border:0;background:transparent;border-radius:8px;cursor:pointer;color:var(--muted);font:400 13px var(--fs);text-align:left}
+.layer:hover{background:var(--soft);color:var(--fg)}
+.layer[aria-pressed="true"]{background:var(--soft);color:var(--fg);font-weight:600}
+.layer i{width:9px;height:9px;border-radius:50%;flex:none;background:var(--c)}
+.layer small{margin-left:auto;color:var(--muted);font-weight:400}
+#map{min-height:0;position:relative}
+#mapdiv{position:absolute;inset:0;background:var(--bg)}
+.panel{position:absolute;z-index:500;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12.5px;box-shadow:0 2px 10px rgba(0,0,0,.12);max-width:340px}
+#legend{left:12px;bottom:28px}#legend b{display:block;font-weight:600;margin-bottom:4px}
+#legend .bar{height:10px;border-radius:4px;margin:4px 0}
+#legend .ends{display:flex;justify-content:space-between;color:var(--muted);font-size:11.5px}
+#legend .cat{display:flex;align-items:center;gap:7px;margin:2px 0}#legend .cat i{width:12px;height:12px;border-radius:3px}
+#legend .cite{color:var(--muted);font-size:11px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
+#read{right:12px;top:12px;min-width:170px;pointer-events:none}#read b{font-size:15px}
+input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
+.opacity{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin-top:8px}
+@media (max-width:760px){main{grid-template-columns:1fr;grid-template-rows:38vh 1fr}aside{border-right:0;border-bottom:1px solid var(--line)}#read{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="brand">ur-scape · <span>West Java</span> layers</div>
+  <div class="meta" id="meta">Loading layers…</div>
+  <a class="btn" href="rebana_explorer.html">Rebana explorer</a>
+  <a class="btn" href="https://ur-scape.com" target="_blank" rel="noopener">ur-scape.com</a>
+  <a class="btn primary" href="../urscape/ur-scape-west-java.zip" download>Download ur-scape package (zip)</a>
+</header>
+<main>
+  <aside id="list"></aside>
+  <div id="map"><div id="mapdiv"></div>
+    <div class="panel" id="legend" hidden></div>
+    <div class="panel" id="read" hidden></div>
+  </div>
+</main>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(async function(){
+  const P = await (await fetch('urscape_layers.json')).json();
+  const dark = () => document.documentElement.dataset.theme==='dark' || (document.documentElement.dataset.theme!=='light' && matchMedia('(prefers-color-scheme: dark)').matches);
+  const map = L.map('mapdiv',{zoomControl:true,attributionControl:true}).fitBounds([[P.south,P.west],[P.north,P.east]]);
+  const base = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark()?'dark_all':'light_all'}/{z}/{x}/{y}{r}.png`,{maxZoom:18,attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>base.setUrl(`https://{s}.basemaps.cartocdn.com/${dark()?'dark_all':'light_all'}/{z}/{x}/{y}{r}.png`));
+  document.getElementById('meta').textContent = `${P.layers.length} layers · ${P.cx}×${P.cy} cells of 0.5′ (~0.9 km) · same grids as the ur-scape site "West Java" · generated ${P.generated.slice(0,4)}-${P.generated.slice(4)}`;
+
+  const b64 = s => { const bin=atob(s); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i); return u; };
+  const decode = L0 => { if(!L0.Q){ L0.Q=pako.inflate(b64(L0.q)); L0.R=new Float32Array(pako.inflate(b64(L0.raw)).buffer);} return L0; };
+  // ramp: pale -> layer colour -> deep (light theme) | dark -> layer colour -> white (dark theme), like ur-scape on its dark basemap
+  const ramp = (rgb,t) => { const [r,g,b]=rgb; const lo = dark()?[20,28,40]:[236,232,222]; const hi = dark()?[255,255,255]:[r*.35,g*.35,b*.35];
+    if(t<.5){const k=t/.5; return [lo[0]+(r-lo[0])*k, lo[1]+(g-lo[1])*k, lo[2]+(b-lo[2])*k];} const k=(t-.5)/.5; return [r+(hi[0]-r)*k, g+(hi[1]-g)*k, b+(hi[2]-b)*k]; };
+  const catColors = (rgb,n) => Array.from({length:n},(_,i)=>ramp(rgb,n===1?.5:.25+.75*i/(n-1)));
+
+  let overlay=null, cur=null;
+  const list=document.getElementById('list'), legend=document.getElementById('legend'), read=document.getElementById('read');
+  const groups=[...new Set(P.layers.map(l=>l.group))];
+  for(const g of groups){
+    const h=document.createElement('h3'); h.textContent=g; list.appendChild(h);
+    for(const l of P.layers.filter(x=>x.group===g)){
+      const b=document.createElement('button'); b.className='layer'; b.setAttribute('aria-pressed','false');
+      b.style.setProperty('--c',`rgb(${l.rgb.join(',')})`); b.innerHTML=`<i></i><span>${l.name}</span><small>${l.units?l.units.split(' ')[0]:'cat'}</small>`;
+      b.onclick=()=>show(l,b); list.appendChild(b); l.btn=b;
+    }
+  }
+  const op=document.createElement('div'); op.className='opacity'; op.innerHTML='Opacity <input type="range" min="0.2" max="1" step="0.05" value="0.85">'; list.appendChild(op);
+  op.querySelector('input').oninput=e=>overlay&&overlay.setOpacity(+e.target.value);
+
+  function show(l,btn){
+    decode(l); cur=l;
+    for(const x of P.layers) x.btn.setAttribute('aria-pressed',x===l?'true':'false');
+    const cv=document.createElement('canvas'); cv.width=P.cx; cv.height=P.cy; const ctx=cv.getContext('2d'); const img=ctx.createImageData(P.cx,P.cy);
+    const cols = l.categories ? catColors(l.rgb,l.categories.length) : null;
+    for(let i=0;i<l.Q.length;i++){ const q=l.Q[i]; if(!q) continue; const c = cols ? cols[q-1] : ramp(l.rgb,(q-1)/254); img.data[i*4]=c[0]; img.data[i*4+1]=c[1]; img.data[i*4+2]=c[2]; img.data[i*4+3]=255; }
+    ctx.putImageData(img,0,0);
+    if(overlay) map.removeLayer(overlay);
+    overlay=L.imageOverlay(cv.toDataURL(),[[P.south,P.west],[P.north,P.east]],{opacity:+op.querySelector('input').value,interactive:false}).addTo(map);
+    // legend
+    legend.hidden=false;
+    if(l.categories){ legend.innerHTML=`<b>${l.name}</b>`+l.categories.map((c,i)=>`<div class="cat"><i style="background:rgb(${cols[i].map(Math.round).join(',')})"></i>${c}</div>`).join('')+`<div class="cite">${l.citation}</div>`; }
+    else { const g=`linear-gradient(90deg,${[0,.25,.5,.75,1].map(t=>`rgb(${ramp(l.rgb,t).map(Math.round).join(',')})`).join(',')})`;
+      legend.innerHTML=`<b>${l.name}</b><div class="bar" style="background:${g}"></div><div class="ends"><span>${fmt(l.lo)}</span><span>${l.units}</span><span>${fmt(l.hi)}+</span></div><div class="cite">${l.cells.toLocaleString()} cells · range ${fmt(l.min)}–${fmt(l.max)} (colour ramp 2–98th pct) · ${l.citation}</div>`; }
+  }
+  const fmt=v=>v==null?'–':Math.abs(v)>=1000?Math.round(v).toLocaleString():(Math.round(v*100)/100).toString();
+  map.on('mousemove',e=>{ if(!cur) return; const x=Math.floor((e.latlng.lng-P.west)/P.res), y=Math.floor((P.north-e.latlng.lat)/P.res);
+    if(x<0||y<0||x>=P.cx||y>=P.cy||!cur.Q[y*P.cx+x]){ read.hidden=true; return; }
+    const v=cur.R[y*P.cx+x]; read.hidden=false;
+    read.innerHTML=`<div style="color:var(--muted)">${cur.name}</div><b>${cur.categories?cur.categories[Math.round(v)-1]:fmt(v)+' '+(cur.units||'')}</b><div style="color:var(--muted);font-size:11px">${e.latlng.lat.toFixed(4)}, ${e.latlng.lng.toFixed(4)}</div>`; });
+  map.on('mouseout',()=>read.hidden=true);
+  const first=P.layers.find(l=>l.name==='Travel Time to Nearest Charger')||P.layers[0]; show(first,first.btn);
+  // Rebana view shortcut via #rebana
+  if(location.hash==='#rebana') map.fitBounds([[-7.15,107.45],[-6.05,108.85]]);
+})();
+</script>
+</body>
+</html>
