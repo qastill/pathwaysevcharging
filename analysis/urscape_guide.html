@@ -106,6 +106,7 @@ ol li,ul li{margin:6px 0}.toc{columns:2;gap:24px;font-size:14px}.toc a{color:var
 <div><div>Tab <b>Inspector → Area</b>: klik beberapa titik membentuk poligon, tutup dengan klik titik pertama. Info kanan menampilkan min/max/rata-rata/jumlah per lapisan di dalam poligon — mis. total penduduk &gt;30 menit di Kabupaten Indramayu.</div></div>
 <div><div>Tombol hapus (ikon ✕ di tab) untuk menghapus garis/area.</div></div>
 </div>
+<div class="tip warn"><b>Catatan (build macOS 0.9.96):</b> di MacBook, panel Inspector tidak merespons klik sama sekali — radio <i>Area</i>, <i>Draw Line Inspector</i>, dan <i>Delete Inspection</i> mati; garis yang muncul dibuat otomatis oleh ur-scape. Sudah dites di resolusi Default dan "More Space", setelah restart, tanpa hasil. Pengganti yang berfungsi: (1) tombol <b>▱ Area summary</b> di <a href="urscape_explorer.html?site=rebana">explorer web</a> — klik titik-titik poligon, klik ganda untuk selesai → min/mean/max/sum (dan total untuk lapisan kepadatan) per lapisan, bisa Copy CSV; (2) <b>Contours → Select Contours</b> untuk luas area yang memenuhi filter; (3) QGIS zonal statistics dari paket GeoTIFF.</div>
 <div class="tip"><b>Trik workshop:</b> gambar area di sekitar kandidat lokasi SPKLU, nyalakan <i>Population Beyond 30 min</i> + <i>Substation Headroom</i> + <i>Distance to Substation</i>. Satu klik: berapa orang terlayani dan apakah gardu induk terdekat masih punya headroom.</div>
 
 <h2 id="contours">6. Contours — cari sel yang memenuhi beberapa syarat sekaligus</h2>
@@ -212,6 +213,7 @@ python3 urscape/out/install.py "/path/ke/ur-scape/Data"   # salin kedua site + l
 <tr><td>Lapisan tampil tapi warna kosong/satu warna</td><td>Filter ▽ terlalu sempit atau lapisan lain menutupi</td><td>Reset filter (geser ke min–max), matikan lapisan lain</td></tr>
 <tr><td>Peta dasar hitam polos</td><td>Tidak ada internet / token Mapbox</td><td>Lapisan tetap jalan; untuk basemap, sambungkan internet</td></tr>
 <tr><td>Muncul dua tanggal untuk lapisan sama</td><td>File lama (<code>_202603</code>) dan baru (<code>_202606</code>) sama-sama ada</td><td>Pindahkan file lama keluar dari <code>Data/Sites/&lt;site&gt;</code>, atau biarkan: Timeline akan menampilkannya sebagai dua waktu</td></tr>
+<tr><td>Inspector: radio Area / Draw Line / Delete tidak bisa diklik</td><td>Bug build macOS 0.9.96 (dites di dua resolusi, setelah restart)</td><td>Pakai <b>▱ Area summary</b> di explorer web, atau Contours → Select Contours, atau QGIS zonal stats</td></tr>
 <tr><td>Reachability tidak aktif</td><td>Butuh <code>_graph.csv</code> jaringan jalan</td><td>Pakai lapisan Travel Time; atau ekspor jaringan OSM ke format ur-scape (pekerjaan lanjutan)</td></tr>
 </table>
 <p class="src">Panduan resmi: <a href="https://ur-scape.com" target="_blank" rel="noopener">ur-scape.com</a> · sumber kode ur-scape: GitHub FCL (link di panel Info kanan). Panduan ini bagian dari repo <a href="https://github.com/qastill/pathwaysevcharging" target="_blank" rel="noopener">pathwaysevcharging</a> (Qashtalani Haramaini).</p>

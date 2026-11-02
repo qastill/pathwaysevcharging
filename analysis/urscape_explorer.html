@@ -37,6 +37,8 @@ aside h3:first-child{margin-top:4px}
 #legend .cat{display:flex;align-items:center;gap:7px;margin:2px 0}#legend .cat i{width:12px;height:12px;border-radius:3px}
 #legend .cite{color:var(--muted);font-size:11px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
 #read{right:12px;top:12px;min-width:170px;pointer-events:none}#read b{font-size:15px}
+#area{right:12px;bottom:28px;max-width:300px}#area table{border-collapse:collapse;font-size:12px;margin-top:6px;width:100%}#area td{padding:2px 6px 2px 0;border-bottom:1px solid var(--line)}#area td.n{text-align:right;font-variant-numeric:tabular-nums}#area .ab{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}#area button,.abtn{border:1px solid var(--line);border-radius:999px;padding:4px 10px;background:var(--panel);color:var(--fg);font:600 12px var(--fs);cursor:pointer}#area button.on,.abtn.on{background:var(--accent);color:#fff;border-color:transparent}
+.leaflet-container.draw{cursor:crosshair}
 input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
 .opacity{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin-top:8px}
 @media (max-width:760px){main{grid-template-columns:1fr;grid-template-rows:38vh 1fr}aside{border-right:0;border-bottom:1px solid var(--line)}#read{display:none}}
@@ -61,6 +63,7 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
   <div id="map"><div id="mapdiv"></div>
     <div class="panel" id="legend" hidden></div>
     <div class="panel" id="read" hidden></div>
+    <div class="panel" id="area" hidden></div>
   </div>
 </main>
 </div>
@@ -106,9 +109,36 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
   }
   const op=document.createElement('div'); op.className='opacity'; op.innerHTML='Opacity <input type="range" min="0.2" max="1" step="0.05" value="0.85">'; list.appendChild(op);
   op.querySelector('input').oninput=e=>overlay&&overlay.setOpacity(+e.target.value);
+  // Area summary: draw a polygon, summarise the active layer inside it (same job as ur-scape's Area Inspector)
+  const ab=document.createElement('button'); ab.className='abtn'; ab.style.marginTop='10px'; ab.textContent='▱ Area summary'; list.appendChild(ab);
+  const area=document.getElementById('area'); let drawing=false, pts=[], poly=null, tmp=null;
+  const stopDraw=()=>{ drawing=false; ab.classList.remove('on'); map.getContainer().classList.remove('draw'); if(tmp){map.removeLayer(tmp);tmp=null;} };
+  const clearArea=()=>{ stopDraw(); pts=[]; if(poly){map.removeLayer(poly);poly=null;} area.hidden=true; };
+  ab.onclick=()=>{ if(drawing){stopDraw();return;} clearArea(); drawing=true; pts=[]; ab.classList.add('on'); map.getContainer().classList.add('draw'); map.doubleClickZoom.disable();
+    area.hidden=false; area.innerHTML='<b>Area summary</b><div style="color:var(--muted);font-size:12px">Klik titik-titik poligon di peta, klik ganda untuk selesai.</div>'; };
+  const inside=(lat,lng,P0)=>{ let c=false; for(let i=0,j=P0.length-1;i<P0.length;j=i++){ const yi=P0[i][0],xi=P0[i][1],yj=P0[j][0],xj=P0[j][1]; if(((yi>lat)!==(yj>lat))&&(lng<(xj-xi)*(lat-yi)/(yj-yi)+xi)) c=!c; } return c; };
+  function summarise(){
+    if(!cur||pts.length<3) return; decode(cur);
+    const lats=pts.map(p=>p[0]), lngs=pts.map(p=>p[1]);
+    const x0=Math.max(0,Math.floor((Math.min(...lngs)-P.west)/P.res)), x1=Math.min(P.cx-1,Math.floor((Math.max(...lngs)-P.west)/P.res));
+    const y0=Math.max(0,Math.floor((P.north-Math.max(...lats))/P.res)), y1=Math.min(P.cy-1,Math.floor((P.north-Math.min(...lats))/P.res));
+    let n=0,sum=0,mn=Infinity,mx=-Infinity,cells=0; const cat={};
+    for(let y=y0;y<=y1;y++) for(let x=x0;x<=x1;x++){ const lat=P.north-(y+.5)*P.res, lng=P.west+(x+.5)*P.res; if(!inside(lat,lng,pts)) continue; cells++;
+      const i=y*P.cx+x; if(!cur.Q[i]) continue; const v=cur.R[i]; n++; sum+=v; if(v<mn)mn=v; if(v>mx)mx=v; if(cur.categories){const k=cur.categories[Math.round(v)-1]; cat[k]=(cat[k]||0)+1;} }
+    const kmcell=(P.sign==='D'?0.3*0.3:0.9265*0.9265*Math.cos(((lats[0])*Math.PI)/180)); // km² per cell (approx.)
+    let rows=`<tr><td>Cells inside</td><td class="n">${cells.toLocaleString()} (${(cells*kmcell).toLocaleString(undefined,{maximumFractionDigits:0})} km²)</td></tr><tr><td>Cells with data</td><td class="n">${n.toLocaleString()} (${cells?Math.round(100*n/cells):0}%)</td></tr>`;
+    if(n){ if(cur.categories) rows+=Object.entries(cat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<tr><td>${k}</td><td class="n">${v.toLocaleString()} (${Math.round(100*v/n)}%)</td></tr>`).join('');
+      else rows+=`<tr><td>Minimum</td><td class="n">${fmt(mn)}</td></tr><tr><td>Mean</td><td class="n">${fmt(sum/n)}</td></tr><tr><td>Maximum</td><td class="n">${fmt(mx)}</td></tr><tr><td>Sum</td><td class="n">${fmt(sum)}</td></tr>`+(/per km/.test(cur.units||'')?`<tr><td>≈ Total (sum × cell area)</td><td class="n">${fmt(sum*kmcell)}</td></tr>`:''); }
+    area.hidden=false; area.innerHTML=`<b>Area summary · ${cur.name}</b><div style="color:var(--muted);font-size:11.5px">${cur.units||'category'} · ${pts.length} vertices</div><table>${rows}</table><div class="ab"><button id="acsv">Copy CSV</button><button id="aclr">Clear</button></div>`;
+    document.getElementById('aclr').onclick=clearArea;
+    document.getElementById('acsv').onclick=()=>{ const t=`layer,units,cells,cells_with_data,min,mean,max,sum\n${cur.name},${cur.units||''},${cells},${n},${n?mn:''},${n?sum/n:''},${n?mx:''},${n?sum:''}`; navigator.clipboard&&navigator.clipboard.writeText(t); };
+  }
+  map.on('click',e=>{ if(!drawing) return; pts.push([e.latlng.lat,e.latlng.lng]); if(tmp) map.removeLayer(tmp); tmp=L.polyline(pts,{color:'#fff',weight:2,dashArray:'4 4'}).addTo(map); });
+  map.on('dblclick',e=>{ if(!drawing) return; while(pts.length>1&&pts.at(-1)[0]===pts.at(-2)[0]&&pts.at(-1)[1]===pts.at(-2)[1]) pts.pop(); if(pts.length>=3){ stopDraw(); if(poly) map.removeLayer(poly); poly=L.polygon(pts,{color:'#fff',weight:2,fillOpacity:.08}).addTo(map); summarise(); } setTimeout(()=>map.doubleClickZoom.enable(),300); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&drawing) clearArea(); });
 
   function show(l,btn){
-    decode(l); cur=l;
+    decode(l); cur=l; if(poly&&pts.length>=3) setTimeout(summarise,0);
     for(const x of P.layers) x.btn.setAttribute('aria-pressed',x===l?'true':'false');
     const cv=document.createElement('canvas'); cv.width=P.cx; cv.height=P.cy; const ctx=cv.getContext('2d'); const img=ctx.createImageData(P.cx,P.cy);
     const cols = l.categories ? catColors(l.rgb,l.categories.length) : null;
