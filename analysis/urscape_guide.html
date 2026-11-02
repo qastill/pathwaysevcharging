@@ -33,7 +33,7 @@ ol li,ul li{margin:6px 0}.toc{columns:2;gap:24px;font-size:14px}.toc a{color:var
 <body>
 <header>
   <div class="brand">ur-scape · <span>Panduan pakai</span></div>
-  <div class="meta">Site <b>Rebana</b> (300 m) &amp; <b>West Java</b> (0,5′) · ur-scape v0.9.96 · 28 lapisan per site</div>
+  <div class="meta">Site <b>Rebana</b> (300 m) &amp; <b>West Java</b> (0,5′) · ur-scape v0.9.96 · 52 lapisan per site</div>
   <a href="urscape_explorer.html?site=rebana">Explorer web</a>
   <a href="rebana_insights.html">Laporan insight</a>
   <a href="https://github.com/qastill/pathwaysevcharging" target="_blank" rel="noopener">Repo</a>
@@ -76,7 +76,7 @@ ol li,ul li{margin:6px 0}.toc{columns:2;gap:24px;font-size:14px}.toc a{color:var
 <div class="tip"><b>Kapan pakai yang mana?</b> Rebana untuk workshop: batas kecamatan terlihat tajam, pola koridor Cirebon–Majalengka–Kertajati terbaca. West Java untuk membandingkan Rebana dengan Bandung Raya/Bodebek (mis. Travel Time, Capacity per Household).</div>
 
 <h2 id="layers">3. Data Layers: nyalakan, filter, info</h2>
-<p>Panel kiri dikelompokkan: <b>EV Charging</b> · <b>Society and Economy</b> · <b>Power Grid</b> · <b>Insights</b>. Klik segitiga ▼ di judul grup untuk melipat/membuka.</p>
+<p>Panel kiri dikelompokkan: <b>EV Charging</b> · <b>Society and Economy</b> · <b>Power Grid</b> · <b>Energy Resources</b> (surya, angin, suhu, elevasi) · <b>Land and Hazard</b> (tutupan lahan, lahan terbangun 1975–2020, penduduk 2000–2030, banjir 100-th) · <b>Insights</b>. Klik segitiga ▼ di judul grup untuk melipat/membuka.</p>
 <table>
 <tr><th>Aksi</th><th>Cara</th><th>Hasil</th></tr>
 <tr><td>Nyalakan lapisan</td><td>Klik nama lapisan</td><td>Nama jadi terang, peta diwarnai; titik warna di kiri = warna lapisan</td></tr>
@@ -181,17 +181,30 @@ ol li,ul li{margin:6px 0}.toc{columns:2;gap:24px;font-size:14px}.toc a{color:var
 <tr><td>Rebana Distance to Substation / Charger · Substation Headroom · Chargers per Kecamatan</td><td>km, km, MVA sisa, jumlah</td><td>RUPTL × OSM; PLN</td></tr>
 <tr><td rowspan="2">Power Grid</td><td>Substation Capacity · Substation Peak Loading</td><td>MVA; % beban puncak GI</td><td>RUPTL 2025-2034 × OSM; beban GI PLN UID Jabar</td></tr>
 <tr><td>Power Plant Capacity · Transmission Lines</td><td>MW; kelas 70/150/500 kV</td><td>idem</td></tr>
-<tr><td rowspan="5">Insights</td><td>Charger Siting Priority</td><td>Skor 0–100 gabungan kebutuhan, permintaan, kesiapan grid</td><td>turunan repo</td></tr>
+<tr><td rowspan="2">Energy Resources</td><td>Solar PV Yield · Global Horizontal Irradiation · Direct Normal Irradiation · Solar Seasonality · Air Temperature · Elevation</td><td>kWh/kWp/th; kWh/m²/th; % bulan terendah/tertinggi; °C; m</td><td>Global Solar Atlas 2.0 (Solargis), sampel 0,025°</td></tr>
+<tr><td>Wind Speed 100 m</td><td>m/s</td><td>Global Wind Atlas 3</td></tr>
+<tr><td rowspan="4">Land and Hazard</td><td>Cropland / Tree Cover / Built-up Share 2021 · Dominant Land Cover</td><td>% sel; kategori 9 kelas</td><td>ESA WorldCover 2021 (10 m)</td></tr>
+<tr><td>Built-up 2020 · Built-up Growth 2000–2020 · 1975–2000</td><td>% sel; poin persen</td><td>GHSL GHS-BUILT-S R2023A</td></tr>
+<tr><td>Population 2025 · Population Change 2025–2030 · 2000–2025</td><td>jiwa/km²; %</td><td>GHSL GHS-POP R2023A</td></tr>
+<tr><td>Flood Depth RP100 · Flood Hazard Class</td><td>m; kategori kedalaman</td><td>JRC Global Flood Hazard (CEMS-GloFAS)</td></tr>
+<tr><td rowspan="10">Insights</td><td>Charger Siting Priority</td><td>Skor 0–100 gabungan kebutuhan, permintaan, kesiapan grid</td><td>turunan repo</td></tr>
 <tr><td>Rebana KPI Kecamatan</td><td>Peringkat KPI kecamatan (semakin tinggi semakin perlu intervensi)</td><td>turunan repo</td></tr>
 <tr><td>Population Beyond 30 min</td><td>Jiwa &gt; 30 menit dari SPKLU</td><td>TTM × Kontur</td></tr>
 <tr><td>Coverage Model Picks</td><td>Lokasi pilihan model cakupan (kategori)</td><td>analysis/</td></tr>
 <tr><td>Transformer Overload Share</td><td>% trafo distribusi overload per hex H3</td><td>idm_hex</td></tr>
+<tr><td>Rooftop PV Potential</td><td>MWh/th per sel (atap terbangun × 25 % × 0,15 kWp/m² × PVOUT)</td><td>WorldCover × GSA</td></tr>
+<tr><td>Utility Solar Site Score</td><td>Skor 0–100 kelayakan PLTS skala utilitas (surya, lahan terbuka, bebas banjir, dekat GI)</td><td>GSA × WorldCover × JRC × GI</td></tr>
+<tr><td>Grid Assets in Flood Zone</td><td>SPKLU / GI di sel banjir ≥ 0,5 m (kategori)</td><td>JRC × PLN</td></tr>
+<tr><td>Population in Flood Zone</td><td>Jiwa per sel di zona banjir ≥ 0,5 m</td><td>JRC × GHSL</td></tr>
+<tr><td>Growth Without Charging</td><td>Pertambahan terbangun 2000–2020 di desa &gt; 30 menit dari SPKLU</td><td>GHSL × TTM</td></tr>
 </table>
 <p class="src">Definisi lengkap tiap lapisan (rumus, input) ada di popup ⓘ masing-masing lapisan dan di <code>urscape/build.py</code>.</p>
 
 <h2 id="update">11. Update data dari repo (satu tempat)</h2>
 <p>Semua lapisan dibangun otomatis dari repo. Kalau data berubah (PLN baru, TTM baru), jalankan:</p>
-<pre>python3 ttm/compute.py            # TTM → ttm/ttm.json
+<pre>python3 data/open/prep.py <folder_unduhan>   # surya, WorldCover, GHSL, banjir, angin → data/open/*.tif
+python3 analysis/rebana_open_build.py          # → analysis/rebana_open_data.json (laporan wilayah)
+python3 ttm/compute.py            # TTM → ttm/ttm.json
 python3 analysis/rebana_build.py  # → analysis/rebana_data.json
 python3 urscape/build.py          # site West Java (0,5′) + zip + QGIS GeoTIFF + payload web
 python3 urscape/build.py Rebana --keep   # site Rebana (300 m) + payload web
@@ -202,7 +215,8 @@ python3 urscape/out/install.py "/path/ke/ur-scape/Data"   # salin kedua site + l
 <a href="../urscape/ur-scape-west-java.zip" download><b>Paket ur-scape (zip)</b><span>Sites/West Java + Sites/Rebana + install.py</span></a>
 <a href="../urscape/west-java-layers-qgis.zip" download><b>GeoTIFF untuk QGIS (zip)</b><span>28 lapisan EPSG:4326 + QGIS style</span></a>
 <a href="urscape_explorer.html?site=rebana"><b>Explorer web — Rebana</b><span>lapisan yang sama di browser, tanpa install</span></a>
-<a href="rebana_insights.html"><b>Laporan insight Rebana</b><span>fakta, angka, rekomendasi</span></a>
+<a href="rebana_insights.html"><b>Laporan EV &amp; grid Rebana</b><span>akses, keadilan, kesiapan GI</span></a>
+<a href="rebana_territory.html"><b>Laporan wilayah &amp; energi</b><span>surya, PLTS, lahan, pertumbuhan, banjir</span></a>
 </div>
 
 <h2 id="masalah">12. Kalau ada masalah</h2>

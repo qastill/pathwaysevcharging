@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Rebana dari data terbuka: radiasi surya & potensi PLTS (atap dan skala utilitas), angin, tutupan lahan, pertumbuhan lahan terbangun dan penduduk, bahaya banjir 100-tahunan, dan apa artinya untuk SPKLU, gardu induk, dan kawasan industri.">
+<title>Rebana Wilayah & Energi</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F6F4EE;--panel:#FFFFFF;--fg:#13263A;--muted:#55606E;--line:#DAD6CB;--soft:#ECE8DD;--accent:#C97D0E;--s1:#0F9A96;--s3:#7B5EA7;--bad:#C0392B;--ok:#1E8E5A;--sun:#E0A800;--fd:'Domine',Georgia,serif;--fs:'IBM Plex Sans',Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;--s1:#2FA9A6;--s3:#9C82D0;--bad:#DC5F4F;--ok:#3DBB7E;--sun:#F0C040;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;--s1:#2FA9A6;--s3:#9C82D0;--bad:#DC5F4F;--ok:#3DBB7E;--sun:#F0C040;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15.5px/1.55 var(--fs)}
+header{border-bottom:1px solid var(--line);padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header .brand{font:700 18px var(--fd)}header .brand span{color:var(--accent)}header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:180px}
+header a{border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:var(--fg);text-decoration:none;font-weight:600;font-size:12.5px;background:var(--panel)}
+main{max-width:980px;margin:0 auto;padding:16px 16px 60px}
+h1{font:700 30px/1.2 var(--fd);margin:18px 0 6px}h2{font:700 21px/1.25 var(--fd);margin:38px 0 10px;padding-top:14px;border-top:1px solid var(--line)}h3{font:600 15.5px var(--fs);margin:20px 0 6px}
+p.lead{font-size:17px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpi b{display:block;font:700 24px/1.1 var(--fd);color:var(--accent)}.kpi span{color:var(--muted);font-size:12.5px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;min-width:0;overflow-x:auto}.two>*{min-width:0}
+.insight{border-left:4px solid var(--accent);background:var(--soft);padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0}.insight b{font-family:var(--fd)}.insight.warn{border-left-color:var(--bad)}.insight.good{border-left-color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{display:grid;grid-template-columns:170px 1fr 70px;gap:8px;align-items:center;margin:4px 0;font-size:13.5px}.bar i{display:block;height:12px;border-radius:4px;background:var(--s1)}.bar i.b{background:var(--bad)}.bar i.a{background:var(--accent)}.bar i.p{background:var(--s3)}.bar i.y{background:var(--sun)}.bar small{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.src{color:var(--muted);font-size:12.5px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.two{grid-template-columns:1fr}.bar{grid-template-columns:120px 1fr 60px}table{display:block;overflow-x:auto;white-space:nowrap}h1{font-size:24px}}
+ol.rec li{margin:8px 0}.tag{display:inline-block;background:var(--soft);border-radius:6px;padding:1px 7px;font-size:12px;color:var(--muted);margin-left:4px}
+.lay{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 9px;font-size:12px;color:var(--fg);text-decoration:none;background:var(--panel);margin:2px 2px 2px 0}
+select{font:inherit;border:1px solid var(--line);border-radius:8px;padding:4px 8px;background:var(--panel);color:var(--fg)}
+figure{margin:0}figcaption{color:var(--muted);font-size:12.5px;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Rebana · <span>Wilayah &amp; Energi</span></div>
+  <div class="meta">Surya · lahan · pertumbuhan · banjir — dari data terbuka global, dipotong ke 190 kecamatan Rebana (grid 278 m)</div>
+  <a href="rebana_insights.html">Laporan EV &amp; grid</a>
+  <a href="urscape_explorer.html?site=rebana">Peta lapisan</a>
+  <a href="urscape_guide.html">Panduan ur-scape</a>
+  <a href="https://github.com/qastill/pathwaysevcharging" target="_blank" rel="noopener">Repo</a>
+</header>
+<main>
+<h1>Rebana dilihat dari langit: surya, lahan, pertumbuhan, dan banjir</h1>
+<p class="lead">Laporan <a href="rebana_insights.html">sebelumnya</a> menjawab <em>siapa yang bisa mengisi mobil listrik di Rebana dan apakah gridnya siap</em>. Laporan ini menambah lapisan yang belum ada di data PLN mana pun: berapa besar matahari di tiap kecamatan, lahan apa yang tersedia, ke mana kota tumbuh, dan di mana air akan datang. Semua angka dihitung dari lima dataset terbuka (Global Solar Atlas, Global Wind Atlas, ESA WorldCover, GHSL, JRC Flood Hazard) pada grid 278 m, lalu diringkas per kecamatan. Lapisan yang sama ada di <a href="urscape_explorer.html?site=rebana">peta web</a> dan di ur-scape (site Rebana, grup <em>Energy Resources</em>, <em>Land and Hazard</em>, <em>Insights</em>).</p>
+
+<div class="kpis" id="kpis"></div>
+
+<h2 id="surya">1. Matahari: Rebana adalah sabuk surya terbaik di Jawa Barat</h2>
+<div class="two">
+<div class="box">
+<h3>Hasil PV spesifik per kabupaten/kota (kWh per kWp per tahun)</h3>
+<div id="pv_kab"></div>
+<p class="src">PVOUT = energi tahunan yang dihasilkan 1 kWp PV kristalin, orientasi optimal, termasuk rugi sistem (Global Solar Atlas 2.0 / Solargis). Pembanding: Jerman ≈ 1.000, Jakarta ≈ 1.400, Australia Utara ≈ 1.700.</p>
+</div>
+<div class="box">
+<h3>Kecamatan tertinggi &amp; terendah</h3>
+<table id="pv_top"></table>
+</div>
+</div>
+<div class="insight"><b>Fakta 1 — Pantura Cirebon–Indramayu mencapai <span data-k="pvmax"></span> kWh/kWp/tahun; pegunungan Majalengka–Subang hanya <span data-k="pvmin"></span>.</b> Selisihnya ~30 %: 1 kWp di Gunungjati/Kapetakan menghasilkan sekitar 4,3 kWh/hari, di Argapura/Ciater 3,3 kWh/hari. Untuk SPKLU, artinya satu kanopi PV 20 kWp di rest area pantura memberi ≈ 85 kWh/hari — setara 3–4 pengisian penuh mobil listrik kecil per hari tanpa menambah beban gardu.</div>
+<div class="insight"><b>Fakta 2 — Profil bulanan cukup rata: bulan terendah masih <span data-k="season"></span> % dari bulan tertinggi.</b> Musim hujan (Des–Feb) menurunkan hasil, tetapi tidak ada "musim mati" seperti di lintang tinggi; PLTS di Rebana tidak butuh penyimpanan musiman, cukup baterai harian. Suhu udara rata-rata <span data-k="temp"></span> °C: rugi panas modul kecil (≈ 0,4 %/°C di atas 25 °C), tidak menjadi faktor pembeda lokasi.</div>
+<div class="insight"><b>Fakta 3 — <span data-k="spklu_n"></span> SPKLU yang ada di Rebana berdiri di lokasi dengan rata-rata PVOUT <span data-k="spklu_pv"></span> kWh/kWp</b>, lebih tinggi dari rata-rata wilayah (<span data-k="pv"></span>). Charger-charger ini "kebetulan" sudah berada di tempat paling cerah — kandidat alami untuk <em>solar carport + baterai</em> yang mengurangi kebutuhan daya sambung PLN.</div>
+
+<h2 id="atap">2. PLTS atap: potensi teknis <span data-k="roof_twh"></span> TWh/tahun</h2>
+<div class="two">
+<div class="box"><h3>Potensi teknis PLTS atap per kabupaten (GWh/tahun)</h3><div id="roof_kab"></div>
+<p class="src">Asumsi: luas terbangun (WorldCover 2021, 10 m) × 25 % atap terpakai × 0,15 kWp/m² × PVOUT setempat. Ini <em>batas atas teknis</em>, belum menyaring struktur atap, bayangan, atau kesanggupan jaringan tegangan rendah.</p></div>
+<div class="box"><h3>10 kecamatan dengan potensi atap terbesar</h3><table id="roof_top"></table></div>
+</div>
+<div class="insight"><b>Fakta 4 — Potensi atap Rebana (<span data-k="roof_twh"></span> TWh/th) ≈ <span data-k="roof_vs_pltu"></span> × produksi tahunan PLTU Cirebon-1 (660 MW, CF 70 %).</b> Potensi terbesar justru bukan di Kota Cirebon (atap padat tapi wilayah kecil) melainkan di kecamatan-kecamatan ibu kota kabupaten dan koridor Cipali: Subang, Indramayu, Patokbeusi, Jatinangor, Anjatan. Untuk program EV, atap-atap ini adalah "pembangkit siang" yang jam produksinya cocok dengan pola pengisian di tempat kerja/pusat kegiatan (lihat kurva beban SPKLU di laporan EV).</div>
+
+<h2 id="utilitas">3. PLTS skala utilitas: <span data-k="suit_km2"></span> km² lahan terbuka lolos saringan</h2>
+<div class="two">
+<div class="box"><h3>Lahan lolos saringan (skor ≥ 70) per kabupaten, km²</h3><div id="suit_kab"></div>
+<p class="src">Skor 0–100 = 0,35 × hasil PV + 0,30 × porsi lahan terbuka (sawah/ladang, rumput, tanah kosong) + 0,15 × bebas banjir 100-tahunan + 0,20 × kedekatan GI (&lt; 15 km). Hanya sel dengan lahan terbuka ≥ 50 %, terbangun &lt; 20 %, air &lt; 10 %, pohon &lt; 30 %. Belum menyaring status LP2B/sawah irigasi teknis — ini saringan <em>fisik</em>, bukan izin.</p></div>
+<div class="box"><h3>Kecamatan dengan lahan lolos saringan terluas</h3><table id="suit_top"></table></div>
+</div>
+<div class="insight good"><b>Fakta 5 — Klaster PLTS alami ada di Indramayu barat: Terisi–Kroya–Cikedung–Gantar–Gabuswetan, semuanya dilayani GI Cikedung (headroom 56 %) dan GI Haurgeulis (69 %).</b> Lima kecamatan ini saja menyumbang lebih dari 470 km² lahan lolos saringan. Dengan rasio konservatif 1 MWp/ha dan hanya 10 % lahan yang benar-benar dipakai, itu sudah ≈ 4–5 GWp — lebih besar dari gabungan PLTU Cirebon-1, Cirebon-2 dan Indramayu (2.650 MW). Hambatannya bukan matahari atau lahan, tetapi status sawah dan kapasitas evakuasi daya (GI Cikedung 150 kV).</div>
+<div class="insight"><b>Fakta 6 — Kertajati (<span data-k="kertajati_km2"></span> km² lolos saringan) adalah kandidat PLTS aerocity</b>, tetapi GI terdekat 18 km dan 32 % penduduknya di zona banjir — PLTS di sini perlu GI baru (RUPTL) dan tapak di sisi yang lebih tinggi.</div>
+
+<h2 id="angin">4. Angin: bukan pemain utama di Rebana</h2>
+<div class="box">
+<p>Kecepatan angin rata-rata 100 m di atas tanah hanya <b><span data-k="wind"></span> m/s</b> di seluruh Rebana (Global Wind Atlas 3). Turbin modern butuh ≥ 6–6,5 m/s untuk ekonomis. Satu-satunya kantong yang mendekati adalah pesisir timur Kabupaten Cirebon (Pangenan, Astanajapura, Lemahabang: 5,2–5,5 m/s) — kelas "marginal", mungkin untuk turbin kecil di kawasan industri pesisir, bukan ladang angin. <b>Strategi energi terbarukan Rebana jelas: surya, bukan angin.</b></p>
+<div id="wind_top"></div>
+</div>
+
+<h2 id="lahan">5. Lahan dan pertumbuhan kota</h2>
+<div class="kpis" id="land_kpis"></div>
+<div class="two">
+<div class="box"><h3>Lahan terbangun (km²) 1975 → 2000 → 2020 per kabupaten</h3><div id="built_kab"></div><p class="src">GHSL GHS-BUILT-S R2023A (JRC), 3 detik busur ≈ 90 m.</p></div>
+<div class="box"><h3>Kecamatan dengan pertambahan lahan terbangun tercepat 2000–2020</h3><table id="growth_top"></table></div>
+</div>
+<div class="insight"><b>Fakta 7 — Rebana tumbuh memusat, bukan menyebar.</b> Lahan terbangun naik <span data-k="built_growth"></span> % dalam 20 tahun, tetapi delapan dari sepuluh kecamatan dengan pertambahan tercepat ada di Cirebon Raya (Kedawung, Harjamukti, Lemahwungkuk, Talun, Kesambi, Depok, Plumbon, Weru). Kecamatan KPI (Balongan, Patrol, Losarang, Kertajati, Tukdana, Jatitujuh) masih &lt; 1 poin persen pertambahan: kawasan industrinya <em>masih greenfield</em> — jendela untuk merencanakan GI, jaringan 20 kV dan SPKLU <em>sebelum</em> lahan terisi, bukan sesudah.</div>
+<div class="insight"><b>Fakta 8 — Penduduk <span data-k="pop25"></span> juta (2025) → <span data-k="pop30"></span> juta (2030), +<span data-k="pop_ch"></span> %.</b> Pertumbuhan relatif tercepat ada di kecamatan kecil di Kuningan/Sumedang (basis kecil) dan Harjamukti (Kota Cirebon, +7 %). Kecamatan yang tumbuh tetapi &gt; 30 menit dari SPKLU terdekat ("growth without charging") ada <span data-k="gnc_n"></span>: <span data-k="gnc_list"></span>.</div>
+<div class="box"><h3>Tutupan lahan Rebana 2021</h3><div id="lc"></div><p class="src">ESA WorldCover 2021 v200, porsi luas wilayah 190 kecamatan.</p></div>
+
+<h2 id="banjir">6. Banjir 100-tahunan: <span data-k="flood_pop_m"></span> juta orang dan <span data-k="spklu_fl"></span> dari <span data-k="spklu_n"></span> SPKLU</h2>
+<div class="two">
+<div class="box"><h3>Porsi penduduk di zona banjir ≥ 0,5 m per kabupaten</h3><div id="flood_kab"></div>
+<p class="src">JRC Global Flood Hazard Maps (CEMS-GloFAS), banjir sungai periode ulang 100 tahun, 30 detik busur ≈ 1 km, <em>tanpa tanggul dan tanpa banjir rob</em>. Model global cenderung melebihkan di dataran banjir datar seperti Indramayu — angka di sini adalah <em>bendera untuk diverifikasi</em> dengan peta BBWS Cimanuk-Cisanggarung, bukan vonis.</p></div>
+<div class="box"><h3>Kecamatan dengan porsi penduduk terbesar di zona banjir</h3><table id="flood_top"></table></div>
+</div>
+<div class="box"><h3>Aset pengisian dan gardu induk di zona banjir ≥ 0,5 m</h3><table id="assets_fl"></table></div>
+<div class="insight warn"><b>Fakta 9 — Klaster SPKLU terbesar di Rebana, rest area KM 228–229 Kanci–Pejagan (10 unit, ≥ 20 charger), seluruhnya berada di sel dengan kedalaman model 0,5–0,55 m.</b> Ditambah SPKLU Jatibarang (2,5 m), Fieris Hotel Kertajati (2,3 m), Mall Indramayu (1,6 m) dan Posko Tomo (1,3 m). Dua GI juga tertandai: Indramayu (60 MVA, 2,0 m) dan Parakan (20 MVA, 6,3 m). Rekomendasi minimum: tinggikan kabinet charger &amp; panel ≥ 1 m di lokasi-lokasi ini, dan masukkan syarat elevasi/drainase ke standar lokasi SPKLU Rebana.</div>
+<div class="insight warn"><b>Fakta 10 — Empat kecamatan KPI punya 30–66 % penduduk di zona banjir model (Tukdana 66 %, Jatitujuh 65 %, Balongan 49 %, Kertajati 32 %, Losarang 31 %).</b> Kawasan industri di dataran Cimanuk harus merencanakan drainase kawasan dan tapak GI di atas elevasi banjir sejak masterplan.</div>
+
+<h2 id="tabel">7. Tabel kecamatan (190)</h2>
+<div class="box">
+<label>Kabupaten/Kota: <select id="kabsel"><option value="">Semua</option></select></label>
+<label style="margin-left:10px">Urutkan: <select id="sortsel">
+<option value="pvout">PV yield</option><option value="roof_gwh">Potensi atap</option><option value="suit70km2">Lahan PLTS utilitas</option><option value="flood_pop_share">% penduduk zona banjir</option><option value="growth_pp">Pertumbuhan terbangun</option><option value="pop_ch_25_30">Pertumbuhan penduduk 25–30</option><option value="t_mean">Waktu ke SPKLU</option></select></label>
+<table id="kec"></table>
+</div>
+
+<h2 id="rek">8. Apa yang bisa dibawa ke meja workshop</h2>
+<ol class="rec">
+<li><b>Solar carport di SPKLU pantura.</b> Semua SPKLU Rebana berada di zona 1.450–1.565 kWh/kWp. Program 20–50 kWp per lokasi + baterai harian menurunkan kebutuhan daya sambung dan menjawab keluhan "GI penuh" di laporan EV.</li>
+<li><b>Klaster PLTS utilitas Indramayu barat (Terisi–Kroya–Cikedung–Gantar).</b> Lahan terbuka luas, GI Cikedung/Haurgeulis masih longgar; perlu uji status LP2B dan kapasitas evakuasi 150 kV. Masukkan ke usulan RUPTL daerah.</li>
+<li><b>Standar lokasi SPKLU tahan banjir.</b> 16 dari 76 SPKLU di zona banjir model; mulai dari klaster KM 228–229 dan Jatibarang: tinggikan, lindungi panel, pastikan drainase.</li>
+<li><b>Rencanakan listrik KPI sebelum lahan terisi.</b> Kecamatan KPI belum bertambah lahan terbangunnya — saatnya mengunci lokasi GI dan koridor 20 kV, sekaligus tapak di atas elevasi banjir.</li>
+<li><b>Jangan mengejar angin.</b> Alokasikan studi EBT Rebana ke surya (atap + utilitas) dan penyimpanan, bukan ladang angin.</li>
+<li><b>Verifikasi lokal.</b> Peta banjir BBWS/BPBD, peta LP2B Dinas Pertanian, dan headroom GI aktual PLN UID Jabar adalah tiga dataset yang akan mengubah skor ini dari "indikasi" menjadi "siap tender".</li>
+</ol>
+
+<h2 id="metode">9. Data, metode, dan batasan</h2>
+<div class="box">
+<table>
+<tr><th>Dataset</th><th>Isi</th><th>Resolusi</th><th>Lapisan di peta/ur-scape</th></tr>
+<tr><td><a href="https://globalsolaratlas.info" target="_blank" rel="noopener">Global Solar Atlas 2.0</a> (Solargis / World Bank ESMAP)</td><td>PVOUT, GHI, DNI, DIF, suhu, elevasi; rata-rata jangka panjang hingga 2025, bulanan</td><td>sampel titik tiap 0,025° (≈ 2,8 km), interpolasi bilinear ke 278 m</td><td>Solar PV Yield · Global Horizontal Irradiation · Direct Normal Irradiation · Solar Seasonality · Air Temperature · Elevation</td></tr>
+<tr><td><a href="https://globalwindatlas.info" target="_blank" rel="noopener">Global Wind Atlas 3</a> (DTU / World Bank)</td><td>Kecepatan angin rata-rata 100 m</td><td>250 m</td><td>Wind Speed 100 m</td></tr>
+<tr><td><a href="https://esa-worldcover.org" target="_blank" rel="noopener">ESA WorldCover 2021</a> v200</td><td>Tutupan lahan 11 kelas (Sentinel-1/2)</td><td>10 m → porsi per sel 278 m</td><td>Cropland Share · Tree Cover Share · Built-up Share 2021 · Dominant Land Cover</td></tr>
+<tr><td><a href="https://human-settlement.emergency.copernicus.eu" target="_blank" rel="noopener">GHSL R2023A</a> (JRC)</td><td>Luas terbangun 1975/2000/2020; penduduk 2000/2025/2030</td><td>3″ ≈ 90 m</td><td>Built-up 2020 · Built-up Growth 2000–2020 · 1975–2000 · Population 2025 · Population Change 2025–2030 · 2000–2025</td></tr>
+<tr><td><a href="https://data.jrc.ec.europa.eu/dataset/jrc-floods-floodmapgl_rp100y-tif" target="_blank" rel="noopener">JRC Global Flood Hazard Maps</a> (CEMS-GloFAS)</td><td>Kedalaman banjir sungai periode ulang 100 tahun</td><td>30″ ≈ 1 km</td><td>Flood Depth RP100 · Flood Hazard Class</td></tr>
+<tr><td>Turunan (repo ini)</td><td>Rooftop PV Potential · Utility Solar Site Score · Grid Assets in Flood Zone · Population in Flood Zone · Growth Without Charging</td><td>278 m / 300 m</td><td>grup <em>Insights</em></td></tr>
+</table>
+<p class="src">Pipeline: <code>data/open/prep.py</code> (potong &amp; agregasi ke grid 0,0025° West Java) → <code>urscape/build.py</code> (lapisan ur-scape &amp; web, kedua site) → <code>analysis/rebana_open_build.py</code> (statistik kecamatan, <code>analysis/rebana_open_data.json</code>) → halaman ini. Batasan: (1) banjir = model global sungai tanpa tanggul/rob; (2) potensi atap &amp; PLTS adalah batas teknis, bukan kelayakan ekonomi/izin; (3) populasi GHSL ≠ sensus BPS (dipakai untuk konsistensi spasial, bukan angka resmi); (4) sampel surya 2,8 km memuluskan variasi lokal di lereng pegunungan.</p>
+</div>
+</main>
+<script>
+(async function(){
+  const d = await (await fetch('rebana_open_data.json')).json(); const t=d.totals, K=d.kab, C=d.kec;
+  const f0=v=>Math.round(v).toLocaleString('id-ID'), f1=v=>(Math.round(v*10)/10).toLocaleString('id-ID'), pct=v=>f1(v)+' %';
+  const kec = C.filter(c=>c.pop25>0);
+  const kert = C.find(c=>c.kec==='Kertajati');
+  const vals = {pvmax:f0(t.pvout_max), pvmin:f0(t.pvout_min), season:f0(100*t.season), temp:f1(t.temp), spklu_n:d.spklu_in_rebana, spklu_pv:f0(d.spklu_pvout_mean), pv:f0(t.pvout),
+    roof_twh:f1(t.roof_gwh/1000), roof_vs_pltu:f1(t.roof_gwh/(660*8760*0.7/1000)), suit_km2:f0(t.suit70km2), kertajati_km2:kert?f0(kert.suit70km2):'–', wind:f1(t.wind),
+    built_growth:f0(100*(t.bkm2_20-t.bkm2_00)/t.bkm2_00), pop25:f1(t.pop25/1e6), pop30:f1(t.pop30/1e6), pop_ch:f1(100*(t.pop30-t.pop25)/t.pop25),
+    gnc_n:d.growth_nocharge.length, gnc_list:d.growth_nocharge.slice(0,6).map(g=>`${g.kec} (${g.kab.replace('Kab. ','')})`).join(', '), flood_pop_m:f1(t.pop25_flood/1e6), spklu_fl:d.spklu_flood.length};
+  document.querySelectorAll('[data-k]').forEach(e=>e.textContent=vals[e.dataset.k]);
+  const kpi=(b,s)=>`<div class="kpi"><b>${b}</b><span>${s}</span></div>`;
+  document.getElementById('kpis').innerHTML = kpi(f0(t.pvout)+' kWh/kWp','PV yield rata-rata Rebana (pantura '+f0(t.pvout_max)+', pegunungan '+f0(t.pvout_min)+')')+kpi(f1(t.roof_gwh/1000)+' TWh/th','potensi teknis PLTS atap')+
+    kpi(f0(t.suit70km2)+' km²','lahan terbuka lolos saringan PLTS utilitas')+kpi(f1(t.wind)+' m/s','angin 100 m — terlalu lemah')+kpi(f1(t.pop25/1e6)+' jt → '+f1(t.pop30/1e6)+' jt','penduduk 2025 → 2030 (GHSL)')+
+    kpi(f0(t.bkm2_20)+' km²','lahan terbangun 2020 ('+f0(t.bkm2_00)+' pada 2000, '+f0(t.bkm2_75)+' pada 1975)')+kpi(f1(t.pop25_flood/1e6)+' jt ('+f0(100*t.pop25_flood/t.pop25)+' %)','penduduk di zona banjir 100-th ≥ 0,5 m')+kpi(d.spklu_flood.length+' / '+d.spklu_in_rebana,'SPKLU di zona banjir model · GI: '+d.gi_flood.length+' / '+d.gi_in_rebana);
+  const bars=(id,rows,key,cls,fmt,max)=>{ const mx=max||Math.max(...rows.map(r=>r[key])); document.getElementById(id).innerHTML=rows.map(r=>`<div class="bar"><span>${r.kab||r.kec}</span><i class="${cls}" style="width:${Math.max(2,100*r[key]/mx)}%"></i><small>${fmt(r[key])}</small></div>`).join(''); };
+  const byk=(k,desc=true)=>[...K].sort((a,b)=>desc?b[k]-a[k]:a[k]-b[k]);
+  bars('pv_kab',byk('pvout'),'pvout','y',f0,1600);
+  bars('roof_kab',byk('roof_gwh'),'roof_gwh','y',f0);
+  bars('suit_kab',byk('suit70km2'),'suit70km2','a',f0);
+  bars('built_kab',byk('bkm2_20'),'bkm2_20','p',v=>f0(v)+' km²');
+  document.getElementById('built_kab').innerHTML = byk('bkm2_20').map(r=>`<div class="bar"><span>${r.kab}</span><i class="p" style="width:${100*r.bkm2_20/K.reduce((m,x)=>Math.max(m,x.bkm2_20),0)}%"></i><small>${f0(r.bkm2_75)} → ${f0(r.bkm2_00)} → ${f0(r.bkm2_20)}</small></div>`).join('');
+  bars('flood_kab',byk('flood_pop_share'),'flood_pop_share','b',pct,100);
+  document.getElementById('wind_top').innerHTML = [...kec].sort((a,b)=>b.wind-a.wind).slice(0,5).map(r=>`<div class="bar"><span>${r.kec} (${r.kab.replace('Kab. ','')})</span><i style="width:${100*r.wind/7}%"></i><small>${f1(r.wind)} m/s</small></div>`).join('');
+  const tbl=(id,head,rows)=>document.getElementById(id).innerHTML='<tr>'+head.map(h=>`<th${h[1]?' class="n"':''}>${h[0]}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map((c,i)=>`<td${head[i][1]?' class="n"':''}>${c}</td>`).join('')+'</tr>').join('');
+  const top=(k,n=5,desc=true)=>[...kec].sort((a,b)=>desc?b[k]-a[k]:a[k]-b[k]).slice(0,n);
+  tbl('pv_top',[['Kecamatan'],['kWh/kWp',1],['Elevasi m',1],['Pohon %',1]],[...top('pvout',5),...top('pvout',5,false)].map(r=>[`${r.kec} <span class="tag">${r.kab.replace('Kab. ','')}</span>`,f0(r.pvout),f0(r.ele),f0(r.tree)]));
+  tbl('roof_top',[['Kecamatan'],['GWh/th',1],['Penduduk 2025',1],['Terbangun %',1],['Charger',1]],top('roof_gwh',10).map(r=>[`${r.kec} <span class="tag">${r.kab.replace('Kab. ','')}</span>`,f0(r.roof_gwh),f0(r.pop25),f1(r.built21),r.ch]));
+  tbl('suit_top',[['Kecamatan'],['km² lolos',1],['GI terdekat'],['km ke GI',1],['Headroom GI %',1]],top('suit70km2',10).map(r=>[`${r.kec} <span class="tag">${r.kab.replace('Kab. ','')}</span>`,f0(r.suit70km2),r.gi,f1(r.d_gi),f0(r.gi_head)]));
+  tbl('growth_top',[['Kecamatan'],['+pp terbangun',1],['Terbangun 2020 %',1],['Penduduk +% 25–30',1],['Menit ke SPKLU',1]],top('growth_pp',10).map(r=>[`${r.kec} <span class="tag">${r.kab.replace('Kab. ','')}</span>`,f1(r.growth_pp),f1(r.built20),f1(r.pop_ch_25_30),f1(r.t_mean)]));
+  tbl('flood_top',[['Kecamatan'],['% penduduk',1],['Jiwa',1],['% luas',1],['KPI']],top('flood_pop_share',10).map(r=>[`${r.kec} <span class="tag">${r.kab.replace('Kab. ','')}</span>`,f0(r.flood_pop_share),f0(r.pop25_flood),f0(100*r.flood_share),r.kpi?'ya':'']));
+  tbl('assets_fl',[['Aset'],['Lokasi'],['Charger / MVA',1],['Kedalaman model (m)',1]],[...d.spklu_flood.sort((a,b)=>b.flood_m-a.flood_m).map(s=>['SPKLU · '+s.name,(s.addr||'').split(',').slice(-3,-1).join(',').trim(),s.chg,f1(s.flood_m)]),...d.gi_flood.map(g=>['GI · '+g.name,'','MVA '+g.mva,f1(g.flood_m)])]);
+  // tabel kecamatan
+  const lc = [['Sawah/ladang',t.crop],['Pohon',t.tree],['Terbangun',t.built21]]; const rest=100-lc.reduce((s,x)=>s+x[1],0); lc.push(['Rumput, air, lainnya',rest]);
+  document.getElementById('lc').innerHTML=lc.map(([n,v])=>`<div class="bar"><span>${n}</span><i class="${n==='Pohon'?'':n==='Terbangun'?'b':'y'}" style="width:${v}%"></i><small>${pct(v)}</small></div>`).join('');
+  const ks=document.getElementById('kabsel'); [...new Set(C.map(c=>c.kab))].sort().forEach(k=>{const o=document.createElement('option');o.value=k;o.textContent=k;ks.appendChild(o);});
+  const render=()=>{ const k=ks.value, s=document.getElementById('sortsel').value; const rows=kec.filter(c=>!k||c.kab===k).sort((a,b)=>b[s]-a[s]);
+    tbl('kec',[['Kecamatan'],['Kab'],['PV kWh/kWp',1],['Atap GWh',1],['PLTS km²',1],['Banjir % pddk',1],['+pp terbangun',1],['Pddk 2025',1],['+% 25–30',1],['Menit ke SPKLU',1],['Charger',1]],
+      rows.map(r=>[r.kec+(r.kpi?' <span class="tag">KPI</span>':''),r.kab.replace('Kab. ',''),f0(r.pvout),f0(r.roof_gwh),f0(r.suit70km2),f0(r.flood_pop_share),f1(r.growth_pp),f0(r.pop25),f1(r.pop_ch_25_30),f1(r.t_mean),r.ch])); };
+  ks.onchange=render; document.getElementById('sortsel').onchange=render; render();
+})();
+</script>
+</body>
+</html>

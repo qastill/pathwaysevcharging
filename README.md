@@ -149,11 +149,12 @@ platform visualisasi data bersama. ur-scape belum punya versi web, jadi repo ini
   Coverage Model Picks; Rebana KPI Kecamatan; Transformer Overload Share Indramayu).
   Pasang ke ur-scape siapa pun: `python3 install.py <folder Data ur-scape>` (idempoten; menyalin `Sites/West Java/` + `Sites/Rebana/` (300 m, khusus kawasan Rebana) dan menambah
   grup ke `layers.csv` + `citations.csv`). Format gridnya persis keluaran plugin QGIS *ur-scapeDataImporter*, jadi **tidak perlu QGIS**.
-- **Paket QGIS** `urscape/west-java-layers-qgis.zip` — 23 lapisan yang sama sebagai GeoTIFF (EPSG:4326, nodata −9999, metadata di tag) + GeoJSON
+- **Paket QGIS** `urscape/west-java-layers-qgis.zip` — 52 lapisan yang sama sebagai GeoTIFF (EPSG:4326, nodata −9999, metadata di tag) + GeoJSON
   titik SPKLU (nasional Jun 2026, PLN Jabar Mar 2026). Tarik `.tif` ke QGIS; bisa diekspor ulang ke ur-scape lewat plugin resmi
   *ur-scapeDataImporter* (resolusi C, location West Java) bila ingin jalur QGIS.
 - **Laporan insight** `analysis/rebana_insights.html` — bacaan naratif kawasan Rebana (pengisian EV, akses & keadilan, kesiapan GI/gardu, prioritas
   lokasi, implikasi tiga tema workshop, metode & batasan); semua angka dari `rebana_data.json` + `ttm/ttm.json`.
+- **Laporan wilayah & energi** `analysis/rebana_territory.html` — surya (Global Solar Atlas), PLTS atap & utilitas, angin, tutupan lahan (WorldCover), lahan terbangun & penduduk 1975–2030 (GHSL), banjir 100-th (JRC); 190 kecamatan Rebana. Data: `data/open/` (lihat README di sana), statistik `analysis/rebana_open_build.py`.
 - **Panduan pakai** `analysis/urscape_guide.html` — cara pakai ur-scape (Site Browser, layer/filter/info, Inspector, Contours, Export) + resep analisis workshop, dengan screenshot dari site Rebana.
 - **Halaman web** `analysis/urscape_explorer.html` (`?site=rebana` = site Rebana 300 m; `#rebana` = zoom Rebana di site West Java) — lapisan yang sama dirender di browser (Leaflet +
   CARTO, warna ramp mengikuti tema), nilai sel saat kursor diarahkan, legenda + sitasi, tombol unduh paket. Payload

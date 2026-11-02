@@ -52,7 +52,8 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
   <select id="sitesel" class="btn" aria-label="ur-scape site"><option value="westjava">Site: West Java (0.5′ ≈ 0.9 km)</option><option value="rebana">Site: Rebana (300 m)</option></select>
   <select id="basesel" class="btn" aria-label="Basemap"></select>
   <a class="btn" href="urscape_guide.html">Panduan ur-scape</a>
-  <a class="btn" href="rebana_insights.html">Laporan insight</a>
+  <a class="btn" href="rebana_insights.html">Laporan EV &amp; grid</a>
+  <a class="btn" href="rebana_territory.html">Laporan wilayah &amp; energi</a>
   <a class="btn" href="rebana_explorer.html">Rebana explorer</a>
   <a class="btn" href="https://ur-scape.com" target="_blank" rel="noopener">ur-scape.com</a>
   <a class="btn" href="../urscape/west-java-layers-qgis.zip" download>QGIS GeoTIFF (zip)</a>
@@ -90,7 +91,7 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
   document.getElementById('meta').textContent = `${P.layers.length} layers · ${P.cx}×${P.cy} cells of ${P.sign==='D'?'300 m':'0.5′ (~0.9 km)'} · same grids as the ur-scape site "${P.site||'West Java'}" · generated ${P.generated.slice(0,4)}-${P.generated.slice(4)}`;
 
   const b64 = s => { const bin=atob(s); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i); return u; };
-  const decode = L0 => { if(!L0.Q){ L0.Q=pako.inflate(b64(L0.q)); L0.R=new Float32Array(pako.inflate(b64(L0.raw)).buffer);} return L0; };
+  const decode = async L0 => { if(!L0.Q){ if(L0.file&&!L0.q){ Object.assign(L0, await (await fetch(L0.file)).json()); } L0.Q=pako.inflate(b64(L0.q)); if(L0.raw16){ const u=new Uint16Array(pako.inflate(b64(L0.raw16)).buffer); const k=(L0.max-L0.min)/65535; L0.R=new Float32Array(u.length); for(let i=0;i<u.length;i++) L0.R[i]=L0.min+u[i]*k; } else L0.R=new Float32Array(pako.inflate(b64(L0.raw)).buffer);} return L0; };
   // ramp: pale -> layer colour -> deep (light theme) | dark -> layer colour -> white (dark theme), like ur-scape on its dark basemap
   const ramp = (rgb,t) => { const [r,g,b]=rgb; const lo = dark()?[20,28,40]:[236,232,222]; const hi = dark()?[255,255,255]:[r*.35,g*.35,b*.35];
     if(t<.5){const k=t/.5; return [lo[0]+(r-lo[0])*k, lo[1]+(g-lo[1])*k, lo[2]+(b-lo[2])*k];} const k=(t-.5)/.5; return [r+(hi[0]-r)*k, g+(hi[1]-g)*k, b+(hi[2]-b)*k]; };
@@ -118,7 +119,7 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
     area.hidden=false; area.innerHTML='<b>Area summary</b><div style="color:var(--muted);font-size:12px">Klik titik-titik poligon di peta, klik ganda untuk selesai.</div>'; };
   const inside=(lat,lng,P0)=>{ let c=false; for(let i=0,j=P0.length-1;i<P0.length;j=i++){ const yi=P0[i][0],xi=P0[i][1],yj=P0[j][0],xj=P0[j][1]; if(((yi>lat)!==(yj>lat))&&(lng<(xj-xi)*(lat-yi)/(yj-yi)+xi)) c=!c; } return c; };
   function summarise(){
-    if(!cur||pts.length<3) return; decode(cur);
+    if(!cur||pts.length<3) return;
     const lats=pts.map(p=>p[0]), lngs=pts.map(p=>p[1]);
     const x0=Math.max(0,Math.floor((Math.min(...lngs)-P.west)/P.res)), x1=Math.min(P.cx-1,Math.floor((Math.max(...lngs)-P.west)/P.res));
     const y0=Math.max(0,Math.floor((P.north-Math.max(...lats))/P.res)), y1=Math.min(P.cy-1,Math.floor((P.north-Math.min(...lats))/P.res));
@@ -137,8 +138,8 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
   map.on('dblclick',e=>{ if(!drawing) return; while(pts.length>1&&pts.at(-1)[0]===pts.at(-2)[0]&&pts.at(-1)[1]===pts.at(-2)[1]) pts.pop(); if(pts.length>=3){ stopDraw(); if(poly) map.removeLayer(poly); poly=L.polygon(pts,{color:'#fff',weight:2,fillOpacity:.08}).addTo(map); summarise(); } setTimeout(()=>map.doubleClickZoom.enable(),300); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&drawing) clearArea(); });
 
-  function show(l,btn){
-    decode(l); cur=l; if(poly&&pts.length>=3) setTimeout(summarise,0);
+  async function show(l,btn){
+    await decode(l); cur=l; if(poly&&pts.length>=3) setTimeout(summarise,0);
     for(const x of P.layers) x.btn.setAttribute('aria-pressed',x===l?'true':'false');
     const cv=document.createElement('canvas'); cv.width=P.cx; cv.height=P.cy; const ctx=cv.getContext('2d'); const img=ctx.createImageData(P.cx,P.cy);
     const cols = l.categories ? catColors(l.rgb,l.categories.length) : null;
