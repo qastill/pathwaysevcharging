@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Laporan insight kawasan Rebana: pengisian EV, akses & keadilan spasial, kesiapan jaringan PLN, prioritas lokasi charger — dibangun dari data PLN, TTM r5r, Kontur, BPS, RUPTL.">
+<title>Rebana EV Insights</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F6F4EE;--panel:#FFFFFF;--fg:#13263A;--muted:#55606E;--line:#DAD6CB;--soft:#ECE8DD;--accent:#C97D0E;--s1:#0F9A96;--s3:#7B5EA7;--bad:#C0392B;--ok:#1E8E5A;--fd:'Domine',Georgia,serif;--fs:'IBM Plex Sans',Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;--s1:#2FA9A6;--s3:#9C82D0;--bad:#DC5F4F;--ok:#3DBB7E;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;--s1:#2FA9A6;--s3:#9C82D0;--bad:#DC5F4F;--ok:#3DBB7E;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15.5px/1.55 var(--fs)}
+header{border-bottom:1px solid var(--line);padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header .brand{font:700 18px var(--fd)}header .brand span{color:var(--accent)}header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:180px}
+header a{border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:var(--fg);text-decoration:none;font-weight:600;font-size:12.5px;background:var(--panel)}
+main{max-width:980px;margin:0 auto;padding:16px 16px 60px}
+h1{font:700 30px/1.2 var(--fd);margin:18px 0 6px}h2{font:700 21px/1.25 var(--fd);margin:38px 0 10px;padding-top:14px;border-top:1px solid var(--line)}h3{font:600 15.5px var(--fs);margin:20px 0 6px}
+p.lead{font-size:17px;color:var(--muted)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}.kpi b{display:block;font:700 24px/1.1 var(--fd);color:var(--accent)}.kpi span{color:var(--muted);font-size:12.5px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;min-width:0;overflow-x:auto}.two>*{min-width:0}
+.insight{border-left:4px solid var(--accent);background:var(--soft);padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0}
+.insight b{font-family:var(--fd)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.bar{display:grid;grid-template-columns:170px 1fr 56px;gap:8px;align-items:center;margin:4px 0;font-size:13.5px}.bar i{display:block;height:12px;border-radius:4px;background:var(--s1)}.bar i.b{background:var(--bad)}.bar i.a{background:var(--accent)}.bar i.p{background:var(--s3)}.bar small{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.src{color:var(--muted);font-size:12.5px}.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:720px){.two{grid-template-columns:1fr}.bar{grid-template-columns:120px 1fr 52px}table{display:block;overflow-x:auto;white-space:nowrap}h1{font-size:24px}}
+ol.rec li{margin:8px 0}.tag{display:inline-block;background:var(--soft);border-radius:6px;padding:1px 7px;font-size:12px;color:var(--muted);margin-left:4px}
+figure{margin:0}figcaption{color:var(--muted);font-size:12.5px;margin-top:6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Rebana · <span>EV Insights</span></div>
+  <div class="meta">Laporan 1 Nov 2026 · untuk 2nd Powering Rebana Workshop (Cirebon, 5–6 Nov 2026) · Qashtalani Haramaini, Monash University Indonesia / RACE for 2030</div>
+  <a href="urscape_explorer.html#rebana">Peta layer</a>
+  <a href="rebana_explorer.html">Rebana explorer</a>
+  <a href="../urscape/ur-scape-west-java.zip" download>Paket ur-scape</a>
+  <a href="rebana_insights.html">English</a>
+</header>
+<main>
+<h1>Apa yang sebenarnya terjadi di Rebana: pengisian EV, akses, dan jaringan</h1>
+<p class="lead">Kawasan metropolitan Rebana (Subang–Indramayu–Majalengka–Sumedang–Kuningan–Kab. &amp; Kota Cirebon) sedang dibangun: Rp 36,7 T investasi masuk pada 2025, 13 kawasan peruntukan industri (KPI), bandara Kertajati, pelabuhan Patimban. Laporan ini membaca satu pertanyaan sederhana dari data yang ada: <em>siapa yang sudah bisa mengisi mobil listrik di sini, siapa yang belum, dan apakah jaringan listriknya siap bila kawasan ini benar-benar terbangun?</em> Semua angka di bawah dihitung dari data mentah di repo <a href="https://github.com/qastill/pathwaysevcharging">pathwaysevcharging</a> dan dapat dilihat per sel grid di <a href="urscape_explorer.html#rebana">peta layer</a> atau di ur-scape.</p>
+
+<div class="kpis">
+  <div class="kpi"><b>9,2 jt</b><span>penduduk Rebana (Kontur 2023), 1.981 desa</span></div>
+  <div class="kpi"><b>129</b><span>unit charger PLN di 62 lokasi (20 % dari 636 unit Jabar)</span></div>
+  <div class="kpi"><b>348 MWh</b><span>energi terjual Mar 2026 · 13.691 sesi · Rp 910 jt</span></div>
+  <div class="kpi"><b>73 %</b><span>energi itu terjual di 19 rest area Tol Cipali–Palikanci</span></div>
+  <div class="kpi"><b>29 %</b><span>warga dalam 10 menit (mobil) dari charger — Jabodetabek 76 %</span></div>
+  <div class="kpi"><b>1,04 jt</b><span>warga (11 %) lebih dari 30 menit dari charger mana pun</span></div>
+  <div class="kpi"><b>−15 MVA</b><span>headroom GI Sunyaragi (Kota Cirebon): sudah 86 % beban puncak</span></div>
+  <div class="kpi"><b>121 MVA</b><span>headroom GI di Indramayu — tempat charger justru paling jarang</span></div>
+</div>
+
+<h2>1. Ringkasan eksekutif — tujuh fakta, satu cerita</h2>
+<div class="insight"><b>Rebana hari ini mengisi mobil orang yang lewat, bukan mobil orang yang tinggal.</b> 73 % energi SPKLU Rebana terjual di rest area tol; 71 % sesi terjadi di 19 dari 62 lokasi. Pemilik EV terdaftar di Rebana baru 19 dari 1.007 pelanggan KBLBB Jabar (1,9 %) dan 90 dari 3.691 permohonan home charging (2,4 %) — padahal penduduknya 18 % Jabar.</div>
+<div class="insight"><b>Akses sangat tidak merata, dan polanya mengikuti kepadatan, bukan kebutuhan.</b> Hanya 28,6 % warga Rebana dalam 10 menit berkendara dari charger (Jabar 46 %, Jabodetabek 76 %). Kuintil desa terjarang: 5,4 % — kuintil terpadat: 69,5 %. 1,04 juta warga (Kuningan 24 %, Sumedang 20 %) tinggal &gt;30 menit dari charger mana pun.</div>
+<div class="insight"><b>Kapasitas jaringan ada — tapi di tempat yang salah.</b> GI Haurgeulis (69 % headroom), Cikedung (56 %), Arjawinangun Baru (56 %) melayani kecamatan tanpa satu pun charger. Sebaliknya GI Sunyaragi yang memasok Kota Cirebon — pusat permintaan — sudah 86 % beban puncak (headroom negatif), GI Subang 89,5 %, Indramayu dan Jatibarang &gt;80 %.</div>
+<div class="insight"><b>Tangga layanan berhenti di anak tangga pertama.</b> 71 % warga tidak punya charger dalam 10 menit; 27 % punya tapi dayanya kurang dari ambang 0,03 kW per rumah tangga; hanya 1,5 % yang terjangkau <em>dan</em> cukup daya. Rebana belum punya masalah kapasitas — ia punya masalah keberadaan.</div>
+<div class="insight"><b>Dua belas kecamatan bisa menaikkan cakupan 10 km dari 67 % ke 85 % penduduk.</b> Model cakupan greedy: Gegesik (+432 rb warga), Terisi (+256 rb), Ciasem (+220 rb), Jatinunggal (+208 rb), Pusakajaya (+206 rb) … — sembilan di antaranya dekat GI dengan headroom ≥ 43 %.</div>
+<div class="insight"><b>Permintaan nasional tumbuh ~4× per tahun — Rebana akan terkejar.</b> Sesi SPKLU nasional Mei 2026: 566.942 (13,4 GWh) vs Mei 2025: 130.806 (3,4 GWh). Unit charger Rebana bertambah 36 (2024), 37 (2025), 30 (2026 s.d. Jun). Yang belum bertambah adalah lokasinya di luar koridor tol.</div>
+<div class="insight"><b>Karena kawasannya belum terbangun, keputusan lokasi masih bisa dibuat <em>sebelum</em> permintaan terbentuk.</b> Metode waktu-tempuh desa yang dipakai di sini biasanya berfungsi sebagai audit (menilai jaringan yang sudah ada); di Rebana ia bisa dipakai <em>ex-ante</em> — memilih lokasi yang memperbaiki akses dan memakai headroom GI sekaligus. Itu isi layer <em>Charger Siting Priority</em>.</div>
+
+<h2>2. Konteks kawasan</h2>
+<div class="two">
+<div class="box">
+<h3>Tujuh kabupaten/kota, 9,2–9,4 juta jiwa</h3>
+<table><tr><th>Wilayah</th><th class="n">Penduduk (jt)</th><th class="n">KPI</th><th class="n">Investasi 2025 (Rp T)</th><th class="n">Pengeluaran/kap (Rp rb/bln)</th></tr>
+<tr><td>Kab. Cirebon</td><td class="n">2,45</td><td class="n">1</td><td class="n">4,01</td><td class="n">11.769</td></tr>
+<tr><td>Kab. Indramayu</td><td class="n">1,95</td><td class="n">6</td><td class="n">3,35</td><td class="n">11.316</td></tr>
+<tr><td>Kab. Subang</td><td class="n">1,66</td><td class="n">3</td><td class="n">18,2</td><td class="n">12.144</td></tr>
+<tr><td>Kab. Majalengka</td><td class="n">1,36</td><td class="n">3</td><td class="n">3,36</td><td class="n">11.094</td></tr>
+<tr><td>Kab. Kuningan</td><td class="n">1,24</td><td class="n">0</td><td class="n">–</td><td class="n">10.707</td></tr>
+<tr><td>Kab. Sumedang</td><td class="n">1,17</td><td class="n">0</td><td class="n">5,63</td><td class="n">11.963</td></tr>
+<tr><td>Kota Cirebon</td><td class="n">0,36</td><td class="n">0</td><td class="n">–</td><td class="n">13.341</td></tr></table>
+<p class="src">Investasi 2025 total Rp 36,67 T (BKPM via BP Rebana; 2026 H1 Rp 21,59 T ≈ 30 % Jabar). KPI terbesar: Cipali Subang Barat 10.408 ha, Losarang 6.170 ha, Cipali Subang Timur 4.806 ha, Patrol 4.141 ha. Target tenaga kerja 2030: 1,78 juta.</p>
+</div>
+<div class="box">
+<h3>Pembangkit di dalam kawasan: 2,65 GW batu bara, 110 MW air</h3>
+<table><tr><th>Pembangkit</th><th class="n">MW</th><th>Status</th></tr>
+<tr><td>PLTU Cirebon-2</td><td class="n">1.000</td><td>beroperasi sejak Mei 2023</td></tr>
+<tr><td>PLTU Indramayu (Sukra)</td><td class="n">990</td><td>3×330 MW, sejak 2011</td></tr>
+<tr><td>PLTU Cirebon-1</td><td class="n">660</td><td>pensiun dini 2035 dibatalkan Des 2025</td></tr>
+<tr><td>PLTA Jatigede</td><td class="n">110</td><td>beroperasi</td></tr>
+<tr><td>PLTS Terapung Jatigede</td><td class="n">100</td><td>rencana (MoU PLN–Masdar 2025)</td></tr>
+<tr><td>PLTS Gantar Indramayu</td><td class="n">100</td><td>rencana (2024)</td></tr></table>
+<p class="src">Implikasi: setiap kWh pengisian EV di Rebana hari ini praktis berasal dari grid Jamali berbasis batu bara; manfaat emisinya bergantung pada bauran, bukan pada mobilnya.</p>
+</div>
+</div>
+
+<h2>3. Pengisian EV hari ini: koridor tol, bukan kota</h2>
+<div class="kpis">
+  <div class="kpi"><b>62</b><span>lokasi SPKLU PLN (1 tanpa koordinat), 8,3 MW terpasang</span></div>
+  <div class="kpi"><b>13.691</b><span>sesi Mar 2026 = 13,6 % sesi Jabar (101.020)</span></div>
+  <div class="kpi"><b>25,4 kWh</b><span>rata-rata energi per sesi (Jabar 22,4)</span></div>
+  <div class="kpi"><b>60 %</b><span>sesi di charger ≥100 kW (ultra-fast rest area)</span></div>
+</div>
+<h3>Energi per jenis lokasi (Mar 2026)</h3>
+<div class="bar"><span>Rest Area Tol (19 lokasi)</span><i class="a" style="width:100%"></i><small>255 MWh</small></div>
+<div class="bar"><span>Kantor/unit PLN (22)</span><i style="width:26%"></i><small>67 MWh</small></div>
+<div class="bar"><span>F&amp;B / kafe (4)</span><i style="width:2.7%"></i><small>6,9</small></div>
+<div class="bar"><span>Publik/pemerintah (3)</span><i style="width:2.3%"></i><small>5,9</small></div>
+<div class="bar"><span>Hotel (6)</span><i style="width:2%"></i><small>5,0</small></div>
+<div class="bar"><span>Mall/retail (4)</span><i style="width:1.3%"></i><small>3,2</small></div>
+<div class="bar"><span>Perumahan (1)</span><i style="width:.5%"></i><small>1,4</small></div>
+<div class="bar"><span>Wisata (2)</span><i style="width:.4%"></i><small>1,1</small></div>
+<p class="src">Lima lokasi teratas (KM 166 A, CSE UP3 Cirebon, KM 164 B, KM 229 B, KM 101 B) = 42 % energi Rebana. Lima lokasi ≤ 10 sesi/bulan. Puncak harian jam 13–17 (869 sesi/jam pada jam 14) — pola perjalanan, bukan pola pulang-kerja.</p>
+<table><tr><th>Wilayah</th><th class="n">Unit</th><th class="n">kW</th><th class="n">Sesi Mar 26</th><th class="n">MWh</th><th class="n">Rp jt</th><th class="n">Home charging</th><th class="n">Charger / 100 rb jiwa</th></tr>
+<tr><td>Kab. Cirebon</td><td class="n">39</td><td class="n">3.164</td><td class="n">4.161</td><td class="n">118,8</td><td class="n">316,5</td><td class="n">24</td><td class="n">2,49</td></tr>
+<tr><td>Kab. Majalengka</td><td class="n">22</td><td class="n">2.259</td><td class="n">2.524</td><td class="n">64,7</td><td class="n">159,7</td><td class="n">9</td><td class="n">1,74</td></tr>
+<tr><td>Kab. Subang</td><td class="n">15</td><td class="n">818</td><td class="n">2.351</td><td class="n">55,1</td><td class="n">149,4</td><td class="n">16</td><td class="n">1,20</td></tr>
+<tr><td>Kota Cirebon</td><td class="n">13</td><td class="n">881</td><td class="n">2.053</td><td class="n">55,5</td><td class="n">143,8</td><td class="n">17</td><td class="n">1,96</td></tr>
+<tr><td>Kab. Indramayu</td><td class="n">16</td><td class="n">587</td><td class="n">1.508</td><td class="n">30,3</td><td class="n">79,2</td><td class="n">9</td><td class="n">1,06</td></tr>
+<tr><td>Kab. Sumedang</td><td class="n">12</td><td class="n">260</td><td class="n">650</td><td class="n">13,5</td><td class="n">35,3</td><td class="n">12</td><td class="n">1,30</td></tr>
+<tr><td>Kab. Kuningan</td><td class="n">12</td><td class="n">350</td><td class="n">444</td><td class="n">9,9</td><td class="n">26,2</td><td class="n">3</td><td class="n">1,16</td></tr></table>
+<div class="insight"><b>Baca tabelnya:</b> Majalengka dan Subang "laris" bukan karena warganya — melainkan karena rest area KM 164–166 dan KM 101–102 Cipali ada di wilayah administratifnya. Indramayu, kabupaten dengan 6 KPI dan headroom GI terbesar, hanya 1.508 sesi dan 587 kW terpasang. Kepemilikan EV lokal (merek terbanyak: BYD 36, Wuling 18, Jaecoo 16) masih di bawah 100 kendaraan terdaftar.</div>
+
+<h2>4. Akses dan keadilan spasial: siapa yang bisa mengisi</h2>
+<p>Metode: untuk 1.981 desa Rebana (dari 6.669 desa Jabar–Jakarta–Banten) dihitung waktu tempuh mobil di jaringan jalan OSM (r5r, matriks desa→desa, maks 60 menit; matriks oleh Alyas Widita) ke desa ber-SPKLU terdekat (1.556 lokasi publik, PLN Charge.IN Jun 2026). Kebutuhan = penduduk Kontur 2023 per desa.</p>
+<h3>Bagian warga dalam 10 menit dari charger</h3>
+<div class="bar"><span>Jabodetabek</span><i class="p" style="width:100%"></i><small>76 %</small></div>
+<div class="bar"><span>Jawa Barat (seluruh)</span><i class="p" style="width:61%"></i><small>46 %</small></div>
+<div class="bar"><span>Kota Cirebon</span><i style="width:103%;max-width:100%"></i><small>78 %</small></div>
+<div class="bar"><span>Kab. Cirebon</span><i style="width:52%"></i><small>39 %</small></div>
+<div class="bar"><span>Kab. Kuningan</span><i style="width:40%"></i><small>30 %</small></div>
+<div class="bar"><span>Kab. Sumedang</span><i style="width:39%"></i><small>30 %</small></div>
+<div class="bar"><span>Kab. Subang</span><i style="width:25%"></i><small>19 %</small></div>
+<div class="bar"><span>Kab. Indramayu</span><i style="width:25%"></i><small>19 %</small></div>
+<div class="bar"><span>Kab. Majalengka</span><i style="width:25%"></i><small>19 %</small></div>
+<div class="bar"><span><b>Rebana</b></span><i class="a" style="width:38%"></i><small><b>29 %</b></small></div>
+<table><tr><th>Wilayah</th><th class="n">Desa</th><th class="n">Penduduk</th><th class="n">≤10 mnt</th><th class="n">≤15 mnt</th><th class="n">≤30 mnt</th><th class="n">&gt;30 mnt (jiwa)</th><th class="n">Median (mnt)</th></tr>
+<tr><td>Kota Cirebon</td><td class="n">20</td><td class="n">407.947</td><td class="n">78 %</td><td class="n">91 %</td><td class="n">91 %</td><td class="n">35.153</td><td class="n">5</td></tr>
+<tr><td>Kab. Cirebon</td><td class="n">408</td><td class="n">2.051.288</td><td class="n">39 %</td><td class="n">68 %</td><td class="n">97 %</td><td class="n">59.318</td><td class="n">12</td></tr>
+<tr><td>Kab. Indramayu</td><td class="n">316</td><td class="n">1.694.968</td><td class="n">19 %</td><td class="n">42 %</td><td class="n">96 %</td><td class="n">70.640</td><td class="n">18</td></tr>
+<tr><td>Kab. Subang</td><td class="n">253</td><td class="n">1.584.087</td><td class="n">19 %</td><td class="n">36 %</td><td class="n">87 %</td><td class="n">207.104</td><td class="n">19</td></tr>
+<tr><td>Kab. Majalengka</td><td class="n">338</td><td class="n">1.210.072</td><td class="n">19 %</td><td class="n">42 %</td><td class="n">86 %</td><td class="n">165.539</td><td class="n">18</td></tr>
+<tr><td>Kab. Sumedang</td><td class="n">282</td><td class="n">1.230.274</td><td class="n">30 %</td><td class="n">48 %</td><td class="n">80 %</td><td class="n">251.878</td><td class="n">16</td></tr>
+<tr><td>Kab. Kuningan</td><td class="n">364</td><td class="n">1.023.679</td><td class="n">30 %</td><td class="n">44 %</td><td class="n">76 %</td><td class="n">252.084</td><td class="n">18</td></tr>
+<tr><td><b>Rebana</b></td><td class="n"><b>1.981</b></td><td class="n"><b>9.202.315</b></td><td class="n"><b>28,6 %</b></td><td class="n"><b>50,0 %</b></td><td class="n"><b>88,8 %</b></td><td class="n"><b>1.041.716</b></td><td class="n"></td></tr></table>
+<div class="two">
+<div class="box"><h3>Keadilan: akses mengikuti kepadatan</h3>
+<p>Kuintil desa menurut kepadatan (tiap ≈1,84 juta jiwa): Q1 terjarang 5,4 % dalam 10 menit → Q5 terpadat 69,5 %. Indeks konsentrasi akses-15-menit terhadap kepadatan 0,31 (Jabar 0,28); terhadap pengeluaran per kapita hanya 0,08 — <b>ketimpangan Rebana adalah ketimpangan desa–kota, bukan kaya–miskin.</b> Charger per 100 rb jiwa: Cirebon 2,49 · Kota Cirebon 1,96 · Majalengka 1,74 · Indramayu 1,06.</p></div>
+<div class="box"><h3>Tangga layanan (ladder) RQ1</h3>
+<div class="bar"><span>Tanpa charger ≤10 mnt</span><i class="b" style="width:100%"></i><small>71,4 %</small></div>
+<div class="bar"><span>Terjangkau, daya kurang</span><i class="a" style="width:38%"></i><small>27,1 %</small></div>
+<div class="bar"><span>Terjangkau &amp; cukup</span><i style="width:2%"></i><small>1,5 %</small></div>
+<p class="src">Kecukupan = E2SFCA kW charger dalam catchment 10 menit per rumah tangga (3,6 jiwa) ≥ 0,03 kW. Jabar: 53,7 / 44,7 / 1,6 %.</p></div>
+</div>
+
+<h2>5. Kesiapan jaringan: headroom ada di tempat charger tidak ada</h2>
+<table><tr><th>Wilayah</th><th class="n">Headroom GI (MVA)</th><th>GI (headroom % kapasitas)</th></tr>
+<tr><td>Kab. Indramayu</td><td class="n">120,6</td><td>Haurgeulis 68,6 % · Cikedung 56,0 % · <span style="color:var(--bad)">Indramayu −2,0 % · Jatibarang −2,0 %</span></td></tr>
+<tr><td>Kab. Majalengka</td><td class="n">79,4</td><td>Kadipaten 43,4 % · New Kadipaten 36,0 %</td></tr>
+<tr><td>Kab. Cirebon</td><td class="n">77,5</td><td>Arjawinangun Baru 56,3 % · Arjawinangun 17,2 % · Babakan 4,0 %</td></tr>
+<tr><td>Kab. Sumedang</td><td class="n">58,4</td><td>Rancaekek 36,7 % · Sumedang 22,1 % · Parakan −0,4 %</td></tr>
+<tr><td>Kab. Kuningan</td><td class="n">20,4</td><td>Mandirancan 15,4 % · Kuningan 5,0 %</td></tr>
+<tr><td>Kab. Subang</td><td class="n">11,2</td><td>Sukamandi 19,7 % · <span style="color:var(--bad)">Subang −8,5 % (89,5 % beban puncak)</span></td></tr>
+<tr><td>Kota Cirebon</td><td class="n" style="color:var(--bad)">−15,1</td><td><span style="color:var(--bad)">Sunyaragi −15,1 % (86,3 % beban puncak, 240 MVA)</span></td></tr></table>
+<div class="two">
+<div class="box"><h3>Gardu induk per UP3 (beban puncak)</h3>
+<table><tr><th>UP3</th><th class="n">Trafo</th><th class="n">MVA</th><th class="n">Puncak</th><th class="n">Trafo ≥80 %</th></tr>
+<tr><td>Cirebon</td><td class="n">17</td><td class="n">780</td><td class="n">67,1 %</td><td class="n">7 (300 MVA)</td></tr>
+<tr><td>Subang (Purwakarta)</td><td class="n">13</td><td class="n">690</td><td class="n">61,6 %</td><td class="n">4</td></tr>
+<tr><td>Indramayu</td><td class="n">7</td><td class="n">360</td><td class="n">61,6 %</td><td class="n">3</td></tr>
+<tr><td>Sumedang</td><td class="n">18</td><td class="n">750</td><td class="n">57,4 %</td><td class="n">2</td></tr></table></div>
+<div class="box"><h3>Gardu distribusi (trafo 20 kV/400 V)</h3>
+<table><tr><th>UP3</th><th class="n">Gardu</th><th class="n">Beban rata-rata</th><th class="n">Overload &gt;100 %</th></tr>
+<tr><td>Cirebon</td><td class="n">3.419</td><td class="n">59,1 %</td><td class="n">354 (11,7 %)</td></tr>
+<tr><td>Indramayu</td><td class="n">1.640</td><td class="n">63,6 %</td><td class="n">122 (7,6 %)</td></tr>
+<tr><td>Sumedang</td><td class="n">1.504</td><td class="n">49,0 %</td><td class="n">21 (1,6 %)</td></tr></table>
+<p class="src">Di Indramayu, kecamatan dengan trafo overload terbanyak: Sindang (19 dari 90), Karangampel (12), Haurgeulis (11), Jatibarang (10), Indramayu (9) — kota kecamatan pesisir, bukan koridor tol.</p></div>
+</div>
+<div class="insight"><b>Dua risiko yang saling berkebalikan.</b> (1) Di kota (Kota Cirebon, Subang kota, Indramayu kota) permintaan EV akan tumbuh paling cepat tetapi GI-nya sudah jenuh: menambah fast charger di sana berarti menambah beban puncak siang pada GI yang sudah 86–90 %. (2) Di koridor Haurgeulis–Cikedung–Arjawinangun ada 69 + 56 + 56 % headroom tetapi hampir tanpa charger dan tanpa pemilik EV — kapasitas menganggur. Jalan keluarnya adalah memasangkan keduanya: charger baru di luar kota pada GI longgar, dan manajemen beban (jadwal, tarif siang PLTS) di kota.</div>
+
+<h2>6. Ke mana charger berikutnya: dua model, satu jawaban</h2>
+<div class="two">
+<div class="box"><h3>Model A — prioritas penempatan per kecamatan</h3>
+<p class="src">Skor 0–100 = 0,5·kebutuhan (waktu tempuh rata-rata tertimbang penduduk &amp; jarak ke charger) + 0,25·permintaan (log penduduk) + 0,25·kesiapan (headroom GI terdekat). Bobot ilustratif.</p>
+<table><tr><th>#</th><th>Kecamatan</th><th class="n">Penduduk</th><th class="n">Menit</th><th class="n">GI headroom</th><th class="n">Skor</th></tr>
+<tr><td>1</td><td>Pusakanagara (Subang)</td><td class="n">43.311</td><td class="n">20,4</td><td class="n">Haurgeulis 69 %</td><td class="n">67,0</td></tr>
+<tr><td>2</td><td>Cibingbin (Kuningan)</td><td class="n">53.411</td><td class="n">41,0</td><td class="n">Arjawinangun Baru 56 %</td><td class="n">65,9</td></tr>
+<tr><td>3</td><td>Cilebak (Kuningan)</td><td class="n">19.656</td><td class="n">52,5</td><td class="n">56 %</td><td class="n">65,9</td></tr>
+<tr><td>4</td><td>Krangkeng (Indramayu)</td><td class="n">64.954</td><td class="n">29,2</td><td class="n">56 %</td><td class="n">65,9</td></tr>
+<tr><td>5</td><td>Karangkancana (Kuningan)</td><td class="n">24.959</td><td class="n">41,9</td><td class="n">56 %</td><td class="n">65,3</td></tr>
+<tr><td>6</td><td>Losari (Cirebon)</td><td class="n">92.851</td><td class="n">31,8</td><td class="n">56 %</td><td class="n">65,2</td></tr>
+<tr><td>7</td><td>Ciwaru (Kuningan)</td><td class="n">33.128</td><td class="n">39,5</td><td class="n">56 %</td><td class="n">65,1</td></tr>
+<tr><td>8</td><td>Gegesik (Cirebon)</td><td class="n">64.187</td><td class="n">28,4</td><td class="n">56 %</td><td class="n">63,2</td></tr>
+<tr><td>9</td><td>Lemahsugih (Majalengka)</td><td class="n">62.910</td><td class="n">36,2</td><td class="n">Kadipaten 43 %</td><td class="n">61,9</td></tr></table>
+<p class="src">Terendah: Cisarua, Ganeas, Sumedang Utara, Paseh, Cimalaka (Sumedang) — 6–14 menit, sudah terlayani.</p></div>
+<div class="box"><h3>Model B — cakupan 10 km (greedy)</h3>
+<p class="src">Mulai dari 66,9 % penduduk dalam 10 km dari charger; tiap pilihan = kecamatan yang menambah warga tercakup paling banyak.</p>
+<table><tr><th>#</th><th>Kecamatan</th><th class="n">+ warga</th><th class="n">Cakupan</th><th>GI terdekat</th></tr>
+<tr><td>1</td><td>Gegesik (Cirebon)</td><td class="n">432.164</td><td class="n">71,5 %</td><td>Arjawinangun Baru 9 km</td></tr>
+<tr><td>2</td><td>Terisi (Indramayu)</td><td class="n">256.383</td><td class="n">74,2 %</td><td>Cikedung 10 km</td></tr>
+<tr><td>3</td><td>Ciasem (Subang)</td><td class="n">219.592</td><td class="n">76,5 %</td><td>Pabuaran 19 km</td></tr>
+<tr><td>4</td><td>Jatinunggal (Sumedang)</td><td class="n">208.427</td><td class="n">78,7 %</td><td>Kadipaten 16 km</td></tr>
+<tr><td>5</td><td>Pusakajaya (Subang)</td><td class="n">206.298</td><td class="n">80,9 %</td><td>Haurgeulis 16 km</td></tr>
+<tr><td>6</td><td>Tanjungsiang (Subang)</td><td class="n">173.952</td><td class="n">82,8 %</td><td>Sumedang 16 km</td></tr>
+<tr><td>7</td><td>Dukupuntang (Cirebon)</td><td class="n">167.628</td><td class="n">84,6 %</td><td>Arjawinangun Baru 11 km</td></tr>
+<tr><td>8–12</td><td>Kedokan Bunder, Bongas, Cibugel, Bangodua, Maja</td><td class="n">+488 rb</td><td class="n">≈ 90 %</td><td></td></tr></table></div>
+</div>
+<div class="insight"><b>Kedua model bertemu di tiga nama: Gegesik, Terisi, dan koridor Pusakanagara–Pusakajaya.</b> Ketiganya di pantura antara Cipali dan pesisir, di tengah 6 KPI Indramayu dan Cipali Subang, dengan GI berheadroom 56–69 % dalam 10–16 km. Satu SPKLU 4-gun di Gegesik saja menambah 432 ribu warga ke dalam radius 10 km — lebih banyak dari gabungan seluruh charger baru 2026.</div>
+
+<h2>7. Apa artinya untuk tiga tema workshop</h2>
+<ol class="rec">
+<li><b>Sustainable Mobility &amp; Connectivity.</b> Bedakan dua pasar: <em>transit charging</em> (tol, sudah jalan: 73 % energi, ultra-fast ≥100 kW) dan <em>resident charging</em> (belum ada: 29 % akses 10 menit, 1,5 % cukup daya). Ukuran keberhasilan Rebana seharusnya bukan jumlah unit, tetapi <b>bagian penduduk dalam 10 menit</b> — dari 29 % ke ≥ 50 % berarti ±12 lokasi di kecamatan yang disebut di atas. <span class="tag">layer: Travel Time, Population Beyond 30 min, Coverage Model Picks</span></li>
+<li><b>Energy.</b> Pakai headroom sebagai kriteria lokasi, bukan hanya lalu lintas: Haurgeulis, Cikedung, Arjawinangun Baru, Kadipaten bisa menyerap 10–20 MW charger tanpa penguatan. Di Kota Cirebon/Subang kota, charger baru harus datang bersama <em>time-of-use</em> siang (kurva PLTS: rest area memakai 230–520 kWh/jam, puncak jam 13–15, cocok dengan surya) atau penguatan GI Sunyaragi/Subang. <span class="tag">layer: Substation Peak Loading, Rebana Substation Headroom</span></li>
+<li><b>Skills.</b> 1,78 juta pekerjaan 2030 dan KPI 10.000 ha di Subang Barat akan memindahkan beban dan mobilitas ke pantura barat — tempat akses charger sekarang 19 %. Perencanaan SPKLU, trafo, dan pelatihan teknisi (Electra Skill Academy: 380 okupasi, 16 jalur) sebaiknya mengikuti peta KPI, bukan peta charger yang ada. <span class="tag">layer: Rebana KPI Kecamatan, Transformer Overload Share</span></li>
+<li><b>Keadilan.</b> Indeks konsentrasi terhadap pengeluaran ≈ 0 berarti belum ada ketimpangan kelas — masih sempat dicegah. Kuningan dan Sumedang (masing-masing 250 rb warga &gt;30 menit) adalah kabupaten tanpa KPI dan tanpa investasi besar; kalau dibiarkan mengikuti pasar, mereka yang terakhir terlayani.</li>
+<li><b>Tata kelola data.</b> Semua lapisan ini kini ada dalam satu format yang bisa dibuka siapa pun (ur-scape, QGIS, browser) dan diperbarui dari satu skrip. Yang masih kurang untuk analisis <em>ex-ante</em> yang lebih tajam: registrasi EV per kecamatan per bulan (Samsat), tanggal operasi tiap charger, dan rencana jaringan 20 kV di KPI.</li>
+</ol>
+
+<h2>8. Metode, sumber, dan batasan</h2>
+<div class="box">
+<p><b>Sumber.</b> Master SPKLU PLN Charge.IN (Jun 2026, 3.212 lokasi nasional, 1.556 di area studi); transaksi SPKLU PLN UID Jabar Mar 2026 (101.020 sesi; agregat per lokasi); register charger rumah dan pelanggan KBLBB (hitungan per kecamatan saja); laporan beban GI dan gardu distribusi PLN UID Jabar/UP3 (agregat); matriks waktu tempuh r5r desa→desa (Alyas Widita, Monash) di atas OSM; batas desa GADM 4.1 / HDX-BPS 2020; penduduk Kontur 2023 (H3 res 8); BPS Profil Kab/Kota 2024; RUPTL 2025–2034 × OSM untuk GI, saluran, pembangkit; BKPM/BP Rebana untuk investasi dan KPI.</p>
+<p><b>Batasan.</b> (1) Waktu tempuh dihitung dari titik dalam desa, bukan rumah; desa luas di pegunungan Kuningan–Sumedang tampak lebih buruk dari kenyataan sebagian warganya. (2) Headroom GI = kapasitas − beban puncak pelaporan; belum memperhitungkan N-1 maupun rencana PLN. (3) Charger non-PLN masuk dalam akses (lokasi) tetapi tidak dalam transaksi. (4) Skor prioritas memakai bobot pilihan penulis (0,5/0,25/0,25) — gunakan sebagai urutan diskusi, bukan keputusan. (5) Grid ur-scape 0,5′ (~0,9 km) merasterisasi poligon dari titik tengah sel; desa kecil di kota dapat tertutup tetangganya.</p>
+<p><b>Reproduksi.</b> <code>python3 ttm/compute.py</code> → <code>python3 analysis/rebana_build.py</code> → <code>python3 urscape/build.py</code> di repo <a href="https://github.com/qastill/pathwaysevcharging">pathwaysevcharging</a>. Angka laporan ini diambil langsung dari <code>analysis/rebana_data.json</code> dan <code>ttm/ttm.json</code> (dibangun 1 Nov 2026).</p>
+</div>
+<p class="src">Qashtalani Haramaini — PhD candidate, Monash University Indonesia (RACE for 2030, supervisor Alyas Widita &amp; Liz Taylor). Lisensi data PLN: agregat, tanpa identitas pelanggan maupun gardu.</p>
+</main>
+</body>
+</html>
