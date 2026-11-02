@@ -45,9 +45,11 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
 <body>
 <div id="app">
 <header>
-  <div class="brand">ur-scape · <span>West Java</span> layers</div>
+  <div class="brand">ur-scape · <span id="sitename">West Java</span> layers</div>
   <div class="meta" id="meta">Loading layers…</div>
+  <select id="sitesel" class="btn" aria-label="ur-scape site"><option value="westjava">Site: West Java (0.5′ ≈ 0.9 km)</option><option value="rebana">Site: Rebana (300 m)</option></select>
   <select id="basesel" class="btn" aria-label="Basemap"></select>
+  <a class="btn" href="urscape_guide.html">Panduan ur-scape</a>
   <a class="btn" href="rebana_insights.html">Laporan insight</a>
   <a class="btn" href="rebana_explorer.html">Rebana explorer</a>
   <a class="btn" href="https://ur-scape.com" target="_blank" rel="noopener">ur-scape.com</a>
@@ -66,7 +68,10 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (async function(){
-  const P = await (await fetch('urscape_layers.json')).json();
+  const SITE = new URLSearchParams(location.search).get('site')==='rebana' ? 'rebana' : 'westjava';
+  const ss=document.getElementById('sitesel'); ss.value=SITE; ss.onchange=e=>location.search=e.target.value==='rebana'?'?site=rebana':'';
+  const P = await (await fetch(SITE==='rebana'?'urscape_layers_rebana.json':'urscape_layers.json')).json();
+  document.getElementById('sitename').textContent = P.site || 'West Java'; document.title = `${P.site||'West Java'} Layers`;
   const dark = () => document.documentElement.dataset.theme==='dark' || (document.documentElement.dataset.theme!=='light' && matchMedia('(prefers-color-scheme: dark)').matches);
   const map = L.map('mapdiv',{zoomControl:true,attributionControl:true}).fitBounds(location.hash==='#rebana'?[[-7.15,107.45],[-6.05,108.85]]:[[P.south,P.west],[P.north,P.east]]);
   const BASE={
@@ -79,7 +84,7 @@ input[type=range]{width:120px;vertical-align:middle;accent-color:var(--accent)}
   setBase(baseKey);
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>setBase(baseKey));
   const sel=document.getElementById('basesel'); for(const k in BASE){ const o=document.createElement('option'); o.value=k; o.textContent=BASE[k].n; sel.appendChild(o);} sel.value=baseKey; sel.onchange=e=>setBase(e.target.value);
-  document.getElementById('meta').textContent = `${P.layers.length} layers · ${P.cx}×${P.cy} cells of 0.5′ (~0.9 km) · same grids as the ur-scape site "West Java" · generated ${P.generated.slice(0,4)}-${P.generated.slice(4)}`;
+  document.getElementById('meta').textContent = `${P.layers.length} layers · ${P.cx}×${P.cy} cells of ${P.sign==='D'?'300 m':'0.5′ (~0.9 km)'} · same grids as the ur-scape site "${P.site||'West Java'}" · generated ${P.generated.slice(0,4)}-${P.generated.slice(4)}`;
 
   const b64 = s => { const bin=atob(s); const u=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i); return u; };
   const decode = L0 => { if(!L0.Q){ L0.Q=pako.inflate(b64(L0.q)); L0.R=new Float32Array(pako.inflate(b64(L0.raw)).buffer);} return L0; };

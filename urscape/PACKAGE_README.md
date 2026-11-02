@@ -1,9 +1,10 @@
-# ur-scape site "West Java": EV charging, access equity, Rebana, power grid
+# ur-scape sites "West Java" and "Rebana": EV charging, access equity, power grid
 
-28 grid layers (0.5 arc-minute cells, about 0.9 km) for [ur-scape](https://ur-scape.com) v0.9.9x, built from
+Two sites with the same 28 grid layers: **West Java** (0.5 arc-minute cells, about 0.9 km, Jabar-Jakarta-Banten) and
+**Rebana** (300 m cells, Subang-Indramayu-Majalengka-Sumedang-Kuningan-Cirebon) for [ur-scape](https://ur-scape.com) v0.9.9x, built from
 https://github.com/qastill/pathwaysevcharging (`urscape/build.py`). QGIS is not required.
 
-Report, slides and screenshots: https://jabar-ev.vercel.app/analysis/rebana_insights.html
+Report: https://jabar-ev.vercel.app/analysis/rebana_insights.html · User guide: https://jabar-ev.vercel.app/analysis/urscape_guide.html
 
 ## Install
 
@@ -11,9 +12,9 @@ Report, slides and screenshots: https://jabar-ev.vercel.app/analysis/rebana_insi
 python3 install.py "/path/to/ur-scape/Data"      # the Data folder that contains layers.csv
 ```
 
-Or by hand: copy `Sites/West Java/` into `Data/Sites/`, then append the contents of `layers_add.csv` (without the header row) to the end of
+Or by hand: copy `Sites/West Java/` and `Sites/Rebana/` into `Data/Sites/`, then append the contents of `layers_add.csv` (without the header row) to the end of
 `Data/layers.csv`, and the contents of `citations_add.csv` to the end of `Data/citations.csv` (both files are UTF-16).
-Open ur-scape, go to the Site Browser and choose **West Java**.
+Open ur-scape, go to the Site Browser and choose **Rebana** or **West Java**.
 
 ## Layers
 

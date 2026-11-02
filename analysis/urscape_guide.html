@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Panduan memakai ur-scape untuk site Rebana dan West Java: Site Browser, Data Layers, filter, Inspector, Contours, Reachability, Timeline, Export, plus resep analisis untuk workshop Powering Rebana.">
+<title>Panduan ur-scape</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Domine:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F6F4EE;--panel:#FFFFFF;--fg:#13263A;--muted:#55606E;--line:#DAD6CB;--soft:#ECE8DD;--accent:#C97D0E;--s1:#0F9A96;--bad:#C0392B;--ok:#1E8E5A;--fd:'Domine',Georgia,serif;--fs:'IBM Plex Sans',Arial,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;--s1:#2FA9A6;--bad:#DC5F4F;--ok:#3DBB7E;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0E1B26;--panel:#15283A;--fg:#EDEBE4;--muted:#A7B3BE;--line:#28405A;--soft:#1B3146;--accent:#C4821C;--s1:#2FA9A6;--bad:#DC5F4F;--ok:#3DBB7E;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15.5px/1.55 var(--fs)}
+header{border-bottom:1px solid var(--line);padding:14px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header .brand{font:700 18px var(--fd)}header .brand span{color:var(--accent)}header .meta{color:var(--muted);font-size:12.5px;flex:1;min-width:180px}
+header a{border:1px solid var(--line);border-radius:999px;padding:5px 11px;color:var(--fg);text-decoration:none;font-weight:600;font-size:12.5px;background:var(--panel)}
+main{max-width:980px;margin:0 auto;padding:16px 16px 60px}
+h1{font:700 30px/1.2 var(--fd);margin:18px 0 6px}h2{font:700 21px/1.25 var(--fd);margin:38px 0 10px;padding-top:14px;border-top:1px solid var(--line)}h3{font:600 15.5px var(--fs);margin:20px 0 6px}
+p.lead{font-size:17px;color:var(--muted)}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0;min-width:0;overflow-x:auto}
+.tip{border-left:4px solid var(--accent);background:var(--soft);padding:10px 14px;border-radius:0 10px 10px 0;margin:12px 0}.tip b{font-family:var(--fd)}
+.warn{border-left-color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:10px 0}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.6px}
+figure{margin:14px 0}figure img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--line);background:#000}figcaption{color:var(--muted);font-size:12.5px;margin-top:6px}
+kbd{font:600 12px var(--fs);background:var(--soft);border:1px solid var(--line);border-radius:5px;padding:1px 6px}
+code{font-size:13px;background:var(--soft);padding:1px 5px;border-radius:5px}pre{background:var(--soft);padding:10px 12px;border-radius:10px;overflow-x:auto;font-size:13px}
+ol li,ul li{margin:6px 0}.toc{columns:2;gap:24px;font-size:14px}.toc a{color:var(--fg)}@media(max-width:720px){.toc{columns:1}h1{font-size:24px}table{display:block;overflow-x:auto;white-space:nowrap}}
+.steps{counter-reset:s}.steps>div{display:grid;grid-template-columns:34px 1fr;gap:10px;margin:10px 0}.steps>div::before{counter-increment:s;content:counter(s);width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font:700 14px/28px var(--fd);text-align:center}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:14px 0}
+.dl a{display:block;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--fg);text-decoration:none}.dl a:hover{border-color:var(--accent)}.dl a b{display:block;font:700 15px var(--fd)}.dl a span{color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">ur-scape · <span>Panduan pakai</span></div>
+  <div class="meta">Site <b>Rebana</b> (300 m) &amp; <b>West Java</b> (0,5′) · ur-scape v0.9.96 · 28 lapisan per site</div>
+  <a href="urscape_explorer.html?site=rebana">Explorer web</a>
+  <a href="rebana_insights.html">Laporan insight</a>
+  <a href="https://github.com/qastill/pathwaysevcharging" target="_blank" rel="noopener">Repo</a>
+</header>
+<main>
+<h1>Cara memakai ur-scape untuk Rebana &amp; West Java</h1>
+<p class="lead">Panduan praktis: apa itu tiap panel, tombol apa yang ditekan, dan resep analisis yang siap dipakai di 2nd Powering Rebana Workshop (Cirebon, 5–6 Nov 2026). Semua lapisan dibangun dari repo <code>pathwaysevcharging</code> — data yang sama dengan web ini.</p>
+
+<div class="box toc">
+<a href="#konsep">1. Konsep dasar ur-scape</a><br>
+<a href="#site">2. Site Browser — Rebana vs West Java</a><br>
+<a href="#layers">3. Data Layers: nyalakan, filter ▽, info ⓘ</a><br>
+<a href="#peta">4. Navigasi peta &amp; background</a><br>
+<a href="#inspector">5. Inspector (garis &amp; area)</a><br>
+<a href="#contours">6. Contours — irisan beberapa lapisan</a><br>
+<a href="#tools">7. Tools lain: Reachability, Timeline, Planning</a><br>
+<a href="#export">8. Export gambar &amp; laporan</a><br>
+<a href="#resep">9. Resep analisis untuk workshop</a><br>
+<a href="#lapisan">10. Daftar lapisan &amp; artinya</a><br>
+<a href="#update">11. Update data dari repo</a><br>
+<a href="#masalah">12. Kalau ada masalah</a>
+</div>
+
+<h2 id="konsep">1. Konsep dasar ur-scape</h2>
+<p>ur-scape (Future Cities Laboratory, ETH Zürich/Singapore) adalah alat perencanaan berbasis <b>grid raster</b>. Setiap lapisan adalah kotak-kotak sel dengan satu nilai per sel (misal: menit perjalanan, jumlah charger, skor 0–100). Tiga ide kunci:</p>
+<ul>
+<li><b>Site</b> = wilayah + resolusi. Site <b>Rebana</b> memakai sel <b>300 m</b> (519 × 408 sel), site <b>West Java</b> memakai sel 0,5 menit busur (≈ 0,9 km) untuk Jabar–Jakarta–Banten. Isinya 28 lapisan yang sama, Rebana lebih halus.</li>
+<li><b>Layer</b> dinyalakan/dimatikan dengan klik; beberapa layer bisa aktif bersamaan dan saling ditumpuk dengan transparansi.</li>
+<li><b>Filter ▽</b> membatasi rentang nilai yang ditampilkan (contoh: hanya sel dengan Travel Time &gt; 30 menit). Semua tool (Contours, Inspector) bekerja pada <i>hasil filter</i>, bukan data mentah — ini kunci analisisnya.</li>
+</ul>
+<figure><img src="../urscape/img/g1_overview_inspector.jpg" alt="Antarmuka ur-scape: panel Data Layers kiri, peta tengah, Info kanan, Inspector bawah" loading="lazy">
+<figcaption>Antarmuka: kiri = Data Layers + Site Browser · tengah = peta (zoom, background, ukur) · kanan = panel Info (ringkasan tool aktif) · bawah = tab tool (Inspector/Export/Tools). Di gambar, lapisan <i>Population Beyond 30 min</i> aktif dan Inspector garis ditarik melintasi Rebana.</figcaption></figure>
+
+<h2 id="site">2. Site Browser — pilih Rebana atau West Java</h2>
+<div class="steps">
+<div><div>Buka ur-scape (≈15 detik loading pertama, Intel build jalan lewat Rosetta).</div></div>
+<div><div>Kiri bawah, panel <b>Site Browser</b>: pilih <b>Rebana</b> untuk kerja detail (300 m) atau <b>West Java</b> untuk konteks provinsi. <b>World</b> hanya data demo bawaan.</div></div>
+<div><div>Daftar Data Layers di atasnya berganti otomatis mengikuti site. Lapisan yang sedang aktif ikut berganti ke versi site baru.</div></div>
+</div>
+<div class="tip"><b>Kapan pakai yang mana?</b> Rebana untuk workshop: batas kecamatan terlihat tajam, pola koridor Cirebon–Majalengka–Kertajati terbaca. West Java untuk membandingkan Rebana dengan Bandung Raya/Bodebek (mis. Travel Time, Capacity per Household).</div>
+
+<h2 id="layers">3. Data Layers: nyalakan, filter, info</h2>
+<p>Panel kiri dikelompokkan: <b>EV Charging</b> · <b>Society and Economy</b> · <b>Power Grid</b> · <b>Insights</b>. Klik segitiga ▼ di judul grup untuk melipat/membuka.</p>
+<table>
+<tr><th>Aksi</th><th>Cara</th><th>Hasil</th></tr>
+<tr><td>Nyalakan lapisan</td><td>Klik nama lapisan</td><td>Nama jadi terang, peta diwarnai; titik warna di kiri = warna lapisan</td></tr>
+<tr><td>Tumpuk lapisan</td><td>Klik lapisan kedua, ketiga…</td><td>Semua yang terang ditampilkan bersamaan (transparan). Matikan dengan klik lagi</td></tr>
+<tr><td>Filter nilai ▽</td><td>Klik ikon ▽ di kanan nama lapisan aktif</td><td>Muncul slider min–max (atau daftar kategori untuk lapisan kategorik). Geser untuk hanya menampilkan rentang tertentu; angka bisa diketik</td></tr>
+<tr><td>Info ⓘ</td><td>Arahkan/klik ikon ⓘ</td><td>Popup: extents, ukuran (155,7 × 123,2 km untuk Rebana), resolusi, unit, tahun, sumber, link repo, <b>citation = rumus/definisi lapisan</b></td></tr>
+<tr><td>Legenda warna</td><td>Lihat kanan bawah peta saat lapisan aktif</td><td>Gelap = nilai rendah, terang/jenuh = nilai tinggi (skala tiap lapisan)</td></tr>
+<tr><td>Hanya satu lapisan</td><td>Matikan yang lain (klik)</td><td>Peta lebih bersih untuk export</td></tr>
+</table>
+<figure><img src="../urscape/img/g2_siting_priority_export.jpg" alt="Lapisan Charger Siting Priority aktif dengan popup info" loading="lazy">
+<figcaption><i>Charger Siting Priority</i> (grup Insights) aktif; popup ⓘ menampilkan definisi skor: 0,5 × kebutuhan (travel time &amp; jarak ke charger, dibobot penduduk) + 0,25 × permintaan (log penduduk) + 0,25 × kesiapan grid (headroom GI). Warna terang = prioritas tinggi.</figcaption></figure>
+<div class="tip"><b>Lapisan kategorik</b> (Charger Access Class, Charging Service Ladder, Coverage Model Picks, Transmission Lines) ditampilkan per kelas; filternya berupa centang kategori, bukan slider. Cocok untuk "tampilkan hanya kecamatan kelas <i>Underserved</i>".</div>
+
+<h2 id="peta">4. Navigasi peta &amp; background</h2>
+<ul>
+<li><b>Geser</b>: drag kiri. <b>Zoom</b>: scroll, atau tombol <kbd>+</kbd>/<kbd>−</kbd> kanan atas. <b>Miring/putar 3D</b>: drag kanan (tekan ikon kompas kiri bawah untuk kembali ke utara).</li>
+<li><b>Ikon lapisan (⧉)</b> kanan atas = ganti peta dasar (dark/light/satellite, perlu internet; token Mapbox default bawaan). <b>Ikon kaca pembesar</b> = cari nama tempat.</li>
+<li><b>Skala &amp; grid</b>: toolbar kecil bawah peta — tampilkan grid sel (⊞) dan skala km.</li>
+<li><b>Hover</b> di sel mana pun menampilkan nilai sel di panel Info kanan (bila mode Info "Default" aktif).</li>
+</ul>
+
+<h2 id="inspector">5. Inspector — baca angka sepanjang garis atau di dalam area</h2>
+<p>Tab <b>Inspector</b> (bawah) punya dua mode: <b>Line</b> dan <b>Area</b>. Keduanya merangkum semua lapisan yang aktif di panel Info kanan.</p>
+<div class="steps">
+<div><div>Nyalakan lapisan yang mau dibaca, mis. <i>Travel Time to Nearest Charger</i> + <i>Population Density</i>.</div></div>
+<div><div>Tab <b>Inspector → Line</b>: klik titik awal, klik titik akhir (mis. Cirebon kota → Kertajati). Info kanan menampilkan profil nilai sepanjang garis — "berapa menit ke charger sepanjang koridor Tol Cipali?"</div></div>
+<div><div>Tab <b>Inspector → Area</b>: klik beberapa titik membentuk poligon, tutup dengan klik titik pertama. Info kanan menampilkan min/max/rata-rata/jumlah per lapisan di dalam poligon — mis. total penduduk &gt;30 menit di Kabupaten Indramayu.</div></div>
+<div><div>Tombol hapus (ikon ✕ di tab) untuk menghapus garis/area.</div></div>
+</div>
+<div class="tip"><b>Trik workshop:</b> gambar area di sekitar kandidat lokasi SPKLU, nyalakan <i>Population Beyond 30 min</i> + <i>Substation Headroom</i> + <i>Distance to Substation</i>. Satu klik: berapa orang terlayani dan apakah gardu induk terdekat masih punya headroom.</div>
+
+<h2 id="contours">6. Contours — cari sel yang memenuhi beberapa syarat sekaligus</h2>
+<p>Contours menggambar batas (dan menghitung luas) <b>irisan</b> semua lapisan aktif <i>setelah filter</i>. Ini cara ur-scape menjawab "di mana tempat yang A dan B dan C?" tanpa GIS.</p>
+<figure><img src="../urscape/img/g3_contours.jpg" alt="Tab Contours aktif dengan luas 957.871 ha untuk seluruh Rebana" loading="lazy">
+<figcaption>Tools → Contours. Tanpa filter, seluruh Rebana dikontur (957.871 ha). Panel Info kanan menampilkan luas; opsi <i>Exclude cells without data</i>, <i>Crop contours to view area</i>, <i>Lock contours</i>, dan <i>Take Snapshot</i> untuk menyimpan satu skenario lalu membandingkan dengan skenario lain.</figcaption></figure>
+<div class="steps">
+<div><div>Nyalakan <i>Travel Time to Nearest Charger</i>, filter ▽ → min 30 (hanya sel &gt; 30 menit).</div></div>
+<div><div>Nyalakan <i>Population Density</i>, filter ▽ → min 1.000 jiwa/km² (hanya area padat).</div></div>
+<div><div>Nyalakan <i>Rebana Substation Headroom</i>, filter ▽ → min 20 MVA (gardu masih longgar).</div></div>
+<div><div>Tools → <b>Contours</b>. Peta hanya menyisakan sel yang memenuhi ketiga syarat; Info kanan menunjukkan luasnya (ha/km²). Itulah kandidat lokasi SPKLU "kebutuhan tinggi + permintaan ada + grid siap".</div></div>
+<div><div><b>Take Snapshot</b> → ubah filter (mis. 20 menit) → bandingkan luas skenario 1 vs 2. <b>Select Contours</b> → klik satu kantong untuk luas kantong itu saja.</div></div>
+</div>
+
+<h2 id="tools">7. Tools lain</h2>
+<table>
+<tr><th>Tool</th><th>Fungsi</th><th>Status untuk site kita</th></tr>
+<tr><td>Reachability</td><td>Isokron jarak tempuh dari titik yang diklik, di atas jaringan jalan</td><td>Perlu file jaringan <code>_graph.csv</code> per site (belum disertakan). Gunakan lapisan <i>Travel Time to Nearest Charger</i> (TTM r5r desa→desa) sebagai pengganti — sudah memperhitungkan jalan nyata</td></tr>
+<tr><td>Timeline</td><td>Memutar lapisan yang punya beberapa tahun (kode <code>_YYYYMM</code> pada nama file)</td><td>Semua lapisan saat ini 2026 saja. Kalau nanti ada data PLN 2025/2027, cukup tambah file dengan kode tanggal berbeda dan slider waktu muncul otomatis</td></tr>
+<tr><td>Planning</td><td>Menggambar "cat" perubahan guna lahan/skenario di atas grid dan melihat dampaknya ke lapisan lain</td><td>Bisa dipakai untuk menandai kandidat SPKLU manual dan menghitung ulang ringkasan Inspector</td></tr>
+<tr><td>Word Cloud / Municipal Budget</td><td>Demo FCL untuk data teks/anggaran</td><td>Tidak relevan, abaikan</td></tr>
+</table>
+
+<h2 id="export">8. Export gambar &amp; laporan</h2>
+<div class="steps">
+<div><div>Atur peta seperti yang diinginkan (lapisan, filter, zoom, Inspector/Contours).</div></div>
+<div><div>Tab <b>Export</b> → pilih jenis: <b>Full Interface</b> (seluruh layar, untuk panduan/slide), <b>Background &amp; Layers Combined</b> (peta saja, untuk laporan/poster), <b>Background &amp; Layers Separate</b> (file terpisah per lapisan, cocok untuk dipaskan di PowerPoint/QGIS).</div></div>
+<div><div>Ukuran <b>Small/Medium/Large</b> (Large ≈ 10 MB PNG, tajam untuk cetak). Centang <b>Output Report</b> untuk menyertakan CSV/PDF ringkasan Inspector/Contours.</div></div>
+<div><div>Klik <b>Export</b>. File tersimpan di <code>~/Desktop/ur-scape Export/</code> dengan nama <code>YYYYMMDD_HHMMSS_…png</code>.</div></div>
+</div>
+<div class="tip"><b>Untuk slide workshop:</b> pakai <i>Background &amp; Layers Combined · Large</i> dengan satu lapisan Insights + Contours aktif. Tiga contoh hasilnya ada di <a href="rebana_insights.html#urscape">laporan insight</a>.</div>
+
+<h2 id="resep">9. Resep analisis untuk workshop</h2>
+<div class="box">
+<h3>Resep A — "Di mana gap akses?" (5 menit)</h3>
+<ol>
+<li>Site Rebana → nyalakan <i>Population Beyond 30 min</i> (Insights).</li>
+<li>Sel terang = penduduk yang &gt; 30 menit mobil dari SPKLU terdekat. Lihat kantong Indramayu barat &amp; Kuningan selatan.</li>
+<li>Inspector → Area di satu kantong → baca total penduduk. Export Combined.</li>
+</ol>
+<h3>Resep B — "Kandidat lokasi SPKLU prioritas" (10 menit)</h3>
+<ol>
+<li>Nyalakan <i>Charger Siting Priority</i>, filter ▽ min 60.</li>
+<li>Tambah <i>Rebana Substation Headroom</i>, filter min 20 MVA; tambah <i>Coverage Model Picks</i> (titik yang direkomendasikan model p-median/MCLP).</li>
+<li>Tools → Contours → luas &amp; jumlah kantong. Bandingkan dengan <i>Rebana KPI Kecamatan</i> untuk urutan kecamatan.</li>
+</ol>
+<h3>Resep C — "Apakah grid siap?" (5 menit)</h3>
+<ol>
+<li>Nyalakan <i>Substation Peak Loading</i> (Power Grid) filter ▽ min 80 % + <i>Transmission Lines</i>.</li>
+<li>Tumpuk <i>Transformer Overload Share</i> (Insights) — porsi trafo distribusi yang sudah overload per hex.</li>
+<li>Tumpuk <i>Chargers within 30 min</i>: SPKLU yang ada di area gardu penuh = risiko; area longgar tanpa SPKLU = peluang.</li>
+</ol>
+<h3>Resep D — "Keadilan spasial (equity)" (10 menit)</h3>
+<ol>
+<li>Nyalakan <i>Rebana Poverty Rate</i> filter min 10 % dan <i>Charger Access Class</i> → centang hanya <i>Underserved/No access</i>.</li>
+<li>Contours → sel miskin <b>dan</b> tanpa akses: ini argumen equity untuk subsidi lokasi.</li>
+<li>Lawan-cek dengan <i>Charging Capacity per Household</i> (E2SFCA) — kapasitas per rumah tangga di sel yang sama.</li>
+</ol>
+</div>
+
+<h2 id="lapisan">10. Daftar lapisan &amp; artinya</h2>
+<table>
+<tr><th>Grup</th><th>Lapisan</th><th>Arti / unit</th><th>Sumber</th></tr>
+<tr><td rowspan="6">EV Charging</td><td>Stations · Chargers · Energy · Sessions · Utilisation</td><td>Jumlah SPKLU, jumlah charger, kWh/bulan, transaksi/bulan, utilisasi % per sel</td><td>PLN Charge.IN Jun 2026; transaksi PLN Jabar Mar 2026</td></tr>
+<tr><td>Travel Time to Nearest Charger</td><td>Menit mobil dari desa ke SPKLU terdekat</td><td>TTM r5r (Alyas Widita), GADM 4.1</td></tr>
+<tr><td>Chargers within 10 / 30 min</td><td>Jumlah charger terjangkau dalam 10/30 menit</td><td>idem</td></tr>
+<tr><td>Charger Access Class</td><td>Kategori: Good / Fair / Underserved / No access</td><td>idem</td></tr>
+<tr><td>Charging Capacity per Household</td><td>E2SFCA: kW per 1.000 rumah tangga</td><td>idem + Kontur 2023</td></tr>
+<tr><td>Charging Service Ladder</td><td>Tangga layanan (kategori) gabungan akses × kapasitas</td><td>idem</td></tr>
+<tr><td rowspan="3">Society &amp; Economy</td><td>Population Density</td><td>jiwa/km²</td><td>Kontur 2023</td></tr>
+<tr><td>Rebana HDI · Poverty · Expenditure</td><td>IPM, % miskin, pengeluaran per kapita per kecamatan</td><td>BPS 2024 (analysis/rebana_data.json)</td></tr>
+<tr><td>Rebana Distance to Substation / Charger · Substation Headroom · Chargers per Kecamatan</td><td>km, km, MVA sisa, jumlah</td><td>RUPTL × OSM; PLN</td></tr>
+<tr><td rowspan="2">Power Grid</td><td>Substation Capacity · Substation Peak Loading</td><td>MVA; % beban puncak GI</td><td>RUPTL 2025-2034 × OSM; beban GI PLN UID Jabar</td></tr>
+<tr><td>Power Plant Capacity · Transmission Lines</td><td>MW; kelas 70/150/500 kV</td><td>idem</td></tr>
+<tr><td rowspan="5">Insights</td><td>Charger Siting Priority</td><td>Skor 0–100 gabungan kebutuhan, permintaan, kesiapan grid</td><td>turunan repo</td></tr>
+<tr><td>Rebana KPI Kecamatan</td><td>Peringkat KPI kecamatan (semakin tinggi semakin perlu intervensi)</td><td>turunan repo</td></tr>
+<tr><td>Population Beyond 30 min</td><td>Jiwa &gt; 30 menit dari SPKLU</td><td>TTM × Kontur</td></tr>
+<tr><td>Coverage Model Picks</td><td>Lokasi pilihan model cakupan (kategori)</td><td>analysis/</td></tr>
+<tr><td>Transformer Overload Share</td><td>% trafo distribusi overload per hex H3</td><td>idm_hex</td></tr>
+</table>
+<p class="src">Definisi lengkap tiap lapisan (rumus, input) ada di popup ⓘ masing-masing lapisan dan di <code>urscape/build.py</code>.</p>
+
+<h2 id="update">11. Update data dari repo (satu tempat)</h2>
+<p>Semua lapisan dibangun otomatis dari repo. Kalau data berubah (PLN baru, TTM baru), jalankan:</p>
+<pre>python3 ttm/compute.py            # TTM → ttm/ttm.json
+python3 analysis/rebana_build.py  # → analysis/rebana_data.json
+python3 urscape/build.py          # site West Java (0,5′) + zip + QGIS GeoTIFF + payload web
+python3 urscape/build.py Rebana --keep   # site Rebana (300 m) + payload web
+# lalu di Mac:
+python3 urscape/out/install.py "/path/ke/ur-scape/Data"   # salin kedua site + layers.csv/citations.csv</pre>
+<p>Buka ulang ur-scape → file .csv dikonversi ke .bin otomatis. Web explorer (<a href="urscape_explorer.html?site=rebana">urscape_explorer.html</a>) membaca payload yang sama, jadi web dan desktop selalu sinkron setelah <code>git push</code>.</p>
+<div class="dl">
+<a href="../urscape/ur-scape-west-java.zip" download><b>Paket ur-scape (zip)</b><span>Sites/West Java + Sites/Rebana + install.py</span></a>
+<a href="../urscape/west-java-layers-qgis.zip" download><b>GeoTIFF untuk QGIS (zip)</b><span>28 lapisan EPSG:4326 + QGIS style</span></a>
+<a href="urscape_explorer.html?site=rebana"><b>Explorer web — Rebana</b><span>lapisan yang sama di browser, tanpa install</span></a>
+<a href="rebana_insights.html"><b>Laporan insight Rebana</b><span>fakta, angka, rekomendasi</span></a>
+</div>
+
+<h2 id="masalah">12. Kalau ada masalah</h2>
+<table>
+<tr><th>Gejala</th><th>Penyebab</th><th>Solusi</th></tr>
+<tr><td>ur-scape tidak muncul saat dibuka pertama</td><td>Build Intel, butuh Rosetta &amp; ~15 detik</td><td>Tunggu; kalau tetap tidak muncul, Terminal: <code>open -a ur-scape</code></td></tr>
+<tr><td>Site Rebana / lapisan tidak ada di daftar</td><td>Data belum disalin atau <code>layers.csv</code> belum diupdate</td><td>Jalankan <code>install.py</code> ulang (idempoten), buka ulang app</td></tr>
+<tr><td>Lapisan tampil tapi warna kosong/satu warna</td><td>Filter ▽ terlalu sempit atau lapisan lain menutupi</td><td>Reset filter (geser ke min–max), matikan lapisan lain</td></tr>
+<tr><td>Peta dasar hitam polos</td><td>Tidak ada internet / token Mapbox</td><td>Lapisan tetap jalan; untuk basemap, sambungkan internet</td></tr>
+<tr><td>Muncul dua tanggal untuk lapisan sama</td><td>File lama (<code>_202603</code>) dan baru (<code>_202606</code>) sama-sama ada</td><td>Pindahkan file lama keluar dari <code>Data/Sites/&lt;site&gt;</code>, atau biarkan: Timeline akan menampilkannya sebagai dua waktu</td></tr>
+<tr><td>Reachability tidak aktif</td><td>Butuh <code>_graph.csv</code> jaringan jalan</td><td>Pakai lapisan Travel Time; atau ekspor jaringan OSM ke format ur-scape (pekerjaan lanjutan)</td></tr>
+</table>
+<p class="src">Panduan resmi: <a href="https://ur-scape.com" target="_blank" rel="noopener">ur-scape.com</a> · sumber kode ur-scape: GitHub FCL (link di panel Info kanan). Panduan ini bagian dari repo <a href="https://github.com/qastill/pathwaysevcharging" target="_blank" rel="noopener">pathwaysevcharging</a> (Qashtalani Haramaini).</p>
+</main>
+</body>
+</html>

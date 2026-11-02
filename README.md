@@ -147,21 +147,23 @@ platform visualisasi data bersama. ur-scape belum punya versi web, jadi repo ini
   *Power Grid* (GI, beban puncak GI, pembangkit, transmisi 70/150/500 kV dari `data/grid-id/data_jamali.js`), *Insights* (Charger Siting Priority 0–100 =
   0,5·kebutuhan [waktu tempuh & jarak ke charger] + 0,25·permintaan [log penduduk] + 0,25·kesiapan jaringan [headroom GI]; Population Beyond 30 min = access gap;
   Coverage Model Picks; Rebana KPI Kecamatan; Transformer Overload Share Indramayu).
-  Pasang ke ur-scape siapa pun: `python3 install.py <folder Data ur-scape>` (idempoten; menyalin `Sites/West Java/` dan menambah
+  Pasang ke ur-scape siapa pun: `python3 install.py <folder Data ur-scape>` (idempoten; menyalin `Sites/West Java/` + `Sites/Rebana/` (300 m, khusus kawasan Rebana) dan menambah
   grup ke `layers.csv` + `citations.csv`). Format gridnya persis keluaran plugin QGIS *ur-scapeDataImporter*, jadi **tidak perlu QGIS**.
 - **Paket QGIS** `urscape/west-java-layers-qgis.zip` — 23 lapisan yang sama sebagai GeoTIFF (EPSG:4326, nodata −9999, metadata di tag) + GeoJSON
   titik SPKLU (nasional Jun 2026, PLN Jabar Mar 2026). Tarik `.tif` ke QGIS; bisa diekspor ulang ke ur-scape lewat plugin resmi
   *ur-scapeDataImporter* (resolusi C, location West Java) bila ingin jalur QGIS.
 - **Laporan insight** `analysis/rebana_insights.html` — bacaan naratif kawasan Rebana (pengisian EV, akses & keadilan, kesiapan GI/gardu, prioritas
   lokasi, implikasi tiga tema workshop, metode & batasan); semua angka dari `rebana_data.json` + `ttm/ttm.json`.
-- **Halaman web** `analysis/urscape_explorer.html` (`#rebana` = langsung zoom Rebana) — lapisan yang sama dirender di browser (Leaflet +
+- **Panduan pakai** `analysis/urscape_guide.html` — cara pakai ur-scape (Site Browser, layer/filter/info, Inspector, Contours, Export) + resep analisis workshop, dengan screenshot dari site Rebana.
+- **Halaman web** `analysis/urscape_explorer.html` (`?site=rebana` = site Rebana 300 m; `#rebana` = zoom Rebana di site West Java) — lapisan yang sama dirender di browser (Leaflet +
   CARTO, warna ramp mengikuti tema), nilai sel saat kursor diarahkan, legenda + sitasi, tombol unduh paket. Payload
   `analysis/urscape_layers.json` (~350 KB: nilai asli float32 + kuantisasi 8-bit, zlib). Basemap Esri gray/OSM/imagery tanpa API key
   (tile gratis CARTO sudah dimatikan — semua peta di repo ini dipindah ke Esri Light Gray pada PR yang sama).
 
 ```bash
 pip install numpy pandas openpyxl geopandas pyogrio shapely
-python3 urscape/build.py     # -> urscape/out/ (grid CSV UTF-16), urscape/ur-scape-west-java.zip, analysis/urscape_layers.json
+python3 urscape/build.py               # site West Java -> urscape/out/, zip, QGIS zip, analysis/urscape_layers.json
+python3 urscape/build.py Rebana --keep # site Rebana (300 m) -> urscape/out/Sites/Rebana, zip ulang, analysis/urscape_layers_rebana.json
 ```
 
 Rasterisasi memakai titik tengah sel (poligon desa/kecamatan) atau penjumlahan per sel (titik), sehingga desa kecil di kota bisa
